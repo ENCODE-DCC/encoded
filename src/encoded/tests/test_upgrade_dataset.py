@@ -651,7 +651,7 @@ def test_upgrade_dataset_31_to_32(
             assert tag in value['internal_tags']
 
 
-def test_upgrade_annotation_39_to_40(upgrader, annotation_37):
+def test_upgrade_annotation_39_to_40(upgrader, annotation_39):
     value = upgrader.upgrade('annotation', annotation_39, current_version='39', target_version='40')
     assert value['schema_version'] == '40'
     assert value['annotation_type'] == 'element gene regulatory interaction predictions'
