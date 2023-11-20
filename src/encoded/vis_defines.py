@@ -263,7 +263,7 @@ SUPPORTED_TRACK_SETTINGS = [
     "scoreFilter", "spectrum", "minGrayLevel", "itemRgb", "viewLimits",
     "autoScale", "negateValues", "maxHeightPixels", "windowingFunction", "transformFunc",
     "signalFilter", "signalFilterLimits", "pValueFilter", "pValueFilterLimits",
-    "qValueFilter", "qValueFilterLimits", "interactUp"
+    "qValueFilter", "qValueFilterLimits", "interactUp", "logo",
 ]
 VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
 
@@ -364,8 +364,10 @@ OUTPUT_TYPE_8CHARS = {
     "optimal IDR thresholded peaks":        "oIDR pk",
     "conservative IDR thresholded peaks":   "cIDR pk",
     "enhancer validation":                  "enh val",
-    "semi-automated genome annotation":     "saga"
-    }
+    "semi-automated genome annotation":     "saga",
+    "counts sequence contribution scores":  "cnts seq",
+    "profile sequence contribution scores": "prof seq",
+}
 
 # Track coloring is defined by biosample
 BIOSAMPLE_COLOR = {
