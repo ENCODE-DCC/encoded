@@ -1476,9 +1476,10 @@ class AggregateSeries(Series):
         },
     })
     def assay_term_name(self, request, related_datasets, related_series):
-        return list(set(request.select_distinct_values(
-            'assay_term_name', *related_datasets), request.select_distinct_values(
-            'assay_term_name', *related_series)))
+        all_assay_terms = request.select_distinct_values(
+            'assay_term_name', *related_datasets).extend(request.select_distinct_values(
+            'assay_term_name', *related_series))
+        return all_assay_terms
 
     @calculated_property(define=True, condition='related_datasets', schema={
         "title": "Assay term ID",
@@ -1488,9 +1489,10 @@ class AggregateSeries(Series):
         },
     })
     def assay_term_id(self, request, related_datasets, related_series):
-        return list(set(request.select_distinct_values(
-            'assay_term_id', *related_datasets), request.select_distinct_values(
-            'assay_term_id', *related_series)))
+        all_assay_ids = request.select_distinct_values(
+            'assay_term_id', *related_datasets).extend(request.select_distinct_values(
+            'assay_term_id', *related_series))
+        return all_assay_ids
 
 @collection(
     name='treatment-time-series',
