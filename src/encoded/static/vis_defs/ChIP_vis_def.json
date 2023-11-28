@@ -107,7 +107,7 @@
                     "type": "bigWig",
                     "logo": "on",
                     "autoScale": "on",
-                    "maxHeightPixels": "64:18:8",
+                    "maxHeightPixels": "64:36:12",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "counts sequence contribution scores", "profile sequence contribution scores" ]
                 }
