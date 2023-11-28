@@ -1436,7 +1436,7 @@ class AggregateSeries(Series):
             if elements_references_summaries:
                 suffix = f'{suffix} {elements_references_summaries}'
             if series_summaries:
-                suffix = f'{suffix} {series_summmaries}'
+                suffix = f'{suffix} {series_summaries}'
 
             if len(all_summaries) == 1 and len(all_ontologies) == 1:
                 return ', '.join(list(map(str, all_summaries)))
