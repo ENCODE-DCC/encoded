@@ -11,8 +11,7 @@
         "Views":  {
             "tag": "view",
             "group_order": [ "Candidate enhancers", "Candidate promoters",  "Chromatin state",
-                             "HMM predicted chromatin state", "Peaks", "Candidate Cis-Regulatory Elements",
-                             "Sequence contribution scores" ],
+                             "HMM predicted chromatin state", "Peaks", "Candidate Cis-Regulatory Elements" ],
             "groups": {
                 "Candidate enhancers": {
                     "tag": "aENHAN",
@@ -51,16 +50,6 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "output_type": [ "candidate Cis-Regulatory Elements" ]
-                },
-                "Sequence contribution scores": {
-                    "tag": "test",
-                    "visibility": "full",
-                    "type": "bigWig",
-                    "logo": "on",
-                    "autoScale": "on",
-                    "maxHeightPixels": "64:18:8",
-                    "windowingFunction": "mean+whiskers",
-                    "output_type": [ "counts sequence contribution scores", "profile sequence contribution scores" ]
                 }
             }
         },
