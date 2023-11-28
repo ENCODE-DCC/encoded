@@ -1272,6 +1272,7 @@ class AggregateSeries(Series):
         treatment_names = ''
         gm_summaries = ''
         elements_references_summaries = ''
+        series_summaries = ''
 
         for dataset in related_datasets:
             datasetObject = request.embed(dataset, '@@object')
