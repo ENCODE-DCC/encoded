@@ -1239,7 +1239,7 @@ class MatchedSet(Series):
     unique_key='accession',
     properties={
         'title': "Aggregate series",
-        'description': 'A series that groups two or more datastes to allow meta-analysis.',
+        'description': 'A series that groups two or more datasets to allow meta-analysis.',
     })
 class AggregateSeries(Series):
     item_type = 'aggregate_series'
@@ -1255,10 +1255,11 @@ class AggregateSeries(Series):
     })
     def biosample_summary(self, request, related_datasets, related_series):
         all_series_summaries = set()
-        for series in related_series:
-            seriesObject = request.embed(series, '@@object')
-            if 'biosample_summary' in seriesObject:
-                all_series_summaries.add(seriesObject['biosample_summary'])
+        if related_series and len(related_series) > 0:
+            for series in related_series:
+                seriesObject = request.embed(series, '@@object')
+                if 'biosample_summary' in seriesObject:
+                    all_series_summaries.add(seriesObject['biosample_summary'])
 
         all_summaries = set()
         all_ontologies = set()
@@ -1465,34 +1466,40 @@ class AggregateSeries(Series):
                     return f'{all_terms}{suffix}'
         if all_series_summaries and not all_summaries and not all_ontologies:
             return series_summaries
+        if all_series_summaries and all_ontologies and not all_summaries:
+            if strain_name:
+                return f'{strain_name} {all_terms}, {series_summaries}'
+            else:
+                return f'{all_terms}, {series_summaries}'
         if all_ontologies and not all_summaries and not all_series_summaries:
             return all_terms
 
 
-    @calculated_property(condition='related_datasets', schema={
+    @calculated_property(define=True, schema={
         "title": "Assay name",
         "type": "array",
         "items": {
             "type": 'string',
         },
     })
-    def assay_term_name(self, request, related_datasets, related_series):
+    def assay_term_name(self, request, related_datasets, related_series=[]):
         all_assay_terms = request.select_distinct_values(
-            'assay_term_name', *related_datasets).extend(request.select_distinct_values(
-            'assay_term_name', *related_series))
+            'assay_term_name', *related_datasets) + request.select_distinct_values(
+            'assay_term_name', *related_series)
         return all_assay_terms
 
-    @calculated_property(define=True, condition='related_datasets', schema={
+
+    @calculated_property(define=True, schema={
         "title": "Assay term ID",
         "type": "array",
         "items": {
             "type": 'string',
         },
     })
-    def assay_term_id(self, request, related_datasets, related_series):
+    def assay_term_id(self, request, related_datasets, related_series=[]):
         all_assay_ids = request.select_distinct_values(
-            'assay_term_id', *related_datasets).extend(request.select_distinct_values(
-            'assay_term_id', *related_series))
+            'assay_term_id', *related_datasets) + request.select_distinct_values(
+            'assay_term_id', *related_series)
         return all_assay_ids
 
 @collection(
