@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 31
+* Added *topic gene weights* and *cell topic participation* to enum list for *output_type*.
+* Added *yaml* to enum list for *file_format*.
+
 ### Schema version 31
 * *output_type* enums *predicted profile* and *bias model* were replaced by *predicted signal profile* and *bias models* respectively.
 * Added the following enums to enum list for *output_type*:

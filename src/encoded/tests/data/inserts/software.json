@@ -292,6 +292,7 @@
         "name": "dbgap_sra_to_fastq",
         "status": "released",
         "title": "dbGaP SRA to fastq",
+        "software_type": "topic modeling",
         "uuid": "ae06530b-b0fe-4da6-aa27-dd407842190e"
     }
 ]

@@ -708,14 +708,16 @@
         "step_label": "regulatory-elements-prediction-model-step",
         "major_version": 1,
         "title": "Regulatory elements prediction model step",
-        "analysis_step_types": ["ranking", "signal generation"],
+        "analysis_step_types": ["ranking", "signal generation", "topic modeling"],
         "input_file_types": [
                 "alignments",
-                "promoter prediction model"
+                "promoter prediction model",
+                "topic gene weights"
         ],
         "output_file_types": [
                 "regulatory elements prediction model",
-                "enhancer prediction model"
+                "enhancer prediction model",
+                "cell topic participation"
         ],
         "status": "released",
         "uuid": "1351fd89-27f0-40ed-b6bb-2a0dca45793e"
