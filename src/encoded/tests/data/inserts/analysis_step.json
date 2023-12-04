@@ -721,5 +721,19 @@
         ],
         "status": "released",
         "uuid": "1351fd89-27f0-40ed-b6bb-2a0dca45793e"
+    },
+    {
+        "step_label": "tf-binding-id-elem-annotation-step",
+        "major_version": 1,
+        "title": "TF binding site identification and element annotation step",
+        "analysis_step_types": ["TF binding site identification", "element annotation"],
+        "input_file_types": [
+                "alignments"
+        ],
+        "output_file_types": [
+                "fragments"
+        ],
+        "status": "released",
+        "uuid": "06f1ef66-27f0-40ed-b6bb-2a0dca45793e"
     }
 ]

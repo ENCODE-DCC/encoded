@@ -1,5 +1,8 @@
 ## Changelog for reference.json
 
+### Minor changes since schema version 22
+* Added *variants* to *reference_type* enums list.
+
 ### Schema version 22
 
 * Upgraded *internal_tags* as follows:
