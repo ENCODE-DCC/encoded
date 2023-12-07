@@ -556,6 +556,9 @@ class Annotation(FileSet, CalculatedVisualize):
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
     ]
+    audit_inherit = [
+        'analyses',
+    ]
     set_status_up = [
         'analyses'
     ]
