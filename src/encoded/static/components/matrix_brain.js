@@ -101,11 +101,11 @@ const NO_DISEASE_CSS_CLASS = 'matrix__row-data--no-disease';
 
 const DISEASE_GROUPS = [
     [NO_DISEASE_LABEL],
-    ['Cognitive impairment', 'mild cognitive impairment'],
-    ['Alzheimer\'s disease and Cognitive impairment', 'Alzheimer\'s disease'],
+    ['mild cognitive impairment', 'Cognitive impairment'],
+    ['Alzheimer\'s disease', 'Alzheimer\'s disease and Cognitive impairment'],
 ];
 
-const DISEASES = ['Cognitive impairment', 'mild cognitive impairment', 'Alzheimer\'s disease'];
+const DISEASES = ['mild cognitive impairment', 'Cognitive impairment', 'Alzheimer\'s disease'];
 
 /**
  * Maps a disease (single entry in a array) or diseases (in an array) to a color

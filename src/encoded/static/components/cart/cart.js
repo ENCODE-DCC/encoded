@@ -817,7 +817,7 @@ const addToAccumulatingAnalyses = (analyses, currentResults) => {
         // One of the given analyses matches a new compiled analysis, so add the new ones' files to
         // the file list of the given analysis that matches. Then return the accumulating non-
         // matching analyses unchanged.
-        analyses[matchingAnalysisIndex].files.push(currentAnalysis.files);
+        analyses[matchingAnalysisIndex].files.push(...currentAnalysis.files);
         return accumulatedAnalyses;
     }, []);
     return analyses.concat(nonMatchingAnalyses);
