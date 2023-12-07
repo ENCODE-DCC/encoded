@@ -651,7 +651,7 @@ def test_sescc_stem_cell_matrix(index_workbook, testapp):
     assert res['@id'] == '/stem-cell-matrix/?type=Experiment'
     assert res['@context'] == '/terms/'
     assert res['notification'] == 'Success'
-    assert res['title'] == 'Stem cells differentiation'
+    assert res['title'] == 'Stem cell differentiation'
     assert res['total'] > 0
     assert 'filters' in res
     assert 'matrix' in res
