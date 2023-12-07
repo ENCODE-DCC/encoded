@@ -10,7 +10,7 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Normalized Signal", "Signal", "Peaks", "FDR cut rate", "Footprints", "Hotspots", "AutoScale Signal" ],
+            "group_order": [ "Normalized Signal", "Signal", "Peaks", "FDR cut rate", "Footprints", "Hotspots", "AutoScale Signal", "Sequence contribution scores" ],
             "groups": {
                 "Normalized Signal": {
                     "tag": "aNSIG",
@@ -68,6 +68,16 @@
                     "maxHeightPixels": "32:16:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "signal", "raw signal", "base overlap signal" ]
+                },
+                "Sequence contribution scores": {
+                    "tag": "seqCS",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "logo": "on",
+                    "autoScale": "on",
+                    "maxHeightPixels": "64:36:12",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "counts sequence contribution scores", "profile sequence contribution scores" ]
                 }
             }
         },

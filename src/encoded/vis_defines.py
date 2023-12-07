@@ -263,7 +263,7 @@ SUPPORTED_TRACK_SETTINGS = [
     "scoreFilter", "spectrum", "minGrayLevel", "itemRgb", "viewLimits",
     "autoScale", "negateValues", "maxHeightPixels", "windowingFunction", "transformFunc",
     "signalFilter", "signalFilterLimits", "pValueFilter", "pValueFilterLimits",
-    "qValueFilter", "qValueFilterLimits", "interactUp"
+    "qValueFilter", "qValueFilterLimits", "interactUp", "logo",
 ]
 VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
 
@@ -364,8 +364,10 @@ OUTPUT_TYPE_8CHARS = {
     "optimal IDR thresholded peaks":        "oIDR pk",
     "conservative IDR thresholded peaks":   "cIDR pk",
     "enhancer validation":                  "enh val",
-    "semi-automated genome annotation":     "saga"
-    }
+    "semi-automated genome annotation":     "saga",
+    "counts sequence contribution scores":  "cnts seq",
+    "profile sequence contribution scores": "prof seq",
+}
 
 # Track coloring is defined by biosample
 BIOSAMPLE_COLOR = {
@@ -760,8 +762,16 @@ class VisDefines(object):
             log.warn("Attempting to look up unexpected token: '%s'" % token)
             return "unknown token"
 
+        # BPNet annotation has very different properties than experiments
+        if dataset.get("annotation_type") in ["BPNet-model", "ChromBPNet-model"]:
+            if token == "{replicates.library.biosample.summary}":
+                token = "{biosample_term_name}"
+
         if token in SIMPLE_DATASET_TOKENS:
             term = dataset.get(token[1:-1])
+            if term is None:
+                if token == "{assay_title}":
+                    term = dataset.get("assay_term_name")
             if term is None:
                 return "Unknown " + token[1:-1].split('_')[0].capitalize()
             elif isinstance(term,list) and len(term) > 3:
@@ -779,12 +789,21 @@ class VisDefines(object):
                 if isinstance(term, list) and len(term) > 0:
                     return term[0]
                 return term
+            if term is None:
+                targets = self.lookup_embedded_token('{targets}', dataset)
+                if targets is not None:
+                    if isinstance(targets, list) and len(targets) > 0:
+                        target = targets[0]
+                        if isinstance(target, dict):
+                            return target.get('label')
+                        elif isinstance(target, str):
+                            return target.split("/")[2]
             return "Unknown Target"
         elif token in ["{replicates.library.biosample.summary}",
                     "{replicates.library.biosample.summary|multiple}"]:
             term = self.lookup_embedded_token('{replicates.library.biosample.summary}', dataset)
             if term is None:
-                term = dataset.get("{biosample_term_name}")
+                term = dataset.get("biosample_term_name")
             if term is not None:
                 return term
             if token.endswith("|multiple}"):
