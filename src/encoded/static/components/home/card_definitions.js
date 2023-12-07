@@ -195,7 +195,7 @@ export const CARDS_FOR_COLLECTIONS = {
         },
         {
             id: 'southeast-stem-cell-consortium',
-            title: 'Stem cells development',
+            title: 'Stem cell differentiation',
             help: 'Data generated for multiple cell types differentiated from a) induced pluripotent stem cells derived from the PGP donor and b) human embryonic stem cell lines such as H1 and H9.',
             icon: icons.southeastStemCellConsortium,
             link: '/stem-cell-matrix/?type=Experiment&replicates.library.biosample.donor.accession=ENCDO222AAA&status=released&control_type!=*',
