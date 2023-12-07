@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 9
 * Added *carts* property.
+* Allow `:` in DOI references in *identifiers*.
 
 ### Schema version 9
 * The *datasets* property is no longer submittable on this object; other dataset objects should specify a publication in their own *references* property and the dataset will appear on the publication.
