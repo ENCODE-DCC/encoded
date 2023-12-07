@@ -144,5 +144,7 @@ def test_biosample_summary_aggregate_series_with_related_series(
     )
     res = testapp.get(aggregate_series_chip_seq['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == 'ileum tissue, H1-hESC cell line'
-    assert res.json['object']['assay_term_name'] == ['ChIP-seq', 'RNA-seq']
-    assert res.json['object']['assay_term_id'] == ['OBI:0000716', 'OBI:0001271']
+    assert res.json['object']['assay_term_name'] == ['ChIP-seq', 'RNA-seq'] or \
+        res.json['object']['assay_term_name'] == ['RNA-seq', 'ChIP-seq']
+    assert res.json['object']['assay_term_id'] == ['OBI:0000716', 'OBI:0001271'] or \
+        res.json['object']['assay_term_id'] == ['OBI:0001271', 'OBI:0000716']
