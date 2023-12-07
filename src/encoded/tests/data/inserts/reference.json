@@ -190,5 +190,17 @@
         "description": "10X Genomics inclusion or permit list of barcodes for RNA Chromium V1 chemistry",
         "uuid": "b27bb01c-8f27-4373-96a8-6c503928bd25",
         "experimental_input": ["ENCSR123AAA"]
+    },
+    {
+        "_test": "variants",
+        "award": "ENCODE2",
+        "lab": "barbara-wold",
+        "reference_type": "variants",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "released",
+        "date_released": "2021-01-01",
+        "accession": "ENCSR333VRT",
+        "description": "Reference of variants",
+        "uuid": "50a1cc00-f1ef-4373-6427-6212d19cfd25"
     }
 ]

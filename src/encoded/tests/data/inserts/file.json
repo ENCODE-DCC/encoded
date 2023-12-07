@@ -6220,5 +6220,31 @@
         "lab": "/labs/j-michael-cherry/",
         "accession": "ENCFF880GFQ",
         "file_size": 13224
+    },
+    {
+        "dataset": "ENCSR200BRU",
+        "status": "in progress",
+        "award": "U41HG006992",
+        "assembly": "GRCh38",
+        "md5sum": "4ba34b3029522cc8dae5c125e24f8589",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "topic gene weights",
+        "file_format": "yaml",
+        "lab": "/labs/j-michael-cherry/",
+        "accession": "ENCFF929TGW",
+        "file_size": 819021
+    },
+    {
+        "dataset": "ENCSR200BRU",
+        "status": "in progress",
+        "award": "U41HG006992",
+        "assembly": "GRCh38",
+        "md5sum": "cc5c1b888a8e5ade4f367f30cc9b0a79",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "cell topic participation",
+        "file_format": "csv",
+        "lab": "/labs/j-michael-cherry/",
+        "accession": "ENCFF767CTP",
+        "file_size": 48902
     }
 ]

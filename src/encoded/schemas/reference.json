@@ -88,13 +88,14 @@
             "description": "The category that best describes the reference set.",
             "type": "string",
             "enum": [
-                "index",
+                "functional elements",
                 "genome",
+                "index",
                 "mappability",
+                "sequence adapters",
                 "sequence barcodes",
                 "spike-in",
-                "functional elements",
-                "sequence adapters"
+                "variants"
             ]
         },
         "organism": {

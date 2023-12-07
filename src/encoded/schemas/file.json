@@ -1494,7 +1494,8 @@
                                         "vcf",
                                         "wig",
                                         "2bit",
-                                        "btr"
+                                        "btr",
+                                        "yaml"
                                     ]
                                 },
                                 "output_type": {
@@ -1795,7 +1796,8 @@
                         "wig",
                         "idx",
                         "txt",
-                        "pairs"
+                        "pairs",
+                        "yaml"
                     ]
                 },
                 {
@@ -2134,6 +2136,7 @@
                         "candidate promoters",
                         "capture targets",
                         "cell coordinates",
+                        "cell topic participation",
                         "cell type data",
                         "cell type annotations",
                         "chromatin stripes",
@@ -2344,6 +2347,7 @@
                         "TF binding prediction model",
                         "TF peaks matrix",
                         "thresholded element gene links",
+                        "topic gene weights",
                         "training and test regions",
                         "training set",
                         "transcribed region quantifications",
@@ -2637,7 +2641,6 @@
                 }
             }
         },
-
         "matching_md5sum": {
             "title": "Matching md5sum",
             "description": "Array of files which have a matching md5sum.",
@@ -3079,6 +3082,8 @@
         "sequence motifs instances": "annotation",
         "TF peaks matrix": "annotation",
         "z scores matrix": "annotation",
+        "topic gene weights": "annotation",
+        "cell topic participation": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -3166,7 +3171,8 @@
         "txt": ".txt.gz",
         "pairs": ".pairs.gz",
         "starch": ".starch",
-        "nucle3d": ".nucle3d"
+        "nucle3d": ".nucle3d",
+        "yaml": ".yaml.gz"
     },
      "boost_values": {
          "accession": 20.0,
