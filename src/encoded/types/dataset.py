@@ -1437,10 +1437,13 @@ class AggregateSeries(Series):
             if elements_references_summaries:
                 suffix = f'{suffix} {elements_references_summaries}'
             if series_summaries:
-                suffix = f'{suffix} {series_summaries}'
+                suffix = f'{suffix}, {series_summaries}'
 
             if len(all_summaries) == 1 and len(all_ontologies) == 1:
-                return ', '.join(list(map(str, all_summaries)))
+                if series_summaries:
+                    return f"{', '.join(list(map(str, all_summaries)))}, {series_summaries}"
+                else:
+                    return ', '.join(list(map(str, all_summaries)))
             elif len(all_summaries) > 1 and len(all_ontologies) == 1:
                 biosample_ontology = ', '.join(str(s) for s in all_ontologies)
                 biosample_type_object = request.embed(biosample_ontology, '@@object')
@@ -1486,7 +1489,7 @@ class AggregateSeries(Series):
         all_assay_terms = request.select_distinct_values(
             'assay_term_name', *related_datasets) + request.select_distinct_values(
             'assay_term_name', *related_series)
-        return all_assay_terms
+        return list(set(all_assay_terms))
 
 
     @calculated_property(define=True, schema={
@@ -1500,7 +1503,7 @@ class AggregateSeries(Series):
         all_assay_ids = request.select_distinct_values(
             'assay_term_id', *related_datasets) + request.select_distinct_values(
             'assay_term_id', *related_series)
-        return all_assay_ids
+        return list(set(all_assay_ids))
 
 @collection(
     name='treatment-time-series',
