@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Schema version 40
+* Changed *element gene link predictions* to *element gene regulatory interaction predictions* in enum for *annotation_type*
+
 ### Minor changes since schema version 39
 * Added *pseudobulk* to the *annotation_type* enum list.
 * Added *disease_term_id*.

@@ -864,3 +864,15 @@ def dataset_31_32(value, system):
         if 'ENCYCLOPEDIAv6' in value['internal_tags']:
             value['internal_tags'].remove('ENCYCLOPEDIAv6')
             value['internal_tags'].append('ENCYCLOPEDIAv3')
+
+
+@upgrade_step('annotation', '39', '40')
+def annotation_39_40(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-182
+    annotation_type = value.get('annotation_type', None)
+    if annotation_type == "element gene link predictions":
+        value['annotation_type'] = 'element gene regulatory interaction predictions'
+        if 'notes' in value:
+            value['notes'] = f"{value['notes']} This object's annotation_type was changed from element gene link predictions to element gene regulatory interaction predictions."
+        else:
+            value['notes'] = "This object's annotation_type was changed from element gene link predictions to element gene regulatory interaction predictions."
