@@ -2732,11 +2732,15 @@ export const SeriesComponent = ({
     auditIndicators,
     auditDetail,
 }, reactContext) => {
+    // File objects from all related series
+    const [relatedSeriesFiles, setRelatedSeriesFiles] = React.useState([]);
+
     const itemClass = globals.itemClass(context, 'view-item');
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
     const seriesType = context['@type'][0];
     const userRoles = new UserRoles(reactContext.session_properties);
     const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
+    const { isLoggedIn } = userRoles;
 
     // Collect all the default files from all the related datasets of the given Series object,
     // filtered by the files in the released analyses of the related datasets, if any.
@@ -2753,6 +2757,22 @@ export const SeriesComponent = ({
 
     // Calculate the donor diversity.
     const diversity = options.suppressDonorDiversity ? null : donorDiversity(context);
+
+    // Fetch all the `related_series` objects in this Series object, and then collect all their
+    // file objects into the `relatedSeriesFiles` state. Add these to the files from the series.
+    React.useEffect(() => {
+        if (context.related_series.length > 0) {
+            requestObjects(context.related_series, '/search/?type=AggregateSeries&limit=all&status!=deleted&status!=revoked&status!=replaced&field=files&field=analyses').then((results) => {
+                if (results.length > 0) {
+                    const relatedFiles = results.reduce((allFiles, relatedSeries) => (
+                        (relatedSeries.files.length > 0) ? allFiles.concat(relatedSeries.files) : allFiles
+                    ), []);
+                    setRelatedSeriesFiles(relatedFiles);
+                }
+            });
+        }
+    }, [isLoggedIn]);
+    files.push(...relatedSeriesFiles);
 
     // Calculate expressed genes
     let genes = [];
