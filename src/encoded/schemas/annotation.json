@@ -681,6 +681,7 @@
         "targets.label": {
             "title": "Target",
             "type": "typeahead",
+            "length": "long",
             "open_on_load": true
         },
         "biosample_ontology.classification": {
