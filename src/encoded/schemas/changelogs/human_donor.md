@@ -3,6 +3,7 @@
 ### Minor changes since schema version 13
 
 * *supersedes* list property was added along with the calculated list property *superseded_by*
+* *fetal* added to *life_stage* enum.
 
 ### Schema version 13
 
