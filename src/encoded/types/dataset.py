@@ -1242,7 +1242,7 @@ class MatchedSet(Series):
     unique_key='accession',
     properties={
         'title': "Aggregate series",
-        'description': 'A series that groups two or more datastes to allow meta-analysis.',
+        'description': 'A series that groups two or more datasets to allow meta-analysis.',
     })
 class AggregateSeries(Series):
     item_type = 'aggregate_series'
@@ -1252,6 +1252,261 @@ class AggregateSeries(Series):
         'related_datasets.analyses.quality_metrics.quality_metric',
     ]
 
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self, request, related_datasets, related_series):
+        all_series_summaries = set()
+        if related_series and len(related_series) > 0:
+            for series in related_series:
+                seriesObject = request.embed(series, '@@object')
+                if 'biosample_summary' in seriesObject:
+                    all_series_summaries.add(seriesObject['biosample_summary'])
+
+        all_summaries = set()
+        all_ontologies = set()
+        biosample_accessions = set()
+        all_strains = set()
+        all_treatments = set()
+        all_gm_summaries = set()
+        all_elements_references = set()
+        all_biosample_terms = []
+        strain_name = ''
+        treatment_names = ''
+        gm_summaries = ''
+        elements_references_summaries = ''
+        series_summaries = ''
+
+        for dataset in related_datasets:
+            datasetObject = request.embed(dataset, '@@object')
+            if datasetObject['status'] not in ('deleted', 'replaced'):
+                if 'biosample_summary' in datasetObject:
+                    all_summaries.add(datasetObject['biosample_summary'])
+                all_ontologies.add(datasetObject['biosample_ontology'])
+                replicates = datasetObject.get('replicates')
+                if replicates:
+                    for rep in replicates:
+                        replicateObject = request.embed(rep, '@@object')
+                        if replicateObject['status'] == 'deleted':
+                            continue
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object')
+                            if libraryObject['status'] == 'deleted':
+                                continue
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                                if biosampleObject['status'] == 'deleted':
+                                    continue
+                                if biosampleObject['accession'] not in biosample_accessions:
+                                    biosample_accessions.add(biosampleObject['accession'])
+                                    if biosampleObject['organism'] in ['/organisms/mouse/', '/organisms/dmelanogaster/', '/organisms/celegans/' ]:
+                                        if 'donor' in biosampleObject:
+                                            donorObject = request.embed(biosampleObject['donor'], '@@object')
+                                            if donorObject['status'] != 'deleted':
+                                                strain_name = donorObject.get('strain_name')
+                                                strain_background = donorObject.get('strain_background')
+                                                if strain_name and strain_name.lower() != 'unknown':
+                                                    all_strains.add(strain_name)
+                                                elif strain_background and strain_background.lower() != 'unknown':
+                                                    all_strains.add(strain_background)
+                                    treatments = biosampleObject.get('treatments')
+                                    if treatments:
+                                        for treatment in treatments:
+                                            treatmentObject = request.embed(treatment, '@@object')
+                                            all_treatments.add(treatmentObject['treatment_term_name'])
+
+                                    genetic_modifications = biosampleObject.get('genetic_modifications')
+                                    modifications_list = []
+                                    if genetic_modifications:
+                                        for gm in genetic_modifications:
+                                            gm_object = request.embed(gm, '@@object')
+
+                                            guides = ''
+                                            if 'guide_type' in gm_object:
+                                                guides = gm_object['guide_type']
+
+                                            modification_dict = {'category': gm_object.get('category')}
+                                            if gm_object.get('modified_site_by_target_id'):
+                                                target = request.embed(gm_object.get('modified_site_by_target_id'),'@@object')
+                                                if 'genes' in target:
+                                                    genes = target['genes']
+                                                    if len(genes) >= 1:
+                                                        gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
+                                                        modification_dict['target_gene'] = gene_object.get('symbol')
+                                                        gene_organism_name_parts = request.embed(
+                                                            gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name').split(' ')
+                                                        modification_dict['organism'] = f'{gene_organism_name_parts[0][0]}. {gene_organism_name_parts[1]}'
+                                                    else:
+                                                        modification_dict['target'] = target['label']
+                                                else:
+                                                    modification_dict['target'] = target['label']
+                                            if gm_object.get('introduced_tags'):
+                                                modification_dict['tags'] = []
+                                                for tag in gm_object.get('introduced_tags'):
+                                                    tag_dict = {'location': tag['location'], 'name': tag['name']}
+                                                    if tag.get('promoter_used'):
+                                                        tag_dict['promoter'] = request.embed(
+                                                            tag.get('promoter_used'),'@@object').get('label')
+                                                    modification_dict['tags'].append(tag_dict)
+                                            if gm_object.get('introduced_gene'):
+                                                gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
+                                                modification_dict['gene'] = gene_object.get('symbol')
+                                                gene_organism_name_parts = request.embed(
+                                                    gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name').split(' ')
+                                                modification_dict['organism'] = f'{gene_organism_name_parts[0][0]}. {gene_organism_name_parts[1]}'
+
+                                            if 'method' in gm_object:
+                                                if (gm_object['method'] == 'CRISPR' and guides != ''):
+                                                    entry = f'CRISPR ({guides})'
+                                                    modifications_list.append((entry, modification_dict))
+                                                else:
+                                                    modifications_list.append((gm_object['method'], modification_dict))
+                                            elif 'nucleic_acid_delivery_method' in gm_object:
+                                                for item in gm_object['nucleic_acid_delivery_method']:
+                                                    if (item == 'transduction' and 'MOI' in gm_object):
+                                                        moi = gm_object['MOI']
+                                                        entry = f'transduction ({moi} MOI)'
+                                                        modifications_list.append((entry, modification_dict))
+                                                    else:
+                                                        modifications_list.append((item, modification_dict))
+                                    for (method, obj) in modifications_list:
+                                        all_gm_summaries.add(generate_modification_summary(method, obj))
+
+                elements_references = datasetObject.get('elements_references')
+                if elements_references:
+                    for element_reference in elements_references:
+                        loci_terms = []
+                        elements_reference_object = request.embed(element_reference, '@@object')
+                        if 'examined_loci' not in elements_reference_object and \
+                                'examined_regions' not in elements_reference_object:
+                            loci_terms.append('')
+                        else:
+                            if 'examined_loci' in elements_reference_object:
+                                if len(elements_reference_object['examined_loci']) > 1:
+                                    loci_terms.append('multiple loci')
+                                else:
+                                    examined_loci_object = request.embed(elements_reference_object['examined_loci'][0], '@@object')
+                                    loci_terms.append(f"{examined_loci_object['symbol']} locus")
+                            if 'examined_regions' in elements_reference_object:
+                                if len(elements_reference_object['examined_regions']) > 1:
+                                    loci_terms.append('multiple loci')
+                                else:
+                                    examined_region_object = elements_reference_object['examined_regions'][0]
+                                    loci_terms.append(
+                                        f"{examined_region_object['chromosome']}:"
+                                        f"{examined_region_object['start']}-{examined_region_object['end']}"
+                                    )
+
+                        filtered_loci_terms = [term for term in loci_terms if term not in ['', 'multiple loci']]
+                        if len(set(loci_terms)) == 1 and '' in set(loci_terms):
+                            all_elements_references.add('')
+                        elif 'multiple loci' in loci_terms or \
+                                len(set(filtered_loci_terms)) > 1:
+                            all_elements_references.add('for multiple loci')
+                        elif len(set(filtered_loci_terms)) == 1:
+                            all_elements_references.add(f'for {filtered_loci_terms[0]}')
+
+                    else:
+                        all_elements_references.add('')
+        if all_ontologies:
+            for ontology in all_ontologies:
+                biosample_ontology = str(ontology)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    term = biosample_classification
+                else:
+                    term = f"{biosample_name} {biosample_classification}"
+                all_biosample_terms.append(term)
+            all_terms = ', '.join(all_biosample_terms)
+        if len(all_strains) == 1:
+            strain_name = ', '.join(str(s) for s in all_strains)
+        if all_treatments:
+            treatment_names = ', '.join(str(s) for s in all_treatments)
+        if all_gm_summaries:
+            gm_summaries = ', '.join(str(s) for s in all_gm_summaries)
+        if all_elements_references:
+            elements_references_summaries = ', '.join(str(s) for s in all_elements_references)
+        if all_series_summaries:
+            series_summaries = ', '.join(str(s) for s in all_series_summaries)
+        if all_summaries and all_ontologies:
+            suffix = ''
+            if treatment_names:
+                suffix = f'{suffix} treated with {treatment_names}'
+            if gm_summaries:
+                suffix = f'{suffix} {gm_summaries}'
+            if elements_references_summaries:
+                suffix = f'{suffix} {elements_references_summaries}'
+            if series_summaries:
+                suffix = f'{suffix}, {series_summaries}'
+
+            if len(all_summaries) == 1 and len(all_ontologies) == 1:
+                if series_summaries:
+                    return f"{', '.join(list(map(str, all_summaries)))}, {series_summaries}"
+                else:
+                    return ', '.join(list(map(str, all_summaries)))
+            elif len(all_summaries) > 1 and len(all_ontologies) == 1:
+                biosample_ontology = ', '.join(str(s) for s in all_ontologies)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    biosample_display = 'whole organisms'
+                else:
+                    biosample_display = f"{biosample_name} {biosample_classification}"
+                if strain_name:
+                    return f"{strain_name} {biosample_display}{suffix}"
+                else:
+                    return f'{biosample_display}{suffix}'
+            elif len(all_summaries) > 1 and len(all_ontologies) > 1:
+                if strain_name:
+                    return f'{strain_name} {all_terms}{suffix}'
+                else:
+                    return f'{all_terms}{suffix}'
+            elif len(all_ontologies) > 1:
+                if strain_name:
+                    return f'{strain_name} {all_terms}{suffix}'
+                else:
+                    return f'{all_terms}{suffix}'
+        if all_series_summaries and not all_summaries and not all_ontologies:
+            return series_summaries
+        if all_series_summaries and all_ontologies and not all_summaries:
+            if strain_name:
+                return f'{strain_name} {all_terms}, {series_summaries}'
+            else:
+                return f'{all_terms}, {series_summaries}'
+        if all_ontologies and not all_summaries and not all_series_summaries:
+            return all_terms
+
+
+    @calculated_property(define=True, schema={
+        "title": "Assay name",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_name(self, request, related_datasets, related_series=[]):
+        all_assay_terms = request.select_distinct_values(
+            'assay_term_name', *related_datasets) + request.select_distinct_values(
+            'assay_term_name', *related_series)
+        return list(set(all_assay_terms))
+
+
+    @calculated_property(define=True, schema={
+        "title": "Assay term ID",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_id(self, request, related_datasets, related_series=[]):
+        all_assay_ids = request.select_distinct_values(
+            'assay_term_id', *related_datasets) + request.select_distinct_values(
+            'assay_term_id', *related_series)
+        return list(set(all_assay_ids))
 
 @collection(
     name='treatment-time-series',

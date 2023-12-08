@@ -124,3 +124,27 @@ def test_biosample_summary_from_related_datasets(testapp,
 def test_assay_collection_series(testapp, base_collection_series):
     res = testapp.get(base_collection_series['@id'] + '@@index-data')
     assert sorted(res.json['object']['assay_term_name']) == ['MPRA']
+
+
+def test_biosample_summary_aggregate_series_with_related_series(
+    testapp,
+    aggregate_series_chip_seq,
+    aggregate_series_rna_seq,
+    experiment_chip_H3K4me3
+):
+    res = testapp.get(aggregate_series_chip_seq['@id']+'@@index-data')
+    assert res.json['object']['biosample_summary'] == 'ileum tissue'
+    assert res.json['object']['assay_term_name'] == ['ChIP-seq']
+    assert res.json['object']['assay_term_id'] == ['OBI:0000716']
+    testapp.patch_json(
+        aggregate_series_chip_seq['@id'],
+        {
+            'related_series': [aggregate_series_rna_seq['@id']]
+        }
+    )
+    res = testapp.get(aggregate_series_chip_seq['@id']+'@@index-data')
+    assert res.json['object']['biosample_summary'] == 'ileum tissue, H1-hESC cell line'
+    assert res.json['object']['assay_term_name'] == ['ChIP-seq', 'RNA-seq'] or \
+        res.json['object']['assay_term_name'] == ['RNA-seq', 'ChIP-seq']
+    assert res.json['object']['assay_term_id'] == ['OBI:0000716', 'OBI:0001271'] or \
+        res.json['object']['assay_term_id'] == ['OBI:0001271', 'OBI:0000716']
