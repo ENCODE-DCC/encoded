@@ -2761,7 +2761,7 @@ export const SeriesComponent = ({
     // Fetch all the `related_series` objects in this Series object, and then collect all their
     // file objects into the `relatedSeriesFiles` state. Add these to the files from the series.
     React.useEffect(() => {
-        if (context.related_series.length > 0) {
+        if (context.related_series?.length > 0) {
             requestObjects(context.related_series, '/search/?type=AggregateSeries&limit=all&status!=deleted&status!=revoked&status!=replaced&field=files&field=analyses').then((results) => {
                 if (results.length > 0) {
                     const relatedFiles = results.reduce((allFiles, relatedSeries) => (
