@@ -3,6 +3,7 @@ Changes
 
 132.0 (released) snovault 1.0.68
 --------------------------------
+ENCM-193 restore audit inherit  (#4419)
 ENCM-189-series-crash (#4417)
 ENCM-184-agg-series-summary-assay (#4412)
 ENCM-186-topic-modeling-enums (#4414)
