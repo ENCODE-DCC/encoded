@@ -1,6 +1,23 @@
 Changes
 =======
 
+132.0 (released) snovault 1.0.68
+--------------------------------
+ENCM-193 restore audit inherit  (#4419)
+ENCM-189-series-crash (#4417)
+ENCM-184-agg-series-summary-assay (#4412)
+ENCM-186-topic-modeling-enums (#4414)
+ENCM-182-ann-type-enum (#4411)
+ENCM-170 (#4413)
+ENCM-176-long-target-facet (#4406)
+ENCM-152-publication-regex (#4410)
+ENCM-175-annotation-analysis-audit (#4404)
+ENCM-180-missing-cart-files (#4408)
+ENCM-188-stem-cell (#4415)
+ENCM-168 Change order of Rush brain matrix tables (#4407)
+ENCM-173-embryonic-fetal (#4405)
+ENCM-167-aggregate-series-files (#4409)
+
 131.0 (released) snovault 1.0.68
 --------------------------------
 ENCM-144-rush-ad-cogdx (#4400)
