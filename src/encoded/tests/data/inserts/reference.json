@@ -216,15 +216,15 @@
         "uuid": "74628d35-3d7b-4056-bb44-206ee4cb37a4"
     },
     {
-        "_test": "phastcons score",
+        "_test": "phastcons scores",
         "award": "ENCODE2",
         "lab": "barbara-wold",
-        "reference_type": "phastcons score",
+        "reference_type": "phastcons scores",
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "status": "released",
         "date_released": "2021-01-01",
         "accession": "ENCSR335VRT",
-        "description": "Reference of phastcons score",
+        "description": "Reference of phastcons scores",
         "uuid": "f7080e77-bac7-4363-9830-fbde0df39dc8"
     }
 ]

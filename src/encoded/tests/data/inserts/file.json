@@ -6293,7 +6293,7 @@
         "uuid": "f465f5d5-65a3-4582-a6e0-e38a889ec5f3"
     },
     {
-        "_test": "motif cluster reference",
+        "_test": "motif clusters reference",
         "accession": "ENCFF004KEK",
         "assembly": "hg19",
         "award": "/awards/U54HG006996/",
@@ -6303,13 +6303,13 @@
         "file_size": 289435,
         "lab": "/labs/michael-snyder/",
         "md5sum": "74f98d2a15344113f80d17d305a517d9",
-        "output_type": "motif cluster reference",
+        "output_type": "motif clusters reference",
         "status": "released",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
     },
     {
         "_test": "variant reference",
-        "accession": "ENCSR333VRT",
+        "accession": "ENCFF005KEK",
         "assembly": "hg19",
         "award": "/awards/U54HG006996/",
         "dataset": "ENCSR334VRT",
