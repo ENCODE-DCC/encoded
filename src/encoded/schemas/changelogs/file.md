@@ -1,7 +1,7 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 31
-* Added *topic gene weights* and *cell topic participation* to enum list for *output_type*.
+* Added *topic gene weights*, *cell topic participation*, *motif clusters reference*, *phastcons score reference*, *Transposable Element TF ancestral origin percent by motif*, *Transposable Element TF ancestral origin percent by subfamily* and *variant reference* to enum list for *output_type*.
 * Added *yaml* to enum list for *file_format*.
 
 ### Schema version 31

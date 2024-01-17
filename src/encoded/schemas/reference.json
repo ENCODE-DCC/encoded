@@ -92,6 +92,8 @@
                 "genome",
                 "index",
                 "mappability",
+                "motif clusters",
+                "phastcons scores",
                 "sequence adapters",
                 "sequence barcodes",
                 "spike-in",

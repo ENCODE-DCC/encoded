@@ -202,5 +202,29 @@
         "accession": "ENCSR333VRT",
         "description": "Reference of variants",
         "uuid": "50a1cc00-f1ef-4373-6427-6212d19cfd25"
+    },
+    {
+        "_test": "motif clusters",
+        "award": "ENCODE2",
+        "lab": "barbara-wold",
+        "reference_type": "motif clusters",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "released",
+        "date_released": "2021-01-01",
+        "accession": "ENCSR334VRT",
+        "description": "Reference of motif clusters",
+        "uuid": "74628d35-3d7b-4056-bb44-206ee4cb37a4"
+    },
+    {
+        "_test": "phastcons score",
+        "award": "ENCODE2",
+        "lab": "barbara-wold",
+        "reference_type": "phastcons score",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "released",
+        "date_released": "2021-01-01",
+        "accession": "ENCSR335VRT",
+        "description": "Reference of phastcons score",
+        "uuid": "f7080e77-bac7-4363-9830-fbde0df39dc8"
     }
 ]

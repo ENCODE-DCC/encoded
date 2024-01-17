@@ -1,7 +1,10 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 40
+* Added *transcription factor ancestral origin estimate* to enum for *annotation_type*.
+
 ### Schema version 40
-* Changed *element gene link predictions* to *element gene regulatory interaction predictions* in enum for *annotation_type*
+* Changed *element gene link predictions* to *element gene regulatory interaction predictions* in enum for *annotation_type*.
 
 ### Minor changes since schema version 39
 * Added *pseudobulk* to the *annotation_type* enum list.
