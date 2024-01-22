@@ -1625,7 +1625,6 @@
         "submitted_file_name": "K562_RAD21_2.1.interactions.pairs.gz"
     },
     {
-
         "_test": "original file for an annotation analysis set 1",
         "accession": "ENCFF762DWI",
         "assembly": "hg19",
@@ -6321,5 +6320,21 @@
         "output_type": "variant reference",
         "status": "released",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
+    },
+    {
+        "_test": "repeats reference",
+        "status": "released",
+        "submitted_file_name": "test_repeats_reference.tar.gz",
+        "uuid": "d80ac9a8-13cf-460f-ad86-41964ebb8394",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "md5sum": "8f2259e4b02ac7f8bc2fd098cbde32bf",
+        "accession": "ENCFF006KEK",
+        "file_format": "tar",
+        "award": "/awards/U54HG006998/",
+        "dataset": "ENCSR336VRT",
+        "file_size": 58360790,
+        "lab":"j-michael-cherry",
+        "output_type": "repeats reference",
+        "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd"
     }
 ]

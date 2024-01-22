@@ -226,5 +226,17 @@
         "accession": "ENCSR335VRT",
         "description": "Reference of phastcons scores",
         "uuid": "f7080e77-bac7-4363-9830-fbde0df39dc8"
+    },
+    {
+        "_test": "repeats",
+        "award": "ENCODE2",
+        "lab": "barbara-wold",
+        "reference_type": "repeats",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "released",
+        "date_released": "2021-01-01",
+        "accession": "ENCSR336VRT",
+        "description": "Reference of repeats",
+        "uuid": "45ed6f7b-f4d7-4be7-b1e5-9f642bb54a82"
     }
 ]

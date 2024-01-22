@@ -94,6 +94,7 @@
                 "mappability",
                 "motif clusters",
                 "phastcons scores",
+                "repeats",
                 "sequence adapters",
                 "sequence barcodes",
                 "spike-in",
