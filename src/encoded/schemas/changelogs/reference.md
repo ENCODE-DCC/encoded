@@ -1,7 +1,8 @@
 ## Changelog for reference.json
 
 ### Minor changes since schema version 22
-* Added *variants*, *phastcons scores*, *repeats* and *motif clusters* to *reference_type* enums list.
+* Added *variants* to *reference_type* enums list.
+* Added *phastcons scores*, *repeats* and *motif clusters* to *reference_type* enums list.
 
 ### Schema version 22
 
