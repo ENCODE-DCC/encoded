@@ -729,16 +729,16 @@
         "analysis_step_types": ["TF binding site identification", "element annotation", "TF motif quantification"],
         "input_file_types": [
                 "alignments",
-                "Transposable Element TF ancestral origin percent by subfamily",
-                "Transposable Element TF ancestral origin percent by motif",
+                "transposable element TF ancestral origin percent by subfamily",
+                "transposable element TF ancestral origin percent by motif",
                 "phastcons score reference",
                 "motif clusters reference",
                 "variant reference"
         ],
         "output_file_types": [
                 "fragments",
-                "Transposable Element TF ancestral origin percent by subfamily",
-                "Transposable Element TF ancestral origin percent by motif",
+                "transposable element TF ancestral origin percent by subfamily",
+                "transposable element TF ancestral origin percent by motif",
                 "phastcons score reference",
                 "motif clusters reference",
                 "variant reference"

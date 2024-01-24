@@ -3,7 +3,7 @@
 ### Minor changes since schema version 31
 * Added *topic gene weights* and *cell topic participation* to enum list for *output_type*.
 * Added *yaml* to enum list for *file_format*.
-* Added *motif clusters reference*, *phastcons score reference*, *Transposable Element TF ancestral origin percent by motif*, *Transposable Element TF ancestral origin percent by subfamily*, *repeats reference*, and *variant reference* to enum list for *output_type*.
+* Added *motif clusters reference*, *phastcons score reference*, *transposable element TF ancestral origin percent by motif*, *transposable element TF ancestral origin percent by subfamily*, *repeats reference*, and *variant reference* to enum list for *output_type*.
 
 ### Schema version 31
 * *output_type* enums *predicted profile* and *bias model* were replaced by *predicted signal profile* and *bias models* respectively.

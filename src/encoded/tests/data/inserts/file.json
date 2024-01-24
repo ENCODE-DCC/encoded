@@ -6247,7 +6247,7 @@
         "file_size": 48902
     },
     {
-        "_test": "Transposable Element TF ancestral origin percent by subfamily",
+        "_test": "transposable element TF ancestral origin percent by subfamily",
         "accession": "ENCFF001KEK",
         "assembly": "hg19",
         "award": "/awards/U54HG006996/",
@@ -6257,12 +6257,12 @@
         "file_size": 289435,
         "lab": "/labs/michael-snyder/",
         "md5sum": "a94628feb64c6c2050181e45e3d29fe4",
-        "output_type": "Transposable Element TF ancestral origin percent by subfamily",
+        "output_type": "transposable element TF ancestral origin percent by subfamily",
         "status": "released",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
     },
     {
-        "_test": "Transposable Element TF ancestral origin percent by motif",
+        "_test": "transposable element TF ancestral origin percent by motif",
         "accession": "ENCFF002KEK",
         "assembly": "hg19",
         "award": "/awards/U54HG006996/",
@@ -6272,7 +6272,7 @@
         "file_size": 289435,
         "lab": "/labs/michael-snyder/",
         "md5sum": "4f637c4a2dd0fccd6eed3d6ede385d35",
-        "output_type": "Transposable Element TF ancestral origin percent by motif",
+        "output_type": "transposable element TF ancestral origin percent by motif",
         "status": "released",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
     },
