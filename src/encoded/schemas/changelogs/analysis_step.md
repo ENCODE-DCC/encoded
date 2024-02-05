@@ -3,7 +3,7 @@
 ### Minor changes since schema version 17
 * Added *topic gene weights* and *cell topic participation* to enum list for *input_file_types* and *output_file_types*.
 * Added *topic modeling*, *TF binding site identification*, and *element annotation* to enum list for *analysis_step_types*.
-* Added *motif clusters reference*, *phastcons score reference*, *transposable element TF ancestral origin percent by motif*, *transposable element TF ancestral origin percent by subfamily* and *variant reference* to enum list for *input_file_types* and *output_file_types*.
+* Added *motif clusters reference*, *phastcons score reference*, *transposable element TF ancestral origin percent by motif*, *transposable element TF ancestral origin percent by subfamily*, *repeats reference* and *variant reference* to enum list for *input_file_types* and *output_file_types*.
 * Added *TF motif quantification* to enum list for *analysis_step_types*
 
 ### Schema version 17

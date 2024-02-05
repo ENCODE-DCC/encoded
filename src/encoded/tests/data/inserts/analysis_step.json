@@ -733,7 +733,8 @@
                 "transposable element TF ancestral origin percent by motif",
                 "phastcons score reference",
                 "motif clusters reference",
-                "variant reference"
+                "variant reference",
+                "repeat reference"
         ],
         "output_file_types": [
                 "fragments",
@@ -741,7 +742,8 @@
                 "transposable element TF ancestral origin percent by motif",
                 "phastcons score reference",
                 "motif clusters reference",
-                "variant reference"
+                "variant reference",
+                "repeat reference"
         ],
         "status": "released",
         "uuid": "06f1ef66-27f0-40ed-b6bb-2a0dca45793e"
