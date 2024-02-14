@@ -19,105 +19,11 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
-        },
-        "3prime_overlapping_ncrna": {
-            "title": "Number of reads in 3' overlapping ncRNA",
-            "description": "Number of reads in transcript where ditag and/or published experimental data strongly supports the existence of short non-coding transcripts transcribed from the 3'UTR.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "IG_C_gene": {
-            "title": "Number of reads in immunoglobulin constant gene",
-            "description": "Number of reads in immunoglobulin gene belonging to the immunoglobulin constant group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "IG_C_pseudogene": {
-            "title": "Number of reads in inactivated immunoglobulin constant gene",
-            "description": "Number of reads in inactivated immunoglobulin gene belonging to the immunoglobulin constant group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "IG_D_gene": {
-            "title": "Number of reads in immunoglobulin diversity gene",
-            "description": "Number of reads in immunoglobulin gene belonging to the immunoglobulin diversity group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "IG_J_gene": {
-            "title": "Number of reads in immunoglobulin joining gene",
-            "description": "Number of reads in immunoglobulin gene belonging to the immunoglobulin joining group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "IG_J_pseudogene": {
-            "title": "Number of reads in inactivated immunoglobulin joining gene",
-            "description": "Number of reads in inactivated immunoglobulin gene belonging to the immunoglobulin joining group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "IG_V_gene": {
-            "title": "Number of reads in immunoglobulin variable gene",
-            "description": "Number of reads in immunoglobulin gene belonging to the immunoglobulin variable group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "IG_V_pseudogene": {
-            "title": "Number of reads in inactivated immunoglobulin variable gene",
-            "description": "Number of reads in inactivated immunoglobulin gene belonging to the immunoglobulin variable group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
+            "default": "2"
         },
         "Mt_rRNA": {
             "title": "Number of reads in mitochondrial rRNA",
-            "type": "integer",
-            "minimum": 0
-        },
-        "Mt_tRNA": {
-            "title": "Number of reads in mitochondrial tRNA",
-            "type": "integer",
-            "minimum": 0
-        },
-        "TEC": {
-            "title": "Number of reads in gene to be experimentally confirmed",
-            "description": "TEC is used for non-spliced EST clusters that have polyA features. This category has been specifically created for the ENCODE project to highlight regions that could indicate the presence of protein coding genes that require experimental validation, either by 5' RACE or RT-PCR to extend the transcripts, or by confirming expression of the putatively-encoded peptide with specific antibodies.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "TR_C_gene": {
-            "title": "Number of reads in TcR constant gene",
-            "description": "Number of reads in T-cell receptor (TcR) gene belonging to the T-cell receptor constant group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "TR_D_gene": {
-            "title": "Number of reads in TcR diversity gene",
-            "description": "Number of reads in T-cell receptor (TcR) gene belonging to the T-cell receptor diversity group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "TR_J_gene": {
-            "title": "Number of reads in TcR joining gene",
-            "description": "Number of reads in T-cell receptor (TcR) gene belonging to the T-cell receptor joining group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "TR_J_pseudogene": {
-            "title": "Number of reads in inactivated TcR joining gene",
-            "description": "Number of reads in inactivated T-cell receptor (TcR) gene belonging to the T-cell receptor joining group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "TR_V_gene": {
-            "title": "Number of reads in TcR variable gene",
-            "description": "Number of reads in T-cell receptor (TcR) gene belonging to the T-cell receptor variable group according to the IMGT.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "TR_V_pseudogene": {
-            "title": "Number of reads in inactivated TcR variable gene",
-            "description": "Number of reads in inactivated T-cell receptor (TcR) gene belonging to the T-cell receptor variable group according to the IMGT.",
+            "description": "Number of reads assigned to transcripts from the \"Mt_rRNA\" GENCODE biotype; mitochondrial rRNAs",
             "type": "integer",
             "minimum": 0
         },
@@ -127,49 +33,9 @@
             "type": "integer",
             "minimum": 0
         },
-        "bidirectional_promoter_lncrna": {
-            "title": "Number of reads in bidirectional promoter lncRNA",
-            "description": "Number of reads in non-coding locus that originates from within the promoter region of a protein-coding gene, with transcription proceeding in the opposite direction on the other strand.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "lincRNA": {
-            "title": "Number of reads in linc RNA",
-            "description": "Number of reads in long, intervening noncoding (linc) RNA.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "macro_lncRNA": {
-            "title": "Number of reads in macro lncRNA",
-            "description": "Number of reads in unspliced long non-coding RNA that is several kb in size.",
-            "type": "integer",
-            "minimum": 0
-        },
         "miRNA": {
             "title": "Number of reads in microRNA",
-            "type": "integer",
-            "minimum": 0
-        },
-        "misc_RNA": {
-            "title": "Number of reads in miscellaneous other RNA",
-            "type": "integer",
-            "minimum": 0
-        },
-        "non_coding": {
-            "title": "Number of reads in non-coding gene",
-            "description": "Number of reads in transcript which is known from the literature to not be protein coding.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "polymorphic_pseudogene": {
-            "title": "Number of reads in polymorphic pseudogene",
-            "description": "Number of reads in pseudogene owing to a SNP/DIP but in other individuals/haplotypes/strains the gene is translated.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "processed_pseudogene": {
-            "title": "Number of reads in pseudogene from processed RNA",
-            "description": "Number of reads in pseudogene that lack introns and is thought to arise from reverse transcription of mRNA followed by reinsertion of DNA into the genome.",
+            "description": "Number of reads assigned to transcripts from the \"miRNA\" GENCODE biotype; microRNAs",
             "type": "integer",
             "minimum": 0
         },
@@ -181,31 +47,31 @@
         },
         "protein_coding": {
             "title": "Number of reads in protein coding gene",
-            "type": "integer",
-            "minimum": 0
-        },
-        "pseudogene": {
-            "title": "Number of reads in pseudogene",
+            "description": "Number of reads assigned to transcripts from the \"protein_coding\" GENCODE biotype; contain ORFs",
             "type": "integer",
             "minimum": 0
         },
         "rRNA": {
             "title": "Number of reads in rRNA",
+            "description": "Number of reads assigned to transcripts from the \"rRNA\" GENCODE biotype; encode for rRNAs",
             "type": "integer",
             "minimum": 0
         },
         "ribozyme": {
             "title": "Number of reads in ribozyme gene",
+            "description": "Number of reads assigned to transcripts from the \"ribozyme\" GENCODE biotype; encode for ribozymes",
             "type": "integer",
             "minimum": 0
         },
         "sRNA": {
             "title": "Number of reads in small RNA",
+            "description": "Number of reads assigned to transcripts from the \"sRNA\" GENCODE biotype; encode for sRNAs",
             "type": "integer",
             "minimum": 0
         },
         "scaRNA": {
             "title": "Number of reads in small Cajal body-specific RNAs (scaRNAs)",
+            "description": "Number of reads assigned to transcripts from the \"scaRNA\" GENCODE biotype; encode for scaRNAs",
             "type": "integer",
             "minimum": 0
         },
@@ -223,64 +89,19 @@
         },
         "snRNA": {
             "title": "Number of reads in small nuclear RNA",
+            "description": "Number of reads assigned to transcripts from the \"snRNA\" GENCODE biotype; encode for snRNAs",
             "type": "integer",
             "minimum": 0
         },
         "snoRNA": {
             "title": "Number of reads in small nucleolar RNA",
+            "description": "Number of reads assigned to transcripts from the \"snoRNA\" GENCODE biotype; encode for snoRNAs",
             "type": "integer",
             "minimum": 0
         },
         "spikein": {
             "title": "Number of reads mapped to RNA spike-in",
-            "type": "integer",
-            "minimum": 0
-        },
-        "tRNAscan": {
-            "title": "Number of reads in tRNA",
-            "type": "integer",
-            "minimum": 0
-        },
-        "transcribed_processed_pseudogene": {
-            "title": "Number of reads in transcribed and processed pseudogene",
-            "type": "integer",
-            "minimum": 0
-        },
-        "transcribed_unitary_pseudogene": {
-            "title": "Number of reads in transcribed unitary pseudogene",
-            "type": "integer",
-            "minimum": 0
-        },
-        "transcribed_unprocessed_pseudogene": {
-            "title": "Number of reads in transcribed but unprocessed pseudogene",
-            "type": "integer",
-            "minimum": 0
-        },
-        "transcript_id_not_found": {
-            "title": "Number of reads in transcript whose ID is not found",
-            "type": "integer",
-            "minimum": 0
-        },
-        "translated_unprocessed_pseudogene": {
-            "title": "Number of reads in translated but unprocessed pseudogene",
-            "type": "integer",
-            "minimum": 0
-        },
-        "unitary_pseudogene": {
-            "title": "Number of reads in unitary pseudogene",
-            "description": "Number of reads in a species-specific unprocessed pseudogene without a parent gene, as it has an active orthologue in another species.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "unprocessed_pseudogene": {
-            "title": "Number of reads in unprocessed pseudogene",
-            "description": "Number of reads in pseudogene that can contain introns since produced by gene duplication.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "vaultRNA": {
-            "title": "Number of reads in vault RNA",
-            "description": "Number of reads in short non coding RNA gene that forms part of the vault ribonucleoprotein complex.",
+            "description": "Number of reads assigned to transcripts from the spike ins",
             "type": "integer",
             "minimum": 0
         }

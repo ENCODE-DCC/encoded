@@ -1,0 +1,356 @@
+[
+    {
+        "name": "Hematopoietic stem cell",
+        "children":
+        [
+            {
+                "name": "common myeloid progenitor, CD34-positive",
+                "children":
+                [
+                    {
+                        "name": "megakaryocyte",
+                        "children":
+                        [
+                            {
+                                "name": "platelets"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "eosinophil"
+                    },
+                    {
+                        "name": "CD14-positive monocyte",
+                        "children":
+                        [
+                            {
+                                "name": "dendritic cell"
+                            },
+                            {
+                                "name": "macrophage",
+                                "children":
+                                [
+                                    {
+                                        "name": "inflammatory macrophage"
+                                    },
+                                    {
+                                        "name": "suppressor macrophage"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "CD1c-positive myeloid dendritic cell"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "basophil"
+                    },
+                    {
+                        "name": "erythroblast",
+                        "children":
+                        [
+                            {
+                                "name": "erythrocytes"
+                            }
+                        ]
+
+                    },
+                    {
+                        "name": "neutrophil"
+                    }
+                ]
+            },
+            {
+                "name": "leukocyte",
+                "children":
+                [
+                    {
+                        "name": "mononuclear cell",
+                        "children":
+                        [
+                            {
+                                "name": "peripheral blood mononuclear cell"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "lymphoid progenitor cell",
+                "children":
+                [
+                    {
+                        "name": "T-cell",
+                        "children":
+                        [
+                            {
+                                "name": "CD4-positive, alpha-beta T cell",
+                                "children":
+                                [
+                                    {
+                                        "name": "activated CD4-positive, alpha-beta T cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "stimulated activated CD4-positive, alpha-beta T cell"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "naive thymus-derived CD4-positive, alpha-beta T cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "activated naive CD4-positive, alpha-beta T cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "stimulated activated naive CD4-positive, alpha-beta T cell"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "T-helper 1 cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "activated T-helper 1 cell"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "T-helper 2 cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "activated T-helper 2 cell"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "T-helper 17 cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "activated T-helper 17 cell"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "CD4-positive, CD25-positive, alpha-beta regulatory T cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "activated CD4-positive, CD25-positive, alpha-beta regulatory T cell"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "T-helper 22 cell"
+                                            },
+                                            {
+                                                "name": "T-helper 9 cell",
+                                                "children":
+                                                [
+                                                    {
+                                                       "name": "activated T-helper 9 cell"
+                                                    }
+
+                                                ]
+                                            },
+                                            {
+                                                "name": "T follicular helper cell"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "CD4-positive, alpha-beta memory T cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "central memory CD4-positive, alpha-beta T cell"
+                                            },
+                                            {
+                                                "name": "activated CD4-positive, alpha-beta memory T cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "stimulated activated CD4-positive, alpha-beta memory T cell"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "effector memory CD4-positive, alpha-beta T cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "activated effector memory CD4-positive, alpha-beta T cell"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "gamma-delta T cell",
+                                "children":
+                                [
+                                    {
+                                        "name": "activated gamma-delta T cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "stimulated activated gamma-delta T cell"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "activated T-cell"
+                            },
+                            {
+                                "name": "CD8-positive, alpha-beta T cell",
+                                "children":
+                                [
+                                    {
+                                        "name": "activated CD8-positive, alpha-beta T cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "stimulated activated CD8-positive, alpha-beta T cell"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "naive thymus-derived CD8-positive, alpha-beta T cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "activated naive CD8-positive, alpha-beta T cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "stimulated activated naive CD8-positive, alpha-beta T cell"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "CD8-positive, alpha-beta memory T cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "activated CD8-positive, alpha-beta memory T cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "stimulated activated CD8-positive, alpha-beta memory T cell"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "central memory CD8-positive, alpha-beta T cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "activated central memory CD8-positive, alpha-beta T cell"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "effector memory CD8-positive, alpha-beta T cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "activated effector memory CD8-positive, alpha-beta T cell",
+                                                        "children":
+                                                        [
+                                                            {
+                                                                "name": "stimulated activated effector memory CD8-positive, alpha-beta T cell"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "B cell",
+                        "children":
+                        [
+                            {
+                                "name": "naive B cell",
+                                "children":
+                                [
+                                    {
+                                        "name": "IgD-negative memory B cell"
+                                    },
+                                    {
+                                        "name": "memory B cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "activated memory B cell",
+                                                "children":
+                                                [
+                                                    {
+                                                        "name": "stimulated activated memory B cell"
+                                                    }
+
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "stimulated activated naive B cell"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "activated B cell"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "immature natural killer cell",
+                        "children":
+                        [
+                            {
+                                "name": "natural killer cell",
+                                "children":
+                                [
+                                    {
+                                        "name": "CD16-positive, CD56-dim natural killer cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "activated CD16-positive, CD56-dim natural killer cell"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "CD16-negative, CD56-bright natural killer cell",
+                                        "children":
+                                        [
+                                            {
+                                                "name": "activated CD16-negative, CD56-bright natural killer cell"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -10,56 +10,50 @@ import { SortTablePanel, SortTable } from '../sorttable';
 import Status from '../status';
 import { setCartNameIdentifierAndSave, cartOperationInProgress } from './actions';
 import { cartCreate, cartUpdate, cartRetrieve } from './database';
+import CartLockTrigger from './lock';
 import { cartSetSettingsCurrent } from './settings';
 import CartShare from './share';
+import { CartListingAgentActuator } from './status';
 import switchCart from './switch';
+import { getReadOnlyState } from './util';
 
 
 /**
  * Renders and handles events in the radio button for each row of the cart manager that displays
  * the status of and sets the current cart.
  */
-class CurrentCartButtonComponent extends React.Component {
-    constructor() {
-        super();
-        this.handleRadioButtonChange = this.handleRadioButtonChange.bind(this);
-    }
-
+const CurrentCartButtonComponent = ({ cart, inProgress, user, onCurrentCartClick }, reactContext) => {
     /**
-     * Called when the user clicks a radio button to set the current cart. Does nothing if the
+     * Called when the user clicks the button to set and view the current cart. Does nothing if the
      * current user in session_properties hasn't yet been set.
      */
-    handleRadioButtonChange() {
-        const { cart, user, onCurrentCartClick } = this.props;
+    const onClick = () => {
         if (user) {
             // Set the browser's localstorage cart settings to remember this button's cart as the
             // current cart, and update the cart store for the current cart.
             cartSetSettingsCurrent(user, cart['@id']);
-            onCurrentCartClick();
+            onCurrentCartClick().then(() => {
+                reactContext.navigate('/cart-view/');
+            });
         }
-    }
+    };
 
-    render() {
-        const { cart, current, inProgress } = this.props;
-        const selected = cart['@id'] === current;
-        return (
-            <input
-                type="radio"
-                value={cart['@id']}
-                onChange={this.handleRadioButtonChange}
-                checked={selected}
-                className="cart-manager-table__current-button"
-                disabled={cart.status === 'deleted' || cart.status === 'disabled' || inProgress}
-            />
-        );
-    }
-}
+    return (
+        <button
+            type="button"
+            className="btn btn-sm cart-set-current"
+            onClick={onClick}
+            aria-label={`Set ${cart.name} as current cart and view it`}
+            disabled={cart.status === 'deleted' || inProgress}
+        >
+            {cart.name}
+        </button>
+    );
+};
 
 CurrentCartButtonComponent.propTypes = {
     /** The radio button represents this cart */
     cart: PropTypes.object.isRequired,
-    /** @id of the current cart */
-    current: PropTypes.string.isRequired,
     /** True if cart operation in progress */
     inProgress: PropTypes.bool.isRequired,
     /** Current user object from session_properties */
@@ -72,9 +66,16 @@ CurrentCartButtonComponent.defaultProps = {
     user: null,
 };
 
+CurrentCartButtonComponent.contextTypes = {
+    navigate: PropTypes.func,
+};
+
 CurrentCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    cart: ownProps.cart,
+    current: ownProps.current,
     inProgress: state.inProgress,
-    ...ownProps,
+    user: ownProps.user,
+    onCurrentCartClick: ownProps.onCurrentCartClick,
 });
 
 CurrentCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
@@ -89,41 +90,36 @@ const CurrentCartButton = connect(CurrentCartButtonComponent.mapStateToProps, Cu
  * gets its own mount event that lets us select the <input> contents when the modal appears. Uses a
  * controlled <input>, but the parent component tracks its contents.
  */
-class NameInput extends React.Component {
-    constructor() {
-        super();
-        this.inputField = null;
-    }
+const NameInput = ({ name, label, inputChangeHandler, nonValidMessage, inline, placeholder }) => {
+    const inputField = React.useRef(null);
 
-    componentDidMount() {
+    React.useEffect(() => {
         // Make sure the user can type into this field as soon as the modal appears without having
         // to click in the field.
-        this.inputField.focus();
-        this.inputField.select();
-    }
+        inputField.current.focus();
+        inputField.current.select();
+    }, []);
 
-    render() {
-        const { name, label, inputChangeHandler, nonValidMessage, inline } = this.props;
-        return (
-            <div className={inline ? 'form-inline' : null}>
-                <div className="form-group">
-                    <label htmlFor="new-cart-name">{label}:&nbsp;</label>
-                    <div className="form-element-with-valid-message">
-                        <input
-                            type="text"
-                            id="new-cart-name"
-                            className="form-control cart-rename__input"
-                            ref={(input) => { this.inputField = input; }}
-                            value={name}
-                            onChange={inputChangeHandler}
-                        />
-                        <label htmlFor="new-cart-name" className="non-valid-label">{nonValidMessage}</label>
-                    </div>
+    return (
+        <div className={inline ? 'form-inline' : null}>
+            <div className="form-group">
+                <label htmlFor="new-cart-name">{label}:&nbsp;</label>
+                <div className="form-element-with-valid-message">
+                    <input
+                        type="text"
+                        id="new-cart-name"
+                        className="form-control cart-rename__input"
+                        ref={inputField}
+                        value={name}
+                        placeholder={placeholder}
+                        onChange={inputChangeHandler}
+                    />
+                    <label htmlFor="new-cart-name" className="non-valid-label">{nonValidMessage}</label>
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 NameInput.propTypes = {
     /** Contents of the name <input>; changes as the user types */
@@ -136,12 +132,15 @@ NameInput.propTypes = {
     nonValidMessage: PropTypes.string,
     /** True if label and input on the same line */
     inline: PropTypes.bool,
+    /** HTML placeholder content */
+    placeholder: PropTypes.string,
 };
 
 NameInput.defaultProps = {
     name: '',
     nonValidMessage: '',
     inline: false,
+    placeholder: '',
 };
 
 
@@ -186,7 +185,7 @@ IdentifierInput.defaultProps = {
  * @param {string} name Human-readable name to convert
  * @return {string} `name` converted to one legal for URIs
  */
-const convertNameToIdentifier = name => name.toLowerCase().replace(/\W+/g, '-');
+const convertNameToIdentifier = (name) => name.toLowerCase().replace(/\W+/g, '-');
 
 
 /**
@@ -219,6 +218,7 @@ class NameCartButtonComponent extends React.Component {
         this.handleControlClick = this.handleControlClick.bind(this);
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate() {
         const { create, cart } = this.props;
         if (!create && !this.state.modalOpen && (cart.name !== this.state.newName || cart.identifier !== this.state.newIdentifier)) {
@@ -231,6 +231,7 @@ class NameCartButtonComponent extends React.Component {
             });
         }
     }
+    /* eslint-enable react/no-did-update-set-state */
 
     /**
      * Called when the button to actuate the modal is clicked.
@@ -264,7 +265,7 @@ class NameCartButtonComponent extends React.Component {
         // belonging to the current user. Don't give the warning if the cart with a conflicting
         // name is the cart being renamed.
         const upperCaseName = name.trim().toUpperCase();
-        const conflictingCart = cartManager['@graph'].find(cartItem => cartItem.status !== 'disabled' && cartItem.status !== 'deleted' && cartItem.name.trim().toUpperCase() === upperCaseName);
+        const conflictingCart = cartManager['@graph'].find((cartItem) => cartItem.status !== 'disabled' && cartItem.status !== 'deleted' && cartItem.name.trim().toUpperCase() === upperCaseName);
         const nameConflict = conflictingCart && (create || conflictingCart['@id'] !== cart['@id']);
         this.setState({ newName: name, nameConflict });
 
@@ -289,17 +290,24 @@ class NameCartButtonComponent extends React.Component {
      * function to execute the operation depends on whether we're creating or renaming a cart.
      */
     handleSubmit() {
-        const { create, onCreate, onRename, updateCartManager } = this.props;
+        const { create, onCreate, onRename, onSwitchCart, updateCartManager, user } = this.props;
         const { newName, newIdentifier } = this.state;
         const submitFunc = create ? onCreate : onRename;
-        submitFunc(newName.trim(), newIdentifier).then(() => {
-            // Successfully changed the cart name/identifier. Indicate the cart manager needs
-            // reloading so it displays the new cart information.
+        submitFunc(newName.trim(), newIdentifier).then((cartAtId) => {
             this.handleClose();
+
+            // Successfully changed the cart name/identifier. Indicate the cart manager needs
+            // reloading so it displays the new cart information, and set the new cart as the
+            // current cart. Null user only on initial load, but make sure to handle a null user
+            // just in case.
+            if (create && user) {
+                cartSetSettingsCurrent(user, cartAtId);
+                onSwitchCart(cartAtId);
+            }
             updateCartManager();
         }, (err) => {
             if (err === 409) {
-                // The back end detected the identifer already exists in the database. Display the
+                // The back end detected the identifier already exists in the database. Display the
                 // error and let the user continue in the modal.
                 this.setState({ identifierConflict: true });
             }
@@ -322,27 +330,27 @@ class NameCartButtonComponent extends React.Component {
     }
 
     render() {
-        const { create, cart, inProgress, actuatorCss, disabled, disabledTooltip } = this.props;
+        const { create, cart, inProgress, actuatorCss } = this.props;
         const modalTitle = create ? 'New cart' : <span>Rename cart: {cart.name}</span>;
         const actuatorTitle = create ? 'New cart' : 'Rename';
+
+        // Determine if the button should be disabled and why.
+        const readOnlyState = getReadOnlyState(cart);
+        const disabled = inProgress || readOnlyState.any;
+
         return (
-            <div className="cart-manager-table__action-button">
-                {disabled ?
-                    <div
-                        className="cart-manager-table__button-overlay"
-                        title={disabledTooltip}
-                    />
-                : null}
-                <button className={`btn btn-info btn-sm${actuatorCss ? ` ${actuatorCss}` : ''}`} onClick={this.handleActuator} disabled={disabled}>{actuatorTitle}</button>
+            <>
+                <button type="button" className={`btn btn-info btn-sm btn-inline${actuatorCss ? ` ${actuatorCss}` : ''}`} onClick={this.handleActuator} disabled={disabled}>{actuatorTitle}</button>
                 {this.state.modalOpen ?
-                    <Modal closeModal={this.handleClose} labelId="name-cart-label" descriptionId="name-cart-description">
-                        <ModalHeader title={<h4>{modalTitle}</h4>} labelId="name-cart-label" closeModal={this.handleClose} />
+                    <Modal closeModal={this.handleClose} submitModal={this.handleSubmit} labelId="name-cart-label" descriptionId="name-cart-description">
+                        <ModalHeader title={<h2>{modalTitle}</h2>} labelId="name-cart-label" closeModal={this.handleClose} />
                         <ModalBody addCss="cart-rename">
                             <div className="cart-rename__name-area">
                                 <NameInput
                                     inputChangeHandler={this.handleNameInputChange}
                                     name={this.state.newName}
                                     label="New name for cart"
+                                    placeholder="Note, cart title is publicly searchable."
                                     nonValidMessage={this.state.nameConflict ? 'Same name as another of your carts' : ''}
                                 />
                                 <p className="cart-rename__explanation" id="name-cart-description" role="document">
@@ -353,9 +361,12 @@ class NameCartButtonComponent extends React.Component {
                             </div>
                             <div className={`cart-rename__control-area${this.state.transferEnabled ? ' cart-rename__control-area--enabled' : ''}`}>
                                 <button
+                                    type="button"
                                     title="Select to automatically transfer the name to a plausibly similar identifier"
                                     onClick={this.handleControlClick}
-                                />
+                                >
+                                    <span className="sr-only">Select to automatically transfer the name to a plausibly similar identifier</span>
+                                </button>
                             </div>
                             <div className="cart-rename__identifier-area">
                                 <IdentifierInput
@@ -375,18 +386,19 @@ class NameCartButtonComponent extends React.Component {
                         <ModalFooter
                             submitBtn={
                                 <button
+                                    type="button"
                                     className="btn btn-info"
                                     disabled={this.state.nameConflict || this.state.newName.length === 0 || inProgress}
                                     onClick={this.handleSubmit}
                                 >
                                     {actuatorTitle}
                                 </button>}
-                            closeModal={<button className="btn btn-default" onClick={this.handleClose}>{inProgress ? <span>Close</span> : <span>Cancel</span>}</button>}
+                            closeModal={<button type="button" className="btn btn-default" onClick={this.handleClose}>{inProgress ? <span>Close</span> : <span>Cancel</span>}</button>}
                             addCss="cart-rename__footer-controls"
                         />
                     </Modal>
                 : null}
-            </div>
+            </>
         );
     }
 }
@@ -396,40 +408,47 @@ NameCartButtonComponent.propTypes = {
     cartManager: PropTypes.object.isRequired,
     /** Cart object being renamed, unless making new cart */
     cart: PropTypes.object,
+    /** Current user from session props */
+    user: PropTypes.object,
     /** True if cart operation is in progress */
     inProgress: PropTypes.bool.isRequired,
     /** True to create a new cart; false to rename an existing cart */
     create: PropTypes.bool,
     /** CSS to add to actuator button */
     actuatorCss: PropTypes.string,
-    /** True if actuating button should be disabled */
-    disabled: PropTypes.bool,
-    /** Tooltip to display if button is disabled */
-    disabledTooltip: PropTypes.string,
     /** Redux action to rename a cart */
     onRename: PropTypes.func.isRequired,
     /** Function to create a new cart; used if `create` is true */
     onCreate: PropTypes.func.isRequired,
+    /** Dispatch function for setting the current cart in the cart Redux store */
+    onSwitchCart: PropTypes.func.isRequired,
     /** Function to update the cart manager */
     updateCartManager: PropTypes.func.isRequired,
 };
 
 NameCartButtonComponent.defaultProps = {
     cart: null,
+    user: null,
     create: false,
     actuatorCss: '',
-    disabled: false,
-    disabledTooltip: '',
 };
 
 NameCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    cartManager: ownProps.cartManager,
+    cart: ownProps.cart,
+    user: ownProps.user,
     inProgress: state.inProgress,
-    ...ownProps,
+    create: ownProps.create,
+    actuatorCss: ownProps.actuatorCss,
+    onRename: ownProps.onRename,
+    onCreate: ownProps.onCreate,
+    updateCartManager: ownProps.updateCartManager,
 });
 
 NameCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     onRename: (name, identifier) => dispatch(setCartNameIdentifierAndSave({ name, identifier }, ownProps.cart, ownProps.user, ownProps.fetch)),
     onCreate: (name, identifier) => cartCreate({ name, identifier }, ownProps.fetch),
+    onSwitchCart: (cartAtId) => dispatch(switchCart(cartAtId, ownProps.fetch)),
 });
 
 const NameCartButton = connect(NameCartButtonComponent.mapStateToProps, NameCartButtonComponent.mapDispatchToProps)(NameCartButtonComponent);
@@ -438,83 +457,64 @@ const NameCartButton = connect(NameCartButtonComponent.mapStateToProps, NameCart
 /**
  * Component to display a button to delete a cart, with a warning that lets them back out.
  */
-class DeleteCartButtonComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            /** True if delete warning modal is open */
-            modalOpen: false,
-        };
-        this.handleSubmitClick = this.handleSubmitClick.bind(this);
-        this.handleDeleteClick = this.handleDeleteClick.bind(this);
-        this.handleCloseClick = this.handleCloseClick.bind(this);
-    }
+const DeleteCartButtonComponent = ({ cart, current, setInProgress, inProgress, fetch, updateCartManager }) => {
+    /** True if modal to confirm cart deletion is open */
+    const [modalOpen, setModalOpen] = React.useState(false);
+    const readOnlyState = getReadOnlyState(cart);
+
+    // Determine whether to disable the Delete button.
+    const isDisabled = (cart['@id'] === current)
+        || (cart.status === 'deleted')
+        || inProgress
+        || readOnlyState.any;
 
     /**
      * Called when the user clicks the Delete button in the warning modal to confirm they want to
      * delete the cart.
      */
-    handleSubmitClick() {
-        const { setInProgress, fetch, updateCartManager } = this.props;
+    const handleSubmitClick = () => {
         setInProgress(true);
-        cartUpdate(this.props.cart['@id'], { status: 'deleted' }, ['identifier'], fetch, false).then(() => {
+        cartUpdate(cart['@id'], { status: 'deleted' }, ['identifier'], fetch, false).then(() => {
             setInProgress(false);
             updateCartManager();
         });
-    }
+    };
 
     /**
      * Called when the user clicks the Delete button to bring up the warning modal.
      */
-    handleDeleteClick() {
-        this.setState({ modalOpen: true });
-    }
+    const handleDeleteClick = () => {
+        setModalOpen(true);
+    };
 
     /**
      * Called when the user clicks either of the close buttons for the warning modal.
      */
-    handleCloseClick() {
-        this.setState({ modalOpen: false });
-    }
+    const handleCloseClick = () => {
+        setModalOpen(false);
+    };
 
-    render() {
-        const { cart, current, inProgress } = this.props;
-        let disabledTooltip = '';
-        if (cart['@id'] === current) {
-            disabledTooltip = 'Cannot delete the current cart';
-        } else if (cart.status === 'deleted') {
-            disabledTooltip = 'Cart has already been deleted';
-        } else if (inProgress) {
-            disabledTooltip = 'Cart operation in progress';
-        }
-        return (
-            <div className="cart-manager-table__action-button">
-                <div className="cart-manager-table__delete-group">
-                    {disabledTooltip ?
-                        <div
-                            className="cart-manager-table__button-overlay"
-                            title={disabledTooltip}
-                        />
-                    : null}
-                    <button className="btn btn-danger btn-sm" onClick={this.handleDeleteClick} disabled={!!disabledTooltip}><i className="icon icon-trash-o" />&nbsp;Delete</button>
-                </div>
-                {this.state.modalOpen ?
-                    <Modal closeModal={this.handleCloseClick}>
-                        <ModalHeader title={<h4>Delete cart: {cart.name}</h4>} closeModal={this.handleCloseClick} />
-                        <ModalBody>
-                            This cart contains {cart.element_count} item{cart.element_count !== 1 ? 's' : ''}. Deleting carts is not reversible.
-                        </ModalBody>
-                        <ModalFooter
-                            submitBtn={this.handleSubmitClick}
-                            submitTitle="Delete"
-                            closeModal={this.handleCloseClick}
-                        />
-                    </Modal>
-                : null}
-            </div>
-        );
-    }
-}
+    return (
+        <>
+            <button type="button" className="btn btn-danger btn-sm btn-inline" onClick={handleDeleteClick} disabled={isDisabled}>
+                <i className="icon icon-trash-o" />&nbsp;Delete
+            </button>
+            {modalOpen ?
+                <Modal closeModal={handleCloseClick}>
+                    <ModalHeader title={<h4>Delete cart: {cart.name}</h4>} closeModal={handleCloseClick} />
+                    <ModalBody>
+                        This cart contains {cart.element_count} item{cart.element_count !== 1 ? 's' : ''}. Deleting carts is not reversible.
+                    </ModalBody>
+                    <ModalFooter
+                        submitBtn={handleSubmitClick}
+                        submitTitle="Delete"
+                        closeModal={handleCloseClick}
+                    />
+                </Modal>
+            : null}
+        </>
+    );
+};
 
 DeleteCartButtonComponent.propTypes = {
     /** Cart this delete button is for */
@@ -527,16 +527,20 @@ DeleteCartButtonComponent.propTypes = {
     setInProgress: PropTypes.func.isRequired,
     /** Function to call to update the cart manager page */
     updateCartManager: PropTypes.func.isRequired,
-    /** System function for xhr requests */
+    /** System function for XHR requests */
     fetch: PropTypes.func.isRequired,
 };
 
 DeleteCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    cart: ownProps.cart,
+    current: ownProps.current,
     inProgress: state.inProgress,
-    ...ownProps,
+    setInProgress: ownProps.setInProgress,
+    updateCartManager: ownProps.updateCartManager,
+    fetch: ownProps.fetch,
 });
-DeleteCartButtonComponent.mapDispatchToProps = dispatch => ({
-    setInProgress: enable => dispatch(cartOperationInProgress(enable)),
+DeleteCartButtonComponent.mapDispatchToProps = (dispatch) => ({
+    setInProgress: (enable) => dispatch(cartOperationInProgress(enable)),
 });
 
 const DeleteCartButtonInternal = connect(DeleteCartButtonComponent.mapStateToProps, DeleteCartButtonComponent.mapDispatchToProps)(DeleteCartButtonComponent);
@@ -579,7 +583,7 @@ class ShareCartButtonComponent extends React.Component {
     }
 
     render() {
-        const { cart } = this.props;
+        const { cart, inProgress } = this.props;
         let disabledTooltip;
         if (cart.status === 'deleted') {
             disabledTooltip = 'Cannot share a deleted cart';
@@ -587,18 +591,20 @@ class ShareCartButtonComponent extends React.Component {
             disabledTooltip = 'Cannot share the auto-save cart';
         }
         return (
-            <div className="cart-manager-table__action-button">
-                {disabledTooltip ?
-                    <div
-                        className="cart-manager-table__button-overlay"
-                        title={disabledTooltip}
-                    />
-                : null}
-                <button className="btn btn-info btn-sm" onClick={this.handleShareClick} disabled={!!disabledTooltip}>Share</button>
+            <>
+                <div className="cart-manager-table__tooltip-group">
+                    {disabledTooltip ?
+                        <div
+                            className="cart-manager-table__button-overlay"
+                            title={disabledTooltip}
+                        />
+                    : null}
+                    <button type="button" className="btn btn-info btn-sm btn-inline" onClick={this.handleShareClick} disabled={!!disabledTooltip || inProgress}>Share</button>
+                </div>
                 {this.state.modalOpen ?
                     <CartShare userCart={cart} closeShareCart={this.closeShareCart} />
                 : null}
-            </div>
+            </>
         );
     }
 }
@@ -606,10 +612,17 @@ class ShareCartButtonComponent extends React.Component {
 ShareCartButtonComponent.propTypes = {
     /** Cart being shared */
     cart: PropTypes.object.isRequired,
+    /** True if a data is being processed, false otherwise */
+    inProgress: PropTypes.bool,
+};
+
+ShareCartButtonComponent.defaultProps = {
+    inProgress: false,
 };
 
 ShareCartButtonComponent.mapStateToProps = (state, ownProps) => ({
     cart: ownProps.cart,
+    inProgress: state.inProgress,
 });
 
 const ShareCartButton = connect(ShareCartButtonComponent.mapStateToProps)(ShareCartButtonComponent);
@@ -622,61 +635,48 @@ const cartTableColumns = {
     name: {
         title: 'Name',
         headerCss: 'cart-manager-table__name-header',
-        display: item => <a href={item['@id']} className="cart-manager-table__text-wrap">{item.name}</a>,
+        display: (item, meta) => (
+            <CurrentCartButton
+                cart={item}
+                operationInProgress={meta.operationInProgress}
+                user={meta.user}
+                fetch={meta.fetch}
+            />
+        ),
     },
     identifier: {
         title: 'Identifier',
         headerCss: 'cart-manager-table__name-header',
-        display: item => <a href={item['@id']} className="cart-manager-table__text-wrap">{item.identifier}</a>,
+        display: (item) => item.identifier,
     },
     element_count: {
         title: 'Items',
     },
     status: {
         title: 'Status',
-        display: item => <Status item={item} badgeSize="small" />,
+        display: (item) => <Status item={item} badgeSize="small" />,
         hide: (item, columns, meta) => !meta.admin,
     },
     actions: {
         title: 'Actions',
         display: (item, meta) => {
-            let disabledTooltip;
-            if (item.status === 'disabled') {
-                disabledTooltip = 'Cannot rename the auto-save cart';
-            } else if (meta.operationInProgress) {
-                disabledTooltip = 'Cart operation in progress';
-            }
+            const readOnlyState = getReadOnlyState(item);
             return (
                 <div className="cart-manager-table__action">
+                    <CartListingAgentActuator cart={item} inProgress={meta.operationInProgress} disabled={readOnlyState.any} />
                     <NameCartButton
                         cartManager={meta.cartManager}
                         cart={item}
                         user={meta.user}
-                        disabled={!!disabledTooltip}
-                        disabledTooltip={disabledTooltip}
                         fetch={meta.fetch}
                         updateCartManager={meta.updateCartManager}
                     />
                     <ShareCartButton cart={item} />
                     <DeleteCartButton cartManager={meta.cartManager} cart={item} current={meta.current} updateCartManager={meta.updateCartManager} />
+                    <CartLockTrigger cart={item} inProgress={meta.operationInProgress} />
                 </div>
             );
         },
-        sorter: false,
-    },
-    current: {
-        title: 'Current',
-        display: (item, meta) => (
-            <CurrentCartButton
-                cart={item}
-                current={meta.current}
-                operationInProgress={meta.operationInProgress}
-                user={meta.user}
-                fetch={meta.fetch}
-                onSwitchCartStart={meta.onSwitchCartStart}
-                onSwitchCartComplete={meta.onSwitchCartComplete}
-            />
-        ),
         sorter: false,
     },
 };
@@ -685,30 +685,49 @@ const cartTableColumns = {
 /**
  * Display a count of the number of non-deleted carts, and the maximum possible number of carts.
  */
-const CartCounts = ({ cartManager }) => {
-    const cartCount = cartManager['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' ? sum + 1 : sum), 0);
-    return (
-        <div className="cart-counts">
-            {cartCount} cart{cartCount !== 1 ? 's' : ''} ({cartManager.cart_user_max} maximum)
-        </div>
-    );
-};
+const CartCounts = ({ cartManager, cartCount }) => (
+    <div className="cart-counts">
+        {cartCount} cart{cartCount !== 1 ? 's' : ''} ({cartManager.cart_user_max} maximum)
+    </div>
+);
 
 CartCounts.propTypes = {
     /** cart-manager object from database */
     cartManager: PropTypes.object.isRequired,
+    /** Number of carts not deleted and not auto save */
+    cartCount: PropTypes.number.isRequired,
 };
 
 
 /**
  * Display the cart manager table footer containing the legend.
  */
-const CartManagerFooter = () => (
-    <div className="cart-manager-table__legend">
-        <div className="cart-manager-table__legend-item"><div className="cart-manager-table__chip--current" />Current</div>
-        <div className="cart-manager-table__legend-item"><div className="cart-manager-table__chip--autosave" />Auto Save</div>
+const CartManagerFooter = ({ adminUser, isDeletedVisible, deletedVisibleChangeHandler }) => (
+    <div className="cart-manager-table__footer">
+        <div className="cart-manager-table__footer-item">
+            {adminUser ?
+                <>
+                    <input id="check-deleted-visible" type="checkbox" checked={isDeletedVisible} onChange={deletedVisibleChangeHandler} />
+                    <label htmlFor="check-deleted-visible">Show deleted carts</label>
+                </>
+            : null}
+        </div>
+        <div className="cart-manager-table__footer-item">
+            <div className="cart-manager-table__legend">
+                <div className="cart-manager-table__legend-item"><div className="cart-manager-table__chip--current" />Current</div>
+            </div>
+        </div>
     </div>
 );
+
+CartManagerFooter.propTypes = {
+    /** True if current user has admin privileges */
+    adminUser: PropTypes.bool.isRequired,
+    /** True if deleted carts are visible to admins */
+    isDeletedVisible: PropTypes.bool.isRequired,
+    /** Function to call when the admin user clicks the checkbox */
+    deletedVisibleChangeHandler: PropTypes.func.isRequired,
+};
 
 
 /**
@@ -721,8 +740,11 @@ class CartManagerComponent extends React.Component {
         this.state = {
             // /cart-manager/ object to render if we detected a possible update
             updatedContext: null,
+            // True if admin user has checked the Show Deleted Carts checkbox
+            isDeletedVisible: false,
         };
         this.retrieveUpdatedCart = this.retrieveUpdatedCart.bind(this);
+        this.handleDeletedVisibleChange = this.handleDeletedVisibleChange.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -731,6 +753,13 @@ class CartManagerComponent extends React.Component {
             // manager page.
             this.retrieveUpdatedCart();
         }
+    }
+
+    /**
+     * Called when the user clicks the "Show deleted carts" checkbox.
+     */
+    handleDeletedVisibleChange(e) {
+        this.setState({ isDeletedVisible: e.target.checked });
     }
 
     /**
@@ -745,9 +774,11 @@ class CartManagerComponent extends React.Component {
 
     render() {
         const { context, currentCart, inProgress, sessionProperties, fetch } = this.props;
+        const adminUser = !!(sessionProperties && sessionProperties.admin);
         const cartContext = this.state.updatedContext || context;
         const extantCartCount = cartContext['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
         const user = sessionProperties && sessionProperties.user;
+        const cartList = this.state.isDeletedVisible ? cartContext['@graph'] : cartContext['@graph'].filter((cart) => cart.status !== 'deleted');
         const cartPanelHeader = (
             <div className="cart-manager-header">
                 <h4 className="cart-manager-header__title">Cart manager</h4>
@@ -765,18 +796,20 @@ class CartManagerComponent extends React.Component {
         return (
             <SortTablePanel header={cartPanelHeader}>
                 <SortTable
-                    list={cartContext['@graph']}
+                    list={cartList}
+                    rowKeys={cartContext['@graph'].map((cart) => cart['@id'])}
                     columns={cartTableColumns}
+                    css="cart-manager-table"
                     meta={{
                         cartManager: cartContext,
                         current: currentCart,
                         operationInProgress: inProgress,
                         user: sessionProperties && sessionProperties.user,
-                        admin: !!(sessionProperties && sessionProperties.admin),
+                        admin: adminUser,
                         updateCartManager: this.retrieveUpdatedCart,
                         fetch,
                     }}
-                    title={<CartCounts cartManager={cartContext} />}
+                    title={<CartCounts cartManager={cartContext} cartCount={extantCartCount} />}
                     rowClasses={
                         (item) => {
                             if (item['@id'] === currentCart) {
@@ -791,7 +824,7 @@ class CartManagerComponent extends React.Component {
                             return '';
                         }
                     }
-                    footer={<CartManagerFooter />}
+                    footer={<CartManagerFooter adminUser={adminUser} isDeletedVisible={this.state.isDeletedVisible} deletedVisibleChangeHandler={this.handleDeletedVisibleChange} />}
                 />
             </SortTablePanel>
         );

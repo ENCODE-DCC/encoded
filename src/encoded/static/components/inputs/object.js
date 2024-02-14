@@ -10,7 +10,7 @@ function openLinksInNewWindow(e) {
     if (e.isDefaultPrevented()) return;
 
     // intercept links and open in new tab
-    let target = e.target;
+    let { target } = e;
     while (target && (target.tagName.toLowerCase() !== 'a')) {
         target = target.parentElement;
     }
@@ -107,12 +107,12 @@ export class ObjectPicker extends React.Component {
     }
 
     handleSearch() {
-        this.setState({ search: this.state.searchInput, browsing: true });
+        this.setState((state) => ({ search: state.searchInput, browsing: true }));
     }
 
     handleBrowse(e) {
         e.preventDefault();
-        this.setState({ browsing: !this.state.browsing });
+        this.setState((state) => ({ browsing: !state.browsing }));
     }
 
     handleFilter(href) {
@@ -135,14 +135,14 @@ export class ObjectPicker extends React.Component {
         const url = this.props.value;
         const previewUrl = url;
         const actions = [
-            <button key={1} className="btn btn-primary" onClick={this.handleSelect}>Select</button>,
+            <button type="button" key={1} className="btn btn-primary" onClick={this.handleSelect}>Select</button>,
         ];
         let searchParams = this.state.searchParams || this.props.searchBase;
         if (this.state.search) {
             searchParams += `&searchTerm=${encoding.encodedURIComponentOLD(this.state.search)}`;
         }
         return (
-            <React.Fragment>
+            <>
                 <div className={`item-picker${this.props.disabled ? ' disabled' : ''}`}>
                     <div className="item-picker__preview">
                         {url ?
@@ -167,8 +167,8 @@ export class ObjectPicker extends React.Component {
                     </div>
                     {!this.props.disabled &&
                         <div className="item-picker__browse">
-                            <button className="clear-button" ref={(button) => { this.clear = button; }} onClick={this.handleClear}><i className="icon icon-times" /></button>
-                            {' '}<button className={`btn btn-primary${this.state.browsing ? ' active' : ''}`} onClick={this.handleBrowse}>Browse&hellip;</button>
+                            <button type="button" className="clear-button" ref={(button) => { this.clear = button; }} onClick={this.handleClear}><span className="sr-only">Clear</span><i className="icon icon-times" /></button>
+                            {' '}<button type="button" className={`btn btn-primary${this.state.browsing ? ' active' : ''}`} onClick={this.handleBrowse}>Browse&hellip;</button>
                         </div>
                     }
                 </div>
@@ -183,7 +183,7 @@ export class ObjectPicker extends React.Component {
                         />
                     </FetchedData>
                 : ''}
-            </React.Fragment>
+            </>
         );
     }
 }

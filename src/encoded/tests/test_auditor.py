@@ -87,6 +87,7 @@ def test_declarative_config(dummy_request):
     config = Configurator()
     config.include('snovault.config')
     config.include('snovault.auditor')
+    config.include('snovault.elasticsearch.searches.configs')
     config.include('.testing_auditor')
     config.commit()
 

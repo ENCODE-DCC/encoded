@@ -2,18 +2,133 @@
 
 http://pyramid.readthedocs.org/en/latest/narr/testing.html
 '''
+import tempfile
+
 import pkg_resources
 import pytest
 from pytest import fixture
 
+from snovault.tests.testappfixtures import _app_settings as sno_settings
+
+
+tempfile.tempdir = '/tmp'
+
+
 pytest_plugins = [
-    'encoded.tests.datafixtures',
+    'encoded.tests.fixtures.shared_fixtures',
     'snovault.tests.serverfixtures',
     'snovault.tests.testappfixtures',
     'snovault.tests.toolfixtures',
     'snovault.tests.pyramidfixtures',
-]
 
+    'encoded.tests.fixtures.batch_download',
+    'encoded.tests.fixtures.ontology',
+    'encoded.tests.fixtures.testapp',
+
+    'encoded.tests.fixtures.schemas.access_key',
+    'encoded.tests.fixtures.schemas.aggregate_series',
+    'encoded.tests.fixtures.schemas.analysis_step_version',
+    'encoded.tests.fixtures.schemas.analysis_step',
+    'encoded.tests.fixtures.schemas.analysis',
+    'encoded.tests.fixtures.schemas.annotation',
+    'encoded.tests.fixtures.schemas.antibody_characterization',
+    'encoded.tests.fixtures.schemas.atac_alignment_enrichment_quality_metric',
+    'encoded.tests.fixtures.schemas.atac_alignment_quality_metric',
+    'encoded.tests.fixtures.schemas.atac_library_complexity_quality_metric',
+    'encoded.tests.fixtures.schemas.atac_peak_enrichment_quality_metric',
+    'encoded.tests.fixtures.schemas.atac_replication_quality_metric',
+    'encoded.tests.fixtures.schemas.genetic_modification',
+    'encoded.tests.fixtures.schemas.analysis_step_run',
+    'encoded.tests.fixtures.schemas.antibody_lot',
+    'encoded.tests.fixtures.schemas.antibody',
+    'encoded.tests.fixtures.schemas.award',
+    'encoded.tests.fixtures.schemas.bismark_quality_metric',
+    'encoded.tests.fixtures.schemas.biosample_characterization',
+    'encoded.tests.fixtures.schemas.biosample_type',
+    'encoded.tests.fixtures.schemas.biosample',
+    'encoded.tests.fixtures.schemas.cart',
+    'encoded.tests.fixtures.schemas.characterization',
+    'encoded.tests.fixtures.schemas.chia_pet_alignment_quality_metric',
+    'encoded.tests.fixtures.schemas.chia_pet_chr_interactions_quality_metric',
+    'encoded.tests.fixtures.schemas.chia_pet_peak_enrichment_quality_metric',
+    'encoded.tests.fixtures.schemas.chip_alignment_enrichment_quality_metric',
+    'encoded.tests.fixtures.schemas.chip_peak_enrichment_quality_metric',
+    'encoded.tests.fixtures.schemas.chip_replication_quality_metric',
+    'encoded.tests.fixtures.schemas.chip_alignment_samstat_quality_metric',
+    'encoded.tests.fixtures.schemas.chip_library_quality_metric',
+    'encoded.tests.fixtures.schemas.chipseq_filter_quality_metric',
+    'encoded.tests.fixtures.schemas.collection_series',
+    'encoded.tests.fixtures.schemas.computational_model',
+    'encoded.tests.fixtures.schemas.correlation_quality_metric',
+    'encoded.tests.fixtures.schemas.cpg_correlation_quality_metric',
+    'encoded.tests.fixtures.schemas.dataset',
+    'encoded.tests.fixtures.schemas.differential_accessibility_series',
+    'encoded.tests.fixtures.schemas.differentiation_series',
+    'encoded.tests.fixtures.schemas.disease_series',
+    'encoded.tests.fixtures.schemas.dnase_footprinting_quality_metric',
+    'encoded.tests.fixtures.schemas.document',
+    'encoded.tests.fixtures.schemas.duplicates_quality_metric',
+    'encoded.tests.fixtures.schemas.experiment_series',
+    'encoded.tests.fixtures.schemas.experiment',
+    'encoded.tests.fixtures.schemas.file',
+    'encoded.tests.fixtures.schemas.fly_donor',
+    'encoded.tests.fixtures.schemas.gembs_alignment_quality_metric',
+    'encoded.tests.fixtures.schemas.generic_quality_metric',
+    'encoded.tests.fixtures.schemas.sc_atac_multiplet_quality_metric',
+    'encoded.tests.fixtures.schemas.gene',
+    'encoded.tests.fixtures.schemas.gene_silencing_series',
+    'encoded.tests.fixtures.schemas.functional_characterization_experiment',
+    'encoded.tests.fixtures.schemas.functional_characterization_series',
+    'encoded.tests.fixtures.schemas.hic_quality_metric',
+    'encoded.tests.fixtures.schemas.histone_chipseq_quality_metric',
+    'encoded.tests.fixtures.schemas.hotspot_quality_metric',
+    'encoded.tests.fixtures.schemas.human_donor',
+    'encoded.tests.fixtures.schemas.idr_quality_metric',
+    'encoded.tests.fixtures.schemas.lab',
+    'encoded.tests.fixtures.schemas.library',
+    'encoded.tests.fixtures.schemas.long_read_rna_quantification_quality_metric',
+    'encoded.tests.fixtures.schemas.long_read_rna_mapping_quality_metric',
+    'encoded.tests.fixtures.schemas.mad_quality_metric',
+    'encoded.tests.fixtures.schemas.manatee_donor',
+    'encoded.tests.fixtures.schemas.matched_set',
+    'encoded.tests.fixtures.schemas.micro_rna_mapping_quality_metric',
+    'encoded.tests.fixtures.schemas.micro_rna_quantification_quality_metric',
+    'encoded.tests.fixtures.schemas.mouse_donor',
+    'encoded.tests.fixtures.schemas.multiomics_series',
+    'encoded.tests.fixtures.schemas.organism',
+    'encoded.tests.fixtures.schemas.organism_development_series',
+    'encoded.tests.fixtures.schemas.page',
+    'encoded.tests.fixtures.schemas.pipeline',
+    'encoded.tests.fixtures.schemas.platform',
+    'encoded.tests.fixtures.schemas.project',
+    'encoded.tests.fixtures.schemas.publication_data',
+    'encoded.tests.fixtures.schemas.publication',
+    'encoded.tests.fixtures.schemas.pulse_chase_time_series',
+    'encoded.tests.fixtures.schemas.quality_metric',
+    'encoded.tests.fixtures.schemas.reference_epigenome',
+    'encoded.tests.fixtures.schemas.reference',
+    'encoded.tests.fixtures.schemas.replicate',
+    'encoded.tests.fixtures.schemas.replication_timing_series',
+    'encoded.tests.fixtures.schemas.samtools_flagstats_quality_metric',
+    'encoded.tests.fixtures.schemas.samtools_stats_quality_metric',
+    'encoded.tests.fixtures.schemas.sc_atac_alignment_quality_metric',
+    'encoded.tests.fixtures.schemas.sc_atac_library_complexity_quality_metric',
+    'encoded.tests.fixtures.schemas.single_cell_rna_series',
+    'encoded.tests.fixtures.schemas.single_cell_unit',
+    'encoded.tests.fixtures.schemas.software_version',
+    'encoded.tests.fixtures.schemas.software',
+    'encoded.tests.fixtures.schemas.source',
+    'encoded.tests.fixtures.schemas.star_quality_metric',
+    'encoded.tests.fixtures.schemas.target',
+    'encoded.tests.fixtures.schemas.transgenic_enhancer_experiment',
+    'encoded.tests.fixtures.schemas.treatment_time_series',
+    'encoded.tests.fixtures.schemas.treatment_concentration_series',
+    'encoded.tests.fixtures.schemas.treatment',
+    'encoded.tests.fixtures.schemas.ucsc_browser_composite',
+    'encoded.tests.fixtures.schemas.user',
+    'encoded.tests.fixtures.schemas.worm_donor',
+
+]
 
 @pytest.fixture(autouse=True)
 def autouse_external_tx(external_tx):
@@ -40,16 +155,20 @@ _app_settings = {
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
     'load_test_only': True,
     'testing': True,
-    'stage_for_followup': 'vis_indexer, region_indexer',
+    'stage_for_followup': 'vis_indexer',
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
     'retry.attempts': 3,
-    'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
 }
+_app_settings['local_storage_host'] = sno_settings['local_storage_host']
+_app_settings['local_storage_port'] = sno_settings['local_storage_port']
+_app_settings['local_storage_redis_index'] = sno_settings['local_storage_redis_index']
+_app_settings['local_storage_timeout'] = sno_settings['local_storage_timeout']
+_app_settings['local_tz'] = sno_settings['local_tz']
 
 
 @fixture(scope='session')
-def app_settings(request, wsgi_server_host_port, conn, DBSession):
+def app_settings(request, wsgi_server_host_port, conn, DBSession, redis_server):
     from snovault import DBSESSION
     settings = _app_settings.copy()
     settings['auth0.audiences'] = 'http://%s:%s' % wsgi_server_host_port
@@ -86,30 +205,3 @@ def workbook(conn, app, app_settings):
         yield
     finally:
         tx.rollback()
-
-
-@fixture
-def anonhtmltestapp(app):
-    from webtest import TestApp
-    return TestApp(app)
-
-
-@fixture
-def htmltestapp(app):
-    from webtest import TestApp
-    environ = {
-        'REMOTE_USER': 'TEST',
-    }
-    return TestApp(app, environ)
-
-
-@fixture
-def submitter_testapp(app):
-    '''TestApp with JSON accept header for non-admin user.
-    '''
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST_SUBMITTER',
-    }
-    return TestApp(app, environ)

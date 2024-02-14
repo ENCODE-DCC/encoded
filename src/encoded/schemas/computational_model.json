@@ -45,7 +45,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "computational_model_type": {
             "title": "Computational model type",
@@ -59,6 +59,7 @@
             "title": "Software used",
             "description": "A list of software used to derive the reference file set.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Software used",
                 "description": "Version of software used to derived the reference file set.",
@@ -139,7 +140,8 @@
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
         "internal_tags": 1.0,
-        "computational_model_type": 1.0
+        "computational_model_type": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/computational_model.md"
 

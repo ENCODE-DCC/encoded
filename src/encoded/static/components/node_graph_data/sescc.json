@@ -1,0 +1,58 @@
+[
+    {
+        "name": "H9",
+        "class": "stem",
+        "linkClass": "stem",
+        "children": [
+            {
+                "name": "hepatocyte",
+                "class": "endoderm",
+                "linkClass": "endoderm"
+            },
+            {
+                "name": "splanchnic mesodermal cell",
+                "class": "mesoderm",
+                "linkClass": "mesoderm",
+                "children": [
+                    {
+                        "name": "mesothelial cell",
+                        "class": "mesoderm",
+                        "linkClass": "mesoderm"
+                    }
+                ]
+            },
+            {
+                        "name": "smooth muscle cell",
+                        "class": "mesoderm",
+                        "linkClass": "mesoderm"
+            },
+            {
+                "name": "lateral mesodermal cell",
+                "class": "mesoderm",
+                "linkClass": "mesoderm"
+            },
+            {
+                "name": "neural crest cell",
+                "class": "ectoderm",
+                "linkClass": "ectoderm",
+                "children": [
+                    {
+                        "name": "mesenchymal stem cell",
+                        "class": "stem",
+                        "linkClass": "stem"
+                    }
+                ]
+            },
+            {
+                "name": "neural progenitor cell",
+                "class": "ectoderm",
+                "linkClass": "ectoderm"
+            },
+            {
+                "name": "ecto neural progenitor cell",
+                "class": "ectoderm",
+                "linkClass": "ectoderm"
+            }
+        ]
+    }
+]

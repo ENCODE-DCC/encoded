@@ -10,7 +10,6 @@ import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
-import { Breadcrumbs } from './navigation';
 import { singleTreatment, requestSearch, ItemAccessories, AlternateAccession } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -54,9 +53,55 @@ IntroducedTags.propTypes = {
 };
 
 
-// All possible genetic modification object modification site property names. This might need to
-// change if the genetic_modification.json schema changes.
-const modificationSitePropNames = ['modified_site_by_target_id', 'modified_site_by_coordinates', 'modified_site_by_sequence', 'modified_site_nonspecific'];
+const modifiedSiteRenderers = {
+    modified_site_by_target_id: (gm) => {
+        let targetName;
+        let targetLink;
+
+        if (typeof gm.modified_site_by_target_id === 'string') {
+            // Non-embedded target; get its name from its @id.
+            targetName = globals.atIdToAccession(gm.modified_site_by_target_id);
+            targetLink = gm.modified_site_by_target_id;
+        } else {
+            // Embedded target; get its name from the embedded object.
+            targetName = gm.modified_site_by_target_id.name;
+            targetLink = gm.modified_site_by_target_id['@id'];
+        }
+        return (
+            <div data-test="mstarget">
+                <dt>Target</dt>
+                <dd><a href={targetLink} title={`View page for target ${targetName}`}>{targetName}</a></dd>
+            </div>
+        );
+    },
+    modified_site_by_gene_id: (gm) => (
+        <div data-test="msgene">
+            <dt>Gene</dt>
+            <dd className="sequence"><a href={gm.modified_site_by_gene_id['@id']}>{gm.modified_site_by_gene_id.symbol}</a></dd>
+        </div>
+    ),
+    modified_site_by_coordinates: (gm) => {
+        const { assembly, chromosome, start, end } = gm.modified_site_by_coordinates;
+        return (
+            <div data-test="mscoords">
+                <dt>Coordinates</dt>
+                <dd>{`${assembly} chr${chromosome}:${start}-${end}`}</dd>
+            </div>
+        );
+    },
+    modified_site_by_sequence: (gm) => (
+        <div data-test="msseq">
+            <dt>Sequence</dt>
+            <dd className="sequence">{gm.modified_site_by_sequence}</dd>
+        </div>
+    ),
+    modified_site_nonspecific: (gm) => (
+        <div data-test="msnonspec">
+            <dt>Integration site</dt>
+            <dd>{gm.modified_site_nonspecific}</dd>
+        </div>
+    ),
+};
 
 
 /**
@@ -64,63 +109,18 @@ const modificationSitePropNames = ['modified_site_by_target_id', 'modified_site_
  * @param {object} geneticModification GM object
  * @return {boolean} True if `geneticModification` includes any modification site properties.
  */
-const hasModificationSiteProps = (geneticModification) => {
-    const gmKeys = Object.keys(geneticModification);
-    return modificationSitePropNames.some(siteType => gmKeys.indexOf(siteType) !== -1);
-};
+const hasModificationSiteProps = (geneticModification) => (
+    Object.keys(modifiedSiteRenderers).some((siteType) => geneticModification[siteType])
+);
 
 
 // Render the modification site items into a definition list.
 const ModificationSiteItems = (props) => {
     const { geneticModification, itemClass } = props;
 
-    const renderers = {
-        modified_site_by_target_id: (gm) => {
-            let targetName;
-            let targetLink;
-
-            if (typeof gm.modified_site_by_target_id === 'string') {
-                // Non-embedded target; get its name from its @id.
-                targetName = globals.atIdToAccession(gm.modified_site_by_target_id);
-                targetLink = gm.modified_site_by_target_id;
-            } else {
-                // Embedded target; get its name from the embedded object.
-                targetName = gm.modified_site_by_target_id.name;
-                targetLink = gm.modified_site_by_target_id['@id'];
-            }
-            return (
-                <div data-test="mstarget">
-                    <dt>Target</dt>
-                    <dd><a href={targetLink} title={`View page for target ${targetName}`}>{targetName}</a></dd>
-                </div>
-            );
-        },
-        modified_site_by_coordinates: (gm) => {
-            const { assembly, chromosome, start, end } = gm.modified_site_by_coordinates;
-            return (
-                <div data-test="mscoords">
-                    <dt>Coordinates</dt>
-                    <dd>{`${assembly} chr${chromosome}:${start}-${end}`}</dd>
-                </div>
-            );
-        },
-        modified_site_by_sequence: gm => (
-            <div data-test="msseq">
-                <dt>Sequence</dt>
-                <dd className="sequence">{gm.modified_site_by_sequence}</dd>
-            </div>
-        ),
-        modified_site_nonspecific: gm => (
-            <div data-test="msnonspec">
-                <dt>Integration site</dt>
-                <dd>{gm.modified_site_nonspecific}</dd>
-            </div>
-        ),
-    };
-
-    const elements = modificationSitePropNames.map((siteType) => {
+    const elements = Object.keys(modifiedSiteRenderers).map((siteType) => {
         if (geneticModification[siteType]) {
-            return <div key={siteType}>{renderers[siteType](geneticModification)}</div>;
+            return <div key={siteType}>{modifiedSiteRenderers[siteType](geneticModification)}</div>;
         }
         return null;
     });
@@ -177,17 +177,33 @@ const ModificationMethod = (props) => {
     // directly into a <ul> element.
     let treatments = [];
     if (geneticModification.treatments && geneticModification.treatments.length > 0) {
-        treatments = geneticModification.treatments.map(treatment => <li key={treatment.uuid}>{singleTreatment(treatment)}</li>);
+        treatments = geneticModification.treatments.map((treatment) => <li key={treatment.uuid}>{singleTreatment(treatment)}</li>);
     }
 
     return (
         <div className="gm-summary-subsection">
             <h4>Modification method</h4>
             <dl className={itemClass}>
-                <div data-test="technique">
-                    <dt>Technique</dt>
-                    <dd>{geneticModification.method}</dd>
-                </div>
+                {geneticModification.method ?
+                    <div data-test="method">
+                        <dt>Method</dt>
+                        <dd>{geneticModification.method}</dd>
+                    </div>
+                : null}
+
+                {geneticModification.nucleic_acid_delivery_method && geneticModification.nucleic_acid_delivery_method.length > 0 ?
+                    <div data-test="nucleic-acid-delivery-method">
+                        <dt>Nucleic acid delivery method</dt>
+                        <dd>{geneticModification.nucleic_acid_delivery_method.join(', ')}</dd>
+                    </div>
+                : null}
+
+                {geneticModification.MOI ?
+                    <div data-test="moi">
+                        <dt>Multiplicity of infection</dt>
+                        <dd>{geneticModification.MOI}</dd>
+                    </div>
+                : null}
 
                 {treatments.length > 0 ?
                     <div data-test="treatments">
@@ -307,7 +323,7 @@ const AttributionRenderer = (props) => {
 
 AttributionRenderer.propTypes = {
     geneticModification: PropTypes.object.isRequired, // GeneticModification object being displayed
-    award: PropTypes.object, // Award object retreived from an individual GET request; don't make isRequired because React's static analysizer will ding it
+    award: PropTypes.object, // Award object retrieved from an individual GET request; don't make isRequired because React's static analyzer will ding it
 };
 
 AttributionRenderer.defaultProps = {
@@ -316,7 +332,7 @@ AttributionRenderer.defaultProps = {
 
 
 // Display the contents of the attribution panel (currently the right-hand side of the summary
-// panel) for the given genetic modification object. Because the award and lab informatino isn't
+// panel) for the given genetic modification object. Because the award and lab information isn't
 // embedded in the GM object, we have to retrieve it with a couple GET requests here, and have
 // <AttributionRenderer> actually render the panel contents after the GET request completes.
 const Attribution = (props) => {
@@ -331,7 +347,7 @@ const Attribution = (props) => {
 };
 
 Attribution.propTypes = {
-    geneticModification: PropTypes.object.isRequired, // Genetic modificastion object for which we're getting the attribution information
+    geneticModification: PropTypes.object.isRequired, // Genetic modification object for which we're getting the attribution information
 };
 
 
@@ -352,8 +368,8 @@ const DocumentsRenderer = ({ characterizations, modificationDocuments, character
         // corresponding document objects. We can't touch the GM object's characterizations so we
         // make a copy of each and modify that instead.
         const characterizationsCopy = characterizations.map((characterization) => {
-            const copy = Object.assign({}, characterization);
-            copy.documents = characterization.documents ? _.compact(characterization.documents.map(documentAtId => characterizationDocumentMap[documentAtId])) : [];
+            const copy = { ...characterization };
+            copy.documents = characterization.documents ? _.compact(characterization.documents.map((documentAtId) => characterizationDocumentMap[documentAtId])) : [];
             return copy;
         });
 
@@ -522,19 +538,9 @@ class GeneticModificationComponent extends React.Component {
     render() {
         const { context, session, sessionProperties } = this.props;
 
-        // Configure breadcrumbs for the page.
-        const crumbs = [
-            { id: 'Genetic Modifications' },
-            { id: context.target && context.target.label, query: `target.label=${context.target && context.target.label}`, tip: context.target && context.target.label },
-            { id: context.modification_type, query: `modification_type=${context.modification_type}`, tip: context.modification_type },
-        ];
-
-        const crumbsReleased = (context.status === 'released');
-
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header>
-                    <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h1>{context.accession}</h1>
                     <div className="replacement-accessions">
                         <AlternateAccession altAcc={context.alternate_accessions} />
@@ -576,7 +582,7 @@ class GeneticModificationComponent extends React.Component {
                                 {context.introduced_gene ?
                                     <div data-test="introduced-gene">
                                         <dt>Introduced gene</dt>
-                                        <dd><a href={context.introduced_gene}>{context.introduced_gene}</a></dd>
+                                        <dd><a href={context.introduced_gene['@id']}>{`${context.introduced_gene.organism.name} ${context.introduced_gene.symbol}`}</a></dd>
                                     </div>
                                 : null}
 
@@ -584,6 +590,13 @@ class GeneticModificationComponent extends React.Component {
                                     <div data-test="introduced-elements">
                                         <dt>Introduced elements</dt>
                                         <dd>{context.introduced_elements}</dd>
+                                    </div>
+                                : null}
+
+                                {context.guide_type ?
+                                    <div data-test="guide-type">
+                                        <dt>Guide type</dt>
+                                        <dd>{context.guide_type}</dd>
                                     </div>
                                 : null}
 
@@ -647,7 +660,7 @@ GeneticModificationComponent.defaultProps = {
 };
 
 const GeneticModificationInternal = (props, reactContext) => (
-    <GeneticModificationComponent {...props} session={reactContext.session} />
+    <GeneticModificationComponent {...props} session={reactContext.session} sessionProperties={reactContext.session_properties} />
 );
 
 GeneticModificationInternal.propTypes = {
@@ -670,12 +683,16 @@ const ListingComponent = (props, reactContext) => {
     const result = props.context;
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose} &mdash; {result.method}</a>
+                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose}</a>
                     <div className="result-item__data-row">
                         {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
+                        {result.method ? <div><strong>Method: </strong>{result.method}</div> : null}
+                        {result.nucleic_acid_delivery_method && result.nucleic_acid_delivery_method.length > 0 ?
+                            <div><strong>Nucleic acid delivery method: </strong>{result.nucleic_acid_delivery_method.join(', ')}</div>
+                        : null}
                         {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                     </div>
                 </div>
@@ -688,7 +705,7 @@ const ListingComponent = (props, reactContext) => {
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 
@@ -730,14 +747,18 @@ GeneticModificationSummary.defaultProps = {
 GeneticModificationSummary.columns = {
     accession: {
         title: 'Accession',
-        display: item => <a href={item['@id']}>{item.accession}</a>,
+        display: (item) => <a href={item['@id']}>{item.accession}</a>,
     },
     category: { title: 'Category' },
     purpose: { title: 'Purpose' },
     method: { title: 'Method' },
+    nucleic_acid_delivery_method: {
+        title: 'Nucleic acid delivery method',
+        display: (item) => (item.nucleic_acid_delivery_method && item.nucleic_acid_delivery_method.length > 0 ? item.nucleic_acid_delivery_method.join(', ') : null),
+    },
     site: {
         title: 'Site',
-        display: item => (hasModificationSiteProps(item) ? <ModificationSiteItems geneticModification={item} itemClass={'gm-table-modification-site'} /> : null),
+        display: (item) => (hasModificationSiteProps(item) ? <ModificationSiteItems geneticModification={item} itemClass="gm-table-modification-site" /> : null),
     },
 };
 
@@ -751,7 +772,7 @@ export default GeneticModificationSummary;
 
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
-const CharacterizationHeader = props => (
+const CharacterizationHeader = (props) => (
     <div className="document__header">
         {props.doc.characterization_method} {props.label ? <span>{props.label}</span> : null}
     </div>
@@ -768,8 +789,8 @@ CharacterizationHeader.defaultProps = {
 
 
 const CharacterizationCaption = (props) => {
-    const doc = props.doc;
-    const caption = doc.caption;
+    const { doc } = props;
+    const { caption } = doc;
     let excerpt;
 
     if (caption && caption.length > EXCERPT_LENGTH) {
@@ -794,10 +815,10 @@ CharacterizationCaption.propTypes = {
 
 
 const CharacterizationDocuments = (props) => {
-    const docs = props.docs.filter(doc => !!doc);
+    const docs = props.docs.filter((doc) => !!doc);
     return (
         <dd>
-            {docs.map((doc, i) => {
+            {docs.map((doc) => {
                 if (doc && doc.attachment) {
                     const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
                     const docName = (doc.aliases && doc.aliases.length > 0) ? doc.aliases[0] :
@@ -823,7 +844,7 @@ CharacterizationDocuments.propTypes = {
 
 
 const CharacterizationDetail = (props) => {
-    const doc = props.doc;
+    const { doc } = props;
     const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
     const excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 

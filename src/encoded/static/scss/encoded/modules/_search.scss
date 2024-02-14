@@ -5,11 +5,12 @@ $form-bg: #f3f3f3;
 .search-results {
     @at-root #{&}__facets {
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 25%;
+            flex: 0 0 25%;
         }
     }
 
     display: block;
+    margin-top: 5px;
 
     h4 {
         margin: 0 0 10px;
@@ -30,7 +31,7 @@ $form-bg: #f3f3f3;
 
         @media screen and (min-width: $screen-md-min) {
             margin-top: 0;
-            flex: 0 1 75%;
+            flex: 0 0 75%;
             display: flex;
             flex-direction: column;
         }
@@ -53,12 +54,16 @@ $form-bg: #f3f3f3;
     @at-root #{&}__link {
         text-decoration: none;
         font-size: 1.2rem;
-        font-weight: bold;
+        font-weight: 600;
     }
 
     @at-root #{&}__data {
         flex: 1 1 auto;
         position: relative;
+    }
+
+    @at-root #{&}__property-title {
+        font-weight: 700;
     }
 
     @at-root #{&}__meta {
@@ -69,12 +74,14 @@ $form-bg: #f3f3f3;
             margin: 0;
             font-size: 1.1rem;
             color: #606060;
+            padding-bottom: 3px;
         }
 
         @at-root #{&}-id {
             margin: 0;
             font-size: 0.9rem;
             color: #909090;
+            padding-bottom: 3px;
         }
 
         .audit-indicators {
@@ -89,6 +96,7 @@ $form-bg: #f3f3f3;
 
     // Cart control in search results
     @at-root #{&}__cart-control {
+        margin-left: 5px;
         flex: 0 0 35px;
 
         .cart__toggle {
@@ -99,11 +107,12 @@ $form-bg: #f3f3f3;
     @at-root #{&}__data-row {
         margin-left: 25px;
         line-height: 1.4;
+        word-break: break-all;
 
         ul {
             text-decoration: none;
             list-style-type: none;
-            padding: 0px;
+            padding: 0;
             margin-left: 25px;
 
             li {
@@ -128,7 +137,9 @@ $form-bg: #f3f3f3;
 
     @at-root #{&}__highlight-row {
         font-size: 1rem;
-        font-weight: bold;
+        font-weight: 400;
+        padding-bottom: 5px;
+        color: #6c6c6c;
     }
 
     @at-root #{&}__target-external-resources {
@@ -156,6 +167,10 @@ $form-bg: #f3f3f3;
             margin: 0 0 0 25px;
         }
     }
+
+    @at-root #{&}__controls {
+        margin-bottom: 2px;
+    }
 }
 
 .search-list {
@@ -177,6 +192,7 @@ $form-bg: #f3f3f3;
         border-bottom-left-radius: 0;
         border-bottom: transparent;
     }
+
     z-index: 1;
 }
 
@@ -195,7 +211,7 @@ $form-bg: #f3f3f3;
     label {
         display: block;
         margin-bottom: 5px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     @at-root #{&}__input {
@@ -215,9 +231,9 @@ $form-bg: #f3f3f3;
 
     @at-root #{&}__notification {
         margin: 0;
-        font-size: 0.9rem;
-        font-weight: bold;
+        font-weight: 600;
         color: #808080;
+        margin-top: 10px;
     }
 
     @at-root #{&}__submit {
@@ -241,7 +257,7 @@ $form-bg: #f3f3f3;
     background-color: $nav-color-bg;
     border: 1px solid #ccc;
     list-style: none;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.5);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 
     li {
         margin: 0;
@@ -278,6 +294,10 @@ $form-bg: #f3f3f3;
         .btn {
             flex: 0 1 auto;
             margin-right: 5px;
+
+            .icon {
+                margin-right: 5px;
+            }
         }
 
         .btn-attached {
@@ -287,6 +307,7 @@ $form-bg: #f3f3f3;
 
             svg {
                 display: block;
+                margin-right: 5px;
             }
 
             .btn {
@@ -301,12 +322,28 @@ $form-bg: #f3f3f3;
                 border-top-left-radius: $border-radius-base;
                 border-bottom-left-radius: $border-radius-base;
             }
-            .btn:last-child {
+
+            .btn:last-of-type {
                 border-top-right-radius: $border-radius-base;
                 border-bottom-right-radius: $border-radius-base;
                 border-right: 1px solid #c0c0c0;
             }
         }
+    }
+
+    // /report/ pagination controls
+    @at-root #{&}__pager {
+        margin-bottom: 20px;
+
+        @media screen and (min-width: $screen-lg-min) {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+    }
+
+    &--centered {
+        justify-content: center;
     }
 
     .dropdown-menu {
@@ -333,12 +370,46 @@ $form-bg: #f3f3f3;
     display: inline-block;
 }
 
+// View control report button
+.view-type-report {
+    > button {
+        @extend .btn-info;
+        @extend .btn-sm;
+    }
+
+    .dropdown-button__content {
+        width: auto;
+        white-space: nowrap;
+
+        a {
+            font-family: $button-font;
+            font-weight: 700;
+            font-size: 0.9rem;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+.view-type-report-dropdown {
+    display: flex;
+    align-items: center;
+
+    .svg-icon.svg-icon-chevron-down {
+        width: 10px;
+        margin: 0 0 0 5px;
+        fill: #fff;
+    }
+}
+
 .page-listing-date {
     font-weight: bold;
     font-size: 1rem;
 }
 
-// Genome rowser assembly chooser menu 
+// Genome rowser assembly chooser menu
 .browser-assembly-chooser {
     display: block;
     padding-left: 5px;
@@ -374,7 +445,6 @@ $form-bg: #f3f3f3;
     }
 }
 
-
 .result-table {
     position: relative;
     z-index: 10;
@@ -389,11 +459,14 @@ $form-bg: #f3f3f3;
     }
 
     > li {
-        border-bottom: 1px solid #E8E8E8;
-        font-size: 0.9rem;
+        border-bottom: 1px solid #e8e8e8;
+
+        &:last-child {
+            border-bottom: none;
+        }
     }
 
-    &:before {
+    &::before {
         content: none;
         display: block;
     }
@@ -417,10 +490,66 @@ $form-bg: #f3f3f3;
     }
 }
 
-
 /**
  * Object-specific search-result styles.
  */
 .result-experiment-series-search {
     margin-bottom: 2px;
+}
+
+.single-cell-page {
+    .clear-filters-control {
+        display: none;
+    }
+
+    .organ__facet, .systems__facet {
+        display: none;
+    }
+
+    .tab-content-homosapiens, .tab-content-musmusculus {
+        .organism__facet {
+            display: none;
+        }
+    }
+}
+
+.region-search {
+    @at-root #{&}__gbrowser {
+        display: block;
+    }
+}
+
+// Buttons to clear searchTerm query parameters.
+.clear-search-terms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+
+    .clear-search-term__control {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0 5px;
+        border-radius: 3px;
+        font-size: 0.9rem;
+        background-color: scale-color(#4183c4, $lightness: 70%);
+        color: #000;
+
+        .svg-icon {
+            width: 7px;
+            fill: #000;
+        }
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+.search-page-limit-selector {
+    margin-bottom: 10px;
+
+    @media screen and (min-width: $screen-lg-min) {
+        margin-bottom: 20px;
+    }
 }

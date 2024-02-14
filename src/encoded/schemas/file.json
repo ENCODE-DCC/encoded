@@ -9,7 +9,7 @@
             "required": ["dataset", "file_format", "output_type", "award", "lab", "md5sum"]
         },
         {
-            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]   
+            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]
         }
     ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
@@ -24,9 +24,72 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
+    "facet_groups": [
+        {
+            "title": "Format",
+            "facet_fields": [
+                "output_category",
+                "output_type",
+                "file_format",
+                "file_format_type",
+                "file_type"
+            ]
+        },
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_title",
+                "platform.term_name",
+                "target.label",
+                "targets.label"
+            ]
+        },
+        {
+            "title": "Annotation",
+            "facet_fields": [
+                "annotation_type",
+                "annotation_subtype",
+                "encyclopedia_version"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "origin_batches",
+                "biosample_ontology.cell_slims",
+                "biosample_ontology.system_slims"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "assembly"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "award.project",
+                "lab.title"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "status": {
-            "title": "Status"
+            "title": "Status",
+            "open_on_load": true
         },
         "output_category": {
             "title": "Output category"
@@ -35,7 +98,8 @@
             "title": "Output type"
         },
         "file_format": {
-            "title": "File format"
+            "title": "File format",
+            "open_on_load": true
         },
         "file_format_type": {
             "title": "File format type"
@@ -55,19 +119,53 @@
         "lab.title": {
             "title": "Lab"
         },
+        "assay_title": {
+            "title": "Assay title",
+            "type": "typeahead"
+        },
+        "annotation_type": {
+            "title": "Annotation type",
+            "type": "typeahead"
+        },
+        "annotation_subtype": {
+            "title": "Annotation subtype",
+            "length": "long"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "origin_batches": {
+            "title": "Batch"
+        },
+        "biosample_ontology.cell_slims": {
+            "title": "Cell",
+            "type": "typeahead"
+        },
+        "biosample_ontology.system_slims": {
+            "title": "Systems"
+        },
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
             "length": "long"
         },
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "typeahead"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name",
+        "targets.label": {
+            "title": "Targets of assay",
             "type": "typeahead",
             "length": "long"
+        },
+        "biochemical_inputs": {
+            "title": "Biochemical activity"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version"
         }
     },
     "dependencies": {
@@ -84,7 +182,7 @@
                 {
                     "allOf": [
                         {
-                            "required": ["md5sum"],       
+                            "required": ["md5sum"],
                             "properties": {
                                 "no_file_available": {
                                     "enum": [false]
@@ -96,13 +194,13 @@
                                 {
                                     "not": {
                                         "required": ["status"]
-                                    },                                   
-                                    "properties": {                                        
+                                    },
+                                    "properties": {
                                         "no_file_available": {
                                             "enum": [false]
                                         }
                                     }
-                                },                                    
+                                },
                                 {
                                     "required": ["file_size", "status"],
                                     "properties": {
@@ -126,10 +224,10 @@
                                     }
                                 }
                             ]
-                            
+
                         }
                     ]
-                   
+
                 }
             ]
         },
@@ -164,7 +262,7 @@
         },
         "run_type": {
             "comment": "run_type should not be specified for PacBio platform FASTQ files. Illumina produced paired-ended files should have paired_end value specified.",
-            "required": ["platform"], 
+            "required": ["platform"],
             "allOf": [
                 {
                     "not": {
@@ -188,7 +286,7 @@
                             "properties": {
                                 "run_type": {
                                     "enum": ["single-ended"]
-                                }                        
+                                }
                             }
                         },
                         {
@@ -204,7 +302,7 @@
                         }
                     ]
                 }
-            ]           
+            ]
         },
         "external_accession": {
             "comment": "A file with an external accession should not get an ENCODE accession.",
@@ -263,6 +361,31 @@
                 }
             }
         },
+        "cropped_read_length": {
+            "comment": "Only bam files can have cropped_read_length specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
+        "cropped_read_length_tolerance": {
+            "comment": "Only bam files with cropped_read_length specified can have cropped_read_length_tolerance.",
+            "required": ["cropped_read_length"],
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
+        "hotspots_prefix": {
+            "comment": "Only files with output_type of hotspots1 reference or hotspots2 reference can have hotspots_prefix specified.",
+            "properties": {
+                "output_type": {
+                    "enum": ["hotspots1 reference", "hotspots2 reference"]
+                }
+            }
+        },
         "paired_end": {
             "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
             "oneOf": [
@@ -305,9 +428,10 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
+            "comment": "Files with output_type reads or filtered reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio, Nanopore, or Ultima platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
             "oneOf":[
                 {
+                    "required": ["replicate"],
                     "properties": {
                         "output_type": {
                             "enum": ["reads"]
@@ -328,7 +452,7 @@
                                         "c7564b38-ab4f-4c42-a401-3de48689a998"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -345,7 +469,7 @@
                                         "ced61406-dcc6-43c4-bddd-4c977cc676e8"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -362,7 +486,7 @@
                                         "e2be5728-5744-4da4-8881-cb9526d0389e"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -379,7 +503,7 @@
                                         "6c275b37-018d-4bf8-85f6-6e3b830524a9"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -396,7 +520,23 @@
                                         "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                     ]
                                 }
-                                
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "25acccbd-cb36-463b-ac96-adbac11227e6"
+                                    ]
+                                }
                             }
                         },
                         {
@@ -413,13 +553,169 @@
                                             "c7564b38-ab4f-4c42-a401-3de48689a998",
                                             "e2be5728-5744-4da4-8881-cb9526d0389e",
                                             "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                            "25acccbd-cb36-463b-ac96-adbac11227e6"
                                         ]
                                     }
                                 }
                             }
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": ["filtered reads"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "6c275b37-018d-4bf8-85f6-6e3b830524a9"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "25acccbd-cb36-463b-ac96-adbac11227e6"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["read_length"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "csfasta", "csqual", "sra"]
+                                },
+                                "not": {
+                                    "platform": {
+                                        "linkTo": "Platform",
+                                        "linkEnum": [
+                                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                            "25acccbd-cb36-463b-ac96-adbac11227e6"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "required": ["replicate"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["subreads"]
+                        },
+                        "platform": {
+                            "linkTo": "Platform",
+                            "linkEnum": [
+                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                "e2be5728-5744-4da4-8881-cb9526d0389e"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "required": ["hotspots_prefix"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["hotspots1 reference", "hotspots2 reference"]
+                        }
+                    }
                 },
                 {
                     "required": ["restriction_enzymes"],
@@ -430,7 +726,7 @@
                     }
                 },
                 {
-                    "required": ["index_of"],
+                    "required": ["index_of", "replicate"],
                     "properties": {
                         "output_type": {
                             "enum": ["index reads"]
@@ -438,10 +734,233 @@
                     }
                 },
                 {
+                    "required": ["replicate"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["rejected reads"]
+                        },
+                        "file_format": {
+                            "enum": ["fastq"]
+                        }
+                    }
+                },
+                {
+                    "required": ["replicate"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["nanopore signal", "R2C2 subreads"]
+                        },
+                        "platform": {
+                            "linkTo": "Platform",
+                            "linkEnum": [
+                                "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                "6ce511d5-eeb3-41fc-bea7-8c38301e88c1",
+                                "7cc06b8c-5535-4a77-b719-4c23644e767d"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "bed",
+                                "bigBed"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "guide locations",
+                                "element gene links",
+                                "thresholded element gene links"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "bedpe",
+                                "bigInteract"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "enhancer-gene links",
+                                "thresholded links"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "tar"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "fragments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "tar"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "archr project",
+                                "cell type data",
+                                "model performance metrics",
+                                "models",
+                                "raw imaging signal",
+                                "unfiltered sparse gene count matrix of all reads",
+                                "unfiltered sparse gene count matrix of unique reads",
+                                "unfiltered sparse splice junction count matrix of unique reads",
+                                "sequence motifs",
+                                "sequence motifs report",
+                                "sparse gene count matrix of all reads",
+                                "sparse gene count matrix of unique reads",
+                                "training and test regions"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "h5ad"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "unfiltered sparse gene count matrix of all reads",
+                                "unfiltered sparse gene count matrix of unique reads",
+                                "unfiltered sparse splice junction count matrix of unique reads",
+                                "sparse gene count matrix of all reads",
+                                "sparse gene count matrix of unique reads"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": ["bed"]
+                        },
+                        "output_type": {
+                            "enum": ["training set"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "nucle3d"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "3D structure"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "bigWig"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "nuclease cleavage frequency",
+                                "haplotype-specific nuclease cleavage frequency",
+                                "haplotype-specific nuclease cleavage corrected frequency",
+                                "minus strand end position signal",
+                                "minus strand normalized end position signal",
+                                "plus strand end position signal",
+                                "plus strand normalized end position signal",
+                                "DNN-MPRA predicted signal",
+                                "DNN-MPRA contribution scores"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "hic"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "variants contact matrix",
+                                "haplotype-specific contact matrix"
+                            ]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations"]
+                                "enum": [
+                                    "3D structure",
+                                    "archr project",
+                                    "cell type data",
+                                    "reads",
+                                    "filtered reads",
+                                    "index reads",
+                                    "restriction enzyme site locations",
+                                    "subreads",
+                                    "hotspots1 reference",
+                                    "hotspots2 reference",
+                                    "nanopore signal",
+                                    "R2C2 subreads",
+                                    "guide locations",
+                                    "fragments",
+                                    "unfiltered sparse gene count matrix of all reads",
+                                    "unfiltered sparse gene count matrix of unique reads",
+                                    "unfiltered sparse splice junction count matrix of unique reads",
+                                    "sparse gene count matrix of all reads",
+                                    "sparse gene count matrix of unique reads",
+                                    "training set",
+                                    "rejected reads",
+                                    "nuclease cleavage frequency",
+                                    "haplotype-specific nuclease cleavage frequency",
+                                    "haplotype-specific nuclease cleavage corrected frequency",
+                                    "haplotype-specific contact matrix",
+                                    "variants contact matrix",
+                                    "raw imaging signal",
+                                    "minus strand end position signal",
+                                    "minus strand normalized end position signal",
+                                    "plus strand end position signal",
+                                    "plus strand normalized end position signal",
+                                    "DNN-MPRA predicted signal",
+                                    "DNN-MPRA contribution scores",
+                                    "enhancer-gene links",
+                                    "thresholded links",
+                                    "element gene links",
+                                    "thresholded element gene links",
+                                    "model performance metrics",
+                                    "models",
+                                    "sequence motifs",
+                                    "sequence motifs report",
+                                    "training and test regions"
+                                ]
                             }
                         }
                     }
@@ -471,25 +990,68 @@
                                 "enum": ["rejected reads"]
                             }
                         }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["subreads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["nanopore signal"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["R2C2 subreads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["filtered reads"]
+                            }
+                        }
                     }
                 ]
             }
         },
         "platform": {
             "not": {
-                "required": ["run_type", "paired_end", "read_length"],
-                "properties": {
-                    "platform": {
-                        "linkTo": "Platform",
-                        "linkEnum": [
-                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                            "c7564b38-ab4f-4c42-a401-3de48689a998",
-                            "e2be5728-5744-4da4-8881-cb9526d0389e",
-                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
-                        ]
+                "anyOf": [
+                    {
+                        "required": ["run_type", "paired_end", "read_length"],
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "required": ["read_length"],
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "25acccbd-cb36-463b-ac96-adbac11227e6"
+                                ]
+                            }
+                        }
                     }
-                }
+                ]
             }
         },
         "read_length": {
@@ -509,7 +1071,8 @@
                                     "c7564b38-ab4f-4c42-a401-3de48689a998",
                                     "e2be5728-5744-4da4-8881-cb9526d0389e",
                                     "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                    "25acccbd-cb36-463b-ac96-adbac11227e6"
                                 ]
                             }
                         }
@@ -537,17 +1100,145 @@
                             }
                         },
                         {
+                            "required": ["platform"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq"]
+                                }
+                            },
+                            "anyOf":[
+                                {
+                                    "properties": {
+                                        "platform": {
+                                            "linkTo": "Platform",
+                                            "linkEnum": [
+                                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                                "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                                "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "output_type": {
+                                            "enum": ["index reads", "R2C2 subreads"]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "required": [
                                 "replicate",
                                 "platform"
                             ],
                             "properties": {
                                 "file_format": {
+                                    "enum": ["sra"]
+                                }
+                            },
+                            "anyOf":[
+                                {
+                                    "properties": {
+                                        "platform": {
+                                            "linkTo": "Platform",
+                                            "linkEnum": [
+                                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                                "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                                "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "output_type": {
+                                            "enum": ["index reads", "R2C2 subreads"]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "required": [
+                              
+                                "platform",
+                                "run_type"
+                            ],
+                            "properties": {
+                                "file_format": {
                                     "enum": [
-                                        "fastq",
-                                        "sra"
+                                        "fastq"
+                                        
                                     ]
                                 }
+                            },
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "properties": {
+                                            "platform": {
+                                                "linkTo": "Platform",
+                                                "linkEnum": [
+                                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "output_type": {
+                                                "enum": ["index reads", "R2C2 subreads"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "replicate",
+                                "platform",
+                                "run_type"
+                            ],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [ "sra"]
+                                }
+                            },
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "properties": {
+                                            "platform": {
+                                                "linkTo": "Platform",
+                                                "linkEnum": [
+                                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "output_type": {
+                                                "enum": ["index reads", "R2C2 subreads"]
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         },
                         {
@@ -571,38 +1262,126 @@
                                 "file_format": {
                                     "enum": [
                                         "bam",
+                                        "starch",
                                         "sam",
                                         "gtf",
                                         "bigWig",
                                         "idx"
                                     ]
                                 }
+                            },
+                            "not": {
+                                "properties": {
+                                    "output_type": {
+                                        "enum": [
+                                            "subreads",
+                                            "spike-ins",
+                                            "diploid personal genome alignments",
+                                            "haplotype-specific alignments"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "subreads"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "gtf"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "spike-ins"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
+                            }
+                        },
+                        {
+                            "required": ["assembly"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "diploid personal genome alignments",
+                                        "haplotype-specific alignments"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "properties": {
+                                    "assembly": {
+                                        "enum": [
+                                            "GRCh38",
+                                            "GRCh38-minimal",
+                                            "hg19",
+                                            "GRCm39",
+                                            "mm10",
+                                            "mm10-minimal",
+                                            "mm9",
+                                            "dm6",
+                                            "dm3",
+                                            "ce11",
+                                            "ce10",
+                                            "J02459.1"
+                                        ]
+                                    }
+                                }
                             }
                         },
                         {
                             "not": {
-                                "properties": {
-                                    "file_format": {
-                                        "enum": [
-                                            "rcc",
-                                            "idat",
-                                            "CEL",
-                                            "fastq",
-                                            "gff",
-                                            "gtf",
-                                            "bed",
-                                            "bigBed",
-                                            "bam",
-                                            "sam",
-                                            "sra",
-                                            "bigWig",
-                                            "csfasta",
-                                            "csqual",
-                                            "idx",
-                                            "database"
-                                        ]
+                                "anyOf": [
+                                    {
+                                        "properties": {
+                                            "file_format": {
+                                                "enum": [
+                                                    "rcc",
+                                                    "idat",
+                                                    "CEL",
+                                                    "fastq",
+                                                    "gff",
+                                                    "gtf",
+                                                    "bed",
+                                                    "bigBed",
+                                                    "bam",
+                                                    "sam",
+                                                    "starch",
+                                                    "sra",
+                                                    "bigWig",
+                                                    "csfasta",
+                                                    "csqual",
+                                                    "idx",
+                                                    "database"
+                                                ]
+                                            }
+                                        }
                                     }
-                                }
+                                ]
                             }
                         },
                         {
@@ -639,10 +1418,34 @@
                                         "idat red channel",
                                         "intensity values",
                                         "reads",
+                                        "filtered reads",
                                         "index reads",
                                         "rejected reads",
                                         "raw data",
-                                        "reporter code counts"
+                                        "raw imaging signal",
+                                        "reporter code counts",
+                                        "nanopore signal",
+                                        "repeat elements annotation",
+                                        "kmer weights",
+                                        "training and test regions",
+                                        "model performance metrics",
+                                        "models",
+                                        "sequence motifs",
+                                        "sequence motifs report"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "fastq"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "R2C2 subreads"
                                     ]
                                 }
                             }
@@ -669,6 +1472,7 @@
                                         "bed",
                                         "bedpe",
                                         "bigBed",
+                                        "bigInteract",
                                         "bigWig",
                                         "chain",
                                         "csv",
@@ -676,17 +1480,22 @@
                                         "gff",
                                         "gtf",
                                         "idx",
+                                        "h5ad",
                                         "hdf5",
                                         "hic",
+                                        "nucle3d",
+                                        "pairs",
                                         "PWM",
                                         "sam",
+                                        "starch",
                                         "tagAlign",
                                         "tar",
                                         "tsv",
                                         "vcf",
                                         "wig",
                                         "2bit",
-                                        "btr"
+                                        "btr",
+                                        "yaml"
                                     ]
                                 },
                                 "output_type": {
@@ -699,8 +1508,16 @@
                                             "reads",
                                             "rejected reads",
                                             "raw data",
+                                            "raw imaging signal",
                                             "reporter code counts",
-                                            "restriction enzyme site locations"
+                                            "restriction enzyme site locations",
+                                            "nanopore signal",
+                                            "R2C2 subreads",
+                                            "training and test regions",
+                                            "model performance metrics",
+                                            "models",
+                                            "sequence motifs",
+                                            "sequence motifs report"
                                         ]
                                     }
                                 }
@@ -716,12 +1533,63 @@
                                 "output_type": {
                                     "enum": [
                                         "restriction enzyme site locations",
-                                        "sequence adapters"
+                                        "sequence adapters",
+                                        "bias models",
+                                        "chromosomes reference",
+                                        "sequence barcodes",
+                                        "regulatory elements prediction model",
+                                        "TF binding prediction model",
+                                        "enhancer prediction model",
+                                        "promoter prediction model",
+                                        "inclusion list",
+                                        "functional conservation mapping",
+                                        "depth normalized signals matrix",
+                                        "fold over change matrix",
+                                        "z scores matrix",
+                                        "TF peaks matrix"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "cndb"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "predicted 3D structural ensembles"
                                     ]
                                 }
                             }
                         }
                     ]
+                }
+            ]
+        },
+        "file_format_type":{
+            "comment": "mex file_format_type can only be used with tar files.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "file_format_type": {
+                            "enum": ["mex"]
+                        },
+                        "file_format": {
+                            "enum": ["tar"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "file_format_type": {
+                                "enum": ["mex"]
+                            }
+                        }
+                    }
                 }
             ]
         },
@@ -815,6 +1683,30 @@
                     "enum": ["restriction enzyme site locations"]
                 }
             }
+        },
+        "filter_type": {
+            "comment": "Filter type and value must be specified together.",
+            "required": ["filter_value"]
+        },
+        "filter_value": {
+            "comment": "Filter type and value must be specified together.",
+            "required": ["filter_type"]
+        },
+        "pseudo_haplotype":{
+            "comment": "Pseudo haplotype must be only used with haplotype-specific signal or interaction files.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": [
+                                "haplotype-specific contact matrix",
+                                "haplotype-specific nuclease cleavage frequency",
+                                "haplotype-specific nuclease cleavage corrected frequency"
+                            ]
+                        }
+                    }
+                }
+            ]
         }
     },
     "properties": {
@@ -829,7 +1721,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "17"
+            "default": "31"
         },
         "accession": {
             "accessionType": "FF"
@@ -877,7 +1769,9 @@
                         "bed",
                         "bedpe",
                         "bigBed",
+                        "bigInteract",
                         "bigWig",
+                        "cndb",
                         "CEL",
                         "chain",
                         "csv",
@@ -886,19 +1780,24 @@
                         "fastq",
                         "gff",
                         "gtf",
+                        "h5ad",
                         "hdf5",
                         "hic",
                         "idat",
+                        "nucle3d",
                         "PWM",
                         "rcc",
                         "sam",
+                        "starch",
                         "tagAlign",
                         "tar",
                         "tsv",
                         "vcf",
                         "wig",
                         "idx",
-                        "txt"
+                        "txt",
+                        "pairs",
+                        "yaml"
                     ]
                 },
                 {
@@ -934,12 +1833,17 @@
                         "bedMethyl",
                         "broadPeak",
                         "candidate enhancer predictions",
+                        "CRISPR element quantifications",
+                        "element enrichments",
                         "enhancer predictions",
                         "enhancerAssay",
                         "gappedPeak",
                         "gff2",
                         "gff3",
+                        "guide quantifications",
                         "idr_peak",
+                        "idr_ranked_peak",
+                        "mex",
                         "narrowPeak",
                         "tss_peak"
                     ]
@@ -1023,7 +1927,7 @@
             "items": {
                 "title": "Flowcell based fastq signature part",
                 "description": "Fastq file flowcell based unique signature to reference a file.",
-                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2/3) and barcode.",
+                "comment": "Fastq signatures are generated from the sequence identifiers in fastq files. Current convention is based on the Illumina's unique sequence identifier, which is colon separated, flowcell ID, lane number, read_end(1/2/3), and unique barcode when applicable. For more information, please see doi.org/10.1093/database/bay008 or the ENCODE publication object: https://www.encodeproject.org/publications/c954afd6-12c5-4944-b8f7-0fa30ddb8336/",
                 "type":  "string",
                 "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[123]:.*:.*$"
             }
@@ -1077,9 +1981,24 @@
             "type": "string",
             "linkTo": "File"
         },
+        "cropped_read_length": {
+            "title": "Cropped read length (nt)",
+            "permission": "import_items",
+            "description": "Length the FASTQ reads were cropped to prior to alignment.",
+            "comment": "The actual read length could be up to 2 bp shorter than the specified cropped read length value.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "cropped_read_length_tolerance": {
+            "title": "Cropped read length tolerance (nt)",
+            "permission": "import_items",
+            "description": "Tolerance for FASTQ read length after cropping.",
+            "comment": "This is the maximum tolerated difference between the cropped read length and minimal read length that will be retained.",
+            "type": "integer",
+            "minimum": 0
+        },
         "mapped_read_length": {
             "title": "Mapped read length (nt)",
-            "permission": "import_items",
             "description": "The length of the reads actually mapped, if the original read length was clipped.",
             "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
             "type": "integer",
@@ -1089,7 +2008,6 @@
             "title": "Mapped run type for bam files",
             "description": "The mapped run type of the alignment file which may differ from the fastqs it is derived from.",
             "comment": "When the control and experiment run types do not match, one may be changed in order to meet pipeline requirements.",
-            "permission": "import_items",
             "type": "string",
             "enum": [
                 "single-ended",
@@ -1205,110 +2123,252 @@
             "oneOf": [
                 {
                     "enum": [
+                        "3D structure",
                         "alignments",
-                        "blacklisted regions",
+                        "allele-specific contact matrix",
+                        "allele-specific variants",
+                        "archr project",
+                        "bias models",
+                        "bias-corrected predicted signal profile",
+                        "bidirectional peaks",
                         "candidate Cis-Regulatory Elements",
                         "candidate enhancers",
                         "candidate promoters",
-                        "chromatin interactions",
-                        "mapping quality thresholded chromatin interactions",
+                        "capture targets",
+                        "cell coordinates",
+                        "cell topic participation",
+                        "cell type data",
+                        "cell type annotations",
+                        "chromatin stripes",
+                        "chromosomes reference",
+                        "chromosome sizes",
+                        "contact domains",
+                        "contact matrix",
+                        "consensus DNase hypersensitivity sites",
+                        "curated binding sites",
+                        "curated SNVs",
+                        "mapping quality thresholded contact matrix",
                         "conservative IDR thresholded peaks",
                         "control normalized signal",
+                        "counts sequence contribution scores",
+                        "CpG sites coverage",
+                        "depth normalized signals matrix",
+                        "fold over change matrix",
                         "DHS peaks",
+                        "DHS regions reference",
+                        "nuclease cleavage frequency",
                         "differential expression quantifications",
                         "differential splicing quantifications",
+                        "diploid personal genome alignments",
+                        "DNN-MPRA contribution scores",
+                        "DNN-MPRA predicted signal",
+                        "dsQTLs",
+                        "element barcode mapping",
                         "elements reference",
+                        "element gene interactions p-value",
+                        "element gene interactions signal",
+                        "element gene links",
+                        "enhancer-gene links",
+                        "thresholded links",
+                        "element quantifications",
+                        "enhancer prediction model",
                         "enhancer validation",
                         "enrichment",
+                        "enhancers reference",
+                        "eQTLs",
                         "exon quantifications",
+                        "exclusion list regions",
+                        "FDR cut rate",
                         "female genome index",
                         "female genome reference",
                         "filtered indels",
                         "filtered peaks",
+                        "filtered reads",
                         "filtered regions",
                         "filtered SNPs",
+                        "fine-mapped variants",
                         "fold change over control",
+                        "footprints",
+                        "functional conservation mapping",
+                        "functional conservation quantifications",
+                        "fragments",
                         "gene alignments",
                         "gene quantifications",
+                        "gene stabilities",
+                        "genic features quantifications",
                         "genome compartments",
                         "genome index",
                         "genome reference",
+                        "genome subcompartments",
+                        "gRNAs",
+                        "guide locations",
+                        "guide quantifications",
+                        "haplotype-specific alignments",
+                        "haplotype-specific contact matrix",
+                        "haplotype-specific nuclease cleavage frequency",
+                        "haplotype-specific nuclease cleavage corrected frequency",
                         "hotspots",
+                        "hotspots1 reference",
+                        "hotspots2 reference",
                         "idat green channel",
                         "idat red channel",
+                        "inclusion list",
                         "index reads",
                         "intensity values",
                         "IDR ranked peaks",
                         "IDR thresholded peaks",
+                        "kmer weights",
                         "library fraction",
-                        "long range chromatin interactions",
+                        "loops",
                         "male genome index",
                         "male genome reference",
                         "maternal haplotype mapping",
                         "maternal variant calls",
+                        "merged transcription segment quantifications",
                         "methylation state at CHG",
                         "methylation state at CHH",
                         "methylation state at CpG",
                         "microRNA quantifications",
                         "miRNA annotations",
+                        "minus strand end position signal",
+                        "minus strand methylation state at CpG",
+                        "minus strand normalized end position signal",
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
-                        "mitochondria blacklisted regions",
+                        "mitochondrial exclusion list regions",
+                        "mitochondrial genome index",
+                        "mitochondrial genome reference",
+                        "model performance metrics",
+                        "models",
                         "motif model",
+                        "nanopore signal",
                         "negative control regions",
-                        "nested topologically associated domains",
+                        "nested contact domains",
                         "non-targeting gRNAs",
+                        "normalized bias-corrected predicted signal profile",
                         "normalized signal of all reads",
+                        "normalized observed signal profile",
+                        "normalized observed signal profile (minus strand)",
+                        "normalized observed signal profile (plus strand)",
+                        "normalized predicted bias profile",
+                        "normalized predicted signal profile",
+                        "normalized predicted signal profile (minus strand)",
+                        "normalized predicted signal profile (plus strand)",
+                        "novel peptides",
+                        "observed bias profile",
+                        "observed control profile (minus strand)",
+                        "observed control profile (plus strand)",
+                        "observed signal profile",
+                        "observed signal profile (minus strand)",
+                        "observed signal profile (plus strand)",
                         "open chromatin regions",
                         "optimal IDR thresholded peaks",
+                        "pairs",
                         "paternal haplotype mapping",
                         "paternal variant calls",
                         "peaks",
                         "peaks and background as input for IDR",
+                        "peptide quantifications",
                         "personalized genome assembly",
+                        "perturbation signal",
                         "phased mapping",
                         "phased variant calls",
+                        "plus strand end position signal",
+                        "plus strand methylation state at CpG",
+                        "plus strand normalized end position signal",
                         "plus strand signal of all reads",
                         "plus strand signal of unique reads",
+                        "polyA sites",
                         "positive control regions",
+                        "predicted bias profile",
                         "predicted enhancers",
+                        "predicted signal profile",
+                        "predicted signal profile (minus strand)",
+                        "predicted signal profile (plus strand)",
+                        "predicted 3D structural ensembles",
+                        "preprocessed alignments",
+                        "profile sequence contribution scores",
+                        "promoter prediction model",
+                        "promoters reference",
+                        "protein expression quantifications",
+                        "pseudoreplicated peaks",
                         "pseudoreplicated IDR thresholded peaks",
+                        "PWMs",
+                        "R2C2 subreads",
+                        "raw imaging signal",
                         "raw minus strand signal",
                         "raw normalized signal",
                         "raw plus strand signal",
                         "raw signal",
+                        "ranked gRNAs",
                         "read-depth normalized signal",
+                        "read annotations",
                         "reads",
+                        "repeat elements annotation",
                         "reference variants",
+                        "regulatory elements",
                         "relative replication signal",
                         "replicated peaks",
                         "replication timing profile",
                         "reporter code counts",
-                        "representative dnase hypersensitivity sites",
+                        "representative DNase hypersensitivity sites",
+                        "representative IDR thresholded peaks",
                         "restriction enzyme site locations",
                         "RNA-binding protein associated mRNAs",
                         "rRNA reference",
                         "safe-targeting gRNAs",
+                        "selected regions for bias-corrected predicted signal profile",
+                        "selected regions for count sequence contribution scores",
+                        "selected regions for predicted bias profile",
+                        "selected regions for predicted signal and sequence contribution scores",
+                        "selected regions for predicted signal profile",
+                        "selected regions for predicted signal profile (minus strand)",
+                        "selected regions for predicted signal profile (plus strand)",
+                        "selected regions for profile sequence contribution scores",
                         "semi-automated genome annotation",
                         "sequence adapters",
                         "sequence barcodes",
+                        "sequence motifs report",
+                        "sequence motifs",
+                        "sequence motifs instances",
                         "signal of all reads",
                         "signal of unique reads",
                         "signal p-value",
-                        "spike-in sequence",
+                        "spike-ins",
+                        "smoothed methylation state at CpG",
+                        "sparse gene count matrix",
+                        "sparse gene count matrix of all reads",
+                        "sparse gene count matrix of unique reads",
+                        "sparse gRNA count matrix",
+                        "sparse peak count matrix",
+                        "sparse transcript count matrix",
                         "splice junctions",
-                        "stable peaks",
                         "subreads",
-                        "topologically associated domains",
+                        "TF binding prediction model",
+                        "TF peaks matrix",
+                        "thresholded element gene links",
+                        "topic gene weights",
+                        "training and test regions",
+                        "training set",
+                        "transcribed region quantifications",
                         "transcript quantifications",
                         "transcription start sites",
+                        "transcription segment quantifications",
                         "transcriptome alignments",
                         "transcriptome annotations",
                         "transcriptome index",
                         "transcriptome reference",
                         "TSS reference",
                         "unfiltered alignments",
-                        "variant calls"
+                        "unfiltered sparse gene count matrix of all reads",
+                        "unfiltered sparse gene count matrix of unique reads",
+                        "unfiltered sparse splice junction count matrix of unique reads",
+                        "unidirectional peaks",
+                        "UV enriched segment quantifications",
+                        "variant calls",
+                        "variant effect quantifications",
+                        "variants contact matrix",
+                        "z scores matrix"
                     ]
                 },
                 {
@@ -1338,8 +2398,10 @@
                         "proximal peaks",
                         "raw data",
                         "redacted alignments",
+                        "redacted transcriptome alignments",
                         "redacted unfiltered alignments",
                         "reference",
+                        "regulatory elements prediction model",
                         "rejected reads",
                         "sequence alignability",
                         "sequence uniqueness",
@@ -1410,47 +2472,59 @@
         "assembly": {
             "title": "Genome assembly",
             "description": "Genome assembly that files were mapped to.",
-            "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
+            "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files. The order of enums below reflects the priority when we consider selecting default analysis for a dataset.",
             "type": "string",
             "enum": [
-                "ce10",
-                "ce11",
-                "dm3",
-                "dm6",
-                "GRCh38-minimal",
                 "GRCh38",
+                "GRCh38-minimal",
                 "hg19",
-                "J02459.1",
-                "mm10-minimal",
+                "ENC001.1",
+                "ENC002.1",
+                "ENC003.1",
+                "ENC004.1",
+                "GRCm39",
                 "mm10",
-                "mm9"
+                "mm10-minimal",
+                "mm9",
+                "dm6",
+                "dm3",
+                "ce11",
+                "ce10",
+                "J02459.1"
                 ]
         },
         "genome_annotation": {
             "title": "Genome annotation",
             "description": "Genome annotation that file was generated with.",
-            "comment": "Applies to files created using annotations.",
+            "comment": "Applies to files created using annotations. The order of enums below reflects the priority when we consider selecting default analysis for a dataset.",
             "type": "string",
             "enum": [
-                "ENSEMBL V65",
-                "M2",
-                "M3",
-                "M4",
-                "M7",
-                "M14",
-                "M21",
-                "miRBase V21",
-                "None",
-                "V10",
-                "V19",
-                "V22",
-                "V24",
-                "V29",
+                "V41",
+                "V40",
+                "V33",
                 "V30",
-                "V3c",
+                "V29",
+                "V24",
+                "V22",
+                "V19",
+                "V10",
                 "V7",
+                "V3c",
+                "miRBase V21",
+                "M30",
+                "M29",
+                "M26",
+                "M21",
+                "M14",
+                "ENSEMBL V87",
+                "M7",
+                "M4",
+                "M3",
+                "M2",
+                "ENSEMBL V65",
+                "WS245",
                 "WS235",
-                "WS245"
+                "None"
                 ]
         },
         "status": {
@@ -1508,7 +2582,10 @@
                 "enum": [
                     "DpnII",
                     "MboI",
-                    "HindIII"
+                    "HindIII",
+                    "NcoI",
+                    "MseI",
+                    "MboI and MseI"
                 ]
             }
 
@@ -1546,6 +2623,8 @@
                         "enum": [
                             "adapter",
                             "barcode",
+                            "cell barcode",
+                            "element barcode",
                             "UMI"
                         ]
                     },
@@ -1562,7 +2641,6 @@
                 }
             }
         },
-
         "matching_md5sum": {
             "title": "Matching md5sum",
             "description": "Array of files which have a matching md5sum.",
@@ -1580,6 +2658,44 @@
             "title": "Preferred default file",
             "description": "A flag to indicate whether this file should be used by default for purposes such as downloading, visualization, etc.",
             "type": "boolean"
+        },
+        "hotspots_prefix": {
+            "title": "Hotspots prefix",
+            "description": "Prefix to be checked and specified only for hotspots1 reference and hotspots2 reference files.",
+            "type": "string",
+            "enum": [
+                "GRCh38",
+                "mm10"
+                ]
+        },
+        "filter_type": {
+            "title": "Filter type",
+            "description": "Type of threshold used for filtering data, for example MAPQ (mapping quality) for alignments, or FDR percentage for peak calls.",
+            "comment": "The filter_type property requires specification of filter_value property.",
+            "type": "string",
+            "enum": [
+                "bin size (bp)",
+                "bin size (kb)",
+                "bin size (mb)",
+                "false discovery rate percentage",
+                "mapping quality"
+            ]
+        },
+        "filter_value": {
+            "title": "Filter value",
+            "description": "Numerical value representing the threshold used to filter the processed data.",
+            "comment": "The filter_value property requires specification of filter_type property.",
+            "type": "number"
+        },
+        "pseudo_haplotype": {
+            "title": "Pseudo haplotype",
+            "description": "Pseudo haplotype of 1 or 2 for haplotype-specific accessibility and interaction files.",
+            "comment": "The pseudo_haplotype property will be allowed only for haplotype-specific accessibility and interactions files",
+            "type": "string",
+            "enum": [
+                "1",
+                "2"
+            ]
         }
     },
     "columns": {
@@ -1613,6 +2729,24 @@
         "file_size": {
             "title": "File size"
         },
+        "assay_term_name": {
+            "title": "Assay term name"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample name"
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ"
+        },
+        "simple_biosample_summary":{
+            "title": "Simple biosample summary"
+        },
+        "origin_batches": {
+            "title": "Batch"
+        },
+        "target.label": {
+            "title": "Target label"
+        },
         "href": {
             "title": "Download URL"
         },
@@ -1631,6 +2765,9 @@
         "paired_with": {
             "title": "Paired with"
         },
+        "preferred_default": {
+            "title": "Preferred Default"
+        },
         "run_type": {
             "title": "Run type"
         },
@@ -1640,6 +2777,15 @@
         "mapped_read_length": {
             "title": "Mapped read length (nt)"
         },
+        "cropped_read_length": {
+            "title": "Cropped read length (nt)"
+        },
+        "cropped_read_length_tolerance": {
+            "title": "Cropped read length tolerance (nt)"
+        },
+        "mapped_run_type": {
+            "title": "Mapped run type for bam files"
+        },
         "read_length_units": {
             "title": "Read length units"
         },
@@ -1648,6 +2794,9 @@
         },
         "output_type": {
             "title": "Output type"
+        },
+        "index_of": {
+            "title": "Index of"
         },
         "quality_metrics": {
             "title": "QC Metric"
@@ -1675,6 +2824,18 @@
         },
         "status": {
             "title": "Status"
+        },
+        "annotation_type": {
+            "title": "Annotation type"
+        },
+        "annotation_subtype": {
+            "title": "Annotation subtype"
+        },
+        "biochemical_inputs": {
+            "title": "Biochemical activity"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version"
         }
     },
     "output_type_output_category": {
@@ -1683,21 +2844,30 @@
         "intensity values": "raw data",
         "reads": "raw data",
         "index reads": "raw data",
+        "nanopore signal": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
         "reporter code counts": "raw data",
         "subreads": "raw data",
+        "R2C2 subreads": "raw data",
+        "filtered reads": "raw data",
+        "raw imaging signal": "raw data",
 
         "alignments": "alignment",
+        "diploid personal genome alignments": "alignment",
+        "haplotype-specific alignments": "alignment",
         "unfiltered alignments": "alignment",
         "gene alignments": "alignment",
         "redacted alignments": "alignment",
+        "redacted transcriptome alignments": "alignment",
         "redacted unfiltered alignments": "alignment",
         "transcriptome alignments": "alignment",
         "spike-in alignments": "alignment",
         "maternal haplotype mapping": "alignment",
+        "pairs": "alignment",
         "paternal haplotype mapping": "alignment",
         "phased mapping": "alignment",
+        "preprocessed alignments": "alignment",
 
         "minus strand signal of all reads": "signal",
         "plus strand signal of all reads": "signal",
@@ -1722,13 +2892,46 @@
         "summed densities signal": "signal",
         "wavelet-smoothed signal": "signal",
         "relative replication signal": "signal",
+        "perturbation signal": "signal",
+        "element gene interactions signal": "signal",
+        "element gene interactions p-value": "signal",
+        "training set": "signal",
+        "nuclease cleavage frequency": "signal",
+        "haplotype-specific nuclease cleavage frequency": "signal",
+        "haplotype-specific nuclease cleavage corrected frequency": "signal",
+        "plus strand end position signal": "signal",
+        "minus strand end position signal": "signal",
+        "plus strand normalized end position signal": "signal",
+        "minus strand normalized end position signal": "signal",
+        "bias-corrected predicted signal profile": "signal",
+        "observed bias profile": "signal",
+        "observed control profile (minus strand)": "signal",
+        "observed control profile (plus strand)": "signal",
+        "observed signal profile": "signal",
+        "observed signal profile (minus strand)": "signal",
+        "observed signal profile (plus strand)": "signal",
+        "predicted bias profile": "signal",
+        "predicted signal profile": "signal",
+        "predicted signal profile (minus strand)": "signal",
+        "predicted signal profile (plus strand)": "signal",
+        "normalized bias-corrected predicted signal profile": "signal",
+        "normalized observed signal profile": "signal",
+        "normalized observed signal profile (minus strand)": "signal",
+        "normalized observed signal profile (plus strand)": "signal",
+        "normalized predicted bias profile": "signal",
+        "normalized predicted signal profile": "signal",
+        "normalized predicted signal profile (minus strand)": "signal",
+        "normalized predicted signal profile (plus strand)": "signal",
 
+        "bias models": "quantification",
         "enrichment": "quantification",
+        "FDR cut rate": "quantification",
         "library fraction": "quantification",
         "exon quantifications": "quantification",
         "gene quantifications": "quantification",
         "microRNA quantifications": "quantification",
         "transcript quantifications": "quantification",
+        "element quantifications": "quantification",
         "methylation state at CpG": "quantification",
         "methylation state at CHG": "quantification",
         "methylation state at CHH": "quantification",
@@ -1740,13 +2943,44 @@
         "motif model": "quantification",
         "differential expression quantifications": "quantification",
         "differential splicing quantifications": "quantification",
+        "smoothed methylation state at CpG": "quantification",
+        "merged transcription segment quantifications": "quantification",
+        "transcription segment quantifications": "quantification",
+        "transcribed region quantifications": "quantification",
+        "CpG sites coverage": "quantification",
+        "plus strand methylation state at CpG": "quantification",
+        "minus strand methylation state at CpG": "quantification",
+        "UV enriched segment quantifications": "quantification",
+        "sparse gene count matrix": "quantification",
+        "gene stabilities": "quantification",
+        "guide quantifications": "quantification",
+        "sparse transcript count matrix": "quantification",
+        "sparse gRNA count matrix": "quantification",
+        "peptide quantifications": "quantification",
+        "protein expression quantifications": "quantification",
+        "fragments": "quantification",
+        "sparse peak count matrix": "quantification",
+        "archr project": "quantification",
+        "unfiltered sparse gene count matrix of all reads": "quantification",
+        "unfiltered sparse gene count matrix of unique reads": "quantification",
+        "unfiltered sparse splice junction count matrix of unique reads": "quantification",
+        "sparse gene count matrix of all reads": "quantification",
+        "sparse gene count matrix of unique reads": "quantification",
+        "kmer weights": "quantification",
+        "cell type data": "quantification",
+        "variant effect quantifications": "quantification",
+        "genic features quantifications": "quantification",
 
+        "3D structure": "annotation",
+        "depth normalized signals matrix": "annotation",
+        "fold over change matrix": "annotation",
         "hotspots": "annotation",
-        "long range chromatin interactions": "annotation",
-        "chromatin interactions": "annotation",
-        "mapping quality thresholded chromatin interactions": "annotation",
-        "topologically associated domains": "annotation",
-        "nested topologically associated domains": "annotation",
+        "footprints": "annotation",
+        "loops": "annotation",
+        "contact matrix": "annotation",
+        "mapping quality thresholded contact matrix": "annotation",
+        "contact domains": "annotation",
+        "nested contact domains": "annotation",
         "genome compartments": "annotation",
         "open chromatin regions":"annotation",
         "filtered peaks":"annotation",
@@ -1763,8 +2997,8 @@
         "transcribed fragments": "annotation",
         "filtered transcribed fragments": "annotation",
         "valleys": "annotation",
-        "blacklisted regions": "annotation",
-        "mitochondria blacklisted regions": "annotation",
+        "exclusion list regions": "annotation",
+        "mitochondrial exclusion list regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
         "IDR ranked peaks": "annotation",
@@ -1772,7 +3006,7 @@
         "optimal IDR thresholded peaks": "annotation",
         "conservative IDR thresholded peaks": "annotation",
         "pseudoreplicated IDR thresholded peaks": "annotation",
-        "stable peaks": "annotation",
+        "pseudoreplicated peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",
@@ -1780,9 +3014,14 @@
         "candidate enhancers": "annotation",
         "candidate promoters": "annotation",
         "predicted transcription start sites": "annotation",
+        "predicted 3D structural ensembles": "annotation",
+        "plus strand transcription start sites": "annotation",
+        "minus strand transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate Cis-Regulatory Elements": "annotation",
-        "representative dnase hypersensitivity sites":"annotation",
+        "consensus DNase hypersensitivity sites": "annotation",
+        "representative DNase hypersensitivity sites": "annotation",
+        "representative IDR thresholded peaks": "annotation",
         "variant calls": "annotation",
         "maternal variant calls": "annotation",
         "paternal variant calls": "annotation",
@@ -1795,6 +3034,56 @@
         "negative control regions": "annotation",
         "positive control regions": "annotation",
         "safe-targeting gRNAs": "annotation",
+        "regulatory elements": "annotation",
+        "gRNAs": "annotation",
+        "ranked gRNAs": "annotation",
+        "read annotations": "annotation",
+        "fine-mapped variants": "annotation",
+        "repeat elements annotation": "annotation",
+        "allele-specific contact matrix": "annotation",
+        "allele-specific variants": "annotation",
+        "bidirectional peaks": "annotation",
+        "novel peptides": "annotation",
+        "unidirectional peaks": "annotation",
+        "polyA sites": "annotation",
+        "functional conservation mapping": "annotation",
+        "functional conservation quantifications": "annotation",
+        "regulatory elements prediction model": "annotation",
+        "TF binding prediction model": "annotation",
+        "enhancer prediction model": "annotation",
+        "promoter prediction model": "annotation",
+        "inclusion list": "annotation",
+        "genome subcompartments": "annotation",
+        "chromatin stripes": "annotation",
+        "variants contact matrix": "annotation",
+        "haplotype-specific contact matrix": "annotation",
+        "cell coordinates": "annotation",
+        "cell type annotations": "annotation",
+        "element gene links": "annotation",
+        "enhancer-gene links": "annotation",
+        "thresholded links": "annotation",
+        "thresholded element gene links": "annotation",
+        "DNN-MPRA predicted signal": "annotation",
+        "DNN-MPRA contribution scores": "annotation",
+        "model performance metrics": "annotation",
+        "models": "annotation",
+        "counts sequence contribution scores": "annotation",
+        "profile sequence contribution scores": "annotation",
+        "selected regions for bias-corrected predicted signal profile": "annotation",
+        "selected regions for count sequence contribution scores": "annotation",
+        "selected regions for predicted signal profile": "annotation",
+        "selected regions for predicted bias profile": "annotation",
+        "selected regions for predicted signal and sequence contribution scores": "annotation",
+        "selected regions for predicted signal profile (minus strand)": "annotation",
+        "selected regions for predicted signal profile (plus strand)": "annotation",
+        "selected regions for profile sequence contribution scores": "annotation",
+        "sequence motifs": "annotation",
+        "sequence motifs report": "annotation",
+        "sequence motifs instances": "annotation",
+        "TF peaks matrix": "annotation",
+        "z scores matrix": "annotation",
+        "topic gene weights": "annotation",
+        "cell topic participation": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -1811,7 +3100,7 @@
         "male genome reference": "reference",
         "male genome index": "reference",
         "primer sequence": "reference",
-        "spike-in sequence": "reference",
+        "spike-ins": "reference",
         "reference": "reference",
         "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",
@@ -1820,13 +3109,30 @@
         "sequence adapters": "reference",
         "elements reference": "reference",
         "personalized genome assembly": "reference",
+        "chromosomes reference": "reference",
+        "hotspots1 reference": "reference",
+        "hotspots2 reference": "reference",
+        "mitochondrial genome index": "reference",
+        "mitochondrial genome reference": "reference",
+        "chromosome sizes": "reference",
+        "enhancers reference": "reference",
+        "promoters reference": "reference",
+        "DHS regions reference": "reference",
+        "element barcode mapping": "reference",
+        "guide locations": "reference",
+        "training and test regions": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
-        
+
         "HMM predicted chromatin state": "annotation",
-        "semi-automated genome annotation": "annotation"
-        
+        "semi-automated genome annotation": "annotation",
+        "capture targets": "annotation",
+        "curated binding sites": "annotation",
+        "curated SNVs": "annotation",
+        "eQTLs": "annotation",
+        "dsQTLs": "annotation",
+        "PWMs": "annotation"
     },
     "file_format_file_extension": {
         "2bit": ".2bit",
@@ -1836,10 +3142,12 @@
         "bedpe": ".bedpe.gz",
         "chain": ".chain",
         "bigBed": ".bigBed",
+        "bigInteract": ".bigInteract",
         "bigWig": ".bigWig",
         "btr": ".btr",
         "csfasta": ".csfasta.gz",
         "csqual": ".csqual.gz",
+        "cndb": ".cndb",
         "database": ".db",
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",
@@ -1847,6 +3155,7 @@
         "gtf": ".gtf.gz",
         "idx": ".idx",
         "hic": ".hic",
+        "h5ad": ".h5ad",
         "hdf5": ".h5",
         "idat": ".idat",
         "PWM":".pwm",
@@ -1859,7 +3168,11 @@
         "vcf": ".vcf.gz",
         "wig": ".wig.gz",
         "sam": ".sam.gz",
-        "txt": ".txt"
+        "txt": ".txt.gz",
+        "pairs": ".pairs.gz",
+        "starch": ".starch",
+        "nucle3d": ".nucle3d",
+        "yaml": ".yaml.gz"
     },
      "boost_values": {
          "accession": 20.0,
@@ -1870,7 +3183,14 @@
          "file_format_type": 2.0,
          "output_category": 2.0,
          "output_type": 2.0,
-         "status": 1.0
+         "status": 1.0,
+         "assay_title": 1.0,
+         "assay_term_name": 1.0,
+         "annotation_type": 1.0,
+         "annotation_subtype": 1.0,
+         "biosample_ontology.term_name": 1.0,
+         "target.label": 1.0,
+         "targets.label": 1.0
      },
     "changelog": "/profiles/changelogs/file.md"
 }

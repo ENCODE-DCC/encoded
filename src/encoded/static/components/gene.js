@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
-import { DbxrefList, dbxrefHref } from './dbxref';
+import { DbxrefList, DbxrefItem } from './dbxref';
 import { PickerActions, resultItemClass } from './search';
 import { auditDecor } from './audit';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, TopAccessories } from './objectutils';
 import { RelatedItems } from './item';
 import { ExperimentTable } from './typeutils';
 
@@ -35,7 +34,7 @@ class Gene extends React.Component {
             }
         });
         Promise.all((nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(
-            goID => this.context.fetch(
+            (goID) => this.context.fetch(
                 this.baseGOUrl.replace(/\{0\}/g, goID), {
                     method: 'GET',
                 }
@@ -52,13 +51,13 @@ class Gene extends React.Component {
             })
         )).then((validGOs) => {
             this.setState({
-                goIDs: validGOs.filter(validGO => validGO !== null).map(goID => 'GOGene:'.concat(goID)),
+                goIDs: validGOs.filter((validGO) => validGO !== null).map((goID) => 'GOGene:'.concat(goID)),
             });
         });
     }
 
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
 
         // Set up breadcrumbs
@@ -71,13 +70,11 @@ class Gene extends React.Component {
             },
         ];
 
-        const crumbsReleased = (context.status === 'released');
-
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header>
-                    <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
+                    <TopAccessories context={context} crumbs={crumbs} />
+                    <h1>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h1>
                     <ItemAccessories item={context} />
                 </header>
 
@@ -86,9 +83,7 @@ class Gene extends React.Component {
                         {/* TODO link to NCBI Entrez page? */}
                         <div data-test="gendid">
                             <dt>Entrez GeneID</dt>
-                            <dd>
-                                <a href={dbxrefHref('GeneID', context.geneid)}>{context.geneid}</a>
-                            </dd>
+                            <dd><DbxrefItem context={context} dbxref={`GeneID:${context.geneid}`} title={context.geneid} /></dd>
                         </div>
 
                         {/* TODO link to NADB page? */}
@@ -109,14 +104,27 @@ class Gene extends React.Component {
                               <dt>Synonyms</dt>
                               <dd>
                                   <ul>
-                                      {context.synonyms.map(synonym =>
+                                      {context.synonyms.map((synonym) => (
                                           <li key={synonym}>
                                               <span>{synonym}</span>
                                           </li>
-                                      )}
+                                      ))}
                                   </ul>
                               </dd>
                           </div>
+                        : null}
+
+                        {context.locations && context.locations.length > 0 ?
+                            <div data-test="locations">
+                                <dt>Gene locations</dt>
+                                <dd>
+                                    <ul>
+                                        {context.locations.map((location, l) => (
+                                            <li key={l} className="multi-comma">{`${location.assembly} ${location.chromosome}:${location.start}-${location.end}`}</li>
+                                        ))}
+                                    </ul>
+                                </dd>
+                            </div>
                         : null}
 
                         <div data-test="external">
@@ -140,8 +148,14 @@ class Gene extends React.Component {
                 </div>
 
                 <RelatedItems
-                    title={`Experiments targeting gene ${context.symbol}`}
+                    title={`Functional genomics experiments targeting gene ${context.symbol}`}
                     url={`/search/?type=Experiment&target.genes.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title={`Functional characterization experiments targeting gene ${context.symbol}`}
+                    url={`/search/?type=FunctionalCharacterizationExperiment&target.genes.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
             </div>
@@ -167,7 +181,7 @@ globals.contentViews.register(Gene, 'Gene');
 const ListingComponent = (props, reactContext) => {
     const result = props.context;
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
@@ -188,7 +202,7 @@ const ListingComponent = (props, reactContext) => {
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 

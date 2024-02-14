@@ -1,5 +1,50 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 12
+
+* Updated *identifier* regular expression in the *reagents* property to include the following pattern: 'dharmacon:T-\\d{4}-\\d{2}', e.g. dharmacon:T-1000-20.
+
+### Schema version 12
+* Removed *replacement* and *inhibition* enums from *category* property, and upgraded *transgene insertion* to *insertion*, *activation* to *CRISPRa*, *disruption* to *CRISPR cutting*, *binding* to *CRISPR dCas*. For Genetic Modfifications with a *method* of *CRISPR*, upgraded *interference* to *CRISPRi* and *deletion* to *CRISPR cutting*.
+
+### Minor changes since schema version 11
+
+* Updated *identifier* regular expression in the *reagents* property to include the following pattern: 'thermo-fisher:\\d{8})', e.g. thermo-fisher:12345678
+* *mEGFP* was added to the *introduced_tags* enum.
+
+### Schema version 11
+* Added *MOI* (multiplicity of infection) and *guide_type* properties.
+* *guide_type* is a required property when *introduced_elements* specifies *gRNAs and CRISPR machinery*
+
+### Minor changes since schema version 10
+
+* A combination of method *CRISPR* with the category of *mutagenesis* and purpose *characterization* may be submitted to describe a genetic modification.
+* The *identifier* regular expression in the *reagents* property was updated to include identifiers from the source GenBank:
+  * GenBank: '^genbank:[A-Z]{1,2}\\d{5,6}\\.\\d{1}$', e.g., genbank:MK484105.1
+* *mAID* was added to the *introduced_tags* enum.
+* Added *promoter_details* to the *reagents* property.
+
+### Schema version 10
+
+* Moved the following enum values from *method* to a new property, *nucleic_acid_delivery_method*. Genetic modifications must specify at least one of *method* or *nucleic_acid_delivery_method*.
+ - bombardment
+ - microinjection
+ - stable transfection
+ - transduction
+ - transient transfection
+ - mouse pronuclear microinjection
+* The *donor* property was renamed to *introduced_elements_donor*.
+* Added new property *introduced_elements_organism*.
+
+### Minor changes since schema version 9
+
+* Added *disruption*, *inhibition*, and *knockout* as enums in *category* for use with CRISPR screen data.
+* Added *homologous recombination* as enum in *method*, to be used with the *category* of *knockout* and the *purpose* of *repression*.
+* Added *gRNAs and CRISPR machinery* to *introduced_elements* enum, to indicate the first step in a CRISPR screen.
+* Added *binding* and *transgene insertion* to *category* enum, *mouse pronuclear microinjection* to *method* enum, and *in vivo enhancer characterization* to *purpose* enum.
+* Modified the *identifier* regular expression for Thermo Fisher within *reagents* to accept identifiers with 7 digits.
+  * Thermo Fisher: '^thermo-fisher:[a-zA-Z]{1,3}\\d{5,7}$', ex. thermo-fisher:L3000008
+
 ### Schema version 9
 
 * Several underused *purpose* enum were combined: *activation* and *overexpression* are remapped to *expression*, and *analysis* and *screening* are remapped to *characterization*.

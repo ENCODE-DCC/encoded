@@ -1,3 +1,0 @@
-- path: /etc/cron.d/cloudwatchmon
-  content: |
-    */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron

@@ -14,10 +14,6 @@
         "75_pct": 117,
         "max_size": 862,
         "mean": 100.897043369,
-        "fri_dhs": 0.466169611772,
-        "fri_blacklist": 0.000575882984081,
-        "fri_prom": 0.152757888283,
-        "fri_enh": 0.392835402571,
         "peak_width_distribution_plot": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png"
     }
 ]

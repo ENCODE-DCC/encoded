@@ -1,5 +1,178 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 31
+* Added *topic gene weights* and *cell topic participation* to enum list for *output_type*.
+* Added *yaml* to enum list for *file_format*.
+
+### Schema version 31
+* *output_type* enums *predicted profile* and *bias model* were replaced by *predicted signal profile* and *bias models* respectively.
+* Added the following enums to enum list for *output_type*:
+  * *normalized observed signal profile*
+  * *normalized predicted signal profile*
+  * *normalized predicted bias profile*
+  * *normalized observed signal profile (plus strand)*
+  * *normalized observed signal profile (minus strand)*
+  * *normalized predicted signal profile (plus strand)*
+  * *normalized predicted signal profile (minus strand)*
+  * *selected regions for predicted signal and sequence contribution scores*
+* Added *normalized bias-corrected predicted signal profile* to enum list for *output_type*.
+* Added *genic features quantifications* to enum list for *output_type*.
+
+### Minor changes since schema version 30
+
+* Added *ENSEMBL V87* to *genome_annotation* enums
+* Add *representative IDR thresholded peaks* to the enum list for *output_type*.
+
+### Schema version 30
+* *output_type* enums *topologically associated domains*, *mapping quality thresholded chromatin interactions*, *chromatin interactions*, *DNA accessibility raw signal*, *long range chromatin interactions*, *nested topologically associated domains*, *allele-specific chromatin interactions*, *variants chromatin interactions*, *haplotype-specific chromatin interactions*, *haplotype-specific DNA accessibility raw signal*, and *haplotype-specific DNA accessibility corrected signal* were replaced by *contact domains*, *mapping quality thresholded contact matrix*, *contact matrix*, *nuclease cleavage frequency*, *loops*, *nested contact domains*, *allele-specific contact matrix*, *variants contact matrix*, *haplotype-specific contact matrix*, *haplotype-specific nuclease cleavage frequency* and *haplotype-specific nuclease cleavage corrected frequency* respectively.
+* Added *variant effect quantifications*, *predicted 3D structural ensembles*, *fold over change matrix* to the enum list for *output_type*.
+
+### Minor changes since schema version 29
+* Added *processed* boolean as a calculated property to indicate that the file does not have the *output_category* of *raw data*
+* Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
+* Added *polyA sites* to the enum list for *output_type*.
+* Added properties *filter_type* and *filter_value*
+* Added *redacted transcriptome alignments* to the enum list for *output_type*. Please note that *redacted transcriptome alignments* can be only posted by DCC.
+* Added *fragments* to the enum list for *output_type*, the new output type is to be submitted as tar.gz only
+* Added *sparse peak count matrix* to the enum list for *output_type*
+* Added *functional conservation quantifications* to the enum list for *output_type*
+* Added *cell barcode* and *element barcode* to the enum list for *sequence_element* of the *read_structure* property
+* Added *origin_batches* calculated property
+* Added *regulatory elements prediction model* to the enum list for *output_type*
+* Added *genome subcompartments* and *chromatin stripes* to the enum list for *output_type*
+* Added *TF binding prediction model*, *enhancer prediction model* and *promoter prediction model*  to the enum list for *output_type*, restricted the use of *regulatory elements prediction model* *output_type* to DCC personnel only
+* Added *filtered reads* and *archr project* to the enum list for *output_type*
+* Added *mex* to the enum list for *file_format_type*, to be used only with .tar files.
+* Added *inclusion list*, *sparse gene count matrix of all reads*, *sparse gene count matrix of unique reads*, *unfiltered sparse gene count matrix of all reads*, *unfiltered sparse gene count matrix of unique reads*, and *unfiltered sparse splice junction count matrix of unique reads* to the enum list for *output_type*
+* Added *NcoI*, *MseI*, *MboI and MseI* to the enum list for *restriction_enzymes*
+* Added *kmer weights* and *training set* to the enum list for *output_type*
+* Added *functional conservation mapping* to the enum list for *output_type*
+* Added *3D structure* to the enum list for *output_type*, to be used with the new *file_format* *nucle3d*
+* Added *DNA accessibility raw signal* to enum list for *output_type*.
+* Added *pseudo_haplotype* property, only allowed for haplotype-specific accessiblity signal or interactions output types.
+* Added *variants chromatin interactions*, *haplotype-specific chromatin interactions*, *haplotype-specific DNA accessibility raw signal*, *haplotype-specific DNA accessibility corrected signal* to enum list for *output_type*.
+* Added *cell coordinates*, *cell type annotations*, and *raw imaging signal* to enum list for *output_type*.
+* Added *plus strand end position signal*, *minus strand end position signal*, *plus strand normalized end position signal*, and *minus strand normalized end position signal* to enum list for *output_type*.
+* Added *DNN-MPRA contribution scores*, *DNN-MPRA predicted signal*, *element gene links*, and *thresholded element gene links* to enum list for *output_type*.
+* Added the following enums to enum list for *output_type*:
+  * *bias-corrected predicted signal profile*
+  * *counts sequence contribution scores*
+  * *model performance metrics*
+  * *models*
+  * *observed bias profile*
+  * *observed control profile (minus strand)*
+  * *observed control profile (plus strand)*
+  * *observed signal profile*
+  * *observed signal profile (minus strand)*
+  * *observed signal profile (plus strand)*
+  * *predicted bias profile*
+  * *predicted profile*
+  * *predicted signal profile (minus strand)*
+  * *predicted signal profile (plus strand)*
+  * *profile sequence contribution scores*
+  * *selected regions for bias-corrected predicted signal profile*
+  * *selected regions for count sequence contribution scores*
+  * *selected regions for predicted signal profile*
+  * *selected regions for predicted bias profile*
+  * *selected regions for predicted signal profile (minus strand)*
+  * *selected regions for predicted signal profile (plus strand)*
+  * *selected regions for profile sequence contribution scores*
+  * *sequence motifs*
+  * *sequence motifs report*
+  * *sequence motifs instances*
+  * *training and test regions*
+* Added *cell type data* to the enum list for *output_type*.
+* Added *M29*, *M30*, *V40*, *V41* to the enum list for *genome_annotation*.
+* Added *enhancer-gene links* and *thresholded links* to the enum list for *output_types*. Added a dependency restriction where these output_types should only be allowed for bigInteract and bedpe files.
+* Added *depth normalized signals matrix*, *z scores matrix*, and *TF peaks matrix* to the enum list for *output_types*.
+
+### Schema version 29
+* Added Ultima Genomics platform to dependency that enforces that *read_length* property should not be specified for FASTQ files produced by Oxford Nanopore and PacBio platforms.
+* Added several entries to the enum list for *output_type*: *allele-specific chromatin interactions, allele-specific variants, bidirectional peaks, diploid personal genome alignments, haplotype-specific alignments, novel peptides, peptide quantifications, protein expression quantifications, unidirectional peaks*
+
+### Minor changes since schema version 28
+* Added *element enrichments* to the enum list for *file_format_type*
+* Added *curated binding sites*, *curated SNVs*, *dsQTLs*, *eQTLs* and *PWMs* to the enum list for *output_type*.
+* Added *guide quantifications*, *perturbation signal*, *element gene interactions signal*, and *element gene interactions p-value* to the enum list for *output_type*
+* Added *V33* and *M26* enums to *genome_annotation* and *GRCm39* enum to *assembly*.
+* Calculated properties *replicate_libraries* and *library* are removed.
+* Added *sparse transcript count matrix* and *read annotations* to the enum list for *output_type*
+* Added *sparse gRNA count matrix*, *element barcode mapping*, and *fine-mapped variants* to the enum list for *output_type*
+* The order of *assembly* enums and *genome_annotation* enums were adjusted to reflect the priority when we consider selecting default analysis for a dataset
+* Added *CRISPR element quantifications* and *guide quantifications* to enum list for *file_format_type*
+* Added *repeat elements annotation* to the enum list for *output_type*.
+* Added *R2C2 subreads* to the enum list for *output_type*
+* Added *guide locations* to the enum list for *output_type*
+* Added *pairs* to the enum list for *output_type* and *file_format*
+* Added *ENC001.1*, *ENC002.1*, *ENC003.1*, *ENC004.1* to the enum list for *assembly*
+
+### Schema version 28
+* *output_type* enums *blacklisted regions* and *mitochondria blacklisted regions* were replaced by *exclusion list regions* and *mitochondrial exclusion list regions* respectively 
+* The *output_type* enum was updated to include *nanopore signal* to describe sets of FAST5 files containing the raw signal output of Oxford Nanopore runs.
+
+### Schema version 27
+* *output_type* enum *pseudo-replicated peaks* was updated to *pseudoreplicated peaks*.
+* Added *capture targets* to the enum list for *output_type*
+
+### Schema version 26
+* *output_type* enums *consensus DNase hypersensitivity sites (cDHSs)* and *representative DNase hypersensitivity sites (rDHSs)* was updated to *consensus DNase hypersensitivity sites* and *representative DNase hypersensitivity sites* respectively.
+
+### Minor changes since schema version 25
+* *file_format* was updated to include *starch*.
+* The *output_type* enum was updated to include *gene stabilities* and *preprocessed alignments*.
+
+### Schema version 25
+* *output_type* *smoothed methylation stage at CpG* was updated to *smoothed methylation state at CpG*
+* *file_format* was updated to include *h5ad*.
+
+### Minor changes since schema version 24
+* The *output_type* enum was updated to include *UV enriched segment quantifications*, *plus strand methylation state at CpG*, *minus strand methylation state at CpG*, *CpG sites coverage*, and *sparse gene count matrix*.
+
+### Schema version 24
+* *output_type: stable peaks* was updated to *output_type: pseudo-replicated peaks*
+
+### Minor changes since schema version 23
+
+* Added *bias model* to the enum list for *output_type*.
+
+### Schema version 23
+* The file *output_type* enum *spike-in sequence* has been adjusted to *spike-ins* to accomodate other spike-in file types. *gtf* files that are *spike-ins* will not be required to specify an *assembly.*
+
+### Minor changes since schema version 22
+* *file_format* was updated to include *bigInteract*.
+
+### Schema version 22
+* bam files with *output_type: subreads* must have a replicate object specified.
+
+### Minor changes since schema version 21
+* The *file_format_type* enum was updated to include *idr_ranked_peak*.
+* Added *chromosome sizes*, *ranked gRNAs*, *enhancers reference*, *promoters reference*, *DHS regions reference*, *merged transcription segment quantifications*, *transcription segment quantifications*, *transcribed region quantifications*, and *smoothed methylation stage at CpG* to the enum list for *output_type*.
+* Added *pseudo-replicated peaks* to the enum list for *output_type*.
+
+### Schema version 21
+* *output_type* list was updated to include the enum *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference*.
+* Added *hotspots_prefix* property.
+* DNase files with *output_type* *enrichment* changed to *output_type* *FDR cut rate*.
+
+### Schema version 20
+* Added upgrade required due to re-implementation of the *run_type* dependency
+
+### Minor changes since schema version 19
+* Added *consensus DNase hypersensitivity sites (cDHSs)* to the enum for *output_type*.
+
+### Schema version 19
+* Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *output_type*.
+
+### Minor changes since schema version 18
+* *output_type* list was updated to include the enum *regulatory elements*.
+* Added *cropped_read_length* property
+* Added *gRNAs* to *output_type* enum list.
+* Added *element quantifications* to *output_type* enum list.
+* Added *cropped_read_length_tolerance* property.
+
+### Schema version 18
+* Added dependency restrictions for files of *output_type* subreads, preventing specification of *assembly* and requiring that *platform* be one of the Pacific Biosciences platforms.
+
 ### Schema version 17
 * Added Oxford Nanopore platforms, MinION and PromethION to dependency that enforces that *run_type* and *read_length* properties should not be specified for FASTQ files produced on Oxford Nanopore and PacBio platforms.
 

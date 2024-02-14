@@ -37,6 +37,7 @@
         "lab": "j-michael-cherry",
         "organism": "mouse",
         "strain_background": "unknown",
+        "supersedes": ["ENCDO075AAA"],
         "uuid": "b432527c-0f19-4bc3-a810-e1bf583cfb38"
     },
     {
@@ -67,10 +68,16 @@
             "encode:modification-test-1",
             "encode:modification-test-2",
             "ef12855f-5d3e-4da5-8684-3a594c60505a",
-            "2f33a486-e3d9-4633-8682-a363b48ba67d",
-            "b9264c83-2222-4678-a82f-4915af941fa4"
+            "2f33a486-e3d9-4633-8682-a363b48ba67d"
         ]
+    },
+    {
+        "accession": "ENCDO817NHY",
+        "award": "U54HG006996",
+        "lab": "j-michael-cherry",
+        "organism": "mouse",
+        "strain_background": "unknown",
+        "status": "released",
+        "uuid": "7b4a75f3-73d3-444f-b29a-91868ecdc69c"
     }
-
-    
 ]

@@ -66,7 +66,7 @@
             "signal generation",
             "peak calling"
         ],
-        "input_file_types": ["alignments", "reads", "blacklisted regions"],
+        "input_file_types": ["alignments", "reads", "exclusion list regions"],
         "output_file_types": ["optimal IDR thresholded peaks"],
         "qa_stats_generated": ["NSC", "RSC", "SPOT"],
         "status": "released",
@@ -129,7 +129,7 @@
         "input_file_types": ["alignments"],
         "output_file_types": ["methylation state at CpG"],
         "parents": ["mott-trim-align-bismark-step-v-1"],
-        "analysis_step_types": ["signal generation"],
+        "analysis_step_types": ["signal generation", "methylation estimation"],
         "qa_stats_generated":  [
             "Sequences analysed in total",
             "Mapping efficiency",
@@ -270,7 +270,7 @@
             "lambda C methylated in CHG context",
             "lambda C methylated in CHH context"
         ],
-        "analysis_step_types": ["signal generation", "QA calculation"],
+        "analysis_step_types": ["signal generation", "smoothing", "QA calculation"],
         "uuid": "5bb1f4b4-c739-449d-8cb9-f851ad79f5fe"
     },
     {
@@ -285,7 +285,7 @@
             "variant calls"
         ],
         "analysis_step_types": [
-            "variant annotation"
+            "variant annotation", "genotyping"
         ],
         "uuid": "cd873058-423b-472e-b612-f2df2ffc1e62"
     },
@@ -395,5 +395,345 @@
         "step_label": "star-alignment-step",
         "title": "microRNA miRNA annotation step",
         "uuid": "c9c96dd8-681a-43fd-b5ad-07ca5f4d5f86"
+    },
+    {
+        "analysis_step_types": [
+            "representative peak selection",
+            "candidate cis-regulatory element identification"
+        ],
+        "date_created": "2020-01-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "reads",
+            "consensus DNase hypersensitivity sites"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "consensus DNase hypersensitivity sites"
+        ],
+        "status": "released",
+        "step_label": "cdhss-step",
+        "title": "cDHSs step",
+        "uuid": "c9c96dd8-681a-43fd-b5ad-3369f5a537ca"
+    },
+    {
+        "analysis_step_types": [
+            "pseudoalignment based quantification"
+        ],
+        "date_created": "2020-01-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "reads",
+            "transcriptome index"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "transcript quantifications"
+        ],
+        "status": "released",
+        "step_label": "pseudoalignment-test-step",
+        "title": "pseudoalignment quantification step",
+        "uuid": "6b41a0a5-dede-447b-abb6-064620b45bb1"
+    },
+    {
+        "analysis_step_types": [
+            "peak calling",
+            "depth normalization",
+            "signal generation"
+        ],
+        "date_created": "2020-03-01T15:56:52.458705+00:00",
+        "input_file_types": [
+            "alignments",
+            "bias models",
+            "genome reference",
+            "exclusion list regions",
+            "hotspots1 reference",
+            "hotspots2 reference"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "hotspots",
+            "bias models",
+            "peaks",
+            "read-depth normalized signal",
+            "FDR cut rate",
+            "footprints"
+        ],
+        "status": "released",
+        "step_label": "dnase-hotspot-calling-step",
+        "title": "DNase hotspot calling step",
+        "uuid": "4014594f-cef4-4f78-baaa-ef9e7fdecac8"
+    },
+    {
+        "step_label": "indexing-and-mappability-processing-step",
+        "major_version": 1,
+        "title": "Indexing and mappability processing step",
+        "input_file_types": [
+            "genome reference",
+            "exclusion list regions",
+            "mitochondrial genome reference",
+            "chromosomes reference"
+        ],
+        "output_file_types": [
+            "genome index",
+            "mitochondrial genome index"
+        ],
+        "analysis_step_types": ["genome indexing"],
+        "uuid": "ea03a364-a877-4858-99bd-e5cd250ae386"
+    },
+    {
+        "step_label": "demultiplexing-and-alignment-processing-step",
+        "major_version": 1,
+        "title": "Demultiplexing and alignment processing step",
+        "input_file_types": [
+            "reads",
+            "genome reference",
+            "sequence barcodes"
+        ],
+        "output_file_types": [
+            "alignments"
+        ],
+        "analysis_step_types": ["fastq demultiplexing", "fastq concatenation", "alignment", "filtering"],
+        "uuid": "664aee68-83ca-40ee-a074-f3f239044fab"
+    },
+    {
+        "step_label": "grna-generation-step",
+        "major_version": 1,
+        "title": "gRNA Generation Step",
+        "input_file_types": [
+            "elements reference",
+            "chromosome sizes"
+        ],
+        "output_file_types": [
+            "ranked gRNAs"
+        ],
+        "analysis_step_types": ["gRNA generation"],
+        "uuid": "41baa364-a877-4858-99bd-e5cd250ae386"
+    },
+    {
+        "step_label": "wgbs-quantification-step",
+        "major_version": 1,
+        "title": "WGBS Quantification Step",
+        "input_file_types": [
+            "alignments"
+        ],
+        "output_file_types": [
+            "smoothed methylation state at CpG",
+            "CpG sites coverage",
+            "plus strand methylation state at CpG",
+            "minus strand methylation state at CpG"
+        ],
+        "analysis_step_types": ["quantification"],
+        "uuid": "51bea210-a877-4858-99bd-e5cd250ae386"
+    },
+    {
+        "step_label": "atac-seq-alignment-step",
+        "major_version": 1,
+        "title": "ATAC seq alignment step",
+        "analysis_step_types": ["alignment", "read trimming",
+            "filtering", "file format conversion"],
+        "input_file_types": ["reads"],
+        "output_file_types": ["alignments", "unfiltered alignments"],
+        "status": "released",
+        "uuid": "5014594f-cef4-4f78-baaa-ef9e7fdecac8"
+    },
+    {
+        "step_label": "atac-seq-alignment-references-step",
+        "major_version": 1,
+        "title": "ATAC seq alignment references step",
+        "analysis_step_types": ["alignment", "read trimming",
+            "filtering", "file format conversion"],
+        "input_file_types": [
+                "enhancers reference",
+                "promoters reference",
+                "DHS regions reference"
+        ],
+        "output_file_types": [
+                "enhancers reference",
+                "promoters reference",
+                "DHS regions reference"
+        ],
+        "status": "released",
+        "uuid": "92a17bc4-26f1-4b3c-8553-902817da4095"
+    },
+    {
+        "step_label": "bru-seq-quantification-step",
+        "major_version": 1,
+        "title": "Bru seq quantification step",
+        "analysis_step_types": ["quantification"],
+        "input_file_types": [
+                "alignments",
+                "merged transcription segment quantifications",
+                "transcribed region quantifications",
+                "transcription segment quantifications",
+                "UV enriched segment quantifications"
+        ],
+        "output_file_types": [
+                "merged transcription segment quantifications",
+                "transcribed region quantifications",
+                "transcription segment quantifications",
+                "UV enriched segment quantifications"
+        ],
+        "status": "released",
+        "uuid": "71a92bc4-26f1-4b3c-8553-902817da4095"
+    },
+    {
+        "step_label": "chromatin-loop-interaction-step",
+        "major_version": 1,
+        "title": "Chromatin loop interaction step",
+        "analysis_step_types": ["chromatin loop identification"],
+        "input_file_types": [
+                "alignments"
+        ],
+        "output_file_types": [
+                "bigInteract"
+        ],
+        "status": "released",
+        "uuid": "6acd1987-9464-4eba-bb23-b6b656f9e53a"
+    },
+    {
+        "step_label": "scrna-quantification-step",
+        "major_version": 1,
+        "title": "scRNA quantification step",
+        "analysis_step_types": ["quantification"],
+        "input_file_types": [
+                "alignments"
+        ],
+        "output_file_types": [
+                "sparse gene count matrix",
+                "sparse peak count matrix"
+        ],
+        "status": "released",
+        "uuid": "205078ce-1325-47c0-af2a-1cfff129798b"
+    },
+    {
+        "step_label": "chia-pet-alignment-step",
+        "major_version": 1,
+        "title": "ChIA-PET alignment step",
+        "analysis_step_types": ["alignment",
+            "filtering", "classification"],
+        "input_file_types": ["reads"],
+        "output_file_types": ["alignments", "unfiltered alignments"],
+        "status": "released",
+        "uuid": "4b947660-00d1-4c9f-adaa-9fc26c514e12"
+    },
+    {
+        "step_label": "regulome-step",
+        "major_version": 1,
+        "title": "Regulome file format step",
+        "analysis_step_types": ["quantification"],
+        "input_file_types": [
+            "curated binding sites",
+            "curated SNVs",
+            "dsQTLs",
+            "eQTLs",
+            "PWMs"
+        ],
+        "output_file_types": [
+            "curated binding sites",
+            "curated SNVs",
+            "dsQTLs",
+            "eQTLs",
+            "PWMs"
+        ],
+        "status": "released",
+        "uuid": "ecbe2ae9-92b4-4e61-95f5-7cf31434c89a"
+    },
+    {
+        "analysis_step_types": [
+            "merging"
+        ],
+        "date_created": "2021-01-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "alignments",
+            "mapping quality thresholded contact matrix"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "loops",
+            "chromatin stripes"
+        ],
+        "status": "released",
+        "step_label": "hic-merge-step",
+        "title": "HiC merge step",
+        "uuid": "c9c96dd8-681a-43fd-b5ad-3369f5a537cb"
+    },
+    {
+        "analysis_step_types": [
+            "genome compartment identification"
+        ],
+        "input_file_types": [
+            "contact matrix"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "genome compartments",
+            "genome subcompartments"
+        ],
+        "status": "released",
+        "step_label": "ultra-res-genome-compartment-calls-step",
+        "title": "Ultrares genome compartment calling step",
+        "uuid": "efe70b61-2d0e-40e1-ac2b-15332ea60e8e"
+    },
+    {
+        "analysis_step_types": [
+            "quantification"
+        ],
+        "date_created": "2021-07-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "alignments"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "fragments"
+        ],
+        "status": "released",
+        "step_label": "sn-atac-quantification-step",
+        "title": "snATAC quantification step",
+        "uuid": "1a14cdf3-7948-482c-8737-e3bdaf0b4cb6"
+    },
+    {
+        "step_label": "functional-conservation-bigbed-step",
+        "major_version": 1,
+        "title": "Functional conservation bigBed step",
+        "analysis_step_types": ["file format conversion"],
+        "input_file_types": [
+                "functional conservation quantifications"
+        ],
+        "output_file_types": [
+                "functional conservation quantifications"
+        ],
+        "status": "released",
+        "uuid": "eeb1849f-f77e-4ed6-b625-6137f2f76af5"
+    },
+    {
+        "step_label": "regulatory-elements-prediction-model-step",
+        "major_version": 1,
+        "title": "Regulatory elements prediction model step",
+        "analysis_step_types": ["ranking", "signal generation", "topic modeling"],
+        "input_file_types": [
+                "alignments",
+                "promoter prediction model",
+                "topic gene weights"
+        ],
+        "output_file_types": [
+                "regulatory elements prediction model",
+                "enhancer prediction model",
+                "cell topic participation"
+        ],
+        "status": "released",
+        "uuid": "1351fd89-27f0-40ed-b6bb-2a0dca45793e"
+    },
+    {
+        "step_label": "tf-binding-id-elem-annotation-step",
+        "major_version": 1,
+        "title": "TF binding site identification and element annotation step",
+        "analysis_step_types": ["TF binding site identification", "element annotation"],
+        "input_file_types": [
+                "alignments"
+        ],
+        "output_file_types": [
+                "fragments"
+        ],
+        "status": "released",
+        "uuid": "06f1ef66-27f0-40ed-b6bb-2a0dca45793e"
     }
 ]

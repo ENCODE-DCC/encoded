@@ -1,9 +1,35 @@
 ## Changelog for biosample.json
 
+### Minor changes since schema version 26
+
+* Added *expressed_genes* property to be used with *fluorescence activated cell sorting* in the *cell_isolation_method* to specify what gene and expression level the cells of the biosample are sorted on.
+* Added *Degron* to *internal_tags* enums list.
+
+### Schema version 26
+
+* Modified regex pattern for *lot_id* and *product_id* to disallow blank strings.
+
+### Minor changes since schema version 25
+
+* Added *simple_summary* truncated version of biosample_summary as calculated property
+* Added *pulse_chase_time* and *pulse_chase_time_units* properties
+* Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum
+* Added *origin_batch* calculated property
+
+### Schema version 25
+
+* *disease_term_id* and *disease_term_name* properties were changed to be arrays. The *disease_term_id* regex was adjusted to accept Human Phenotype ontology terms.
+
 ### Minor changes since schema version 24
 
 * Added *post_differentiation_time* and *post_differentiation_time_units* properties.
 * Added *perturbed* calculated property to indicate if the biosample has been perturbed using a treatment or a genetic modification for non-tagging purposes.
+* Added *post_nucleic_acid_delivery_time* and *post_nucleic_acid_delivery_time_units* properties.
+* The *summary* property has been updated to include post nucleic acid delivery time.
+* Added *sample_collection_age* and *sample_collection_age_units* for cases where more than one biosamples are collected from the same human donor at different ages.
+* Added *disease_term_id* and *disease_term_name* to indicate the ontological term of a disease affecting a biosample.
+* The *starting_amount_units* property enum has been updated to include *ng*.
 
 ### Schema version 24
 

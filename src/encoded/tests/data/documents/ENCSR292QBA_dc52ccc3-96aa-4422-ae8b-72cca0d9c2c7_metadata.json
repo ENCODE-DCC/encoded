@@ -1,0 +1,98 @@
+{
+    "workflowName": "dnase",
+    "workflowProcessingEvents": [
+        {
+            "cromwellId": "cromid-3916289",
+            "description": "Finished",
+            "timestamp": "2021-02-08T11:40:44.777Z",
+            "cromwellVersion": "52"
+        },
+        {
+            "cromwellId": "cromid-3916289",
+            "description": "PickedUp",
+            "timestamp": "2021-02-05T07:44:34.554Z",
+            "cromwellVersion": "52"
+        }
+    ],
+    "metadataSource": "Unarchived",
+    "actualWorkflowLanguageVersion": "1.0",
+    "submittedFiles": {
+        "workflow": "version 1.0\n\n\nimport \"wdl/workflows_partial/dnase_replicate_no_footprints.wdl\" as process_no_footprints\n\n\nworkflow dnase {\n    input {\n        Array[Replicate] replicates\n        References references\n        MachineSizes? machine_sizes\n    }\n\n    scatter (replicate in replicates) {\n        call process_no_footprints.dnase_replicate_no_footprints {\n            input:\n                replicate=replicate,\n                references=references,\n                machine_sizes=machine_sizes,\n        }\n    }\n\n    meta {\n        version: \"v3.0.0\"\n        caper_docker: \"encodedcc/dnase-seq-pipeline:v3.0.0\"\n    }\n}\n",
+        "root": "",
+        "options": "{\n  \"backend\": \"gcp\",\n  \"default_runtime_attributes\": {\n    \"docker\": \"encodedcc/dnase-seq-pipeline:v3.0.0\",\n    \"maxRetries\": 1\n  },\n  \"monitoring_script\": \"gs://caper-data/scripts/resource_monitor/resource_monitor.sh\"\n}",
+        "inputs": "{\"dnase.references\":{\"bias_model_gz\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/a67cee443aa5ebd1a21ce6a71c095294/ENCFF119KWQ.txt.gz\",\"bwa_index_tar_gz\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/6cb39c1f6a9b89af4ed0edf0d2081d1b/ENCFF063EBQ.tar.gz\",\"genome_name\":\"mm10\",\"hotspot1_tar_gz\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/3448410039178ef357572adf4520ef9b/ENCFF785GGO.tar.gz\",\"hotspot2_tar_gz\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/be894d24459beb890821c4b9faba0572/ENCFF749IUT.tar.gz\",\"indexed_fasta_tar_gz\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/15b53eedae380289bfa4c425ca20c0b5/ENCFF734RZS.tar.gz\",\"narrow_peak_auto_sql\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/1a3423eb97c6c45cb351d6284b8efef6/narrowPeak.as\",\"nuclear_chroms_gz\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/b4b73c05165a5f3c6c3fd65eb1febe14/ENCFF882SRG.txt.gz\"},\"dnase.replicates\":[{\"accession\":\"ENCSR292QBA\",\"adapters\":{\"sequence_R1\":\"AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT\",\"sequence_R2\":\"AGATCGGAAGAGCACACGTCTGAACTCCAGTCACGTGGCCATCTCGTATGCCGTCTTCTGCTTG\"},\"number\":2,\"pe_fastqs\":[{\"R1\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/5b946184df6463aa285eb399b8b170cd/ENCFF037FUN.fastq.gz\",\"R2\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/abfc47418c590b8c85667ece45b64721/ENCFF899TSD.fastq.gz\"},{\"R1\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/c08ea6f2a0d7ec80b872cb5eca1a9a7c/ENCFF196ALP.fastq.gz\",\"R2\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/a773595132e9724e9853ebaf91df1ac2/ENCFF329LSW.fastq.gz\"},{\"R1\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/9a3d3c3c456fa5826cdf260b093b5df7/ENCFF287TAP.fastq.gz\",\"R2\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/4323e3c1053e3e58917b670bde1cc399/ENCFF278VOJ.fastq.gz\"},{\"R1\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/be0f04f1c0ca158a2118988c3204a4b6/ENCFF313EPE.fastq.gz\",\"R2\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/c08adcb93511afc3d03a52d1a82d680a/ENCFF974WCJ.fastq.gz\"},{\"R1\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/538c19b4ab10ef3a935423ed9c77cbbe/ENCFF494STF.fastq.gz\",\"R2\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/3cdb970c70047acf7da151e5b2f6864a/ENCFF221RGX.fastq.gz\"},{\"R1\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/4d8fb4325ef38ea936bd4438b002d641/ENCFF530MQO.fastq.gz\",\"R2\":\"gs://dnase-production/caper_out_10162020/.caper_tmp/cc942b40c3c951da60677e782175bc91/ENCFF436PQD.fastq.gz\"}],\"read_length\":36}]}",
+        "workflowUrl": "",
+        "labels": "{\n    \"caper-backend\": \"gcp\",\n    \"caper-str-label\": \"ENCSR292QBA_1rep_PE_36bp_no-footprints_PROD-427\",\n    \"caper-user\": \"yunhailuo\"\n}"
+    },
+    "workflowRoot": "gs://dnase-production/caper_out_10162020/dnase/dc52ccc3-96aa-4422-ae8b-72cca0d9c2c7/",
+    "actualWorkflowLanguage": "WDL",
+    "id": "dc52ccc3-96aa-4422-ae8b-72cca0d9c2c7",
+    "inputs": {
+        "references": {
+            "indexed_fasta": null,
+            "hotspot1": null,
+            "bwa_index": null,
+            "nuclear_chroms": null,
+            "bwa_index_tar_gz": "gs://dnase-production/caper_out_10162020/.caper_tmp/6cb39c1f6a9b89af4ed0edf0d2081d1b/ENCFF063EBQ.tar.gz",
+            "nuclear_chroms_gz": "gs://dnase-production/caper_out_10162020/.caper_tmp/b4b73c05165a5f3c6c3fd65eb1febe14/ENCFF882SRG.txt.gz",
+            "narrow_peak_auto_sql": "gs://dnase-production/caper_out_10162020/.caper_tmp/1a3423eb97c6c45cb351d6284b8efef6/narrowPeak.as",
+            "genome_name": "mm10",
+            "indexed_fasta_tar_gz": "gs://dnase-production/caper_out_10162020/.caper_tmp/15b53eedae380289bfa4c425ca20c0b5/ENCFF734RZS.tar.gz",
+            "bias_model": null,
+            "hotspot2": null,
+            "hotspot1_tar_gz": "gs://dnase-production/caper_out_10162020/.caper_tmp/3448410039178ef357572adf4520ef9b/ENCFF785GGO.tar.gz",
+            "bias_model_gz": "gs://dnase-production/caper_out_10162020/.caper_tmp/a67cee443aa5ebd1a21ce6a71c095294/ENCFF119KWQ.txt.gz",
+            "hotspot2_tar_gz": "gs://dnase-production/caper_out_10162020/.caper_tmp/be894d24459beb890821c4b9faba0572/ENCFF749IUT.tar.gz"
+        },
+        "replicates": [
+            {
+                "read_length": 36,
+                "number": 2,
+                "se_fastqs": null,
+                "pe_fastqs": [
+                    {
+                        "R2": "gs://dnase-production/caper_out_10162020/.caper_tmp/abfc47418c590b8c85667ece45b64721/ENCFF899TSD.fastq.gz",
+                        "R1": "gs://dnase-production/caper_out_10162020/.caper_tmp/5b946184df6463aa285eb399b8b170cd/ENCFF037FUN.fastq.gz"
+                    },
+                    {
+                        "R2": "gs://dnase-production/caper_out_10162020/.caper_tmp/a773595132e9724e9853ebaf91df1ac2/ENCFF329LSW.fastq.gz",
+                        "R1": "gs://dnase-production/caper_out_10162020/.caper_tmp/c08ea6f2a0d7ec80b872cb5eca1a9a7c/ENCFF196ALP.fastq.gz"
+                    },
+                    {
+                        "R2": "gs://dnase-production/caper_out_10162020/.caper_tmp/4323e3c1053e3e58917b670bde1cc399/ENCFF278VOJ.fastq.gz",
+                        "R1": "gs://dnase-production/caper_out_10162020/.caper_tmp/9a3d3c3c456fa5826cdf260b093b5df7/ENCFF287TAP.fastq.gz"
+                    },
+                    {
+                        "R2": "gs://dnase-production/caper_out_10162020/.caper_tmp/c08adcb93511afc3d03a52d1a82d680a/ENCFF974WCJ.fastq.gz",
+                        "R1": "gs://dnase-production/caper_out_10162020/.caper_tmp/be0f04f1c0ca158a2118988c3204a4b6/ENCFF313EPE.fastq.gz"
+                    },
+                    {
+                        "R1": "gs://dnase-production/caper_out_10162020/.caper_tmp/538c19b4ab10ef3a935423ed9c77cbbe/ENCFF494STF.fastq.gz",
+                        "R2": "gs://dnase-production/caper_out_10162020/.caper_tmp/3cdb970c70047acf7da151e5b2f6864a/ENCFF221RGX.fastq.gz"
+                    },
+                    {
+                        "R2": "gs://dnase-production/caper_out_10162020/.caper_tmp/cc942b40c3c951da60677e782175bc91/ENCFF436PQD.fastq.gz",
+                        "R1": "gs://dnase-production/caper_out_10162020/.caper_tmp/4d8fb4325ef38ea936bd4438b002d641/ENCFF530MQO.fastq.gz"
+                    }
+                ],
+                "accession": "ENCSR292QBA",
+                "adapters": {
+                    "sequence_R2": "AGATCGGAAGAGCACACGTCTGAACTCCAGTCACGTGGCCATCTCGTATGCCGTCTTCTGCTTG",
+                    "sequence_R1": "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT"
+                },
+                "preseq_defects_mode": null
+            }
+        ],
+        "machine_sizes": null
+    },
+    "labels": {
+        "caper-str-label": "ENCSR292QBA_1rep_PE_36bp_no-footprints_PROD-427",
+        "caper-backend": "gcp",
+        "caper-user": "yunhailuo",
+        "cromwell-workflow-id": "cromwell-dc52ccc3-96aa-4422-ae8b-72cca0d9c2c7"
+    },
+    "submission": "2021-02-05T07:39:45.628Z",
+    "status": "Succeeded",
+    "end": "2021-02-08T11:40:44.777Z",
+    "start": "2021-02-05T07:44:34.555Z"
+}

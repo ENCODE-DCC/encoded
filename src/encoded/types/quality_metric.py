@@ -20,6 +20,7 @@ from .shared_calculated_properties import CalculatedAssayTermID
     })
 class QualityMetric(ItemWithAttachment, CalculatedAssayTermID, Item):
     base_types = ['QualityMetric'] + Item.base_types
+    schema = load_schema('encoded:schemas/quality_metric.json')
     set_status_up = [
         'step_run',
         ]
@@ -35,6 +36,22 @@ class QualityMetric(ItemWithAttachment, CalculatedAssayTermID, Item):
 class StarQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'star_quality_metric'
     schema = load_schema('encoded:schemas/star_quality_metric.json')
+
+    @calculated_property(schema={
+        "title": "Read depth",
+        "type": "number",
+        "description": "Sum of the uniquely mapped reads number and the number of reads mapped to multiple loci.",
+        "comment": "Do not submit. The value is extracted from values reported in the STAR quality metric.",
+        "notSubmittable": True,
+    })
+    def read_depth(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'Uniquely mapped reads number' in properties and \
+                'Number of reads mapped to multiple loci' in properties:
+            unique = properties['Uniquely mapped reads number']
+            multi = properties['Number of reads mapped to multiple loci']
+            return unique + multi
 
 
 @collection(
@@ -180,6 +197,25 @@ class SamtoolsFlagstatsQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'samtools_flagstats_quality_metric'
     schema = load_schema('encoded:schemas/samtools_flagstats_quality_metric.json')
 
+    @calculated_property(schema={
+        "title": "Usable fragments",
+        "type": "number",
+        "description": "Usable fragments, based on the mapped value.",
+        "comment": "Do not submit. The value is extracted from values reported in the Samtools Flagstats quality metric.",
+        "notSubmittable": True,
+    })
+    def usable_fragments(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'processing_stage' in properties and \
+                properties['processing_stage'] == 'filtered' and\
+                'mapped' in properties:
+            if 'read1' in properties and 'read2' in properties and \
+                    properties['read1'] != 0 and properties['read2'] != 0:
+                return int(properties['mapped']/2)
+            else:
+                return int(properties['mapped'])
+
 
 @collection(
     name='samtools-stats-quality-metrics',
@@ -202,6 +238,22 @@ class IDRQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'idr_quality_metric'
     schema = load_schema('encoded:schemas/idr_quality_metric.json')
 
+    @calculated_property(schema={
+        "title": "FRiP score from optimal peaks",
+        "type": "number",
+        "description": "Fraction reads in IDR peaks (FRiP) from optimal peaks",
+        "comment": "Do not submit. The value is extracted from submitted FRiP scores.",
+        "notSubmittable": True,
+    })
+    def frip(self, request, Fp=None, Ft=None, Np=None, Nt=None):
+        if Np is None:
+            return Ft
+        if Nt is None:
+            return Fp
+        if Nt >= Np:
+            return Ft
+        return Fp
+
 
 @collection(
     name='histone-chipseq-quality-metrics',
@@ -212,6 +264,22 @@ class IDRQualityMetric(QualityMetric, CalculatedAssayTermID):
 class HistoneChipSeqQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'histone_chipseq_quality_metric'
     schema = load_schema('encoded:schemas/histone_chipseq_quality_metric.json')
+
+    @calculated_property(schema={
+        "title": "Best FRiP score",
+        "type": "number",
+        "description": "Best fraction reads in peaks (FRiP) from peaks",
+        "comment": "Do not submit. The value is extracted from submitted FRiP scores.",
+        "notSubmittable": True,
+    })
+    def frip(self, request, Fp=None, Ft=None, F1=None, F2=None):
+        frips = [
+            f
+            for f in [Fp, Ft, F1, F2]
+            if f is not None
+        ]
+        if frips:
+            return max(frips)
 
 
 @collection(
@@ -289,6 +357,25 @@ class ChipAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'chip_alignment_samstat_quality_metric'
     schema = load_schema('encoded:schemas/chip_alignment_samstat_quality_metric.json')
 
+    @calculated_property(schema={
+        "title": "Usable fragments",
+        "type": "number",
+        "description": "Usable fragments, based on the mapped_reads value.",
+        "comment": "Do not submit. The value is extracted from values reported in the ChIP Alignment quality metric.",
+        "notSubmittable": True,
+    })
+    def usable_fragments(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'processing_stage' in properties and \
+                properties['processing_stage'] == 'filtered' and \
+                'mapped_reads' in properties:
+            if 'read1' in properties and 'read2' in properties and \
+                    properties['read1'] != 0 and properties['read2'] != 0:
+                return int(properties['mapped_reads']/2)
+            else:
+                return int(properties['mapped_reads'])
+
 
 @collection(
     name='chip-alignment-enrichment-quality-metrics',
@@ -338,6 +425,25 @@ class ChipReplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
 class AtacAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'atac_alignment_quality_metric'
     schema = load_schema('encoded:schemas/atac_alignment_quality_metric.json')
+
+    @calculated_property(schema={
+        "title": "Usable fragments",
+        "type": "number",
+        "description": "Usable fragments, based on the mapped_reads value.",
+        "comment": "Do not submit. The value is extracted from values reported in the ATAC Alignment quality metric.",
+        "notSubmittable": True,
+    })
+    def usable_fragments(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'processing_stage' in properties and \
+                properties['processing_stage'] == 'filtered' and \
+                'mapped_reads' in properties:
+            if 'read1' in properties and 'read2' in properties and \
+                    properties['read1'] != 0 and properties['read2'] != 0:
+                return int(properties['mapped_reads']/2)
+            else:
+                return int(properties['mapped_reads'])
 
 
 @collection(
@@ -398,3 +504,180 @@ class GeneQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
 class GeneTypeQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'gene_type_quantification_quality_metric'
     schema = load_schema('encoded:schemas/gene_type_quantification_quality_metric.json')
+
+
+@collection(
+    name='dnase-alignment-quality-metrics',
+    properties={
+        'title': "DNase Alignment Quality Metrics",
+    })
+class DnaseAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'dnase_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/dnase_alignment_quality_metric.json')
+
+
+@collection(
+    name='dnase-footprinting-quality-metrics',
+    properties={
+        'title': "DNase Footprinting Quality Metrics",
+    })
+class DnaseFootprintingQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'dnase_footprinting_quality_metric'
+    schema = load_schema('encoded:schemas/dnase_footprinting_quality_metric.json')
+
+
+@collection(
+    name='gembs-alignment-quality-metrics',
+    properties={
+        'title': "gemBS Alignment Quality Metrics",
+    })
+class GembsAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'gembs_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/gembs_alignment_quality_metric.json')
+
+
+@collection(
+    name='chia-pet-alignment-quality-metrics',
+    properties={
+        'title': "ChIA-PET Alignment Quality Metrics",
+    })
+class ChiaPetAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chia_pet_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/chia_pet_alignment_quality_metric.json')
+
+
+@collection(
+    name='chia-pet-chr-interactions-quality-metrics',
+    properties={
+        'title': "ChIA-PET Chromatin Interactions Quality Metrics",
+    })
+class ChiaPetChrInteractionsQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chia_pet_chr_interactions_quality_metric'
+    schema = load_schema('encoded:schemas/chia_pet_chr_interactions_quality_metric.json')
+
+
+@collection(
+    name='chia-pet-peak-enrichment-quality-metrics',
+    properties={
+        'title': "ChIA-PET Peak Enrichment Quality Metrics",
+    })
+class ChiaPetPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chia_pet_peak_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/chia_pet_peak_enrichment_quality_metric.json')
+
+
+@collection(
+    name='hic-quality-metrics',
+    properties={
+        'title': "HiC Quality Metrics",
+    })
+class HicQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'hic_quality_metric'
+    schema = load_schema('encoded:schemas/hic_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-alignment-quality-metrics',
+    properties={
+        'title': "scATAC Alignment Quality Metrics",
+    })
+class ScAtacAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_alignment_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-read-quality-metrics',
+    properties={
+        'title': "scATAC Read Quality Metrics",
+    })
+class ScAtacReadQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_read_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_read_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-multiplet-quality-metrics',
+    properties={
+        'title': "scATAC Multiplet Quality Metrics",
+    })
+class ScAtacMultipletQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_multiplet_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_multiplet_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-library-complexity-quality-metrics',
+    properties={
+        'title': "scATAC Library Complexity Quality Metrics",
+    })
+class ScAtacLibraryComplexityQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_library_complexity_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_library_complexity_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-analysis-quality-metrics',
+    properties={
+        'title': "scATAC Analysis Quality Metrics",
+    })
+class ScAtacAnalysisQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_analysis_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_analysis_quality_metric.json')
+
+
+@collection(
+    name='sc-atac-counts-summary-quality-metric',
+    properties={
+        'title': "scATAC Counts Summary Quality Metrics",
+    })
+class ScAtacCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'sc_atac_counts_summary_quality_metric'
+    schema = load_schema('encoded:schemas/sc_atac_counts_summary_quality_metric.json')
+
+@collection(
+    name='star-solo-quality-metric',
+    properties={
+        'title': "STARsolo Quality Metric",
+    })
+class StarSoloQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'star_solo_quality_metric'
+    schema = load_schema('encoded:schemas/star_solo_quality_metric.json')
+
+@collection(
+    name='scrna-seq-counts-summary-quality-metric',
+    properties={
+        'title': "scRNA-seq Counts Summary Quality Metric",
+    })
+class ScrnaSeqCountsSummaryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'scrna_seq_counts_summary_quality_metric'
+    schema = load_schema('encoded:schemas/scrna_seq_counts_summary_quality_metric.json')
+@collection(
+    name='segway-quality-metric',
+    properties={
+        'title': "Segway Quality Metrics",
+    })
+class SegwayQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'segway_quality_metric'
+    schema = load_schema('encoded:schemas/segway_quality_metric.json')
+
+
+@collection(
+    name='bru-library-quality-metrics',
+    properties={
+        'title': "Bru assay library quality metrics",
+        'description': 'A set of library quality metrics for Bru assays',
+    })
+class BruLibraryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'bru_library_quality_metric'
+    schema = load_schema('encoded:schemas/bru_library_quality_metric.json')
+
+
+@collection(
+     name='bpnet-quality-metrics',
+     properties={
+         'title': "BPNet quality metrics",
+     })
+class BpnetQualityMetric(QualityMetric, CalculatedAssayTermID):
+     item_type = 'bpnet_quality_metric'
+     schema = load_schema('encoded:schemas/bpnet_quality_metric.json')

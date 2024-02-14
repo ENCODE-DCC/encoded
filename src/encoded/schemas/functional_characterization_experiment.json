@@ -5,7 +5,7 @@
     "id": "/profiles/functional_characterization_experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name"],
+    "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -20,6 +20,7 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_ontology" },
+        { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
@@ -75,15 +76,21 @@
                     "properties": {
                         "assay_term_name": {
                             "enum": [
-                                "CRISPR screen",
                                 "MPRA",
+                                "CRISPR screen",
+                                "proliferation CRISPR screen",
+                                "FACS CRISPR screen",
+                                "Flow-FISH CRISPR screen",
+                                "genomic perturbation followed by RT-qPCR",
+                                "perturbation followed by scRNA-seq",
+                                "perturbation followed by snATAC-seq",
                                 "STARR-seq"
                             ]
                         }
                     }
                 },
                 {
-                    "required": ["plasmids_library_type"],
+                    "required": ["plasmids_library_type", "control_type"],
                     "properties": {
                         "assay_term_name": {
                             "enum": ["pooled clone sequencing"]
@@ -103,16 +110,21 @@
     },
     "properties": {
         "schema_version": {
-
-            "default": "4"
+            "default": "13"
         },
         "assay_term_name": {
             "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "type": "string",
             "enum": [
-                "CRISPR screen",
                 "MPRA",
+                "CRISPR screen",
+                "proliferation CRISPR screen",
+                "FACS CRISPR screen",
+                "Flow-FISH CRISPR screen",
+                "genomic perturbation followed by RT-qPCR",
+                "perturbation followed by scRNA-seq",
+                "perturbation followed by snATAC-seq",
                 "pooled clone sequencing",
                 "STARR-seq"
             ]
@@ -127,10 +139,11 @@
         },
         "target": {
             "title": "Target",
-            "description": "For assays, such as CRISPR screen, the name of the gene whose expression or product is under investigation for the functional characterization experiment.",
+            "description": "For assays, such as CRISPR screen, the name of the gene whose expression or product is under investigation for the functional characterization experiment. This property is not submittable, and examined_loci should be specified instead.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
-            "linkTo": "Target"
+            "linkTo": "Target",
+            "permission": "import_items"
         },
         "target_expression_range_minimum": {
             "title": "Target expression range minimum",
@@ -146,7 +159,7 @@
             "minimum": 0,
             "maximum": 100
         },
-            "target_expression_percentile": {
+        "target_expression_percentile": {
             "title": "Target expression percentile",
             "description": "Target expression read-out expressed as a percentile",
             "type": "integer",
@@ -188,12 +201,19 @@
             "type": "string",
             "linkTo": "FunctionalCharacterizationExperiment"
         },
-        "elements_mapping": {
-            "title": "Elements mapping",
-            "description": "A functional characterization experiment that contains mapping of elements being characterized to barcodes.",
-            "comment": "See FunctionalCharacterizationExperiment.json for a list of available identifiers.",
-            "type": "string",
-            "linkTo": "FunctionalCharacterizationExperiment"
+        "elements_mappings": {
+            "title": "Elements mappings",
+            "description": "Functional characterization experiment(s) that contains mapping of elements being characterized to barcodes.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Elements mapping",
+                "type": "string",
+                "description": "Functional characterization experiment that contains mapping of elements being characterized to barcodes.",
+                "comment": "See FunctionalCharacterizationExperiment.json for a list of available identifiers.",
+                "linkTo": "FunctionalCharacterizationExperiment"
+            }
         },
         "supersedes": {
             "title": "Supersedes" ,
@@ -219,55 +239,24 @@
             "title": "Plasmids library type",
             "description": "The purpose of a pooled clone sequencing experiment.",
             "type": "string",
-            "oneOf": [
-                {
-                    "enum": [
-                        "elements cloning",
-                        "elements mapping",
-                        "gRNA cloning"
-                    ]
-                },
-                {
-                    "comment": "Temporary choice for the requirement of this property.",
-                    "permission": "import_items",
-                    "enum": [
-                        "other"
-                    ]
-                }
+            "enum": [
+                "elements cloning",
+                "elements mapping",
+                "gRNA cloning"
             ]
-        },
-        "gRNA_tiling_loci": {
-            "title": "gRNA tiling loci",
-            "description": "The loci targeted by gRNAs.",
-            "type": "array",
-            "uniqueItems": true,
-            "minItems": 2,
-            "items": {
-                "title": "Locus",
-                "description": "Gene locus targeted by gRNAs.",
-                "type": "string",
-                "linkTo": "Gene"
-            }
         },
         "examined_loci": {
             "title": "Examined loci",
             "description": "The loci whose expression or product is under investigation for the functional characterization experiment.",
             "type": "array",
             "uniqueItems": true,
-            "minItems": 2,
+            "minItems": 1,
             "items": {
                 "title": "Locus",
                 "description": "The gene whose expression or product is under investigation for the functional characterization experiment.",
                 "type": "object",
                 "additionalProperties": false,
-                "anyOf": [
-                    {
-                        "required": ["gene", "gene_expression_percentile"]
-                    },
-                    {
-                        "required": ["gene", "gene_expression_range_minimum", "gene_expression_range_maximum"]
-                    }
-                ],
+                "required": ["gene", "expression_measurement_method"],
                 "properties": {
                     "gene": {
                         "title": "Gene",
@@ -275,69 +264,188 @@
                         "type": "string",
                         "linkTo": "Gene"
                     },
-                    "gene_expression_percentile": {
+                    "expression_percentile": {
                         "title": "Gene expression percentile",
-                        "description": "Gene expression read-out expressed as percentile.",
+                        "description": "Gene expression read-out expressed as a percentile.",
                         "type": "integer",
                         "minimum": 0,
                         "maximum": 100
                     },
-                    "gene_expression_range_minimum": {
+                    "expression_range_minimum": {
                         "title": "Gene expression range minimum",
-                        "description": "Gene expression read-out range minimum precentage value.",
+                        "description": "Gene expression read-out range minimum percentage value.",
                         "type": "integer",
                         "minimum": 0,
                         "maximum": 100
                     },
-                    "gene_expression_range_maximum": {
+                    "expression_range_maximum": {
                         "title": "Gene expression range maximum",
-                        "description": "Gene expression read-out range maximum precentage value.",
+                        "description": "Gene expression read-out range maximum percentage value.",
                         "type": "integer",
                         "minimum": 0,
                         "maximum": 100
+                    },
+                    "expression_measurement_method": {
+                        "title": "Measurement method for gene expression",
+                        "description": "The technique used to measure the examined_loci gene expression.",
+                        "type": "string",
+                        "enum": [
+                            "antibody Sort-seq",
+                            "endogenous protein Sort-seq",
+                            "fluorescence activated cell sorting",
+                            "HCR-FlowFISH",
+                            "magnetic separation Sort-seq",
+                            "PrimeFlow",
+                            "qPCR"
+                        ]
+                    }
+                },
+                "dependencies": {
+                    "expression_range_minimum": ["expression_range_maximum"],
+                    "expression_range_maximum": ["expression_range_minimum"],
+                    "expression_percentile": {
+                        "not": {
+                            "anyOf": [
+                                {"required": ["expression_range_minimum"]},
+                                {"required": ["expression_range_maximum"]}
+                            ]
+                        }
                     }
                 }
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_slims",
+                "assay_title",
+                "control_type",
+                "perturbation_type",
+                "examined_loci.expression_measurement_method",
+                "crispr_screen_readout",
+                "elements_references.crispr_screen_tiling",
+                "replicates.library.biosample.applied_modifications.guide_type",
+                "replicates.library.biosample.applied_modifications.MOI",
+                "replicates.library.biosample.applied_modifications.reagents.promoter_details",
+                "replicates.library.construction_platform.term_name"
+            ]
+        },
+        {
+            "title": "Elements",
+            "facet_fields": [
+                "elements_references.examined_loci.symbol",
+                "examined_loci.gene.symbol",
+                "elements_references.elements_selection_method"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "replicates.library.biosample.donor.organism.scientific_name",
+                "biosample_ontology.term_name",
+                "biosample_ontology.classification",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "replicates.library.biosample.sex",
+                "replicates.library.biosample.life_stage",
+                "replicates.library.biosample.treatments.treatment_term_name",
+                "replicates.library.biosample.disease_term_name",
+                "replicates.library.nucleic_acid_term_name"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "files.platform.term_name",
+                "files.run_type",
+                "assembly",
+                "files.file_type"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "award.project",
+                "award.rfa",
+                "lab.title",
+                "date_submitted",
+                "date_released"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "replication_type",
+                "replicates.library.size_range",
+                "files.read_length",
+                "files.mapped_read_length",
+                "status",
+                "internal_status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_slims": {
-            "title": "Assay type"
+            "title": "Assay type",
+            "open_on_load": false
         },
         "assay_title": {
             "title": "Assay title",
-            "type": "typeahead"
+            "open_on_load": true
         },
         "status": {
-            "title": "Status"
+            "title": "Status",
+            "open_on_load": true
         },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "assembly": {
-            "title": "Genome assembly"
-        },
-        "target.investigated_as": {
-            "title": "Target category"
-        },
-        "target.label": {
-            "title": "Target of assay",
+        "elements_references.examined_loci.symbol": {
+            "title": "Targeted loci",
             "type": "typeahead",
-            "length": "long"
+            "open_on_load": true
+        },
+        "elements_references.elements_selection_method": {
+            "title": "Elements selection method"
+        },
+        "elements_references.crispr_screen_tiling": {
+            "title": "CRISPR screen tiling"
+        },
+        "examined_loci.gene.symbol": {
+            "title": "Examined loci",
+            "type": "typeahead",
+            "open_on_load": true
+        },
+        "perturbation_type": {
+            "title": "Perturbation type"
+        },
+        "replicates.library.biosample.applied_modifications.guide_type": {
+            "title": "Guide type"
+        },
+        "crispr_screen_readout": {
+            "title": "CRISPR screen readout"
+        },
+        "replicates.library.biosample.applied_modifications.reagents.promoter_details": {
+            "title": "Promoter details"
+        },
+        "replicates.library.biosample.applied_modifications.MOI": {
+            "title": "Multiplicity of infection"
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
         },
         "biosample_ontology.term_name" : {
-            "title": "Biosample term name",
+            "title": "Biosample",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
@@ -347,11 +455,21 @@
             "title": "Cell",
             "type": "typeahead"
         },
-        "replicates.library.biosample.life_stage": {
-            "title": "Life stage"
+        "replicates.library.biosample.disease_term_name": {
+            "title": "Disease"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
+        },
+        "control_type": {
+            "type": "exists",
+            "title": "Hide control experiments"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -359,26 +477,8 @@
         "files.platform.term_name": {
             "title": "Platform"
         },
-        "files.run_type": {
-            "title": "Run type"
-        },
-        "files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "replicates.library.size_range": {
-            "title": "Library fragment size (nt)"
-        },
         "replicates.library.nucleic_acid_term_name": {
             "title": "Library material"
-        },
-        "replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in"
-        },
-        "replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment"
         },
         "date_released": {
             "title": "Date released"
@@ -389,11 +489,14 @@
         "lab.title": {
             "title": "Lab"
         },
-        "internal_status": {
-            "title": "Internal status"
-        },
         "replication_type": {
             "title": "Replication type"
+        },
+        "replicates.library.biosample.subcellular_fraction_term_name": {
+            "title": "Cellular component"
+        },
+        "replicates.library.construction_platform.term_name": {
+            "title": "Library construction platform"
         }
     },
     "columns": {
@@ -406,17 +509,47 @@
         "assay_title": {
             "title": "Assay title"
         },
+        "target.@id": {
+            "title": "Target"
+        },
         "target.label": {
             "title": "Target of assay"
         },
         "target.genes.symbol": {
             "title": "Target gene symbol"
         },
+        "examined_loci": {
+            "title": "Examined loci"
+        },
+        "perturbation_type": {
+            "title": "Perturbation type"
+        },
+        "elements_references.crispr_screen_tiling": {
+            "title": "CRISPR screen tiling"
+        },
+        "elements_references.elements_selection_method": {
+            "title": "Elements selection method"
+        },
+        "elements_references.examined_loci.@id": {
+            "title": "Reference loci gene ID"
+        },
+        "elements_references.examined_loci.symbol": {
+            "title": "Reference loci"
+        },
+        "crispr_screen_readout": {
+            "title": "CRISPR screen readout"
+        },
         "biosample_summary": {
             "title": "Biosample summary"
         },
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
+        },
+        "biosample_ontology.classification": {
+            "title": "Biosample classification"
+        },
+        "datapoint": {
+            "title": "Datapoint"
         },
         "description": {
             "title": "Description"
@@ -463,17 +596,20 @@
         "replicates.library.biosample.treatments.treatment_term_id": {
             "title": "Biosample treatment ontology ID"
         },
-        "replicates.library.biosample.treatments.concentration": {
-            "title": "Biosample treatment concentration"
+        "replicates.library.biosample.treatments.amount": {
+            "title": "Biosample treatment amount"
         },
-        "replicates.library.biosample.treatments.concentration_units": {
-            "title": "Biosample treatment concentration units"
+        "replicates.library.biosample.treatments.amount_units": {
+            "title": "Biosample treatment amount units"
         },
         "replicates.library.biosample.treatments.duration": {
             "title": "Biosample treatment duration"
         },
         "replicates.library.biosample.treatments.duration_units": {
             "title": "Biosample treatment duration units"
+        },
+        "replicates.library.biosample.treatments.purpose": {
+            "title": "Biosample treatment purpose"
         },
         "replicates.library.biosample.synchronization": {
             "title": "Synchronization"
@@ -483,12 +619,22 @@
         },
         "replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units"
-        },       
+        },
         "replicates.@id": {
             "title": "Replicates"
+        },
+        "replicates.library.biosample.subcellular_fraction_term_name": {
+            "title": "Cellular component"
+        },
+        "replicates.library.construction_platform.term_name": {
+            "title": "Library construction platform"
+        },
+        "replicates.library.construction_method": {
+            "title": "Library construction method"
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "assay_term_name": 1.0,
@@ -518,6 +664,7 @@
         "replicates.library.biosample.accession": 1.0,
         "replicates.library.biosample.alternate_accessions": 1.0,
         "replicates.library.biosample.aliases": 1.0,
+        "replicates.library.biosample.applied_modifications.reagents.promoter_details": 1.0,
         "replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
         "replicates.library.biosample.donor.accession": 1.0,
         "replicates.library.biosample.donor.alternate_accessions": 1.0,
@@ -550,12 +697,16 @@
         "target.aliases": 1.0,
         "target.genes.symbol": 1.0,
         "target.label": 1.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
+        "examined_loci.gene.symbol": 1.0,
         "references.title": 1.0,
         "notes": 1.0,
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "doi": 1.0,
+        "biosample_summary": 12.0,
+        "description": 8.0
     },
     "changelog": "/profiles/changelogs/functional_characterization_experiment.md"
 }

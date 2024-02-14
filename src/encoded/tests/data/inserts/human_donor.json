@@ -10,7 +10,7 @@
             "ENCDO117AAA"
         ],
         "award": "U41HG006992",
-        "ethnicity": "Caucasian",
+        "ethnicity": ["European"],
         "health_status": "Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV",
         "lab": "j-michael-cherry",
         "life_stage": "adult",
@@ -26,7 +26,7 @@
             "michael-snyder:STL003"
         ],
         "award": "U41HG006992",
-        "ethnicity": "Caucasian",
+        "ethnicity": ["European"],
         "health_status": "Healthy",
         "lab": "j-michael-cherry",
         "life_stage": "adult",
@@ -42,6 +42,9 @@
             "encode:PanIsletD_Crawford_protocol"
         ],
         "health_status": "unknown",
+        "internal_tags": [
+            "RushAD"
+        ],
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
         "organism": "human",
@@ -69,7 +72,7 @@
     {
         "accession": "ENCDO275AAA",
         "award": "U41HG006992",
-        "ethnicity": "Black",
+        "ethnicity": ["Black"],
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -80,7 +83,7 @@
     {
         "accession": "ENCDO276AAA",
         "award": "U41HG006992",
-        "ethnicity": "Asian",
+        "ethnicity": ["Asian"],
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -107,7 +110,7 @@
             "encode:donor of GM12878"
         ],
         "award": "U41HG006992",
-        "ethnicity": "Caucasian",
+        "ethnicity": ["European"],
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "adult",
@@ -223,5 +226,77 @@
         "sex": "male",
         "status": "released",
         "uuid": "845eda3c-7503-43e8-a65b-0d08e8d4674d"
+    },
+    {
+        "_test": "test external_ids",
+        "accession": "ENCDO516EPW",
+        "award": "/awards/UM1HG009411/",
+        "external_ids": [
+            "AllCells:10219"
+        ],
+        "lab": "/labs/j-michael-cherry/",
+        "organism": "/organisms/human/",
+        "sex": "unknown",
+        "status": "in progress",
+        "uuid": "97cc5ec8-178f-42bb-87fe-77cae5fb1b09"
+    },
+    {
+        "accession": "ENCDO575EGL",
+        "age": "16",
+        "age_units": "year",
+        "aliases": [
+            "michael-snyder:donor_W62"
+        ],
+        "award": "UM1HG009442",
+        "dbxrefs": [
+            "GEO:SAMN13691287"
+        ],
+        "ethnicity": ["European", "Hispanic"],
+        "health_status": "DM: no; HTN: no; CAD: no",
+        "lab": "michael-snyder",
+        "life_stage": "child",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "5475b837-6ee9-47b9-ae70-dc292f4b936e"
+    },
+    {
+        "_test": "For disease series",
+        "accession": "ENCDO921RVK",
+        "age": "90 or above",
+        "age_units": "year",
+        "award": "UM1HG009442",
+        "ethnicity": ["European"],
+        "lab": "john-stamatoyannopoulos",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "male",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "submitter_comment": "NINCDS PROB AD",
+        "uuid": "ff42aea0-99e3-4b98-94fe-4b403218c9fa"
+    },
+    {
+        "accession": "ENCDO000ABE",
+        "age": "48",
+        "age_units": "year",
+        "aliases": [
+            "encode:donor of HCT-116",
+            "bradley-bernstein:Donor of HCT-116 cells"
+        ],
+        "award": "UM1HG009390",
+        "dbxrefs": [
+            "GEO:SAMN05733881"
+        ],
+        "health_status": "colorectal carcinoma",
+        "lab": "bradley-bernstein",
+        "life_stage": "adult",
+        "notes": "Donor of HCT 116. Colorectal carcinoma (PMID: 7214343)",
+        "organism": "human",
+        "sex": "male",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "uuid": "23188c58-4287-4666-be40-3216707226a1"
     }
 ]

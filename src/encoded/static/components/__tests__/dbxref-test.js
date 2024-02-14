@@ -1,9 +1,11 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 
 // Import test component.
 import { DbxrefList } from '../dbxref';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Test individual dbxref types', () => {
     describe('Test UniProtKB', () => {
@@ -477,11 +479,12 @@ describe('Test individual dbxref types', () => {
     });
 
     describe('Test UCSC-GB-hg19', () => {
+        const context = { '@type': ['Experiment'] };
         let dbxLinks;
 
         beforeAll(() => {
             const wrapper = mount(
-                <DbxrefList dbxrefs={['UCSC-GB-hg19:wgEncodeUwAffyExonArray', 'UCSC-GB-hg19:wgEncodeUmassDekker5C']} />
+                <DbxrefList context={context} dbxrefs={['UCSC-GB-hg19:wgEncodeUwAffyExonArray', 'UCSC-GB-hg19:wgEncodeUmassDekker5C']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -664,6 +667,136 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinks.length).toBe(2);
             expect(dbxLinks.at(0).prop('href')).toEqual('https://depmap.org/portal/cell_line/ACH-000551');
             expect(dbxLinks.at(1).prop('href')).toEqual('https://depmap.org/portal/cell_line/ACH-000552');
+        });
+    });
+
+    describe('Test FactorBook', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['FactorBook:ENCSR343RJH', 'FactorBook:ENCSR614HHL']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://factorbook.org/experiment/ENCSR343RJH');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://factorbook.org/experiment/ENCSR614HHL');
+        });
+    });
+
+    describe('Test GeneCards', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Gene'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['GeneCards:ATF3', 'GeneCards:MXD1']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('http://www.genecards.org/cgi-bin/carddisp.pl?gene=ATF3');
+            expect(dbxLinks.at(1).prop('href')).toEqual('http://www.genecards.org/cgi-bin/carddisp.pl?gene=MXD1');
+        });
+    });
+
+    describe('Test VISTA', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['TransgenicEnhancerExperiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['VISTA:hs10', 'VISTA:mm1694']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id=10&organism_id=1');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id=1694&organism_id=2');
+        });
+    });
+
+    describe('Test Factorbook for targets', () => {
+        let dbxLinksHumanTarget;
+        let dbxLinksMouseTarget;
+
+        beforeAll(() => {
+            const contextHumanTarget = { '@type': ['Target'], organism: { scientific_name: 'Homo sapiens' } };
+            const contextMouseTarget = { '@type': ['Target'], organism: { scientific_name: 'Mus musculus' } };
+            const wrapperHumanTarget = mount(
+                <DbxrefList
+                    context={contextHumanTarget}
+                    dbxrefs={['FactorBook:CTCF', 'FactorBook:SOX12']}
+                />
+            );
+            const wrapperMouseTarget = mount(
+                <DbxrefList
+                    context={contextMouseTarget}
+                    dbxrefs={['FactorBook:CTCF', 'FactorBook:TBP']}
+                />
+            );
+
+            dbxLinksHumanTarget = wrapperHumanTarget.find('a');
+            dbxLinksMouseTarget = wrapperMouseTarget.find('a');
+        });
+
+        it('has the correct links for Human targets', () => {
+            expect(dbxLinksHumanTarget.length).toBe(2);
+            expect(dbxLinksHumanTarget.at(0).prop('href')).toEqual('https://factorbook.org/tf/human/CTCF/function');
+            expect(dbxLinksHumanTarget.at(1).prop('href')).toEqual('https://factorbook.org/tf/human/SOX12/function');
+        });
+
+        it('has the correct links for Mouse targets', () => {
+            expect(dbxLinksMouseTarget.length).toBe(2);
+            expect(dbxLinksMouseTarget.at(0).prop('href')).toEqual('https://factorbook.org/tf/mouse/Ctcf/function');
+            expect(dbxLinksMouseTarget.at(1).prop('href')).toEqual('https://factorbook.org/tf/mouse/Tbp/function');
+        });
+    });
+
+    describe('Test SCREEN-GRCh38', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['SCREEN-GRCh38:T-cell_donor_ENCDO685OXD', 'SCREEN-GRCh38:iPS_DF_4.7_male_newborn']} />
+            );
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links for Human experiments', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=T-cell_donor_ENCDO685OXD&assembly=GRCh38');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=iPS_DF_4.7_male_newborn&assembly=GRCh38');
+        });
+    });
+
+    describe('Test SCREEN-mm10', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['SCREEN-mm10:C3H_C2C12', 'SCREEN-mm10:CD-1_c-Kit-negative_CD71-positive_TER-119-positive_erythroid_progenitor_cells_male_embryo_14.5_days']} />
+            );
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links for Mouse experiments', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=C3H_C2C12&assembly=mm10');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=CD-1_c-Kit-negative_CD71-positive_TER-119-positive_erythroid_progenitor_cells_male_embryo_14.5_days&assembly=mm10');
         });
     });
 });

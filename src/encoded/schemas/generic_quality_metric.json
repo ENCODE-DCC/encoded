@@ -47,6 +47,7 @@
                     "enum": [
                         "application/pdf",
                         "application/x-tar",
+                        "application/json",
                         "image/gif",
                         "image/jpeg",
                         "image/png",

@@ -27,6 +27,17 @@
             "type": "string"
         }
     },
+    "columns": {
+        "thumb_nail": {
+            "title": "Thumb Nail"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "caption": {
+            "title": "Caption"
+        }
+    },
     "boost_values": {
         "caption": 1.0
     },

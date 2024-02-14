@@ -1,10 +1,11 @@
-import React from 'react';
-import { mount } from 'enzyme';
-
 // Import test component and data.
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 import Platform from '../platform';
 import context from '../testdata/platform';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Platform', () => {
     let platformPanel;

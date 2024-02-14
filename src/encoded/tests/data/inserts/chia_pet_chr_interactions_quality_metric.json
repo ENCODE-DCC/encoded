@@ -1,0 +1,15 @@
+[
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "9503c55d-84f1-4351-8ef1-a0d7f52768de",
+        "assay_term_name": "ChIA-PET",
+        "quality_metric_of": ["ENCFF727BIF"],
+        "lab": "/labs/ali-mortazavi/",
+        "award": "/awards/U54HG006998/",
+        "intra_inter_pet_ratio": 3.42,
+        "intra_inter_clust_pet2_ratio": 6.41,
+        "intra_inter_clust_pet5_ratio": 200.65,
+        "intra_inter_clust_pet10_ratio": 3816.83
+    }
+]

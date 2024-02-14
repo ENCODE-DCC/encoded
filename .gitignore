@@ -10,11 +10,13 @@
 /aws-ip-ranges.json
 /bin/
 /develop/
+# For demo machines with editable snovault
+/snovault
 /develop-eggs/
 /downloads/
 /eggs/
 /extends/
-/node_modules/
+/node_modules
 /npm-shrinkwrap.json
 /ontology.json
 /parts/
@@ -46,3 +48,6 @@
 .config/
 initial-indexing-times*
 .viminfo
+
+.dev-config.ini
+venv

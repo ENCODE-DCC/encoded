@@ -64,7 +64,7 @@
                 "description": "A lab specific identifier to reference an object.",
                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
                 "type":  "string",
-                "pattern": "^(?:alexander-hoffmann|alexander-rudensky|alexander-urban|ali-mortazavi|alkes-price|andrew-fire|anshul-kundaje|anton-valouev|axel-visel|barbara-wold|bill-noble|bin-yu|bing-ren|bradley-bernstein|brenton-graveley|charles-gersbach|chris-burge|christina-leslie|colin-dewey|david-gifford|david-gilbert|douglas-black|elliott-margulies|emery-bresnick|encode-awg|encode-consortium|encode-processing-pipeline|erez-aiden|erez-lieberman|eric-lecuyer|eric-mendehall|ewan-birney|feng-yue|gene-yeo|george-stamatoyannopoulos|greg-cooper|gregory-crawford|guo-cheng-yuan|haiyan-huang|haiyuan-yu|howard-chang|j-michael-cherry|jason-ernst|jason-lieb|jay-shendure|jennifer-harrow|jeremy-luban|job-dekker|joe-ecker|john-lis|john-rinn|john-stamatoyannopoulos|jonathan-pritchard|joseph-costello|kenneth-offit|kevin-struhl|kevin-white|ladeana-hillier|laura-elnitski|len-pennacchio|leonard-lipovich|manolis-kellis|manuel-garber|maria-ciofani|mark-gerstein|mats-ljungman|matteo-pellegrini|michael-bassik|michael-beer|michael-hoffman|michael-schatz|michael-snyder|morgan-giddings|nadav-ahituv|pardis-sabeti|paul-khavari|peggy-farnham|peter-bickel|peter-park|piero-carninci|rafael-irizarry|richard-myers|roadmap-epigenomics|rob-spitale|robert-klein|robert-waterston|roderic-guigo|ross-hardison|ryan-tewhey|scott-tenenbaum|sherman-weissman|souma-raychaudhuri|stephen-smale|sunduz-keles|susan-celniker|thomas-gingeras|thomas-tullius|tim-reddy|timothy-hubbard|ting-wang|tommi-jaakkola|unknown|valerie-reinke|vishwanath-iyer|w-james-kent|wei-wang|will-greenleaf|xiang-dong-fu|xiaole-shirley|xinshu-xiao|yi-xing|yijun-ruan|yin-shen|yoav-gilad|zhiping-weng|brian-oliver|david-macalpine|hugo-bellen|peter-cherbas|terry-orr-weaver|abby-dernburg|anthony-hyman|arshad-desai|david-miller|eric-lai|fabio-piano|frank-slack|gary-karpen|gregory-hannon|james-posakony|john-kim|julie-ahringer|kamran-ahmad|kris-gunsalus|lincoln-stein|michael-brent|michael-maccoss|mitzi-kuroda|nikolaus-rajewsky|norbert-perrimon|philip-green|sarah-elgin|steven-henikoff|steven-russell|susan-strome|vincenzo-pirrotta|MitaniLab|UofC-HGAC|wesley-hung|encode|modern|dnanexus|modencode|gencode|ggr|cgc|bloomington|dssc|gtex|pgp|biochain|promocell|nichd|lonza|allcells):[a-zA-Z\\d_$.+!*,()'-]+(?:\\s[a-zA-Z\\d_$.+!*,()'-]+)*$"
+                "pattern": "^(?:alexander-hoffmann|alexander-rudensky|alexander-urban|ali-mortazavi|alkes-price|ana-conesa|andrew-fire|angela-brooks|anshul-kundaje|anton-valouev|axel-visel|barbara-wold|bill-noble|bin-yu|bing-ren|bradley-bernstein|brenton-graveley|charles-gersbach|charles-lee|chris-burge|christina-leslie|christopher-vollmers|colin-dewey|david-gifford|david-gilbert|david-hafler|douglas-black|elliott-margulies|emery-bresnick|encode-awg|encode-consortium|encode-processing-pipeline|erez-aiden|erez-lieberman|eric-lecuyer|eric-mendehall|ewan-birney|feng-yue|gene-yeo|george-stamatoyannopoulos|greg-cooper|gregory-crawford|guo-cheng-yuan|haiyan-huang|haiyuan-yu|hongkai-ji|howard-chang|j-michael-cherry|jason-ernst|jason-lieb|jay-shendure|jennifer-harrow|jeremy-luban|job-dekker|joe-ecker|john-lis|john-rinn|john-stamatoyannopoulos|jonathan-pritchard|joseph-costello|kenneth-offit|kevin-struhl|kevin-white|ladeana-hillier|laura-elnitski|len-pennacchio|leonard-lipovich|manolis-kellis|manuel-garber|maria-ciofani|mark-gerstein|mats-ljungman|matteo-pellegrini|michael-bassik|michael-beer|michael-hoffman|michael-schatz|michael-snyder|morgan-giddings|nadav-ahituv|pardis-sabeti|paul-khavari|peggy-farnham|peter-bickel|peter-park|piero-carninci|rafael-irizarry|richard-myers|roadmap-epigenomics|rob-spitale|robert-klein|robert-waterston|roderic-guigo|ross-hardison|ryan-tewhey|scott-tenenbaum|sherman-weissman|souma-raychaudhuri|stephen-smale|sunduz-keles|susan-celniker|thomas-gingeras|thomas-tullius|tim-reddy|timothy-hubbard|ting-wang|tommi-jaakkola|unknown|valerie-reinke|vishwanath-iyer|w-james-kent|wei-wang|will-greenleaf|xiang-dong-fu|xiaole-shirley|xinshu-xiao|yi-xing|yijun-ruan|yin-shen|yoav-gilad|zhiping-weng|brian-oliver|david-macalpine|hugo-bellen|peter-cherbas|terry-orr-weaver|abby-dernburg|anthony-hyman|arshad-desai|david-miller|eric-lai|fabio-piano|frank-slack|gary-karpen|gregory-hannon|james-posakony|john-kim|julie-ahringer|kamran-ahmad|kris-gunsalus|lincoln-stein|michael-brent|michael-maccoss|mitzi-kuroda|nikolaus-rajewsky|norbert-perrimon|philip-green|sarah-elgin|steven-henikoff|steven-russell|susan-strome|vincenzo-pirrotta|MitaniLab|UofC-HGAC|wesley-hung|encode|modern|dnanexus|modencode|gencode|ggr|cgc|bloomington|dssc|gtex|pgp|biochain|promocell|nichd|lonza|allcells|altius|jesse-engreitz):[a-zA-Z\\d_$.+!*,()'-]+(?:\\s[a-zA-Z\\d_$.+!*,()'-]+)*$"
             }
         }
     },
@@ -265,6 +265,7 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
+                        "application/json",
                         "application/pdf",
                         "image/gif",
                         "image/jpeg",
@@ -314,7 +315,7 @@
             "title": "Product ID",
             "description": "The product identifier provided by the originating lab or vendor.",
             "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     },
     "lot_id": {
@@ -322,7 +323,7 @@
     	    "title": "Lot ID",
     	    "description": "The lot identifier provided by the originating lab or vendor.",
     	    "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     },
     "source": {
@@ -417,6 +418,7 @@
                 "BruChase-seq",
                 "BruUV-seq",
                 "CAGE",
+                "capture Hi-C",
                 "ChIA-PET",
                 "ChIP-seq",
                 "Circulome-seq",
@@ -424,6 +426,8 @@
                 "comparative genomic hybridization by array",
                 "CRISPR genome editing followed by RNA-seq",
                 "CRISPRi followed by RNA-seq",
+                "CUT&RUN",
+                "CUT&Tag",
                 "direct RNA-seq",
                 "DNA methylation profiling by array assay",
                 "DNA-PET",
@@ -431,13 +435,18 @@
                 "eCLIP",
                 "FAIRE-seq",
                 "genetic modification followed by DNase-seq",
+                "genomic perturbation followed by RT-qPCR",
                 "genotype phasing by HiC",
-                "genotyping by high throughput sequencing assay",
+                "GRO-cap",
+                "GRO-seq",
                 "HiC",
                 "iCLIP",
                 "icLASER",
                 "icSHAPE",
+                "LC/MS label-free quantitative proteomics",
+                "LC-MS/MS isobaric label quantitative proteomics",
                 "long read RNA-seq",
+                "long read single-cell RNA-seq",
                 "MeDIP-seq",
                 "microRNA counts",
                 "microRNA-seq",
@@ -446,24 +455,29 @@
                 "MRE-seq",
                 "PAS-seq",
                 "PLAC-seq",
+                "polyA plus RNA-seq",
+                "polyA minus RNA-seq",
                 "PRO-cap",
                 "PRO-seq",
                 "protein sequencing by tandem mass spectrometry assay",
                 "RAMPAGE",
                 "Repli-chip",
                 "Repli-seq",
+                "Ribo-seq",
                 "RIP-chip",
                 "RIP-seq",
                 "RNA Bind-n-Seq",
                 "RNA-PET",
                 "RNA-seq",
                 "RRBS",
+                "seqFISH",
                 "shRNA knockdown followed by RNA-seq",
-                "single cell isolation followed by RNA-seq",
-                "single-cell ATAC-seq",
+                "single-cell RNA sequencing assay",
                 "single-nucleus ATAC-seq",
                 "siRNA knockdown followed by RNA-seq",
                 "small RNA-seq",
+                "SPRITE",
+                "SPRITE-IP",
                 "Switchgear",
                 "TAB-seq",
                 "transcription profiling by array assay",
@@ -477,7 +491,6 @@
             "title": "Treatment type",
             "description": "The classification of the treatment.",
             "type": "string",
-            "default": "chemical",
             "enum": [
                 "antibody",
                 "chemical",
@@ -486,7 +499,6 @@
                 "injection",
                 "irradiation",
                 "protein",
-                "stimulation",
                 "transplantation"
             ]
         },
@@ -501,6 +513,15 @@
             "title": "Biosample treatment",
             "description": "Ontology term describing a component in the treatment.",
             "type":  "string"
+        },
+        "treatment_type_details": {
+            "title": "Treatment type details",
+            "description": "Further information about the type of treatment",
+            "type": "string",
+            "enum": [
+                "agonist",
+                "antagonist"
+            ]
         }
     },
     "url": {

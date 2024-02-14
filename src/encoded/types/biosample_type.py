@@ -3,6 +3,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     SharedItem,
 )
@@ -18,7 +19,10 @@ from .base import (
 class BiosampleType(SharedItem):
     item_type = 'biosample_type'
     schema = load_schema('encoded:schemas/biosample_type.json')
-    embedded = ['references']
+    embedded = []
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data'])
+    ]
 
     def unique_keys(self, properties):
         keys = super(BiosampleType, self).unique_keys(properties)

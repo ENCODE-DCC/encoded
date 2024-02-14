@@ -1,0 +1,60 @@
+[
+    {
+        "_test": "collection series with FC experiments",
+        "accession": "ENCSR916CFC",
+        "award": "UM1HG009442",
+        "description": "Collection of STARR-seq experiments",
+        "lab": "bing-ren",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "ENCSR722STR",
+            "ENCSR928SVL"
+        ],
+        "uuid": "34a567dc-fe26-4d82-883e-bfe2a2e27e0d",
+        "date_released": "2020-04-10"
+    },
+    {
+        "_test": "collection series HiC experiments",
+        "accession": "ENCSR341HCC",
+        "award": "UM1HG009411",
+        "description": "Collection of Hi-C experiments",
+        "lab": "job-dekker",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "ENCSR000AJK",
+            "ENCSR270OQH"
+        ],
+        "uuid": "7be3a19e-2632-4b75-b320-c6c15b8510bd",
+        "date_released": "2021-05-10"
+    },
+    {
+        "_test": "collection series transgenic enhancer experiments",
+        "accession": "ENCSR219TES",
+        "award": "U54HG007004",
+        "description": "Collection of transgenic enhancer experiments",
+        "lab": "len-pennacchio",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "ENCSR507TEA",
+            "ENCSR514TEA"
+        ],
+        "uuid": "95fe7952-08f7-4c46-a854-1fa3bcb256bb"
+    },
+    {
+        "_test": "collection series combining FC and TE experiments",
+        "accession": "ENCSR239FTE",
+        "award": "U54HG007004",
+        "description": "Collection of different dataset types",
+        "lab": "len-pennacchio",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "ENCSR507TEA",
+            "ENCSR928SVL"
+        ],
+        "uuid": "c8dc224f-6deb-4175-a8f1-0e57344b6f49"
+    }
+]

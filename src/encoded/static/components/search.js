@@ -4,11 +4,24 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import QueryString from '../libs/query_string';
+import sortAges from '../libs/sort-ages';
+import { svgIcon } from '../libs/svg-icons';
+import LimitSelector from '../libs/ui/limit-selector';
 import { auditDecor } from './audit';
-import { CartToggle, CartSearchControls } from './cart';
-import FacetRegistry from './facets';
+import { CartToggle, CartSearchControls, cartGetAllowedTypes } from './cart';
+import {
+    FacetRegistry,
+    SpecialFacetRegistry,
+    FacetGroup,
+    filterTopLevelFacets,
+    generateFacetGroupIdentifier,
+    generateFacetGroupIdentifierList,
+    generateFacetGroupNameList,
+    getFacetGroupFieldsInFacets,
+    areFacetGroupsEqual,
+} from './facets';
 import * as globals from './globals';
-import { Attachment } from './image';
+import { usePrevious } from './hooks';
 import {
     DisplayAsJson,
     DocTypeTitle,
@@ -16,10 +29,13 @@ import {
 } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
+import { BiosampleSummaryDisplay, BiosampleOrganismNames, GeneticModificationOrganismNames } from './typeutils';
 import { BatchDownloadControls, ViewControls } from './view_controls';
 import { BrowserSelector } from './vis_defines';
+import { BodyMapThumbnailAndModal } from './body_map';
+import { keyCode } from '../libs/constants';
 
+const DEFAULT_PAGE_LIMIT = 25;
 
 // Should really be singular...
 const types = {
@@ -27,7 +43,7 @@ const types = {
     antibody_lot: { title: 'Antibodies' },
     biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
-    computational_model: { title: 'Computational model file set'},
+    computational_model: { title: 'Computational model file set' },
     experiment: { title: 'Experiments' },
     gene: { title: 'Genes' },
     target: { title: 'Targets' },
@@ -51,6 +67,15 @@ const types = {
     treatment_time_series: { title: 'Treatment time series' },
     ucsc_browser_composite: { title: 'UCSC browser composite file set' },
     functional_characterization_experiment: { title: 'Functional characterization experiments' },
+    transgenic_enhancer_experiment: { title: 'Transgenic enhancer experiments' },
+    gene_silencing_series: { title: 'Gene silencing series' },
+    differentiation_series: { title: 'Differentiation series' },
+    pulse_chase_time_series: { title: 'Pulse-chase time series' },
+    single_cell_unit: { title: 'Single cell units' },
+    disease_series: { title: 'Disease series' },
+    multiomics_series: { title: 'Multiomics series' },
+    collection_series: { title: 'Collection series' },
+    differential_accessibility_series: { title: 'Differential accessibility series' },
 };
 
 const datasetTypes = {
@@ -71,10 +96,29 @@ const datasetTypes = {
     SingleCellRnaSeries: types.single_cell_rna_series.title,
     UcscBrowserComposite: types.ucsc_browser_composite.title,
     FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
+    TransgenicEnhancerExperiment: types.transgenic_enhancer_experiment.title,
+    GeneSilencingSeries: types.gene_silencing_series.title,
+    DifferentiationSeries: types.differentiation_series.title,
+    PulseChaseTimeSeries: types.pulse_chase_time_series.title,
+    SingleCellUnit: types.single_cell_unit.title,
+    DiseaseSeries: types.disease_series.title,
+    MultiomicsSeries: types.multiomics_series.title,
+    CollectionSeries: types.collection_series.title,
+    DifferentialAccessibilitySeries: types.differential_accessibility_series.title,
 };
 
-const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
+const getUniqueTreatments = (treatments) => _.uniq(treatments.map((treatment) => singleTreatment(treatment)));
 
+// session storage used to preserve opened/closed facets
+const FACET_STORAGE = 'FACET_STORAGE';
+
+// marker for determining user just opened the page
+const MARKER_FOR_NEWLY_LOADED_FACET_PREFIX = 'MARKER_FOR_NEWLY_LOADED_FACETS_';
+
+/**
+ * Maximum  downloadable result count
+ */
+const MAX_DOWNLOADABLE_RESULT = 5000000;
 
 // You can use this function to render a listing view for the search results object with a couple
 // options:
@@ -109,13 +153,13 @@ export function Listing(reactProps) {
  *
  * @return {string} CSS class for this type of object
  */
-export const resultItemClass = item => `result-item--type-${item['@type'][0]}`;
+export const resultItemClass = (item) => `result-item--type-${item['@type'][0]}`;
 
 export const PickerActions = ({ context }, reactContext) => {
     if (reactContext.actions && reactContext.actions.length > 0) {
         return (
             <div className="result-item__picker">
-                {reactContext.actions.map(action => React.cloneElement(action, { key: context.name, id: context['@id'] }))}
+                {reactContext.actions.map((action) => React.cloneElement(action, { key: context.name, id: context['@id'] }))}
             </div>
         );
     }
@@ -133,11 +177,45 @@ PickerActions.contextTypes = {
 };
 
 
+/**
+ * Displays the search result data line for target objects when the parent object's targets
+ * comprise an array. The parent object's schema must include the target array's @id in its
+ * `columns` property.
+ */
+export const TargetsDataLine = ({ result, targetPropertyName }) => {
+    if (result[targetPropertyName] && result[targetPropertyName].length > 0) {
+        return (
+            <>
+                <span className="result-item__property-title">Target{result[targetPropertyName].length > 1 ? 's' : ''}: </span>
+                {result[targetPropertyName].map((target, i) => (
+                    <React.Fragment key={target['@id']}>
+                        {i > 0 ? ', ' : null}
+                        <a href={target['@id']} aria-label={`Target ${target.label}`}>{target.label}</a>
+                    </React.Fragment>
+                ))}
+            </>
+        );
+    }
+    return null;
+};
+
+TargetsDataLine.propTypes = {
+    /** Search result object */
+    result: PropTypes.object.isRequired,
+    /** Name of the property that contains the array of target objects */
+    targetPropertyName: PropTypes.string,
+};
+
+TargetsDataLine.defaultProps = {
+    targetPropertyName: 'targets',
+};
+
+
 const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => {
     const title = globals.listingTitles.lookup(result)({ context: result });
     const itemType = result['@type'][0];
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">{title}</a>
@@ -154,7 +232,7 @@ const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactC
                 <PickerActions context={result} />
             </div>
             {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
-        </li>
+        </div>
     );
 };
 
@@ -181,7 +259,17 @@ class BiosampleComponent extends React.Component {
         const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
         const ageDisplay = (result.age_display && result.age_display !== '') ? ` ${result.age_display}` : '';
         const separator = (lifeStage || ageDisplay) ? ',' : '';
-        const treatment = (result.treatments && result.treatments.length > 0) ? result.treatments[0].treatment_term_name : '';
+        const treatment = [];
+        if (result.treatments && result.treatments.length > 0) {
+            result.treatments.forEach((treat) => {
+                if (treat.treatment_type_details) {
+                    treatment.push(`${treat.treatment_term_name} (${treat.treatment_type_details})`);
+                } else {
+                    treatment.push(treat.treatment_term_name);
+                }
+            });
+        }
+        const organismName = BiosampleOrganismNames([result]);
 
         // Calculate genetic modification properties for display.
         const rnais = [];
@@ -213,25 +301,26 @@ class BiosampleComponent extends React.Component {
         }
 
         return (
-            <li className={resultItemClass(result)}>
+            <div className={resultItemClass(result)}>
                 <div className="result-item">
                     <div className="result-item__data">
                         <a href={result['@id']} className="result-item__link">
-                            {`${result.biosample_ontology.term_name} (`}
-                            <em>{result.organism.scientific_name}</em>
+                            {`${result.biosample_ontology.term_name}`}
+                            {result.biosample_ontology && result.biosample_ontology.classification === 'organoid' ? <span>{` ${result.biosample_ontology.classification} (`}</span> : <span>{' ('}</span>}
+                            <em>{`${result.organism.scientific_name}`}</em>
                             {`${separator}${lifeStage}${ageDisplay})`}
                         </a>
                         <div className="result-item__data-row">
-                            <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
-                            {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
-                            {rnais.length > 0 ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
-                            {constructs.length > 0 ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
-                            {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
-                            {mutatedGenes.length > 0 ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
-                            {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
-                            {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
-                            {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
-                            <div><strong>Source: </strong>{result.source.title}</div>
+                            <div><span className="result-item__property-title">Type: </span>{result.biosample_ontology.classification}</div>
+                            {result.summary ? <div><span className="result-item__property-title">Summary: </span><BiosampleSummaryDisplay summary={result.summary} organisms={organismName.concat(GeneticModificationOrganismNames([result]))} /> </div> : null}
+                            {rnais.length > 0 ? <div><span className="result-item__property-title">RNAi targets: </span>{rnais.join(', ')}</div> : null}
+                            {constructs.length > 0 ? <div><span className="result-item__property-title">Constructs: </span>{constructs.join(', ')}</div> : null}
+                            {treatment.length > 0 ? <div><span className="result-item__property-title">Treatment: </span>{treatment.join(', ')}</div> : null}
+                            {mutatedGenes.length > 0 ? <div><span className="result-item__property-title">Mutated genes: </span>{mutatedGenes.join(', ')}</div> : null}
+                            {result.culture_harvest_date ? <div><span className="result-item__property-title">Culture harvest date: </span>{result.culture_harvest_date}</div> : null}
+                            {result.date_obtained ? <div><span className="result-item__property-title">Date obtained: </span>{result.date_obtained}</div> : null}
+                            {synchText ? <div><span className="result-item__property-title">Synchronization timepoint: </span>{synchText}</div> : null}
+                            <div><span className="result-item__property-title">Source: </span>{result.source.title}</div>
                         </div>
                     </div>
                     <div className="result-item__meta">
@@ -243,7 +332,7 @@ class BiosampleComponent extends React.Component {
                     <PickerActions context={result} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
-            </li>
+            </div>
         );
     }
 }
@@ -266,97 +355,277 @@ globals.listingViews.register(Biosample, 'Biosample');
 
 
 /**
- * Renders both Experiment and FunctionalCharacterizationExperiment search results.
+ * Renders both Experiment, FunctionalCharacterizationExperiment, SingleCellUnit, and TransgenicEnhancerExperiment search results.
  */
 const ExperimentComponent = (props, reactContext) => {
-    const { context: result, cartControls } = props;
+    const { context: result, cartControls, mode } = props;
     let synchronizations;
+    let constructionPlatforms;
+    let constructionMethods = [];
+    let cellularComponents;
+    let examinedLoci = [];
 
-    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
+    // Determine if search result is allowed in carts.
+    const isResultAllowedInCart = cartGetAllowedTypes().includes(result['@type'][0]);
+
+    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, or TransgenicEnhancerExperiment.
     const experimentType = result['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
-    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
+    const isSingleCellUnit = experimentType === 'SingleCellUnit';
+    const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
+    let displayType;
+    if (isFunctionalExperiment) {
+        displayType = 'Functional Characterization Experiment';
+    } else if (isSingleCellUnit) {
+        displayType = 'Single Cell Unit';
+    } else if (isEnhancerExperiment) {
+        displayType = 'Transgenic Enhancer Experiment';
+    } else {
+        displayType = 'Experiment';
+    }
 
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
     let biosamples = [];
     const treatments = [];
+    let perturbationTreatments = [];
 
-    if (result.replicates && result.replicates.length > 0) {
-        biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+    if (isEnhancerExperiment) {
+        if (result.biosamples && result.biosamples.length > 0) {
+            ({ biosamples } = result);
+        }
+    } else {
+        if (result.replicates && result.replicates.length > 0) {
+            biosamples = (result.replicates.map((replicate) => replicate.library && replicate.library.biosample)).filter((biosample) => !!biosample);
+        }
         // flatten treatment array of arrays
-        _.compact(biosamples.map(biosample => biosample.treatments)).forEach(treatment => treatment.forEach(t => treatments.push(t)));
+        (biosamples.map((biosample) => biosample.treatments)).filter((treatment) => !!treatment).forEach((treatment) => treatment.forEach((t) => {
+            treatments.push(t);
+        }));
+        // filter treatments with the purpose of perturbation
+        perturbationTreatments = _.flatten(biosamples.map((biosample) => biosample.treatments)).filter((a) => a?.purpose === 'perturbation');
     }
 
     // Get all biosample organism names
     const organismNames = biosamples.length > 0 ? BiosampleOrganismNames(biosamples) : [];
 
     // Collect synchronizations
-    if (result.replicates && result.replicates.length > 0) {
-        synchronizations = _.uniq(result.replicates.filter(replicate =>
+    if (isEnhancerExperiment) {
+        if (biosamples && biosamples.length > 0) {
+            synchronizations = _.uniq(biosamples.filter((biosample) => biosample && biosample.synchronization).map((biosample) => (
+                `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`
+            )));
+        }
+    } else if (result.replicates && result.replicates.length > 0) {
+        synchronizations = _.uniq(result.replicates.filter((replicate) => (
             replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
-        ).map((replicate) => {
-            const biosample = replicate.library.biosample;
+        )).map((replicate) => {
+            const { biosample } = replicate.library;
             return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
         }));
     }
 
+    // Collect crispr_screen_tiling for FunctionalCharacterizationExperiment
+    let tilingModality = [];
+    let elementsSelectionMethod = [];
+    let referenceLoci = [];
+    if (isFunctionalExperiment) {
+        if (result.elements_references && result.elements_references.length > 0) {
+            result.elements_references.forEach((er) => {
+                tilingModality = er.crispr_screen_tiling ? tilingModality.concat(er.crispr_screen_tiling) : tilingModality;
+                referenceLoci = er.examined_loci ? referenceLoci.concat(er.examined_loci) : referenceLoci;
+                elementsSelectionMethod = er.elements_selection_method ? elementsSelectionMethod.concat(er.elements_selection_method) : elementsSelectionMethod;
+            });
+        }
+        tilingModality = _.uniq(tilingModality);
+        referenceLoci = _.uniq(referenceLoci, (locus) => locus['@id']);
+        elementsSelectionMethod = _.uniq(elementsSelectionMethod);
+    }
+
+
+    // Collect library construction platforms / methods / cellular components
+    if (result.replicates && result.replicates.length > 0) {
+        constructionPlatforms = _.uniq(result.replicates.filter((replicate) => (
+            replicate.library && replicate.library.construction_platform && replicate.library.construction_platform.term_name
+        )).map((replicate) => replicate.library.construction_platform.term_name));
+
+        constructionMethods = _.uniq(result.replicates.reduce((accMethods, replicate) => (
+            replicate.library && replicate.library.construction_method ? accMethods.concat(replicate.library.construction_method) : accMethods
+        ), []));
+
+        cellularComponents = _.uniq(result.replicates.filter((replicate) => (
+            replicate.library && replicate.library.biosample && replicate.library.biosample.subcellular_fraction_term_name
+        )).map((replicate) => replicate.library.biosample.subcellular_fraction_term_name));
+    }
+
+    // Collect examined loci
+    if (result.examined_loci && result.examined_loci.length > 0) {
+        result.examined_loci.forEach((loci) => {
+            examinedLoci.push(loci.gene.symbol);
+        });
+        examinedLoci = _.uniq(examinedLoci);
+    }
+
     const uniqueTreatments = getUniqueTreatments(treatments);
+    const uniquePerturbationTreatments = getUniqueTreatments(perturbationTreatments);
+
+    // Get a map of related datasets, possibly filtering on their status and
+    // categorized by their type.
+    let seriesMap = {};
+    if (result.related_series && result.related_series.length > 0) {
+        seriesMap = _.groupBy(
+            result.related_series, (series) => series['@type'][0],
+        );
+    }
+
+    // Get SCREEN link and FactorBook link if they exist
+    const screenLink = (result.dbxrefs && result.dbxrefs.some((dbxref) => (dbxref.indexOf('SCREEN') > -1))) ? result.dbxrefs.filter((dbxref) => (dbxref.indexOf('SCREEN') > -1))[0] : null;
+    const motifsLink = (result.dbxrefs && result.dbxrefs.some((dbxref) => (dbxref.indexOf('FactorBook') > -1))) ? result.dbxrefs.filter((dbxref) => (dbxref.indexOf('FactorBook') > -1))[0] : null;
+    let screenSearch = '';
+    let screenAssembly = '';
+    if (screenLink) {
+        screenSearch = screenLink.split(':')[1];
+        screenAssembly = screenLink.split('-')[1].split(':')[0];
+    }
+    let motifsSearch = '';
+    if (motifsLink) {
+        motifsSearch = motifsLink.split(':')[1];
+    }
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
-                        {result.assay_title ?
-                            <span>{result.assay_title}</span>
+                        {(isFunctionalExperiment && result.perturbation_type) ?
+                            <span>
+                                {`${result.perturbation_type} `}
+                            </span>
+                        : null}
+                        { (result.assay_title && (result.assay_title === 'Flow-FISH CRISPR screen' || result.assay_title === 'proliferation CRISPR screen' || result.assay_title === 'FACS CRISPR screen' || result.assay_title === 'Control CRISPR screen') && result.perturbation_type && result.perturbation_type.includes('CRISPR')) ?
+                            <span>{result.assay_title.replace('CRISPR ', '')}</span>
                         :
+                            (result.assay_title) ?
+                                <span>{result.assay_title}</span>
+                            :
                             <span>{result.assay_term_name}</span>
                         }
-                        {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
+                        {(isFunctionalExperiment && referenceLoci.length > 0) ?
+                            <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol} locus` : ' of multiple loci'}</span>
+                        : null}
+                        {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` in ${result.biosample_ontology.term_name}`}</span> : null}
+                        {result.biosample_ontology && result.biosample_ontology.classification === 'organoid' ? <span>{` ${result.biosample_ontology.classification}`}</span> : null}
+                        {(isFunctionalExperiment && result.crispr_screen_readout) ?
+                            <span>
+                                {` with ${result.crispr_screen_readout}`}
+                            </span>
+                        : null}
+                        {(isFunctionalExperiment && examinedLoci.length > 0) ?
+                            <span>
+                                {` readout of ${examinedLoci.join(', ')}`}
+                            </span>
+                        : null}
                     </a>
-                    {result.biosample_summary ?
+                    {!isFunctionalExperiment && result.biosample_summary ?
                         <div className="result-item__highlight-row">
-                            {organismNames.length > 0 ?
-                                <span>
-                                    {organismNames.map((organism, i) =>
-                                        <span key={organism}>
-                                            {i > 0 ? <span>and </span> : null}
-                                            <i>{organism} </i>
-                                        </span>
-                                    )}
-                                </span>
-                            : null}
-                            {result.biosample_summary}
+                            {result.biosample_summary ? <div><BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} /> </div> : null}
+                        </div>
+                    : null}
+                    {isFunctionalExperiment ?
+                        <div className="result-item__highlight-row">
+                            {(result.description && <div>{result.description}</div>) || (result.biosample_summary && <BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} />)}
                         </div>
                     : null}
                     <div className="result-item__data-row">
                         {result.target && result.target.label ?
-                            <div><strong>Target: </strong>{result.target.label}</div>
-                        : null}
-
-                        {synchronizations && synchronizations.length > 0 ?
-                            <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
-                        : null}
-
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div>
-                        {treatments && treatments.length > 0 ?
-                            <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
-                                <span>
-                                    {uniqueTreatments.join(', ')}
-                                </span>
+                            <div><span className="result-item__property-title">Target: </span>
+                                <a href={result.target['@id']} aria-label={`Target ${result.target.label}`}>{result.target.label}</a>
+                                {motifsLink ?
+                                    <span> (<a href={`https://factorbook.org/experiment/${motifsSearch}`}>Factorbook</a>)</span>
+                                : null}
                             </div>
-                            : null}
+                        : null}
+
+                        {mode !== 'cart-view' ?
+                            <>
+                                {synchronizations && synchronizations.length > 0 ?
+                                    <div><span className="result-item__property-title">Synchronization timepoint: </span>{synchronizations.join(', ')}</div>
+                                : null}
+                                {elementsSelectionMethod && elementsSelectionMethod.length > 0 ?
+                                    <div><span className="result-item__property-title">Elements selection method: </span>{elementsSelectionMethod.join(', ')}</div>
+                                : null}
+                                {referenceLoci && referenceLoci.length > 0 ?
+                                    <div><span className="result-item__property-title">Loci: </span>{referenceLoci.map((locus, i) => (
+                                        <span key={locus['@id']}>
+                                            {i > 0 ? ', ' : null}
+                                            <a href={locus['@id']}>
+                                                {locus.symbol}
+                                            </a>
+                                        </span>
+                                    ))}
+                                    </div>
+                                : null}
+                                {tilingModality && tilingModality.length > 0 ?
+                                    <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
+                                : null}
+                                <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
+                                <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
+                                {!isFunctionalExperiment && treatments.length > 0 ?
+                                    <div><span className="result-item__property-title">Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </span>
+                                        <span>
+                                            {uniqueTreatments.join(', ')}
+                                        </span>
+                                    </div>
+                                : null}
+                                {isFunctionalExperiment && uniquePerturbationTreatments.length > 0 ?
+                                    <div><span className="result-item__property-title">Treatment{uniquePerturbationTreatments.length !== 1 ? 's' : ''}: </span>
+                                        <span>
+                                            {uniquePerturbationTreatments.join(', ')}
+                                        </span>
+                                    </div>
+                                : null}
+                                {Object.keys(seriesMap).map((seriesType) => (
+                                    <div key={seriesType}>
+                                        <span className="result-item__property-title">{seriesType.replace(/([A-Z])/g, ' $1')}: </span>
+                                        {seriesMap[seriesType].map(
+                                            (series, i) => (
+                                                <span key={series.accession}>
+                                                    {i > 0 ? ', ' : null}
+                                                    <a href={series['@id']}>
+                                                        {series.accession}
+                                                    </a>
+                                                </span>
+                                            ),
+                                        )}
+                                    </div>
+                                ))}
+                                {screenLink ?
+                                    <div><span className="result-item__property-title">candidate Cis-Regulatory Elements (cCREs): </span><a href={`https://screen.encodeproject.org/search?q=${screenSearch}&assembly=${screenAssembly}`}>SCREEN</a></div>
+                                : null}
+                                {cellularComponents && cellularComponents.length > 0 ?
+                                    <div><span className="result-item__property-title">Cellular component{cellularComponents.length > 1 ? 's' : ''}: </span>{cellularComponents.join(', ')}</div>
+                                : null}
+                                {constructionPlatforms && constructionPlatforms.length > 0 ?
+                                    <div><span className="result-item__property-title">Library construction platform{constructionPlatforms.length > 1 ? 's' : ''}: </span>{constructionPlatforms.join(', ')}</div>
+                                : null}
+                                {constructionMethods && constructionMethods.length > 0 ?
+                                    <div><span className="result-item__property-title">Library construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
+                                : null}
+                            </>
+                        : null}
                     </div>
                 </div>
                 <div className="result-item__meta">
                     <div className="result-item__meta-title">{displayType}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
-                    <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                    {mode !== 'cart-view' ?
+                        <>
+                            <Status item={result.status} badgeSize="small" css="result-table__status" />
+                            {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                        </>
+                    : null}
                 </div>
-                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                {cartControls && isResultAllowedInCart && !(reactContext.actions && reactContext.actions.length > 0) ?
                     <div className="result-item__cart-control">
                         <CartToggle element={result} />
                     </div>
@@ -364,19 +633,21 @@ const ExperimentComponent = (props, reactContext) => {
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 
 ExperimentComponent.propTypes = {
     context: PropTypes.object.isRequired, // Experiment search results
     cartControls: PropTypes.bool, // True if displayed in active cart
+    mode: PropTypes.string, // Special search-result modes, e.g. "picker"
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired,
 };
 
 ExperimentComponent.defaultProps = {
     cartControls: false,
+    mode: '',
 };
 
 ExperimentComponent.contextTypes = {
@@ -389,106 +660,103 @@ const Experiment = auditDecor(ExperimentComponent);
 
 globals.listingViews.register(Experiment, 'Experiment');
 globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
+globals.listingViews.register(Experiment, 'SingleCellUnit');
+globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 
-const DatasetComponent = (props, reactContext) => {
-    const result = props.context;
-    let biosampleTerm;
-    let organism;
-    let lifeSpec;
-    let targets;
-    let lifeStages = [];
-    let ages = [];
-    let treatments = [];
+const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => (
+    <div className={resultItemClass(result)}>
+        <div className="result-item">
+            <div className="result-item__data">
+                <a href={result['@id']} className="result-item__link">
+                    {datasetTypes[result['@type'][0]]}
+                    {result.description ? <span>{`: ${result.description}`}</span> : null}
+                </a>
+                <div className="result-item__data-row">
+                    <div><strong>Lab: </strong>{result.lab.title}</div>
+                    <div><strong>Project: </strong>{result.award.project}</div>
+                    <TargetsDataLine result={result} />
+                </div>
+            </div>
+            <div className="result-item__meta">
+                <div className="result-item__meta-title">Annotation</div>
+                <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                {mode !== 'cart-view' ?
+                    <>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                    </>
+                : null}
+            </div>
+            {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                <div className="result-item__cart-control">
+                    <CartToggle element={result} />
+                </div>
+            : null}
+            <PickerActions context={result} />
+        </div>
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+    </div>
+);
 
-    // Determine whether the dataset is a series or not
-    const seriesDataset = result['@type'].indexOf('Series') >= 0;
+AnnotationComponent.propTypes = {
+    /** Dataset search results */
+    context: PropTypes.object.isRequired,
+    /** True if displayed in active cart */
+    cartControls: PropTypes.bool,
+    /** Special search-result modes, e.g. "picker" */
+    mode: PropTypes.string,
+    /** Audit decorator function */
+    auditIndicators: PropTypes.func.isRequired,
+    /** Audit decorator function */
+    auditDetail: PropTypes.func.isRequired,
+};
 
-    // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
-    if (seriesDataset) {
-        biosampleTerm = (result.biosample_ontology && Array.isArray(result.biosample_ontology) && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) ? result.biosample_ontology[0].term_name : ((result.biosample_ontology && result.biosample_ontology.term_name) ? result.biosample_ontology.term_name : '');
-        const organisms = (result.organism && result.organism.length > 0) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
-        if (organisms.length === 1) {
-            organism = organisms[0];
-        }
+AnnotationComponent.defaultProps = {
+    cartControls: false,
+    mode: '',
+};
 
-        // Dig through the biosample life stages and ages
-        if (result.related_datasets && result.related_datasets.length > 0) {
-            result.related_datasets.forEach((dataset) => {
-                if (dataset.replicates && dataset.replicates.length > 0) {
-                    dataset.replicates.forEach((replicate) => {
-                        if (replicate.library && replicate.library.biosample) {
-                            const biosample = replicate.library.biosample;
-                            const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+AnnotationComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
+};
 
-                            if (lifeStage) { lifeStages.push(lifeStage); }
-                            if (biosample.age_display) { ages.push(biosample.age_display); }
-                            if (biosample.treatments) { treatments = [...treatments, ...biosample.treatments]; }
-                        }
-                    });
-                }
-            });
-            lifeStages = _.uniq(lifeStages);
-            ages = _.uniq(ages);
-        }
-        lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
+const Annotation = auditDecor(AnnotationComponent);
 
-        // Get list of target labels
-        if (result.target) {
-            targets = _.uniq(result.target.map(target => target.label));
-        }
-    }
+globals.listingViews.register(Annotation, 'Annotation');
 
-    const haveSeries = result['@type'].indexOf('Series') >= 0;
+
+const DatasetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => {
     const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
-    const uniqueTreatments = getUniqueTreatments(treatments);
+    const isReference = result['@type'][0] === 'Reference';
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
-                        {datasetTypes[result['@type'][0]]}
-                        {seriesDataset ?
-                            <span>
-                                {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-                                {organism || lifeSpec.length > 0 ?
-                                    <span>
-                                        {' ('}
-                                        {organism ? <i>{organism}</i> : null}
-                                        {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
-                                        {')'}
-                                    </span>
-                                : null}
-                            </span>
-                        :
-                            <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
-                        }
+                        <span>{`${datasetTypes[result['@type'][0]]}`}</span>
+                        <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
                     </a>
                     <div className="result-item__data-row">
-                        {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets && targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div>
-                        { treatments && treatments.length > 0 ?
-                                <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
-                                    <span>
-                                        {uniqueTreatments.join(', ')}
-                                    </span>
-                                </div>
-                            : null}
+                        {(isReference && result.crispr_screen_tiling) ?
+                            <div><span className="result-item__property-title">CRISPR screen tiling: </span>{result.crispr_screen_tiling}</div>
+                         : null}
+                        <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
+                        <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
                     </div>
                 </div>
                 <div className="result-item__meta">
-                    <div className="result-item__meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</div>
+                    <div className="result-item__meta-title">{haveFileSet ? 'FileSet' : 'Dataset'}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                    {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+            {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+        </div>
     );
 };
 
@@ -508,8 +776,450 @@ const Dataset = auditDecor(DatasetComponent);
 globals.listingViews.register(Dataset, 'Dataset');
 
 
+/**
+ * Convert an `age_display` property value to an object with `age` and `age_units` properties. For
+ * example, "40 years" becomes `{ age: '40', age_units: 'years' }`. If the `age_display` value
+ * contains "unknown," the `age` property is set to "unknown" and the `age_units` property is
+ * omitted. If the `age_display` value contains "90 or above years," the `age` property is set to
+ * "90 or above" and the `age_units` property is set to "years." If the `age_display` value doesn't
+ * match any of these patterns, this function returns null.
+ * @param {string} ageDisplay Value from the `age_display` property of a biosample
+ * @returns {object} Object with `age` and `age_units` properties, or null if not parseable
+ */
+export const ageDisplayToAgeParts = (ageDisplay) => {
+    const ageGroups = ageDisplay.match(/^(90 or above years)|([0-9]*\.{0,1}[0-9]*) (.+)|(unknown)$/);
+    if (!ageGroups) {
+        return null;
+    }
+    if (ageGroups[1]) {
+        return { age: '90 or above', age_units: 'years' };
+    }
+    if (ageGroups[2] && ageGroups[3]) {
+        return { age: ageGroups[2], age_units: ageGroups[3] };
+    }
+    if (ageGroups[4]) {
+        return { age: ageGroups[4] };
+    }
+    return null;
+};
+
+
+/**
+ * Renders the search results of all Series dataset objects.
+ */
+const SeriesComponent = ({ context: result, cartControls, removeConfirmation, auditDetail, auditIndicators }, reactContext) => {
+    let assays = [];
+    let assaysTitle = [];
+    let crisprReadout = [];
+    let examineLociGene = [];
+    let perturbationType = [];
+    let fullStages = [];
+    let ages = [];
+    let postSynchTime = [];
+    let synchronization;
+    let postSynchronizationTimeUnits;
+    let postDiffTime = [];
+    let postDiffTimeUnits;
+    let lifeStages = [];
+    let organisms = [];
+    let phases = [];
+    let perturbationTreatments = [];
+    let treatmentTerm = [];
+    let treatments = [];
+    let treatmentUnit;
+    let diseases = [];
+    let constructionMethods = [];
+    let constructionPlatforms = [];
+    let cellularComponents = [];
+    let expressedGenes = [];
+    let pulseDurations = [];
+    const simpleBiosampleSummaries = [];
+
+    const treatmentTime = result['@type'].indexOf('TreatmentTimeSeries') >= 0;
+    const treatmentConcentration = result['@type'].indexOf('TreatmentConcentrationSeries') >= 0;
+    const fccSeries = result['@type'].indexOf('FunctionalCharacterizationSeries') >= 0;
+    const organismSeries = result['@type'].indexOf('OrganismDevelopmentSeries') >= 0;
+    const differentiationSeries = result['@type'].indexOf('DifferentiationSeries') >= 0;
+
+    const biosampleTerm = result.biosample_ontology ? result.biosample_ontology[0].term_name : '';
+
+    let biosamples;
+    if (differentiationSeries && result.biosample_ontology && Object.keys(result.biosample_ontology).length > 1) {
+        biosamples = result.biosample_ontology.map((biosample) => biosample.term_name);
+    }
+
+    // Collect crispr_screen_tiling, examined_loci, and elements_selection_method for each dataset elements_references in FunctionalCharacterizationSeries
+    // Collect organism scientific names for Functional Characterization Series
+    let tilingModality = [];
+    let referenceLoci = [];
+    let elementsSelectionMethod = [];
+    let organismName = [];
+    if (fccSeries) {
+        if (result.elements_references && result.elements_references.length > 0) {
+            result.elements_references.forEach((er) => {
+                tilingModality = er.crispr_screen_tiling ? tilingModality.concat(er.crispr_screen_tiling) : tilingModality;
+                referenceLoci = er.examined_loci ? referenceLoci.concat(er.examined_loci) : referenceLoci;
+                elementsSelectionMethod = er.elements_selection_method ? elementsSelectionMethod.concat(er.elements_selection_method) : elementsSelectionMethod;
+            });
+        }
+        if (result.organism && result.organism.length > 0) {
+            result.organism.forEach((o) => {
+                organismName.push(o.scientific_name);
+            });
+        }
+        tilingModality = _.uniq(tilingModality);
+        referenceLoci = _.uniq(referenceLoci, (locus) => locus['@id']);
+        elementsSelectionMethod = _.uniq(elementsSelectionMethod);
+        organismName = _.uniq(organismName);
+    }
+
+    // Dig through the biosample life stages and ages
+    if (result.related_datasets && result.related_datasets.length > 0) {
+        result.related_datasets.forEach((dataset) => {
+            if (dataset.assay_term_name) {
+                assays.push(dataset.assay_term_name);
+            }
+            if (dataset.crispr_screen_readout) {
+                crisprReadout.push(dataset.crispr_screen_readout);
+            }
+            if (dataset.examined_loci && dataset.examined_loci.length > 0) {
+                dataset.examined_loci.forEach((loci) => {
+                    examineLociGene.push(loci.gene.symbol);
+                });
+            }
+            if (dataset.perturbation_type) {
+                perturbationType.push(dataset.perturbation_type);
+            }
+            if (dataset.simple_biosample_summary) {
+                if (!simpleBiosampleSummaries.includes(dataset.simple_biosample_summary)) {
+                    simpleBiosampleSummaries.push(dataset.simple_biosample_summary);
+                }
+            }
+            if (dataset.replicates && dataset.replicates.length > 0) {
+                dataset.replicates.forEach((replicate) => {
+                    if (replicate.library && replicate.library.biosample) {
+                        const { biosample } = replicate.library;
+                        const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+                        if (biosample.life_stage !== 'unknown' && biosample.life_stage && biosample.age_display) {
+                            const ageParts = ageDisplayToAgeParts(biosample.age_display);
+                            const fullStage = `${biosample.life_stage[0].toUpperCase()}${biosample.age_display.split(' ')[0]}`;
+                            fullStages.push(fullStage);
+                            ages.push(ageParts);
+                        }
+
+                        if (biosample.disease_term_name && biosample.disease_term_name.length > 0) {
+                            diseases.push(...biosample.disease_term_name);
+                        }
+                        if (biosample.post_synchronization_time) {
+                            postSynchTime.push(biosample.post_synchronization_time);
+                        }
+                        if (biosample.synchronization) {
+                            ({ synchronization } = biosample);
+                        }
+                        if (biosample.post_synchronization_time_units) {
+                            postSynchronizationTimeUnits = biosample.post_synchronization_time_units;
+                        }
+                        if (biosample.post_differentiation_time) {
+                            postDiffTime.push(biosample.post_differentiation_time);
+                        }
+                        if (biosample.post_differentiation_time_units) {
+                            postDiffTimeUnits = biosample.post_differentiation_time_units;
+                        }
+                        if (lifeStage) {
+                            lifeStages.push(lifeStage);
+                        }
+                        if (biosample.expressed_genes && biosample.expressed_genes.length > 0) {
+                            biosample.expressed_genes.forEach((loci) => {
+                                expressedGenes.push(loci.gene.symbol);
+                            });
+                        }
+                        if (biosample.treatments?.length > 0 && differentiationSeries) {
+                            treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
+                        }
+                        if (biosample.treatments?.length > 0 && fccSeries) {
+                            perturbationTreatments = biosample.treatments.filter((a) => a.purpose === 'perturbation').map((t) => t.treatment_term_name);
+                        }
+                        if (biosample.treatments?.length > 0 && treatmentConcentration) {
+                            treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
+                            treatments = [...treatments, ...biosample.treatments.reduce((output, t) => {
+                                if (t.amount) {
+                                    output.push(t.amount);
+                                }
+                                return output;
+                            }, [])];
+                            treatmentUnit = biosample.treatments[0].amount_units;
+                        }
+                        if (biosample.treatments?.length > 0 && treatmentTime) {
+                            treatmentTerm = [...treatmentTerm, ...biosample.treatments.filter((t) => t.treatment_term_name).map((t) => t.treatment_term_name)];
+                            treatments = [...treatments, ...biosample.treatments.reduce((output, t) => {
+                                if (t.duration) {
+                                    output.push(t.duration);
+                                }
+                                return output;
+                            }, [])];
+                            treatmentUnit = `${biosample.treatments[0].duration_units}s`;
+                        }
+                        if (biosample.organism && biosample.organism.scientific_name) {
+                            organisms.push(biosample.organism.scientific_name);
+                        }
+                        if (biosample.phase) {
+                            phases.push(biosample.phase);
+                        }
+                        if (biosample.pulse_chase_time) {
+                            const duration = `${biosample.pulse_chase_time} ${biosample.pulse_chase_time_units}${biosample.pulse_chase_time > 1 ? 's' : ''}`;
+                            pulseDurations.push(duration);
+                        }
+                    }
+                    if (replicate.library) {
+                        if (replicate.library.construction_platform) {
+                            constructionPlatforms.push(replicate.library.construction_platform.term_name);
+                        }
+                        if (replicate.library.subcellular_fraction_term_name) {
+                            cellularComponents.push(replicate.library.subcellular_fraction_term_name);
+                        }
+                    }
+                });
+                constructionMethods = _.uniq(dataset.replicates.reduce((accMethods, replicate) => (
+                    replicate.library && replicate.library.construction_method ? accMethods.concat(replicate.library.construction_method) : accMethods
+                ), []));
+            }
+        });
+        lifeStages = _.uniq(lifeStages);
+        fullStages = _.uniq(fullStages);
+        ages = sortAges(ages);
+        postSynchTime = _.uniq(postSynchTime).sort();
+        postDiffTime = _.uniq(postDiffTime).sort();
+        organisms = _.uniq(organisms);
+        phases = _.uniq(phases);
+        examineLociGene = _.uniq(examineLociGene);
+        crisprReadout = _.uniq(crisprReadout);
+        perturbationType = _.uniq(perturbationType);
+        perturbationTreatments = _.uniq(perturbationTreatments);
+        diseases = _.uniq(diseases);
+        constructionPlatforms = _.uniq(constructionPlatforms);
+        cellularComponents = _.uniq(cellularComponents);
+        expressedGenes = _.uniq(expressedGenes);
+        pulseDurations = _.uniq(pulseDurations);
+    }
+    const lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
+
+    // Get list of assay labels
+    if (result.assay_term_name) {
+        assays = _.uniq(result.assay_term_name);
+    }
+    if (assays.length > 0) {
+        assays = assays.filter((item) => item !== 'pooled clone sequencing');
+        if (perturbationType.length === 0) {
+            assaysTitle = [...new Set(assays)];
+        } else {
+            assaysTitle = [...new Set(assays.map((a) => a.replace('CRISPR ', '')))];
+        }
+        assays = _.uniq(assays);
+    }
+
+    const sortedTreatments = _.uniq(treatments).sort((a, b) => (a - b));
+    treatmentTerm = _.uniq(treatmentTerm);
+    let uniqueTreatments;
+    if (sortedTreatments.length > 0) {
+        uniqueTreatments = `${treatmentTerm.join(', ')} at ${sortedTreatments.join(', ')} ${treatmentUnit}`;
+    } else {
+        uniqueTreatments = treatmentTerm.join(', ');
+    }
+
+    return (
+        <div className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">
+                        {fccSeries
+                            ? (
+                                <>
+                                    {perturbationType.length > 0 ?
+                                        <span>
+                                            {`${perturbationType.join(', ')}`}
+                                        </span>
+                                    : null}
+                                    {assaysTitle.length > 0 ?
+                                        <span>
+                                            {` ${assaysTitle.join(', ')}`}
+                                        </span>
+                                    : null}
+                                    {referenceLoci.length > 0 ?
+                                        <span>{referenceLoci.length === 1 ? ` of ${referenceLoci[0].symbol} locus` : ' of multiple loci'}</span>
+                                    : null}
+                                </>
+                            )
+                            : <span>{`${datasetTypes[result['@type'][0]]}`}</span>
+                        }
+                        {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+                        {fccSeries
+                            ? (
+                                <>
+                                    {crisprReadout.length > 0 ?
+                                        <span>
+                                            {` with ${crisprReadout.join(', ')}`}
+                                        </span>
+                                    : null}
+                                    {examineLociGene.length > 0 ?
+                                        <span>
+                                            {` readout of ${examineLociGene.join(', ')}`}
+                                        </span>
+                                    : null}
+                                </>
+                            )
+                        : null}
+                        {(!fccSeries && lifeSpec.length > 0) ?
+                            <span>
+                                {' ('}
+                                {lifeSpec.length > 0 && <span>{lifeSpec.join(', ')}</span>}
+                                )
+                            </span>
+                        : null}
+                    </a>
+                    {fccSeries ?
+                        <div className="result-item__highlight-row">
+                            {(result.description && <div>{result.description}</div>) || (result.biosample_summary && <BiosampleSummaryDisplay summary={result.biosample_summary} organisms={organismName} />)}
+                        </div>
+                    : null}
+                    <div className="result-item__data-row">
+                        {result.dataset_type ?
+                            <div><span className="result-item__property-title">Dataset type: </span>{result.dataset_type}</div>
+                        : null}
+                        {assays && assays.length > 0 ?
+                            <div><span className="result-item__property-title">Assays: </span>{assays.join(', ')}</div>
+                        : null}
+                        {biosamples && biosamples.length > 0 && differentiationSeries ?
+                            <div><span className="result-item__property-title">Biosamples: </span>{biosamples.join(', ')}</div>
+                        : null}
+                        {phases && phases.length > 0 ?
+                            <div><span className="result-item__property-title">Cell cycle phases: </span>{phases.join(', ')}</div>
+                        : null}
+                        {(organisms.length > 0 && organismSeries) ?
+                            <div><span className="result-item__property-title">Organism: </span>{organisms.join(', ')}</div>
+                        : null}
+                        {(ages.length > 0 && organismSeries && (organisms.indexOf('Homo sapiens') > -1)) ?
+                            <div><span className="result-item__property-title">Ages: </span>{ages.join(', ')}</div>
+                        : null}
+                        {(fullStages.length > 0 && organismSeries && (organisms.indexOf('Mus musculus') > -1)) ?
+                            <div><span className="result-item__property-title">Stages: </span>{fullStages.join(', ')}</div>
+                        : null}
+                        {synchronization ?
+                            <div><span className="result-item__property-title">Synchronization: </span>{synchronization}</div>
+                        : null}
+                        {postSynchTime.length > 0 ?
+                            <div><span className="result-item__property-title">Post-synchronization time: </span>{postSynchTime.join(', ')} {postSynchronizationTimeUnits}s</div>
+                        : null}
+                        {postDiffTime.length > 0 ?
+                            <div><span className="result-item__property-title">Post-differentiation time: </span>{postDiffTime.join(', ')} {postDiffTimeUnits}s</div>
+                        : null}
+                        { (uniqueTreatments && (treatmentTime || treatmentConcentration || differentiationSeries)) ?
+                            <div><span className="result-item__property-title">Treatment{treatments.length !== 1 ? 's' : ''}: </span>
+                                <span>
+                                    {uniqueTreatments}
+                                </span>
+                            </div>
+                        : null}
+                        <TargetsDataLine result={result} targetPropertyName="target" />
+                        {diseases.length > 0 ? <div><span className="result-item__property-title">Diseases: </span>{diseases.join(', ')}</div> : null}
+                        <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
+                        <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
+                        {cellularComponents.length > 0 ?
+                            <div><span className="result-item__property-title">Cellular component{cellularComponents.length > 1 ? 's' : ''}: </span>{cellularComponents.join(', ')}</div>
+                        : null}
+                        {constructionPlatforms.length > 0 ?
+                            <div><span className="result-item__property-title">Construction platform{constructionPlatforms.length > 1 ? 's' : ''}: </span>{constructionPlatforms.join(', ')}</div>
+                        : null}
+                        {constructionMethods.length > 0 ?
+                            <div><span className="result-item__property-title">Construction method{constructionMethods.length > 1 ? 's' : ''}: </span>{constructionMethods.join(', ')}</div>
+                        : null}
+                        {pulseDurations.length > 0 ?
+                            <div><span className="result-item__property-title">Pulse-chase time durations: </span>{pulseDurations.join(', ')}</div>
+                        : null}
+                        {elementsSelectionMethod && elementsSelectionMethod.length > 0 ?
+                            <div><span className="result-item__property-title">Elements selection method: </span>{elementsSelectionMethod.join(', ')}</div>
+                        : null}
+                        {referenceLoci && referenceLoci.length > 0 ?
+                            <div><span className="result-item__property-title">Loci: </span>{referenceLoci.map((locus, i) => (
+                                <span key={locus['@id']}>
+                                    {i > 0 ? ', ' : null}
+                                    <a href={locus['@id']}>
+                                        {locus.symbol}
+                                    </a>
+                                </span>
+                            ))}
+                            </div>
+                        : null}
+                        {tilingModality.length > 0 ?
+                            <div><span className="result-item__property-title">Tiling modality: </span>{tilingModality.join(', ')}</div>
+                        : null}
+                        {fccSeries && perturbationTreatments.length > 0 ?
+                            <div><span className="result-item__property-title">Treatment{perturbationTreatments.length !== 1 ? 's' : ''}: </span>{perturbationTreatments.join(', ')}</div>
+                        : null}
+                        {expressedGenes.length > 0 ?
+                            <div><span className="result-item__property-title">Sorted gene expression: </span>{expressedGenes.join(', ')}</div>
+                        : null}
+                        {simpleBiosampleSummaries.length > 0 &&
+                            <div><span className="result-item__property-title">Sample details: </span>{simpleBiosampleSummaries.join(', ')}</div>
+                        }
+                    </div>
+                </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Series</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                </div>
+                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                    <div className="result-item__cart-control">
+                        <CartToggle
+                            element={result}
+                            removeConfirmation={Object.keys(removeConfirmation).length > 0 ? removeConfirmation : { immediate: true }}
+                        />
+                    </div>
+                : null}
+                <PickerActions context={result} />
+            </div>
+            {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+        </div>
+    );
+};
+
+SeriesComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Dataset search results
+    /** True to display cart toggle button */
+    cartControls: PropTypes.bool,
+    /** Needed for series removals that require user confirmation */
+    removeConfirmation: PropTypes.shape({
+        /** Called by cart toggle when the user requests removing a series object from the cart */
+        requestRemove: PropTypes.func,
+        /** Called when the user confirms removing a series object from the cart */
+        requestRemoveConfirmation: PropTypes.func,
+        /** True if the user has confirmed they want to remove the series object from the cart */
+        isRemoveConfirmed: PropTypes.bool,
+        /** True to remove series and its related datasets without a confirmation modal */
+        immediate: PropTypes.bool,
+    }),
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+SeriesComponent.defaultProps = {
+    cartControls: false,
+    removeConfirmation: {},
+};
+
+SeriesComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
+};
+
+const Series = auditDecor(SeriesComponent);
+
+globals.listingViews.register(Series, 'Series');
+
+
 const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
-    <li className={resultItemClass(result)}>
+    <div className={resultItemClass(result)}>
         <div className="result-item">
             <div className="result-item__data">
                 <a href={result['@id']} className="result-item__link">
@@ -517,8 +1227,8 @@ const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reac
                 </a>
                 <div className="result-item__target-external-resources">
                     <p>External resources:</p>
-                    {result.dbxref && result.dbxref.length > 0 ?
-                        <DbxrefList context={result} dbxrefs={result.dbxref} />
+                    {result.dbxrefs && result.dbxrefs.length > 0 ?
+                        <DbxrefList context={result} dbxrefs={result.dbxrefs} />
                     : <em>None submitted</em> }
                 </div>
             </div>
@@ -529,7 +1239,7 @@ const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reac
             <PickerActions context={result} />
         </div>
         {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
-    </li>
+    </div>
 );
 
 TargetComponent.propTypes = {
@@ -552,18 +1262,24 @@ const Image = (props) => {
     const result = props.context;
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.caption}</a>
-                    <Attachment context={result} attachment={result.attachment} />
+                    <a href={result['@id']} className="result-item__link">{result['@id']}</a>
+                    <div className="attachment">
+                        <div className="file-thumbnail">
+                            <img src={result.thumb_nail} alt="thumbnail" />
+                        </div>
+                    </div>
+                    {result.caption}
                 </div>
                 <div className="result-item__meta">
                     <p className="type meta-title">Image</p>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                 </div>
                 <PickerActions context={result} />
             </div>
-        </li>
+        </div>
     );
 };
 
@@ -575,39 +1291,51 @@ globals.listingViews.register(Image, 'Image');
 
 
 /**
+ * Context to pass options from facets to any downstream facet code that needs it.
+ */
+export const FacetContext = React.createContext({});
+
+
+/**
+ * Trim the leading ? and trailing & from a query string, if present.
+ * @param {string} searchBase - Base URL for search that might start with a ? and end with a &
+ * @returns {string} - Same URL but with leading ? and trailing & removed
+ */
+const trimSearchBase = (searchBase) => {
+    let searchQuery = searchBase;
+    if (searchQuery[0] === '?') {
+        searchQuery = searchQuery.substr(1);
+    }
+    if (searchQuery.slice(-1) === '&') {
+        searchQuery = searchQuery.slice(0, -1);
+    }
+    return searchQuery;
+};
+
+
+/**
+ * Extract the first `searchTerm` value from the query string if any exist.
+ * @param {string} query Query string to parse
+ * @returns {string} `searchTerm` value from query string if present
+ */
+const extractSearchTerm = (query) => {
+    const queryString = new QueryString(query);
+    const searchTerms = queryString.getKeyValues('searchTerm');
+    return searchTerms.length > 0 ? searchTerms[0] : '';
+};
+
+
+/**
  * Entry field for filtering the results list when search results appear in edit forms.
  *
  * @export
  * @class TextFilter
  * @extends {React.Component}
  */
-export class TextFilter extends React.Component {
-    constructor() {
-        super();
-
-        // Bind `this` to non-React component methods.
-        this.performSearch = this.performSearch.bind(this);
-        this.onKeyDown = this.onKeyDown.bind(this);
-    }
-
-    /**
-    * Keydown event handler
-    *
-    * @param {object} e Key down event
-    * @memberof TextFilter
-    * @private
-    */
-    onKeyDown(e) {
-        if (e.keyCode === 13) {
-            this.performSearch(e);
-            e.preventDefault();
-        }
-    }
-
-    getValue() {
-        const filter = this.props.filters.filter(f => f.field === 'searchTerm');
-        return filter.length > 0 ? filter[0].term : '';
-    }
+export const TextFilter = ({ searchBase, onChange }) => {
+    const [searchTerm, setSearchTerm] = React.useState(() => (
+        extractSearchTerm(trimSearchBase(searchBase))
+    ));
 
     /**
     * Makes call to do search
@@ -616,20 +1344,38 @@ export class TextFilter extends React.Component {
     * @memberof TextFilter
     * @private
     */
-    performSearch(e) {
-        let searchStr = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
-        const value = e.target.value;
-        if (value) {
-            searchStr += `searchTerm=${e.target.value}`;
+    const performSearch = () => {
+        const queryString = new QueryString(trimSearchBase(searchBase));
+        if (searchTerm) {
+            queryString.replaceKeyValue('searchTerm', searchTerm);
         } else {
-            searchStr = searchStr.substring(0, searchStr.length - 1);
+            queryString.deleteKeyValue('searchTerm');
         }
-        this.props.onChange(searchStr);
-    }
+        onChange(`?${queryString.format()}`);
+    };
 
-    shouldUpdateComponent(nextProps) {
-        return (this.getValue(this.props) !== this.getValue(nextProps));
-    }
+    const onKeyDown = (e) => {
+        if (e.keyCode === keyCode.RETURN) {
+            e.preventDefault();
+            performSearch(e);
+        }
+    };
+
+    /**
+    * Called when the user changes the contents of the search input box. Sets the current input box
+    * contents, or initiates a new search if the user hits the ENTER key.
+    * @param {object} e input change event
+    * @memberof TextFilter
+    * @private
+    */
+    const onInputChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    React.useEffect(() => {
+        const query = trimSearchBase(searchBase);
+        setSearchTerm(extractSearchTerm(query));
+    }, [searchBase]);
 
     /**
     * Provides view for @see {@link TextFilter}
@@ -638,37 +1384,249 @@ export class TextFilter extends React.Component {
     * @memberof TextFilter
     * @public
     */
-    render() {
-        return (
-            <div className="facet">
-                <input
-                    type="search"
-                    className="search-query"
-                    placeholder="Enter search term(s)"
-                    defaultValue={this.getValue(this.props)}
-                    onKeyDown={this.onKeyDown}
-                    data-test="filter-search-box"
-                />
-            </div>
-        );
-    }
-}
+    return (
+        <input
+            type="search"
+            className="search-query"
+            placeholder="Enter search term(s)"
+            value={searchTerm}
+            onChange={onInputChange}
+            onKeyDown={onKeyDown}
+            data-test="filter-search-box"
+        />
+    );
+};
 
 TextFilter.propTypes = {
-    filters: PropTypes.array.isRequired,
     searchBase: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
 
+/**
+ * Renders a single facet of any type.
+ */
+const Facet = ({
+    facet,
+    type,
+    expandedFacets,
+    results,
+    mode,
+    onFilter,
+    expanderClickHandler,
+    keyDownHandler,
+    isExpandable,
+    forceDisplay,
+}) => {
+    const parsedUrl = results && results['@id'] && url.parse(results['@id']);
+
+    // Filter the filters to just the ones relevant to the current facet,
+    // matching negation filters too.
+    const relevantFilters = results && results.filters.filter((filter) => (
+        filter.field === facet.field || filter.field === `${facet.field}!`
+    ));
+
+    // Look up the renderer registered for this facet and use it to render this
+    // facet if a renderer exists. A non-existing renderer suppresses the
+    // display of a facet.
+    let FacetRenderer;
+    if (facet.specialFieldName) {
+        FacetRenderer = SpecialFacetRegistry.Facet.lookup(facet.field, type);
+    } else {
+        FacetRenderer = FacetRegistry.Facet.lookup(facet.field, type);
+    }
+    const isExpanded = expandedFacets.has(facet.field);
+    return FacetRenderer && <FacetRenderer
+        key={facet.specialFieldName || facet.field}
+        facet={facet}
+        results={results}
+        mode={mode}
+        relevantFilters={relevantFilters}
+        pathname={parsedUrl.pathname}
+        queryString={parsedUrl.query}
+        onFilter={onFilter}
+        isExpanded={isExpanded}
+        handleExpanderClick={expanderClickHandler}
+        handleKeyDown={keyDownHandler}
+        isExpandable={isExpandable}
+        forceDisplay={forceDisplay}
+    />;
+};
+
+Facet.propTypes = {
+    /** Facet to render from search results */
+    facet: PropTypes.object.isRequired,
+    /** @type of current page */
+    type: PropTypes.string.isRequired,
+    /** List of facets that are expanded */
+    expandedFacets: PropTypes.object.isRequired,
+    /** Entire search results object */
+    results: PropTypes.object.isRequired,
+    /** Special facet-term click handler for edit forms */
+    onFilter: PropTypes.func,
+    /** Called when the user clicks a facet title to expand/collapse it */
+    expanderClickHandler: PropTypes.func.isRequired,
+    /** Called when the user presses a key while the facet title has focus */
+    keyDownHandler: PropTypes.func.isRequired,
+    /** True if the collapsible, false otherwise  */
+    isExpandable: PropTypes.bool,
+    /** True to force facet to display in cases it would normally be hidden */
+    forceDisplay: PropTypes.bool,
+    /** Special search-result modes, e.g. "picker" */
+    mode: PropTypes.string,
+};
+
+Facet.defaultProps = {
+    onFilter: null,
+    isExpandable: false,
+    forceDisplay: false,
+    mode: '',
+};
+
+
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
-    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter } = props;
+    const {
+        context,
+        facets,
+        filters,
+        mode,
+        orientation,
+        hideTextFilter,
+        addClasses,
+        docTypeTitleSuffix,
+        supressTitle,
+        onFilter,
+        isExpandable,
+        hideDocType,
+        options,
+        bodyMap,
+        organism,
+        bodyMapLocation,
+        displaySystems,
+    } = props;
+
+    const [expandedFacets, setExpandFacets] = React.useState(new Set());
+    const [expandedGroups, setExpandedGroups] = React.useState(() => new Set());
+
+    // Get facets from storage that need to be expanded
+    React.useEffect(() => {
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initialize facet collapse-state
+    }, []);
+
+    // Only on initialize load, get facets from facet-section and schema that need to be expanded
+    React.useEffect(() => {
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        facets.forEach((facet) => {
+            const { field } = facet;
+            const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
+            const isFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
+
+            const relevantFilters = context && context.filters.filter((filter) => (
+                filter.field === facet.field || filter.field === `${facet.field}!`
+            ));
+
+            // auto-open facets based on selected terms (see url) or it set in the schema (open_on_load)
+            if (!isFacetNewlyLoaded && ((relevantFilters && relevantFilters.length > 0) || facet.open_on_load === true)) {
+                sessionStorage.setItem(newlyLoadedFacetStorage, field); // ensure this is not called again on this active session storage
+                facetList.add(facet.field);
+            }
+        });
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initialize facet collapse-state
+    }, [context, facets]);
+
+    // Initialize expanded facet groups if `facet_groups` has changed.
+    const prevFacetGroups = usePrevious(context.facet_groups);
+    React.useEffect(() => {
+        if (!areFacetGroupsEqual(prevFacetGroups, context.facet_groups)) {
+            // Initialize the expanded groups to all be closed except for the first facet group.
+            const firstFacetGroupIdentifier = context.facet_groups && generateFacetGroupIdentifier(context.facet_groups[0]);
+            setExpandedGroups(new Set(firstFacetGroupIdentifier && [firstFacetGroupIdentifier]));
+        }
+    }, [context.facet_groups, prevFacetGroups]);
+
     if (facets.length === 0 && mode !== 'picker') {
         return <div />;
     }
 
     const parsedUrl = context && context['@id'] && url.parse(context['@id']);
+
+    /**
+     * Handlers opening or closing a tab
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+     */
+    const handleExpanderClick = (e, status, field) => {
+        let facetList = null;
+
+        if (e.altKey) {
+            // user has held down option-key (alt-key in Windows and Linux)
+            sessionStorage.removeItem(FACET_STORAGE);
+            facetList = new Set(status ? [] : facets.map((f) => f.field));
+        } else {
+            facetList = new Set(expandedFacets);
+            facetList[status ? 'delete' : 'add'](field);
+        }
+
+        sessionStorage.setItem(FACET_STORAGE, [...facetList].join(',')); // replace rather than update memory
+        setExpandFacets(facetList); // controls open/closed facets
+    };
+
+    /**
+     * Called when the user clicks a facet group title to expand or collapse it.
+     * @param {string} groupIdentifier Title of the facet group
+     * @param {boolean} altKey True if the user has held down the alt-key
+     */
+    const handleGroupExpanderClick = (groupIdentifier, altKey) => {
+        const isGroupExpanded = expandedGroups.has(groupIdentifier);
+        if (altKey) {
+            if (isGroupExpanded) {
+                // Empty the list of expanded groups to close all facet groups.
+                const newExpandedGroups = new Set();
+                setExpandedGroups(newExpandedGroups);
+            } else {
+                // Add every facet group identifier to the expanded groups to open all facet groups.
+                const allFacetGroupIdentifiers = generateFacetGroupIdentifierList(context.facet_groups);
+                const newExpandedGroups = new Set(allFacetGroupIdentifiers);
+                setExpandedGroups(newExpandedGroups);
+            }
+        } else {
+            const newExpandedGroups = new Set(expandedGroups);
+            if (isGroupExpanded) {
+                newExpandedGroups.delete(groupIdentifier);
+            } else {
+                newExpandedGroups.add(groupIdentifier);
+            }
+            setExpandedGroups(newExpandedGroups);
+        }
+    };
+
+    /**
+     * Called when user types a key while focused on a facet term. If the user types a space or
+     * return we call the term click handler -- needed for a11y because we have a <div> acting as a
+     * button instead of an actual <button>.
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+    */
+    const handleKeyDown = (e, status, field) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+            // keyCode: 13 = enter-key. 32 = spacebar
+            e.preventDefault();
+            handleExpanderClick(e, status, field);
+        }
+    };
 
     // See if we need the Clear filters link based on combinations of query-string parameters.
     let clearButton = false;
@@ -696,41 +1654,127 @@ export const FacetList = (props) => {
         }
     }
 
+    // Combine facets from search results with special facets, and treat them mostly the same.
+    const allFacets = SpecialFacetRegistry.Facet.getFacets().concat(facets);
+    const topLevelFacets = filterTopLevelFacets(allFacets, context.facet_groups);
+    const isNameDisplayed = generateFacetGroupNameList(context.facet_groups).length > 1;
+
+    // If we have facet groups, add an "Other filters" group to hold facets not included in a group.
+    let facetGroups = context.facet_groups || [];
+    if (facetGroups.length > 0 && topLevelFacets.length > 0) {
+        const otherFacetGroup = {
+            name: 'OtherFilters',
+            title: 'Other filters',
+            facet_fields: topLevelFacets.map((facet) => facet.field),
+        };
+        facetGroups = facetGroups.concat(otherFacetGroup);
+    }
+
     return (
         <div className="search-results__facets">
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
-                <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                    {(!supressTitle || clearButton) ?
-                        <div className="search-header-control">
-                            <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
-                            {context.clear_filters ?
-                                <ClearFilters searchUri={context.clear_filters} enableDisplay={clearButton} />
-                            : null}
-                        </div>
-                    : null}
-                    {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
-                    {facets.map((facet) => {
-                        // Filter the filters to just the ones relevant to the current facet,
-                        // matching negation filters too.
-                        const relevantFilters = context && context.filters.filter(filter => (
-                            filter.field === facet.field || filter.field === `${facet.field}!`
-                        ));
-
-                        // Look up the renderer registered for this facet and use it to render this
-                        // facet if a renderer exists. A non-existing renderer supresses the
-                        // display of a facet.
-                        const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
-                        return FacetRenderer && <FacetRenderer
-                            key={facet.field}
-                            facet={facet}
-                            results={context}
-                            mode={mode}
-                            relevantFilters={relevantFilters}
-                            pathname={parsedUrl.pathname}
-                            queryString={parsedUrl.query}
-                            onFilter={onFilter}
-                        />;
-                    })}
+                <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`} data-test="facetcontainer">
+                    <FacetContext.Provider value={options}>
+                        {(!supressTitle || clearButton) ?
+                            <div className="search-header-control">
+                                {!(hideDocType) ?
+                                    <DocTypeTitle searchResults={context} wrapper={(children) => <h1>{children} {docTypeTitleSuffix}</h1>} />
+                                : null}
+                                <ClearSearchTerm searchUri={context['@id']} />
+                                {context.clear_filters ?
+                                    <ClearFilters clearUri={context.clear_filters} searchUri={context['@id']} enableDisplay={clearButton} />
+                                : null}
+                            </div>
+                        : null}
+                        {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
+                        {facetGroups.length > 0
+                            ? (
+                                <div className="facet-list-wrapper facet-list-wrapper--facet-group">
+                                    {bodyMap ?
+                                        <BodyMapThumbnailAndModal
+                                            context={context}
+                                            location={bodyMapLocation}
+                                            organism={organism || 'Homo sapiens'}
+                                            displaySystems={displaySystems}
+                                        />
+                                    : null}
+                                    {props.additionalFacet ?
+                                        <>
+                                            {props.additionalFacet}
+                                        </>
+                                    : null}
+                                    {facetGroups.map((group) => {
+                                        // Only render facet group if it actually contains facets.
+                                        const facetGroupFieldsInFacets = getFacetGroupFieldsInFacets(group, allFacets);
+                                        if (facetGroupFieldsInFacets.length > 0) {
+                                            const groupIdentifier = generateFacetGroupIdentifier(group);
+                                            const isGroupExpanded = expandedGroups.has(groupIdentifier);
+                                            return (
+                                                <FacetGroup
+                                                    key={groupIdentifier}
+                                                    group={group}
+                                                    filters={context.filters}
+                                                    isExpanded={isGroupExpanded}
+                                                    isNameDisplayed={isNameDisplayed}
+                                                    expanderHandler={handleGroupExpanderClick}
+                                                >
+                                                    {isGroupExpanded && group.facet_fields.map((facetField) => {
+                                                        const facet = allFacets.find((singleFacet) => singleFacet.field === facetField);
+                                                        if (facet) {
+                                                            return (
+                                                                <Facet
+                                                                    key={facet.specialFieldName || facet.field}
+                                                                    facet={facet}
+                                                                    type={context['@type'][0]}
+                                                                    expandedFacets={expandedFacets}
+                                                                    results={context}
+                                                                    mode={mode}
+                                                                    onFilter={onFilter}
+                                                                    expanderClickHandler={handleExpanderClick}
+                                                                    keyDownHandler={handleKeyDown}
+                                                                    isExpandable={isExpandable}
+                                                                    forceDisplay
+                                                                />
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })}
+                                                </FacetGroup>
+                                            );
+                                        }
+                                        return null;
+                                    })}
+                                </div>
+                            )
+                            : (
+                                <>
+                                    {topLevelFacets.length > 0 &&
+                                        <div className="facet-list-wrapper">
+                                            {props.additionalFacet ?
+                                                <>
+                                                    {props.additionalFacet}
+                                                </>
+                                            : null}
+                                            {topLevelFacets.map((facet) => (
+                                                <Facet
+                                                    key={facet.specialFieldName || facet.field}
+                                                    type={context['@type'][0]}
+                                                    facet={facet}
+                                                    expandedFacets={expandedFacets}
+                                                    results={context}
+                                                    mode={mode}
+                                                    onFilter={onFilter}
+                                                    expanderClickHandler={handleExpanderClick}
+                                                    keyDownHandler={handleKeyDown}
+                                                    isExpandable={isExpandable}
+                                                />
+                                            ))}
+                                        </div>
+                                    }
+                                </>
+                            )
+                        }
+                    </FacetContext.Provider>
                 </div>
             </div>
         </div>
@@ -746,42 +1790,91 @@ FacetList.propTypes = {
     filters: PropTypes.array.isRequired,
     mode: PropTypes.string,
     orientation: PropTypes.string,
+    hideDocType: PropTypes.bool,
     hideTextFilter: PropTypes.bool,
     docTypeTitleSuffix: PropTypes.string,
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
-    /** True to supress the display of facet-list title */
+    /** True to suppress the display of facet-list title */
     supressTitle: PropTypes.bool,
-    /** Special search-result click handler */
+    /** Special facet-term click handler for edit forms */
     onFilter: PropTypes.func,
+    /** True if the collapsible, false otherwise  */
+    isExpandable: PropTypes.bool,
+    bodyMap: PropTypes.bool,
+    organism: PropTypes.string,
+    bodyMapLocation: PropTypes.string,
+    displaySystems: PropTypes.bool,
+    additionalFacet: PropTypes.object,
+    /** Options to pass to facet components in FacetContext */
+    options: PropTypes.object,
 };
 
 FacetList.defaultProps = {
     mode: '',
     orientation: 'vertical',
+    hideDocType: false,
     hideTextFilter: false,
     addClasses: '',
     docTypeTitleSuffix: 'search',
     supressTitle: false,
     onFilter: null,
+    isExpandable: true,
+    bodyMap: false,
+    organism: 'Homo sapiens',
+    bodyMapLocation: '',
+    displaySystems: true,
+    additionalFacet: null,
+    options: {},
 };
 
 FacetList.contextTypes = {
     session: PropTypes.object,
     session_properties: PropTypes.object,
+    location_href: PropTypes.string,
 };
 
 
 /**
  * Display the "Clear filters" link.
  */
-export const ClearFilters = ({ searchUri, enableDisplay }) => (
-    <div className="clear-filters-control">
-        {enableDisplay ? <div><a href={searchUri}>Clear Filters <i className="icon icon-times-circle" /></a></div> : null}
-    </div>
-);
+export const ClearFilters = ({ clearUri, searchUri, enableDisplay }) => {
+    // Preserve any 'config=' query parameters in the current URI in `clearUri`.
+    let composedClearUri = clearUri;
+    const parsedSearchUri = url.parse(searchUri);
+    const searchQuery = new QueryString(parsedSearchUri.query);
+    const searchQueryKeyValues = searchQuery.getKeyValues('config');
+    if (searchQueryKeyValues.length > 0) {
+        // Add the 'config=' query parameters from the current URI to the clear URI.
+        const parsedClearUri = url.parse(clearUri);
+        const clearQuery = new QueryString(parsedClearUri.query);
+        searchQueryKeyValues.forEach((value) => {
+            clearQuery.addKeyValue('config', value);
+        });
+        composedClearUri = `?${clearQuery.format()}`;
+    }
+
+    return (
+        <div className="clear-filters-control">
+            {enableDisplay && (
+                <div className="filter-container">
+                    <a href={composedClearUri} className="filter-link">
+                        <div className="filter-link__title">
+                            Clear all selections
+                        </div>
+                        <div className="filter-link__icon">
+                            {svgIcon('multiplication')}
+                        </div>
+                    </a>
+                </div>
+            )}
+        </div>
+    );
+};
 
 ClearFilters.propTypes = {
     /** URI for the Clear Filters link */
+    clearUri: PropTypes.string.isRequired,
+    /** Current search page's URI */
     searchUri: PropTypes.string.isRequired,
     /** True to display the link */
     enableDisplay: PropTypes.bool,
@@ -793,65 +1886,116 @@ ClearFilters.defaultProps = {
 
 
 /**
+ * Display "Filter by <searchTerm>" buttons if the current search page includes `searchTerm` queries
+ * parameter.
+ */
+export const ClearSearchTerm = ({ searchUri }) => {
+    // Extract the searchTerm elements from the query string.
+    const parsedSearchUri = url.parse(searchUri);
+    const queryString = new QueryString(parsedSearchUri.query);
+    const searchTerms = queryString.getKeyValues('searchTerm');
+    if (searchTerms.length > 0) {
+        return (
+            <div className="clear-search-terms">
+                <div className="clear-search-term__title">Filtering by:</div>
+                {_.uniq(searchTerms).map((searchTerm) => {
+                    // For each searchTerm parameter, create a link to remove it from the search
+                    // URI.
+                    const mutableQuery = queryString.clone();
+                    mutableQuery.deleteKeyValue('searchTerm', searchTerm);
+                    return (
+                        <a
+                            key={searchTerm}
+                            href={`?${mutableQuery.format()}`}
+                            className="clear-search-term__control"
+                            aria-label={`Clear search term: ${searchTerm}`}
+                        >
+                            {searchTerm}
+                            {svgIcon('multiplication')}
+                        </a>
+                    );
+                })}
+            </div>
+        );
+    }
+    return null;
+};
+
+ClearSearchTerm.propTypes = {
+    /** Current search page's URI */
+    searchUri: PropTypes.string.isRequired,
+};
+
+
+/**
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector }, reactContext) => {
-    const results = context['@graph'];
-    const searchBase = url.parse(reactContext.location_href).search || '';
-    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, hideBrowserSelector, additionalFilters, showDownloadButton, dropConfig }) => {
+    const canDownload = context.total <= MAX_DOWNLOADABLE_RESULT;
+    const modalText = canDownload
+        ? null
+        : (
+            <>
+                <p>
+                    This search is too large (&gt;{MAX_DOWNLOADABLE_RESULT} datasets) to automatically generate a manifest or metadata file.
+                </p>
+                <p>
+                    You can directly access the files in AWS: <a href="https://registry.opendata.aws/encode-project/" target="_blank" rel="noopener noreferrer">https://registry.opendata.aws/encode-project/</a>
+                </p>
+            </>
+        );
 
     let resultsToggle = null;
+    const parsedUrl = url.parse(context['@id']);
+    const query = new QueryString(parsedUrl.query);
+    // Get the current value of the "limit=x" query string parameter. No "limit=x" means the
+    // default value applies. The back end allows exactly zero or one "limit=x" parameter.
+    const limitValues = query.getKeyValues('limit');
+    const pageLimit = limitValues.length === 1 ? Number(limitValues[0]) || DEFAULT_PAGE_LIMIT : DEFAULT_PAGE_LIMIT;
+    const pageLimitOptions = [25, 50, 100, 200];
+
     if (showResultsToggle) {
-        if (context.total > results.length && searchBase.indexOf('limit=all') === -1) {
-            resultsToggle = (
-                <a
-                    rel="nofollow"
-                    className="btn btn-info btn-sm"
-                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                    onClick={onFilter}
-                >
-                    View All
-                </a>
-            );
-        } else {
-            resultsToggle = (
-                <span>
-                    {results.length > 25 ?
-                        <a
-                            className="btn btn-info btn-sm"
-                            href={trimmedSearchBase || '/search/'}
-                            onClick={onFilter}
-                        >
-                            View 25
-                        </a>
-                    : null}
-                </span>
-            );
-        }
+        resultsToggle = (
+            <LimitSelector
+                pageLimit={pageLimit}
+                query={query}
+                pageLimitOptions={pageLimitOptions}
+                displayText="Number of displayed results"
+                ariaLabel="results"
+            />
+        );
     }
 
     return (
-        <div className="results-table-control">
-            <div className="results-table-control__main">
-                <ViewControls results={context} />
-                {resultsToggle}
-                <BatchDownloadControls results={context} />
-                {!hideBrowserSelector ?
-                    <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
-                : null}
+        <>
+            <div className="results-table-control">
+                <div className="results-table-control__main">
+                    <ViewControls results={context} additionalFilters={additionalFilters} dropConfig={dropConfig} />
+                    {showDownloadButton
+                        ? <BatchDownloadControls results={context} additionalFilters={additionalFilters} modalText={modalText} canDownload={canDownload} />
+                        : null}
+                    {!hideBrowserSelector ?
+                        <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} />
+                    : null}
+                </div>
+                <div className="results-table-control__json">
+                    <DisplayAsJson />
+                </div>
             </div>
-            <div className="results-table-control__json">
-                <DisplayAsJson />
-            </div>
-        </div>
+            {showResultsToggle && (
+                <div className="search-page-limit-selector">
+                    {resultsToggle}
+                </div>
+            )}
+        </>
     );
 };
 
 SearchControls.propTypes = {
     /** Search results object that generates this page */
     context: PropTypes.object.isRequired,
-    /** True to disable Visualize button */
+    /** Text to display with disabled Visualize button */
     visualizeDisabledTitle: PropTypes.string,
     /** True to show View All/View 25 control */
     showResultsToggle: (props, propName, componentName) => {
@@ -860,22 +2004,23 @@ SearchControls.propTypes = {
         }
         return null;
     },
-    /** Function to handle clicks in links to toggle between viewing all and limited */
-    onFilter: (props, propName, componentName) => {
-        if (props.showResultsToggle && typeof props[propName] !== 'function') {
-            return new Error(`"onFilter" prop to ${componentName} required if "showResultsToggle" is true`);
-        }
-        return null;
-    },
     /** True to hide the Visualize button */
     hideBrowserSelector: PropTypes.bool,
+    /** Add filters to search links if needed */
+    additionalFilters: PropTypes.array,
+    /** Determines whether or not download button is displayed */
+    showDownloadButton: PropTypes.bool,
+    /** Flag to drop config parameter if needed */
+    dropConfig: PropTypes.bool,
 };
 
 SearchControls.defaultProps = {
     visualizeDisabledTitle: '',
     showResultsToggle: false,
-    onFilter: null,
     hideBrowserSelector: false,
+    additionalFilters: [],
+    showDownloadButton: true,
+    dropConfig: false,
 };
 
 SearchControls.contextTypes = {
@@ -884,14 +2029,14 @@ SearchControls.contextTypes = {
 
 
 // Maximum number of selected items that can be visualized.
-const VISUALIZE_LIMIT = 100;
+const VISUALIZE_LIMIT = 200;
 
 
 export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
 
-        // Bind `this` to non-React moethods.
+        // Bind `this` to non-React methods.
         this.onFilter = this.onFilter.bind(this);
     }
 
@@ -909,12 +2054,9 @@ export class ResultTable extends React.Component {
     }
 
     render() {
-        const { context, searchBase, actions } = this.props;
-        const { facets } = context;
+        const { context, searchBase, actions, hideDocType, bodyMap, organism, bodyMapLocation, displaySystems } = this.props;
+        const { facets, total, columns, filters } = context;
         const results = context['@graph'];
-        const total = context.total;
-        const columns = context.columns;
-        const filters = context.filters;
         const label = 'results';
         const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
@@ -926,6 +2068,11 @@ export class ResultTable extends React.Component {
                     filters={filters}
                     searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
                     onFilter={this.onFilter}
+                    hideDocType={hideDocType}
+                    bodyMap={bodyMap}
+                    organism={organism}
+                    bodyMapLocation={bodyMapLocation}
+                    displaySystems={displaySystems}
                 />
                 {context.notification === 'Success' ?
                     <div className="search-results__result-list">
@@ -950,12 +2097,22 @@ ResultTable.propTypes = {
     searchBase: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     currentRegion: PropTypes.func,
+    hideDocType: PropTypes.bool,
+    bodyMap: PropTypes.bool,
+    organism: PropTypes.string,
+    bodyMapLocation: PropTypes.string,
+    displaySystems: PropTypes.bool,
 };
 
 ResultTable.defaultProps = {
     actions: [],
     searchBase: '',
     currentRegion: null,
+    hideDocType: false,
+    bodyMap: false,
+    organism: 'Homo sapiens',
+    bodyMapLocation: '',
+    displaySystems: true,
 };
 
 ResultTable.childContextTypes = {
@@ -967,11 +2124,17 @@ ResultTable.contextTypes = {
 };
 
 
-// Display the list of search results.
-export const ResultTableList = ({ results, columns, cartControls }) => (
+// Display the list of search results. `mode` allows for special displays, and supports:
+//     picker: Results displayed in an edit form object picker
+//     cart-view: Results displayed in the Cart View page.
+export const ResultTableList = ({ results, columns, cartControls, mode }) => (
     <ul className="result-table" id="result-table">
         {results.length > 0 ?
-            results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls }))
+            results.map((result) => (
+                <li key={result['@id']} className="result-item__wrapper">
+                    {Listing({ context: result, columns, cartControls, mode })}
+                </li>
+            ))
         : null}
     </ul>
 );
@@ -980,11 +2143,13 @@ ResultTableList.propTypes = {
     results: PropTypes.array.isRequired, // Array of search results to display
     columns: PropTypes.object, // Columns from search results
     cartControls: PropTypes.bool, // True if items should display with cart controls
+    mode: PropTypes.string, // Special search-result modes, e.g. "picker"
 };
 
 ResultTableList.defaultProps = {
     columns: null,
     cartControls: false,
+    mode: '',
 };
 
 
@@ -1007,10 +2172,10 @@ export class Search extends React.Component {
     }
 
     render() {
-        const context = this.props.context;
-        const notification = context.notification;
+        const { context } = this.props;
+        const { notification } = context;
         const searchBase = url.parse(this.context.location_href).search || '';
-        const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
+        const facetdisplay = context.facets && context.facets.some((facet) => facet.total > 0);
 
         if (facetdisplay) {
             return (

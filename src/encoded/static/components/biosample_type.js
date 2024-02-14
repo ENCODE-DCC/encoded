@@ -1,17 +1,15 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { PickerActions, resultItemClass } from './search';
 import { auditDecor } from './audit';
 import pubReferenceList from './reference';
 import BiosampleTermId from './biosample';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, TopAccessories } from './objectutils';
 
 
 const BiosampleTypeComponenet = (props, reactContext) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'view-item');
 
     // Set up breadcrumbs
@@ -21,15 +19,13 @@ const BiosampleTypeComponenet = (props, reactContext) => {
         { id: context.term_name, query: `term_name=${context.term_name}`, tip: context.term_name },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs root="/search/?type=BiosampleType" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>
                     <span className="sentence-case">
                         {context.term_name} / {context.classification}
@@ -76,11 +72,11 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                             <dt>Aliases</dt>
                             <dd>
                                 <ul>
-                                    {context.aliases.map(alias =>
+                                    {context.aliases.map((alias) => (
                                         <li key={alias}>
                                             <span>{alias}</span>
                                         </li>
-                                    )}
+                                    ))}
                                 </ul>
                             </dd>
                         </div>
@@ -108,7 +104,7 @@ globals.contentViews.register(BiosampleType, 'BiosampleType');
 
 
 const ListingComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
-    <li className={resultItemClass(result)}>
+    <div className={resultItemClass(result)}>
         <div className="result-item">
             <div className="result-item__data">
                 <a href={result['@id']} className="result-item__link">
@@ -125,7 +121,7 @@ const ListingComponent = ({ context: result, auditIndicators, auditDetail }, rea
             <PickerActions context={result} />
         </div>
         {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
-    </li>
+    </div>
 );
 
 ListingComponent.propTypes = {

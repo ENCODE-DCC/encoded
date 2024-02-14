@@ -26,7 +26,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "14"
         },
         "accession": {
             "accessionType": "PL"
@@ -68,6 +68,7 @@
                     "BruChase-seq",
                     "BruUV-seq",
                     "CAGE",
+                    "capture Hi-C",
                     "ChIA-PET",
                     "ChIP-seq",
                     "Circulome-seq",
@@ -76,20 +77,28 @@
                     "CRISPR genome editing followed by RNA-seq",
                     "CRISPR screen",
                     "CRISPRi followed by RNA-seq",
+                    "CUT&RUN",
+                    "CUT&Tag",
                     "direct RNA-seq",
                     "DNA methylation profiling by array assay",
                     "DNA-PET",
                     "DNase-seq",
                     "eCLIP",
+                    "FACS CRISPR screen",
                     "FAIRE-seq",
+                    "FlowFISH CRISPR screen",
                     "genetic modification followed by DNase-seq",
                     "genotype phasing by HiC",
-                    "genotyping by high throughput sequencing assay",
+                    "GRO-cap",
+                    "GRO-seq",
                     "HiC",
                     "iCLIP",
                     "icLASER",
                     "icSHAPE",
+                    "LC/MS label-free quantitative proteomics",
+                    "LC-MS/MS isobaric label quantitative proteomics",
                     "long read RNA-seq",
+                    "long read single-cell RNA-seq",
                     "MeDIP-seq",
                     "microRNA counts",
                     "microRNA-seq",
@@ -98,26 +107,32 @@
                     "MPRA",
                     "MRE-seq",
                     "PAS-seq",
+                    "perturbation followed by scRNA-seq",
+                    "perturbation followed by snATAC-seq",
                     "PLAC-seq",
                     "pooled clone sequencing",
                     "PRO-cap",
                     "PRO-seq",
+                    "proliferation CRISPR screen",
                     "protein sequencing by tandem mass spectrometry assay",
                     "RAMPAGE",
                     "Repli-chip",
                     "Repli-seq",
+                    "Ribo-seq",
                     "RIP-chip",
                     "RIP-seq",
                     "RNA Bind-n-Seq",
                     "RNA-PET",
                     "RNA-seq",
                     "RRBS",
+                    "seqFISH",
                     "shRNA knockdown followed by RNA-seq",
-                    "single cell isolation followed by RNA-seq",
-                    "single-cell ATAC-seq",
+                    "single-cell RNA sequencing assay",
                     "single-nucleus ATAC-seq",
                     "siRNA knockdown followed by RNA-seq",
                     "small RNA-seq",
+                    "SPRITE",
+                    "SPRITE-IP",
                     "STARR-seq",
                     "Switchgear",
                     "TAB-seq",
@@ -196,6 +211,18 @@
             "comment": "Please increment as whole numbers starting from 1.",
             "type": "integer",
             "minimum": 1
+        },
+        "reference_filesets": {
+            "title": "Reference File Sets",
+            "description": "The reference file set that contains references and indexes for a pipeline.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Reference File Set",
+                "description": "A particular file set containing references and indexes used by the pipeline.",
+                "type": "string",
+                "linkTo": "Reference"
+            }
         }
     },
     "facets": {
@@ -242,9 +269,13 @@
         },
         "analysis_steps.versions.software_versions.software.name": {
             "title": "Software used"
+        },
+        "reference_filesets": {
+            "title": "Reference File Sets"
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "uuid": 1.0,
         "accession": 1.0,
         "aliases": 1.0,

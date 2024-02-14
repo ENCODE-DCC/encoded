@@ -1,0 +1,53 @@
+[
+    {
+        "name": "PGP donor",
+        "class": "stem",
+        "linkClass": "",
+        "children": [
+            {
+                "name": "GM20431",
+                "class": "mesoderm",
+                "linkClass": "mesoderm"
+            },
+            {
+                "name": "GM23248",
+                "class": "ectoderm",
+                "linkClass": "ectoderm",
+                "children": [
+                    {
+                        "name": "GM23338",
+                        "class": "ectoderm",
+                        "linkClass": "ectoderm",
+                        "children": [
+                            {
+                                "name": "astrocyte",
+                                "class": "ectoderm",
+                                "linkClass": "ectoderm"
+                            },
+                            {
+                                "name": "bipolar neuron",
+                                "class": "ectoderm",
+                                "linkClass": "ectoderm"
+                            },
+                            {
+                                "name": "brain (90/180 days organoid)",
+                                "class": "ectoderm",
+                                "linkClass": "ectoderm"
+                            },
+                            {
+                                "name": "glutamatergic neuron",
+                                "class": "ectoderm",
+                                "linkClass": "ectoderm"
+                            },
+                            {
+                                "name": "endothelial cell",
+                                "class": "mesoderm",
+                                "linkClass": "mesoderm"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

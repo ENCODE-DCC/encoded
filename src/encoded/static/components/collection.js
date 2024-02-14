@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
 import DataColors from './datacolors';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, controlTypeParameter } from './objectutils';
 
 
 // Maximum number of facet charts to display.
@@ -13,6 +13,15 @@ const MAX_FACET_CHARTS = 3;
 const collectionColors = new DataColors(); // Get a list of colors to use for the lab chart
 const collectionColorList = collectionColors.colorList();
 
+const getControlType = (link) => {
+    if (!link) {
+        return '';
+    }
+
+    const type = link.replace('/search/?type=', '');
+
+    return controlTypeParameter(type);
+};
 
 class FacetChart extends React.Component {
     constructor() {
@@ -77,7 +86,7 @@ class FacetChart extends React.Component {
                             const text = [];
                             text.push('<ul>');
                             for (let i = 0; i < chartData.length; i += 1) {
-                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[i]).replace(/%20/g, '+')}`;
+                                const searchUri = `${baseSearchUri}${getControlType(baseSearchUri)}&${facet.field}=${encodeURIComponent(chartLabels[i]).replace(/%20/g, '+')}`;
                                 if (chartData[i]) {
                                     text.push(`<li><a href="${searchUri}">`);
                                     text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
@@ -94,15 +103,15 @@ class FacetChart extends React.Component {
                             if (activePoints[0]) {
                                 const clickedElementIndex = activePoints[0]._index;
                                 const chartLabels = this.chartInstance.data.labels;
-                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[clickedElementIndex]).replace(/%20/g, '+')}`;
+                                const searchUri = `${baseSearchUri}${getControlType(baseSearchUri)}&${facet.field}=${encodeURIComponent(chartLabels[clickedElementIndex]).replace(/%20/g, '+')}`;
                                 this.context.navigate(searchUri);
                             }
                         },
                     },
                 });
 
-                // Create and render the legend by drawibg it into the <div> we set up for that
-                // purposee.
+                // Create and render the legend by drawing it into the <div> we set up for that
+                // purpose.
                 document.getElementById(`${chartId}-legend`).innerHTML = this.chartInstance.generateLegend();
             }
         }
@@ -169,7 +178,7 @@ class Collection extends React.Component {
 
     componentDidMount() {
         // Have webpack load the chart.js npm module. Once the module's ready, set the chartModule
-        // state so we can readraw the charts with the chart module in place.
+        // state so we can redraw the charts with the chart module in place.
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
             this.setState({ chartModule: Chart });
@@ -183,7 +192,7 @@ class Collection extends React.Component {
         // Collect the three facets that will be included in the charts. This comprises the first
         // MAX_FACET_CHARTS facets, not counting any facets with "type" for the field which we never
         // chart, nor audit facets.
-        const chartFacets = facets ? facets.filter(facet => facet.field !== 'type' && facet.field.substring(0, 6) !== 'audit.').slice(0, MAX_FACET_CHARTS) : [];
+        const chartFacets = facets ? facets.filter((facet) => facet.field !== 'type' && facet.field.substring(0, 6) !== 'audit.').slice(0, MAX_FACET_CHARTS) : [];
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -196,17 +205,17 @@ class Collection extends React.Component {
                     <PanelHeading addClasses="collection-heading">
                         <h4>{context.total} total {context.title}</h4>
                         <div className="collection-heading__controls">
-                            {(context.actions || []).map(action =>
+                            {(context.actions || []).map((action) => (
                                 <a key={action.name} href={action.href} className="btn btn-info">
                                     {action.title}
                                 </a>
-                            )}
+                            ))}
                         </div>
                     </PanelHeading>
                     <PanelBody>
                         {chartFacets.length > 0 ?
                             <div className="collection-charts">
-                                {chartFacets.map(facet =>
+                                {chartFacets.map((facet) => (
                                     <FacetChart
                                         key={facet.field}
                                         facet={facet}
@@ -214,7 +223,7 @@ class Collection extends React.Component {
                                         chartModule={this.state.chartModule}
                                         baseSearchUri={context.clear_filters}
                                     />
-                                )}
+                                ))}
                             </div>
                         :
                             <p className="collection-no-chart">No facets defined in the &ldquo;{context.title}&rdquo; schema, or no data available.</p>

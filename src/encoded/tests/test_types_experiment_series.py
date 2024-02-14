@@ -1,40 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def experiment_1(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'assay_term_name': 'RNA-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def experiment_2(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'assay_term_name': 'RNA-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_experiment_series(testapp, lab, award, experiment_1):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'related_datasets': [experiment_1['@id']]
-    }
-    return testapp.post_json('/experiment-series', item, status=201).json['@graph'][0]
-
-
 def test_experiment_series_biosample_summary(
     testapp,
     base_experiment_series,
@@ -46,7 +12,7 @@ def test_experiment_series_biosample_summary(
     biosample_2,
     library_1,
     library_2,
-    treatment,
+    treatment_5,
     replicate_1_1,
     replicate_2_1,
     s2r_plus,
@@ -69,7 +35,7 @@ def test_experiment_series_biosample_summary(
         biosample_1['@id'],
         {
             'donor': donor_1['@id'],
-            'treatments': [treatment['@id']],
+            'treatments': [treatment_5['@id']],
             'biosample_ontology': s2r_plus['uuid'],
             'subcellular_fraction_term_name': 'nucleus',
         }
@@ -79,7 +45,7 @@ def test_experiment_series_biosample_summary(
         {
             'donor': donor_2['@id'],
             'biosample_ontology': liver['uuid'],
-            'treatments': [treatment['@id']]
+            'treatments': [treatment_5['@id']]
         }
     )
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -94,7 +60,7 @@ def test_experiment_series_biosample_summary(
     )
     res = testapp.get(base_experiment_series['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == [
-        'S2R+ nuclear fraction treated with ethanol'
+        'Homo sapiens S2R+ nuclear fraction treated with ethanol'
     ]
     testapp.patch_json(
         base_experiment_series['@id'],
@@ -102,6 +68,6 @@ def test_experiment_series_biosample_summary(
     )
     res = testapp.get(base_experiment_series['@id']+'@@index-data')
     assert sorted(res.json['object']['biosample_summary']) == [
-        'S2R+ nuclear fraction treated with ethanol',
-        'liver male child (1 day) treated with ethanol',
+        'Homo sapiens S2R+ nuclear fraction treated with ethanol',
+        'Homo sapiens liver tissue male child (1 day) treated with ethanol',
     ]

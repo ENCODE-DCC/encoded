@@ -1,109 +1,235 @@
 version: 2.1
 
 orbs:
-    browser-tools: circleci/browser-tools@0.1.0
+    browser-tools: circleci/browser-tools@1.4.6
 
 executors:
   encoded-executor:
     docker:
-      - image: circleci/buildpack-deps:bionic
+      - image: circleci/buildpack-deps:focal
     working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
-      - ES_JAVA_OPTS: -Xms4g -Xmx4g
+      - ES_JAVA_OPTS: -Xms2g -Xmx3g
       - JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+  node:
+    docker:
+      - image: cimg/node:12.22.6
+    working_directory: ~/encoded
+
+# Avoid repetition in requires for tests
+requires-lint: &requires-lint
+  requires:
+    - eslint
+    - stylelint
+    - config
 
 commands:
-  buildout:
-    description: A buildout process based on encoded-executor
+  install-app:
+    description: Install dependencies and application based on encoded-executor
     steps:
       - checkout
       # Do not use caching for now to avoid potential conflicts/bugs
       - run:
           name: Add apt repositories
           command: |
-            sudo apt-get update && sudo apt-get install apt-transport-https software-properties-common
-            wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-            echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+            sudo apt-get update && sudo apt-get install apt-transport-https ca-certificates software-properties-common
             curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-            curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+            curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
             sudo add-apt-repository -y ppa:openjdk-r/ppa
             sudo apt-get update
       - run:
           name: Install dependencies
           command: |
+            sudo wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/pg_gpg_key
+            sudo apt-key add /etc/apt/pg_gpg_key
+            echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" | sudo tee -a /etc/apt/sources.list
+            sudo apt-get update && sudo apt-get install -y postgresql-11
+
             sudo apt-get install -y \
-              bsdtar \
-              elasticsearch \
               graphviz \
               nodejs \
               openjdk-11-jdk \
-              postgresql-10
-            sudo chown -R circleci /etc/elasticsearch
-            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/10/bin:$PATH\n;' $BASH_ENV
-            sudo apt-get install -y python3.7-dev python3-pip
-            sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 0
+              redis-server
+            sudo apt-get install -y python3-dev python3-pip
             sed -i '1s;^;alias python=python3\n;' $BASH_ENV
+            wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.16.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb
+            sudo dpkg -i elasticsearch-5.6.16.deb
+            sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb
+            sudo dpkg -i libmagic1_5.38-4_amd64.deb
+            sudo dpkg -i libmagic-dev_5.38-4_amd64.deb
+            sudo apt-get install -f
+            sudo chown -R circleci /etc/elasticsearch
+            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/11/bin:$PATH\n;' $BASH_ENV
       - run:
-          name: Run buildout
+          name: Install application
           command: |
-            sudo pip3 install --upgrade pip setuptools
-            sudo pip3 install zc.buildout
-            buildout bootstrap
-            bin/buildout
+            git config --global url."https://github.com/".insteadOf git@github.com:
+            git config --global url."https://".insteadOf git://
+            sudo pip3 install --upgrade pip
+            make install
+  install-jsonnet:
+    description: Install Jsonnet including formatter jsonnetfmt
+    steps:
+      - run:
+          name: Install Jsonnet
+          command: |
+            curl -Ls https://github.com/google/jsonnet/releases/download/v0.16.0/jsonnet-bin-v0.16.0-linux.tar.gz | \
+              tar xz && \
+              sudo mv jsonnet jsonnetfmt /usr/local/bin
+
 jobs:
   bdd:
     executor: encoded-executor
-    resource_class: large
+    resource_class: xlarge
     steps:
-      - buildout
+      - install-jsonnet
+      - install-app
+      # orb dependencies
+      - run: sudo apt-get update -y && sudo apt-get install -y libgbm1
+      # Use install tasks from the orb
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run:
           name: Run bdd tests
-          # collected 2189 items / 2119 deselected / 70 selected
           command: |
-            bin/test -s -vv -m "bdd" --tb=short \
-              --splinter-implicit-wait 10 \
-              --splinter-webdriver chrome \
-              --splinter-socket-timeout 300 \
-              --chrome-options "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080"
+            mkdir -p test-results/pytest-bdd
+            pytest --exitfirst -s -vv -m "bdd" --tb=short \
+              --splinter-implicit-wait=2 \
+              --splinter-webdriver=chrome \
+              --splinter-socket-timeout=300 \
+              --splinter-session-scoped-browser=false \
+              --splinter-headless=true \
+              --chrome-options "--disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080" \
+              --junitxml=test-results/pytest-bdd/junit.xml
           no_output_timeout: 30m
-  not-bdd-indexing:
+      - store_test_results:
+          path: test-results
+  indexing:
     executor: encoded-executor
     resource_class: large
     steps:
-      - buildout
+      - install-jsonnet
+      - install-app
       - run:
-          name: non bdd indexing tests
+          name: indexing tests
           command: |
-            # collected 2189 items / 2184 deselected / 5 selected
-            bin/test -s -vv -m "not bdd" -k test_indexing
+            mkdir -p test-results/pytest-indexing
+            pytest --exitfirst -s -vv \
+              -m "indexing" \
+              --junitxml=test-results/pytest-indexing/junit.xml
+          no_output_timeout: 5m
+      - store_test_results:
+          path: test-results
+  indexer:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - install-jsonnet
+      - install-app
+      - run:
+          name: indexer tests
+          command: |
+            mkdir -p test-results/pytest-indexer
+            pytest --exitfirst -s -vv \
+              -m "indexer" \
+              --junitxml=test-results/pytest-indexer/junit.xml
+          no_output_timeout: 5m
+      - store_test_results:
+          path: test-results
   not-bdd-non-indexing:
     executor: encoded-executor
-    resource_class: large
+    resource_class: medium+
     steps:
-      - buildout
+      - install-jsonnet
+      - install-app
       - run:
           name: non bdd non indexing tests
           command: |
-            # collected 2189 items / 75 deselected / 2114 selected
-            bin/test -s -vv -m "not bdd" -k 'not test_indexing'
+            mkdir -p test-results/pytest-not-bdd-not-indexer
+            pytest --exitfirst -s -vv \
+              -m "not bdd and not indexing and not indexer" \
+              --junitxml=test-results/pytest-not-bdd-not-indexer/junit.xml
+      - store_test_results:
+          path: test-results
   npm:
-    executor: encoded-executor
-    resource_class: large
+    executor: node
+    resource_class: medium+
     steps:
-      - buildout
+      - checkout
+      - run:
+          name: Install Javascript packages and build
+          command: |
+            git config --global url."https://github.com/".insteadOf git@github.com:
+            git config --global url."https://".insteadOf git://
+            make javascript
       - run:
           name: npm tests
           command: |
+            mkdir -p test-results/npm
             npm run circleci-test
+            cp junit.xml test-results/npm
+      - store_test_results:
+          path: test-results
+  eslint:
+    executor: node
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install eslint
+          command: sudo npm install eslint
+      - run:
+          name: Lint the code with Eslint
+          command: node_modules/.bin/eslint src/encoded/static/components/
+  stylelint:
+    executor: node
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install stylelint
+          command: sudo npm install stylelint
+      - run:
+          name: Lint the style sheet with StyleLint
+          command: node_modules/.bin/stylelint src/encoded/static/scss/
+  config:
+    docker:
+      - image: cimg/base:2020.01
+    working_directory: ~/encoded
+    resource_class: small
+    description: Generate templated config and fail if it is different than what was checked in
+    steps:
+      - checkout
+      - install-jsonnet
+      - run:
+          name: Autoformat jsonnet files and generate config
+          command: make config
+      - run:
+          name: Verify checked-in config is up to date and jsonnet was properly formatted
+          command: |
+            git diff --quiet
+            if [[ $? -ne 0 ]]; then
+              exit 1
+            fi
 
 workflows:
   version: 2
   encoded-tests:
     jobs:
-      - bdd
-      - not-bdd-indexing
-      - not-bdd-non-indexing
-      - npm
+      - eslint
+      - stylelint
+      - config
+      - bdd:
+          <<: *requires-lint
+      - indexing:
+          <<: *requires-lint
+      - indexer:
+          <<: *requires-lint
+      - not-bdd-non-indexing:
+          <<: *requires-lint
+      - npm:
+          <<: *requires-lint

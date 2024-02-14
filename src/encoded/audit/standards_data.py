@@ -53,8 +53,18 @@ pipelines_with_read_depth = {
             'low': 5000000
         }
     },
-    'Transcription factor ChIP-seq pipeline (modERN)': 3000000
-    }
+    'Transcription factor ChIP-seq pipeline (modERN)': 3000000,
+    'ATAC-seq (replicated)': {
+        'recommended': 25000000,
+        'minimal': 20000000,
+        'low': 15000000
+    },
+    'ATAC-seq (unreplicated)': {
+        'recommended': 25000000,
+        'minimal': 20000000,
+        'low': 15000000
+    },
+}
 
 
 special_assays_with_read_depth = {
@@ -69,6 +79,7 @@ minimal_read_depth_requirements = {
     'DNase-seq': 20000000,
     'genetic modification followed by DNase-seq': 20000000,
     'ChIP-seq': 20000000,
+    'Mint-ChIP-seq': 20000000,
     'RAMPAGE': 10000000,
     'shRNA knockdown followed by RNA-seq': 10000000,
     'siRNA knockdown followed by RNA-seq': 10000000,

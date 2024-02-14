@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
+import QueryString from '../libs/query_string';
 import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
-import DataTable from './datatable';
+import { DataTable } from './datatable';
 import * as globals from './globals';
 import { RowCategoryExpander, SearchFilter, MATRIX_VISUALIZE_LIMIT } from './matrix';
-import { MatrixInternalTags } from './objectutils';
-import { FacetList, ClearFilters, SearchControls } from './search';
+import { MatrixBadges } from './objectutils';
+import { FacetList, ClearFilters, ClearSearchTerm, SearchControls } from './search';
 
 
 /**
@@ -49,12 +50,12 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType, colTitleMap
         });
 
         // Update min and max values found within all subcategories of the given category.
-        const rowDataValues = rowData[columnCategoryType].buckets.map(bucket => bucket.doc_count);
+        const rowDataValues = rowData[columnCategoryType].buckets.map((bucket) => bucket.doc_count);
         const prospectiveMax = Math.max(...rowDataValues);
         if (maxSubCategoryValue < prospectiveMax) {
             maxSubCategoryValue = prospectiveMax;
         }
-        const prospectiveMin = Math.min(...rowDataValues.filter(value => value));
+        const prospectiveMin = Math.min(...rowDataValues.filter((value) => value));
         if (minSubCategoryValue > prospectiveMin) {
             minSubCategoryValue = prospectiveMin;
         }
@@ -106,8 +107,21 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         colTitleMap[colCategoryBucket.key] = colIndex;
         return colCategoryBucket.key;
     });
-    const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${context.search_base}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
+
+    // Set specific base urls, in different combinations
+    let query = new QueryString(context.search_base);
+    query.deleteKeyValue(subCategory);
+    const baseUrlWithoutSubcategoryType = query.format();
+
+    query.deleteKeyValue(columnCategoryType);
+    const baseUrlWithoutSubNorColCategoriesType = query.format();
+
+    query = new QueryString(context.search_base);
+    query.deleteKeyValue(columnCategoryType);
+    const baseUrlWithoutColCategoryType = query.format();
+
+    const header = [{ header: null }].concat(colCategoryNames.map((colCategoryName) => ({
+        header: <a href={`${baseUrlWithoutColCategoryType}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
@@ -163,7 +177,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${context.search_base}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${baseUrlWithoutSubNorColCategoriesType}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}&biosample_ontology.classification=${rowCategoryBucket.key}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -176,7 +190,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${context.search_base}&${mappedSubCategoryQuery}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${baseUrlWithoutSubcategoryType}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -208,7 +222,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${context.search_base}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${baseUrlWithoutColCategoryType}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
@@ -263,7 +277,7 @@ const MatrixHeader = ({ context }) => {
         // If we have a 'type' query string term along with others terms, we need a Clear Filters
         // button.
         const terms = queryString.parse(searchQuery);
-        const nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
+        const nonPersistentTerms = _(Object.keys(terms)).any((term) => term !== 'type');
         clearButton = nonPersistentTerms && terms.type;
     }
 
@@ -272,23 +286,39 @@ const MatrixHeader = ({ context }) => {
     // code exists in case more than one type is allowed in future.
     let type = '';
     if (context.filters && context.filters.length > 0) {
-        const typeFilters = context.filters.filter(filter => filter.field === 'type');
+        const typeFilters = context.filters.filter((filter) => filter.field === 'type');
         if (typeFilters.length === 1) {
             type = typeFilters[0].term;
         }
     }
 
+    // If the user has requested an ENCORE matrix, generate a matrix description.
+    const query = new QueryString(context.search_base);
+    const matrixDescription = query.getKeyValues('internal_tags').includes('ENCORE') ?
+        'The ENCORE project aims to study protein-RNA interactions by creating a map of RNA binding proteins (RBPs) encoded in the human genome and identifying the RNA elements that the RBPs bind to.'
+    : '';
+
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
-                <h1>{type ? `${type} ` : ''}{context.title}</h1>
-                <div className="matrix-tags">
-                    <MatrixInternalTags context={context} />
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
+                    <h1>{type ? `${type} ` : ''}{context.title}</h1>
+                    <ClearSearchTerm searchUri={context['@id']} />
+                </div>
+                <div className="matrix-header__details">
+                    <div className="matrix-title-badge">
+                        <MatrixBadges context={context} type={type} />
+                    </div>
+                    <div className="matrix-description">
+                        {matrixDescription &&
+                            <div className="matrix-description__text">{matrixDescription}</div>
+                        }
+                    </div>
                 </div>
             </div>
             <div className="matrix-header__controls">
                 <div className="matrix-header__filter-controls">
-                    <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                    <ClearFilters clearUri={context.clear_filters} searchUri={context['@id']} enableDisplay={!!clearButton} />
                     <SearchFilter context={context} />
                 </div>
                 <div className="matrix-header__search-controls">
@@ -309,12 +339,11 @@ MatrixHeader.propTypes = {
 /**
  * Render the vertical facets.
  */
-const MatrixVerticalFacets = ({ context }, reactContext) => (
+const MatrixVerticalFacets = ({ context }) => (
     <FacetList
         context={context}
         facets={context.facets}
         filters={context.filters}
-        searchBase={`${url.parse(reactContext.location_href).search}&` || '?'}
         addClasses="matrix-facets"
         supressTitle
     />
@@ -323,11 +352,6 @@ const MatrixVerticalFacets = ({ context }, reactContext) => (
 MatrixVerticalFacets.propTypes = {
     /** Matrix search result object */
     context: PropTypes.object.isRequired,
-};
-
-MatrixVerticalFacets.contextTypes = {
-    location_href: PropTypes.string,
-    navigate: PropTypes.func,
 };
 
 
@@ -353,12 +377,40 @@ class MatrixPresentation extends React.Component {
         this.handleScrollIndicator(this.scrollElement);
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps) {
         // If URI changed, we need close any expanded rowCategories in case the URI change results
         // in a huge increase in displayed data. Also update the scroll indicator if needed.
         if (prevProps.context['@id'] !== this.props.context['@id']) {
             this.handleScrollIndicator(this.scrollElement);
             this.setState({ expandedRowCategories: [] });
+        }
+    }
+    /* eslint-enable react/no-did-update-set-state */
+
+    /**
+     * Called when the user scrolls the matrix horizontally within its div to handle scroll
+     * indicators.
+     * @param {object} e React synthetic scroll event
+     */
+    handleOnScroll(e) {
+        this.handleScrollIndicator(e.target);
+    }
+
+    /**
+     * Show a scroll indicator depending on current scrolled position.
+     * @param {object} element DOM element to apply shading to
+     */
+    handleScrollIndicator(element) {
+        // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
+        // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+        const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+        if (scrollDiff < 2 && !this.state.scrolledRight) {
+            // Right edge of matrix scrolled into view.
+            this.setState({ scrolledRight: true });
+        } else if (scrollDiff >= 2 && this.state.scrolledRight) {
+            // Right edge of matrix scrolled out of view.
+            this.setState({ scrolledRight: false });
         }
     }
 
@@ -390,31 +442,6 @@ class MatrixPresentation extends React.Component {
             const expandedCategories = prevState.expandedRowCategories;
             return { expandedRowCategories: [...expandedCategories.slice(0, matchingCategoryIndex), ...expandedCategories.slice(matchingCategoryIndex + 1)] };
         });
-    }
-    /**
-     * Called when the user scrolls the matrix horizontally within its div to handle scroll
-     * indicators.
-     * @param {object} e React synthetic scroll event
-     */
-    handleOnScroll(e) {
-        this.handleScrollIndicator(e.target);
-    }
-
-    /**
-     * Show a scroll indicator depending on current scrolled position.
-     * @param {object} element DOM element to apply shading to
-     */
-    handleScrollIndicator(element) {
-        // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
-        // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-        const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-        if (scrollDiff < 2 && !this.state.scrolledRight) {
-            // Right edge of matrix scrolled into view.
-            this.setState({ scrolledRight: true });
-        } else if (scrollDiff >= 2 && this.state.scrolledRight) {
-            // Right edge of matrix scrolled out of view.
-            this.setState({ scrolledRight: false });
-        }
     }
 
     render() {
@@ -529,7 +556,7 @@ class ExperimentMatrix extends React.Component {
     getRowCategories() {
         const rowCategory = this.props.context.matrix.y.group_by[0];
         const rowCategoryData = this.props.context.matrix.y[rowCategory].buckets;
-        const rowCategoryColors = globals.biosampleTypeColors.colorList(rowCategoryData.map(rowCategoryDatum => rowCategoryDatum.key));
+        const rowCategoryColors = globals.biosampleTypeColors.colorList(rowCategoryData.map((rowCategoryDatum) => rowCategoryDatum.key));
         const rowCategoryNames = {};
         rowCategoryData.forEach((datum) => {
             rowCategoryNames[datum.key] = datum.key;

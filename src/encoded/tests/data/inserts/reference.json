@@ -78,7 +78,9 @@
         "award": "U54HG007005",
         "reference_type": "functional elements",
         "description": "Elements DNA sequences",
+        "elements_selection_method": ["accessible genome regions", "DNase hypersensitive sites", "chromatin states"],
         "lab": "thomas-gingeras",
+        "crispr_screen_tiling": "peak tiling",
         "status": "archived",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "84c2c840-4146-4c93-90cf-67a11a4fc108",
@@ -90,8 +92,115 @@
         "date_created": "2019-07-01T22:14:15.601240+00:00",
         "lab": "/labs/ali-mortazavi/",
         "reference_type": "sequence adapters",
+        "related_files": [
+            "/files/ENCFF026HBG/",
+            "/files/ENCFF379BCO/"
+        ],
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "status": "in progress",
         "accession": "ENCSR819DEL"
+    },
+    {
+        "_test": "reference genome dataset",
+        "accession": "ENCSR001GEN",
+        "award": "ENCODE2",
+        "reference_type": "genome",
+        "description": "Dataset for Reference Genome (linked to Donor)",
+        "lab": "/labs/j-michael-cherry/",
+        "status": "released",
+        "date_released": "2020-03-11",
+        "uuid": "9bd36e84-f20e-48d3-8c03-c99df8be7c3c",
+        "donor": "ENCDO845WKR"
+    },
+    {
+        "_test": "fcc examined_loci reference dataset",
+        "accession": "ENCSR580ZYI",
+        "award": "/awards/U54HG007010/",
+        "examined_loci": [
+            "/genes/677792/",
+            "/genes/126961/"
+        ],
+        "lab": "/labs/greg-cooper/",
+        "reference_type": "functional elements",
+        "related_files": [
+            "/files/ENCFF026HBG/",
+            "/files/ENCFF027HBG/"
+        ],
+        "status": "in progress",
+        "elements_selection_method": ["essential genes"]
+    },
+    {
+        "_test": "fcc examined_regions reference dataset",
+        "accession": "ENCSR580REG",
+        "award": "/awards/U54HG007010/",
+        "examined_regions": [
+            {"assembly": "GRCh38",
+            "chromosome": "chr18",
+            "start": 50282343,
+            "end": 50302710
+            },
+            {"assembly": "hg19",
+            "chromosome": "chr18",
+            "start": 10808713,
+            "end": 22814692}
+        ],
+        "lab": "/labs/greg-cooper/",
+        "reference_type": "functional elements",
+        "status": "in progress"
+    },
+    {
+        "_test": "fcc examined loci and regions reference",
+        "accession": "ENCSR580BOT",
+        "award": "/awards/U54HG007010/",
+        "examined_regions": [
+            {"assembly": "GRCh38",
+            "chromosome": "chr18",
+            "start": 50282343,
+            "end": 50302710
+            }
+        ],
+        "examined_loci": [
+            "/genes/677792/"
+        ],
+        "lab": "/labs/greg-cooper/",
+        "reference_type": "functional elements",
+        "status": "in progress"
+    },
+    {
+        "_test": "sequence barcodes",
+        "award": "/awards/U54HG006998/",
+        "lab": "/labs/ali-mortazavi/",
+        "reference_type": "sequence barcodes",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "in progress",
+        "accession": "ENCSR063SBC",
+        "related_pipelines": [
+            "ENCPL001MRN"
+        ]
+    },
+    {
+        "_test": "inclusion list of barcodes",
+        "award": "ENCODE2",
+        "lab": "barbara-wold",
+        "reference_type": "sequence barcodes",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "accession": "ENCSR063INC",
+        "description": "10X Genomics inclusion or permit list of barcodes for RNA Chromium V1 chemistry",
+        "uuid": "b27bb01c-8f27-4373-96a8-6c503928bd25",
+        "experimental_input": ["ENCSR123AAA"]
+    },
+    {
+        "_test": "variants",
+        "award": "ENCODE2",
+        "lab": "barbara-wold",
+        "reference_type": "variants",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "released",
+        "date_released": "2021-01-01",
+        "accession": "ENCSR333VRT",
+        "description": "Reference of variants",
+        "uuid": "50a1cc00-f1ef-4373-6427-6212d19cfd25"
     }
 ]

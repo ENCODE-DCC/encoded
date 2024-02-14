@@ -8,7 +8,10 @@
 
 // make footer look good on larger screens
 @media (min-width: $screen-sm-min) {
-    .footer-row { margin-left: 0; margin-right: 0; }
+    .footer-row {
+        margin-left: 0;
+        margin-right: 0;
+    }
 
     .app-version {
         text-align: left;
@@ -33,20 +36,23 @@
         list-style: none outside none;
         margin-left: -5px;
         padding-left: 0;
-        li { 
+
+        li {
             display: inline-block;
             padding-left: 10px;
             padding-right: 10px;
         }
+
         a {
             display: inline;
             margin: 0;
             padding: 0;
-            background-color: transparent;   
+            background-color: transparent;
         }
-        a:hover { 
+
+        a:hover {
             text-decoration: underline;
-            background-color: transparent; 
+            background-color: transparent;
         }
         a:active { background-color: transparent; }
     }
@@ -54,11 +60,11 @@
     .footer-logos-section {
         flex: 0 1 40%;
     }
-    
+
     .footer-logos {
         margin: 0;
 
-        li { 
+        li {
             display: inline-block;
             padding-left: 10px;
             padding-right: 10px;

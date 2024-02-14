@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import _ from 'underscore';
-import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanelReq } from './doc';
@@ -11,50 +10,23 @@ import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
 import { ProjectBadge } from './image';
-import { Breadcrumbs } from './navigation';
-import { singleTreatment, ItemAccessories, InternalTags } from './objectutils';
+import { singleTreatment, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
-import ViewControlRegistry, { ViewControlTypes } from './view_controls';
-
-
-/**
- * 'Experiment' search results view-control filter. For most experiment searches, this just returns
- * the default views for experiments. But if this displays the reference-epigenome matrix, it
- * returns the subset of views relevant to those.
- * @param {array} types Views defined by default for the Experiment @type.
- * @param {object} results Current page's search-results object
- *
- * @return {array} Views that apply to the current search results.
- */
-const viewControlFilter = (types, results) => {
-    let views;
-    const parsedUrl = url.parse(results['@id']);
-    if (parsedUrl.pathname === '/reference-epigenome-matrix/') {
-        views = ['Search', 'Report'];
-    } else {
-        views = types.filter(type => type !== results['@type'][0]);
-    }
-    return views;
-};
-
-
-ViewControlRegistry.register('Experiment', [
-    ViewControlTypes.SEARCH,
-    ViewControlTypes.MATRIX,
-    ViewControlTypes.REPORT,
-    ViewControlTypes.SUMMARY,
-], viewControlFilter);
-
-
-const anisogenicValues = [
-    'anisogenic, sex-matched and age-matched',
-    'anisogenic, age-matched',
-    'anisogenic, sex-matched',
-    'anisogenic',
-];
+import {
+    AwardRef,
+    BiosampleSummaryDisplay,
+    BiosampleOrganismNames,
+    GeneticModificationOrganismNames,
+    CollectBiosampleDocs,
+    ControllingExperiments,
+    DoiRef,
+    ExperimentTable,
+    ReplacementAccessions,
+} from './typeutils';
+import Tooltip from '../libs/ui/tooltip';
+import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
 
 /**
@@ -68,12 +40,15 @@ const displayedLibraryProperties = [
     { property: 'depleted_in_term_name', title: 'Depleted in', test: 'depletedin' },
     { property: 'nucleic_acid_starting_quantity', title: 'Library starting quantity', test: 'startingquantity' },
     { property: 'size_range', title: 'Size range', test: 'sizerange' },
+    { property: 'average_fragment_size', title: 'Average fragment size', test: 'avgfragmentsize' },
     { property: 'lysis_method', title: 'Lysis method', test: 'lysismethod' },
     { property: 'extraction_method', title: 'Extraction method', test: 'extractionmethod' },
     { property: 'fragmentation_methods', title: 'Fragmentation methods', test: 'fragmentationmethod' },
     { property: 'library_size_selection_method', title: 'Size selection method', test: 'sizeselectionmethod' },
+    { property: 'construction_method', title: 'Library construction method', test: 'libraryconstructionmethod' },
     { property: 'strand_specificity', title: 'Strand specificity', test: 'strandspecificity' },
     { property: 'spikeins_used', title: 'Spike-ins datasets', test: 'spikeins' },
+    { property: 'inclusion_list', title: 'Inclusion list reference', test: 'inclusion' },
 ];
 
 
@@ -93,13 +68,13 @@ const libraryPropertyExtractors = {
         // Collect and combine treatments from the library as well as the library's biosample.
         let libraryTreatments = [];
 
-        const treatments = library.treatments;
+        const { treatments } = library;
         if (treatments && treatments.length > 0) {
-            libraryTreatments = libraryTreatments.concat(treatments.map(treatment => singleTreatment(treatment)));
+            libraryTreatments = libraryTreatments.concat(treatments.map((treatment) => singleTreatment(treatment)));
         }
         const biosampleTreatments = library.biosample && library.biosample.treatments;
         if (biosampleTreatments && biosampleTreatments.length > 0) {
-            libraryTreatments = libraryTreatments.concat(biosampleTreatments.map(treatment => singleTreatment(treatment)));
+            libraryTreatments = libraryTreatments.concat(biosampleTreatments.map((treatment) => singleTreatment(treatment)));
         }
 
         return { libraryPropertyString: libraryTreatments.join(', ') };
@@ -115,6 +90,18 @@ const libraryPropertyExtractors = {
             libraryPropertyComponent = <span>{quantity}<span className="unit">{units}</span></span>;
         }
         return { libraryPropertyString, libraryPropertyComponent };
+    },
+
+    size_range: (library, replicates) => {
+        // Always display replicate if any other replicate libraries have `average_fragment_size`.
+        const libraryPropertyForceRepDisplay = replicates.some((replicate) => replicate.library && replicate.library.average_fragment_size);
+        return { libraryPropertyString: library.size_range, libraryPropertyForceRepDisplay };
+    },
+
+    average_fragment_size: (library, replicates) => {
+        // Always display replicate if any other replicate libraries have `size_range`.
+        const libraryPropertyForceRepDisplay = replicates.some((replicate) => replicate.library && replicate.library.size_range);
+        return { libraryPropertyString: library.average_fragment_size, libraryPropertyForceRepDisplay };
     },
 
     depleted_in_term_name: (library) => {
@@ -144,6 +131,19 @@ const libraryPropertyExtractors = {
         return { libraryPropertyString, libraryPropertyComponent };
     },
 
+    inclusion_list: (library) => {
+        const inclusion = library.inclusion_list;
+        let libraryPropertyString = null;
+        let libraryPropertyComponent = null;
+        if (inclusion && inclusion.length > 0) {
+            libraryPropertyString = inclusion;
+            libraryPropertyComponent = (
+                <a href={inclusion}>{globals.atIdToAccession(inclusion)}</a>
+            );
+        }
+        return { libraryPropertyString, libraryPropertyComponent };
+    },
+
     fragmentation_methods: (library) => {
         const fragMethods = library.fragmentation_methods;
         let libraryPropertyString = null;
@@ -154,12 +154,15 @@ const libraryPropertyExtractors = {
     },
 
     strand_specificity: (library) => {
-        const strandSpecificity = library.strand_specificity;
-        let libraryPropertyString = null;
+        const libraryPropertyString = library.strand_specificity;
+        return { libraryPropertyString };
+    },
 
-        // A strand_specificity of "false" is still a displayable value.
-        if (strandSpecificity !== undefined) {
-            libraryPropertyString = strandSpecificity ? 'Strand-specific' : 'Non-strand-specific';
+    construction_method: (library) => {
+        const constrMethods = library.construction_method;
+        let libraryPropertyString = null;
+        if (constrMethods && constrMethods.length > 0) {
+            libraryPropertyString = constrMethods.sort().join(', ');
         }
         return { libraryPropertyString };
     },
@@ -184,10 +187,12 @@ const LibraryProperties = ({ replicates }) => {
                 // For each possible displayed library property within the current replicate,
                 // retrieve a string representing its value as well as an optional JSX component
                 // from the replicate library and add them along with the corresponding replicate
-                // numbers to `libraryPropertyDisplays`.
+                // numbers to `libraryPropertyDisplays`, and if a property requires replicate
+                // strings displayed.
                 displayedLibraryProperties.forEach(({ property }) => {
                     let libraryPropertyString = '';
                     let libraryPropertyComponent = null;
+                    let libraryPropertyForceRepDisplay = false;
                     if (!libraryPropertyDisplays[property]) {
                         libraryPropertyDisplays[property] = [];
                     }
@@ -199,9 +204,7 @@ const LibraryProperties = ({ replicates }) => {
                     const libraryPropertyRawValue = replicate.library[property];
                     if (libraryPropertyExtractors[property]) {
                         // Library property has a property extractor.
-                        const extractedProperty = libraryPropertyExtractors[property](replicate.library);
-                        libraryPropertyString = extractedProperty.libraryPropertyString;
-                        libraryPropertyComponent = extractedProperty.libraryPropertyComponent;
+                        ({ libraryPropertyString, libraryPropertyComponent, libraryPropertyForceRepDisplay } = libraryPropertyExtractors[property](replicate.library, replicates));
                     } else if (typeof libraryPropertyRawValue === 'string' || typeof libraryPropertyRawValue === 'number') {
                         // Library property is a simple value, so just use it directly.
                         libraryPropertyString = libraryPropertyRawValue;
@@ -213,6 +216,7 @@ const LibraryProperties = ({ replicates }) => {
                         libraryPropertyDisplays[property].push({
                             value: libraryPropertyString,
                             component: libraryPropertyComponent,
+                            forceRepDisplay: libraryPropertyForceRepDisplay,
                             bioRep: replicate.biological_replicate_number,
                             techRep: replicate.technical_replicate_number,
                         });
@@ -226,8 +230,10 @@ const LibraryProperties = ({ replicates }) => {
         displayedLibraryProperties.forEach((displayedLibraryProperty) => {
             const libraryPropertyElements = libraryPropertyDisplays[displayedLibraryProperty.property];
             if (libraryPropertyElements && libraryPropertyElements.length > 0) {
-                const homogeneous = !libraryPropertyElements.some(libraryProperty => libraryProperty.value !== libraryPropertyElements[0].value);
-                if (!homogeneous) {
+                const homogeneous = !libraryPropertyElements.some((libraryProperty) => libraryProperty.value !== libraryPropertyElements[0].value);
+                const forcedRepDisplay = libraryPropertyElements.some((libraryProperty) => libraryProperty.forceRepDisplay);
+                const isStrandSpecificity = displayedLibraryProperty.property === 'strand_specificity';
+                if (!isStrandSpecificity && (!homogeneous || forcedRepDisplay)) {
                     // More than one value collected for this property, and at least one had a
                     // different value from the others. Display all values with a replicate
                     // identifier for each one.
@@ -247,13 +253,26 @@ const LibraryProperties = ({ replicates }) => {
                         </div>
                     );
                 } else {
+                    let strandSpecificity = null;
+
+                    if (isStrandSpecificity) {
+                        const strandSpecificValues = libraryPropertyElements.map((element) => element.value);
+                        const strandSpecificityFirstValue = strandSpecificValues[0];
+
+                        if (strandSpecificValues.every((value) => value === strandSpecificityFirstValue)) {
+                            strandSpecificity = strandSpecificityFirstValue === 'unstranded' ? strandSpecificityFirstValue : `Strand-specific${strandSpecificityFirstValue === 'strand-specific' ? '' : ` (${strandSpecificityFirstValue})`}`;
+                        } else {
+                            strandSpecificity = 'Strand-specific (mixed)';
+                        }
+                    }
+
                     // Only one value collected for this property, or more than one but all have
                     // the same value, so just display the one value without a replicate
                     // identifier.
                     renderedLibraryProperties.push(
                         <div key={displayedLibraryProperty.property} data-test={displayedLibraryProperty.test}>
                             <dt>{displayedLibraryProperty.title}</dt>
-                            <dd>{libraryPropertyElements[0].component || libraryPropertyElements[0].value}</dd>
+                            <dd>{strandSpecificity || libraryPropertyElements[0].component || libraryPropertyElements[0].value}</dd>
                         </div>
                     );
                 }
@@ -278,8 +297,8 @@ LibraryProperties.defaultProps = {
  * Display submitter comments from all libraries in all the given replicates.
  */
 const LibrarySubmitterComments = ({ replicates }) => {
-    // Make a list of all libraries in all replicates, deduped.
-    const libraries = _.uniq(replicates.reduce((libraryAcc, replicate) => (replicate.library ? libraryAcc.concat([replicate.library]) : libraryAcc), []), library => library['@id']);
+    // Make a list of all libraries in all replicates, de-duped.
+    const libraries = _.uniq(replicates.reduce((libraryAcc, replicate) => (replicate.library ? libraryAcc.concat([replicate.library]) : libraryAcc), []), (library) => library['@id']);
     if (libraries.length > 0) {
         return libraries.map((library) => {
             if (library.submitter_comment) {
@@ -312,7 +331,7 @@ const DatasetConstructionPlatform = ({ context }) => {
         // We easily have duplicates, so only add the replicate library platform if we haven't
         // already seen it.
         if ((replicate.library && replicate.library.construction_platform) &&
-            (platforms.findIndex(platform => platform['@id'] === replicate.library.construction_platform['@id']) === -1)) {
+            (platforms.findIndex((platform) => platform['@id'] === replicate.library.construction_platform['@id']) === -1)) {
             return platforms.concat(replicate.library.construction_platform);
         }
         return platforms;
@@ -323,12 +342,12 @@ const DatasetConstructionPlatform = ({ context }) => {
             <div data-test="constructionplatform">
                 <dt>Library construction platform</dt>
                 <dd>
-                    {constructionPlatforms.map((platform, i) =>
+                    {constructionPlatforms.map((platform, i) => (
                         <React.Fragment key={platform['@id']}>
                             {i > 0 ? <span>, </span> : null}
                             <a href={platform['@id']}>{platform.term_name}</a>
                         </React.Fragment>
-                    )}
+                    ))}
                 </dd>
             </div>
         );
@@ -343,7 +362,45 @@ DatasetConstructionPlatform.propTypes = {
 
 
 /**
- * Renders both Experiment and FunctionalCharacterizationExperiment objects.
+ * Display the combined examined_loci and examined_regions of the given reference dataset.
+ */
+const ElementsReferences = ({ reference }) => {
+    // Render all examined_loci as links, and all examined_regions as text, and combine them
+    // together for final rendering.
+    const examinedLoci = (reference.examined_loci && reference.examined_loci.length > 0)
+        ? reference.examined_loci.map((locus) => <a key={locus['@id']} href={locus['@id']}>{locus.symbol}</a>)
+        : [];
+    const examinedRegions = (reference.examined_regions && reference.examined_regions.length > 0)
+        ? reference.examined_regions.map((region, i) => <span key={i}>{region.assembly} {region.chromosome}:{region.start}-{region.end}</span>)
+        : [];
+    const examinedAreas = examinedLoci.concat(examinedRegions);
+
+    // Use the combined components to render to the page.
+    if (examinedAreas.length > 0) {
+        return (
+            <>
+                &nbsp;(
+                {examinedAreas.map((examinedArea, i) => (
+                    <React.Fragment key={i}>
+                        {i > 0 ? ', ' : null}
+                        {examinedArea}
+                    </React.Fragment>
+                ))}
+                )
+            </>
+        );
+    }
+    return null;
+};
+
+ElementsReferences.propTypes = {
+    /** Reference dataset */
+    reference: PropTypes.object.isRequired,
+};
+
+
+/**
+ * Renders Experiment, FunctionalCharacterizationExperiment, and TransgenicEnhancerExperiment objects.
  */
 const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
     let condensedReplicates = [];
@@ -351,14 +408,22 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const itemClass = globals.itemClass(context, 'view-item');
 
-    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
+    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, SingleCellUnit or TransgenicEnhancerExperiment.
     const experimentType = context['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const isSingleCell = experimentType === 'SingleCellUnit';
+    const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
     let displayType;
     let displayTypeBreadcrumbs;
     if (isFunctionalExperiment) {
         displayTypeBreadcrumbs = 'Functional Characterization Experiments';
         displayType = 'Functional Characterization Experiment';
+    } else if (isEnhancerExperiment) {
+        displayTypeBreadcrumbs = 'Transgenic Enhancer Experiments';
+        displayType = 'Transgenic Enhancer Experiment';
+    } else if (isSingleCell) {
+        displayTypeBreadcrumbs = 'Single Cell Units';
+        displayType = 'Single Cell Unit';
     } else {
         displayTypeBreadcrumbs = 'Experiments';
         displayType = 'Experiment';
@@ -369,31 +434,87 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         // Make an array of arrays of replicates, called “condensed replicates" here. Each top-
         // level array element represents a library linked to by the replicates inside that
         // array. Only the first replicate in each library array gets displayed in the table.
-        const condensedReplicatesKeyed = _(replicates).groupBy(replicate => (replicate.library ? replicate.library['@id'] : replicate.uuid));
+        const condensedReplicatesKeyed = _(replicates).groupBy((replicate) => (replicate.library ? replicate.library['@id'] : replicate.uuid));
         if (Object.keys(condensedReplicatesKeyed).length > 0) {
             condensedReplicates = _.toArray(condensedReplicatesKeyed);
         }
     }
 
+    // Collect all dbxrefs. Filter out SCREEN and Factorbook in separate arrays. Only the first SCREEN and Factorbook dbxref will be displayed.
+    const groupedDbxrefs = context.dbxrefs && context.dbxrefs.length > 0 ?
+        _(context.dbxrefs).groupBy((dbxref) => {
+            if (dbxref.startsWith('SCREEN')) {
+                return 'SCREEN';
+            }
+            if (dbxref.startsWith('FactorBook')) {
+                return 'FactorBook';
+            }
+            return 'normal';
+        })
+    : {};
+    // Result -- if nothing exists in any of these three categories, then
+    // that category’s key doesn't exist.
+
     // Collect all documents from the experiment itself.
     const documents = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Make array of all replicate biosamples, not including biosample-less replicates. Also
-    // collect up library documents.
+    // collect up library documents, this only apply to Experiment and FunctionalCharacterizationExperiment.
+    // collect biosample characterizations for TransgenicEnhancerExperiment only.
     const libraryDocs = [];
     let biosamples = [];
-    if (replicates.length > 0) {
-        biosamples = _.compact(replicates.map((replicate) => {
-            if (replicate.library) {
-                if (replicate.library.documents && replicate.library.documents.length > 0) {
-                    Array.prototype.push.apply(libraryDocs, replicate.library.documents);
+    let biosampleCharacterizations = [];
+    const appliedModifications = [];
+    if (isEnhancerExperiment) {
+        if (context.biosamples) {
+            biosamples = (context.biosamples.length > 0) ? context.biosamples : [];
+        }
+        if (biosamples.length > 0) {
+            biosamples.forEach((biosample) => {
+                if (biosample.characterizations && biosample.characterizations.length > 0) {
+                    biosampleCharacterizations = biosampleCharacterizations.concat(biosample.characterizations.map((bc) => bc['@id']));
                 }
+                if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
+                    appliedModifications.push(...biosample.applied_modifications);
+                }
+            });
+        }
+    } else if (!isEnhancerExperiment) {
+        if (replicates.length > 0) {
+            biosamples = _.compact(replicates.map((replicate) => {
+                if (replicate.library) {
+                    if (replicate.library.documents && replicate.library.documents.length > 0) {
+                        Array.prototype.push.apply(libraryDocs, replicate.library.documents);
+                    }
 
-                return replicate.library.biosample;
-            }
-            return null;
-        }));
+                    return replicate.library.biosample;
+                }
+                return null;
+            }));
+        }
     }
+
+    // Collect CRISPR screen tiling modality for FunctionalCharacterizationExperiment only.
+    let tilingModality = [];
+    if (isFunctionalExperiment) {
+        if (context.elements_references && context.elements_references.length > 0) {
+            context.elements_references.forEach((er) => {
+                if (er.crispr_screen_tiling) {
+                    tilingModality.push(er.crispr_screen_tiling);
+                }
+            });
+            tilingModality = _.uniq(tilingModality);
+        }
+    }
+
+    // Collect expressed genes from biosamples in the dataset
+    let expressedGenes = [];
+    biosamples.forEach((biosample) => {
+        if (biosample.expressed_genes) {
+            expressedGenes = [...expressedGenes, ...biosample.expressed_genes];
+        }
+    });
+    expressedGenes = _.uniq(expressedGenes, (gene) => `${gene.gene.geneid}-${gene.expression_percentile}-${gene.expression_range_maximum}-${gene.expression_range_minimum}`);
 
     // Create platforms array from file platforms; ignore duplicate platforms.
     const platforms = {};
@@ -406,12 +527,21 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     }
 
     // Collect biosample docs.
+    // Collect plasmid maps from applied_modifications documents.
     let biosampleDocs = [];
+    let plasmidMapDocs = [];
     biosamples.forEach((biosample) => {
         biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
         if (biosample.part_of) {
             biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
         }
+        if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
+            biosample.applied_modifications.forEach((am) => {
+                const plasmidMapDoc = (am.documents && am.documents.length > 0) ? am.documents.filter((doc) => doc.document_type === 'plasmid map').map((doc) => doc['@id']) : [];
+                plasmidMapDocs = plasmidMapDocs.concat(plasmidMapDoc);
+            });
+        }
+        plasmidMapDocs = _.uniq(plasmidMapDocs);
     });
 
     // Collect pipeline-related documents.
@@ -443,23 +573,49 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     analysisStepDocs = analysisStepDocs.length > 0 ? _.uniq(analysisStepDocs) : [];
     pipelineDocs = pipelineDocs.length > 0 ? _.uniq(pipelineDocs) : [];
 
-    // Determine this experiment's ENCODE version.
-    const encodevers = globals.encodeVersion(context);
-
     // Make list of statuses.
     const statuses = [{ status: context.status, title: 'Status' }];
     if (adminUser && context.internal_status) {
         statuses.push({ status: context.internal_status, title: 'Internal' });
     }
 
-    // Determine whether the experiment is isogenic or anisogenic. No replication_type
-    // indicates isogenic.
-    const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
-
-    // Get a list of related datasets, possibly filtering on their status.
-    let seriesList = [];
+    // Get a map of related datasets, possibly filtering on their status and
+    // categorized by their type.
+    let seriesMap = {};
     if (context.related_series && context.related_series.length > 0) {
-        seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
+        seriesMap = _.groupBy(
+            context.related_series.filter(
+                (dataset) => loggedIn || dataset.status === 'released'
+            ),
+            (series) => series['@type'][0]
+        );
+    }
+
+    // Get a list of related annotations, filtering them by annotation_type of interest.
+    let genotypingAnnotations = [];
+    let gkmsvmAnnotations = [];
+    let physicalModeling = [];
+    let bpnetModel = [];
+    let chromModel = [];
+    if (context.related_annotations && context.related_annotations.length > 0) {
+        context.related_annotations.forEach((annotation) => {
+            if (annotation.annotation_type === 'genotyping') {
+                genotypingAnnotations.push(annotation);
+            } else if (annotation.annotation_type === 'gkm-SVM-model') {
+                gkmsvmAnnotations.push(annotation);
+            } else if (annotation.annotation_type === 'physical modeling') {
+                physicalModeling.push(annotation);
+            } else if (annotation.annotation_type === 'BPNet-model') {
+                bpnetModel.push(annotation);
+            } else if (annotation.annotation_type === 'ChromBPNet-model') {
+                chromModel.push(annotation);
+            }
+        });
+        genotypingAnnotations = _.uniq(genotypingAnnotations);
+        gkmsvmAnnotations = _.uniq(gkmsvmAnnotations);
+        physicalModeling = _.uniq(physicalModeling);
+        bpnetModel = _.uniq(bpnetModel);
+        chromModel = _.uniq(chromModel);
     }
 
     // Set up the breadcrumbs.
@@ -471,7 +627,11 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     let nameTip = '';
     const names = organismNames.map((organismName, i) => {
         nameTip += (nameTip.length > 0 ? ' + ' : '') + organismName;
-        nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
+        if (isEnhancerExperiment) {
+            nameQuery += `${nameQuery.length > 0 ? '&' : ''}biosamples.donor.organism.scientific_name=${organismName}`;
+        } else {
+            nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
+        }
         return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
     });
     const crumbs = [
@@ -484,7 +644,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         const biosampleTermQuery = `biosample_ontology.term_name=${biosampleTermName}`;
         crumbs.push({ id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName });
     }
-    const crumbsReleased = (context.status === 'released');
 
     // Compile the document list.
     const combinedDocuments = _.uniq(documents.concat(
@@ -495,8 +654,12 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     ));
 
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
-
     const fcexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&possible_controls.accession=${context.accession}`;
+    const fcelementsmappingUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_mapping=${context['@id']}`;
+    const fcelementscloningUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_cloning=${context['@id']}`;
+    const singlecellunitsUrl = `/search/?type=SingleCellUnit&possible_controls.accession=${context.accession}`;
+    const transgenicexptsUrl = `/search/?type=TransgenicEnhancerExperiment&possible_controls.accession=${context.accession}`;
+
 
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
@@ -504,8 +667,9 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs root={`/search/?type=${experimentType}`} crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>{displayType} summary for {context.accession}</h1>
+                <DoiRef context={context} />
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'experiment-audit' }} hasCartControls />
             </header>
@@ -538,7 +702,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                             </div>
 
                             {context.target ?
-                                <React.Fragment>
+                                <>
                                     <div data-test="target">
                                         <dt>Target</dt>
                                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
@@ -555,7 +719,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                             <dd>{context.target_expression_percentile}</dd>
                                         </div>
                                     : null}
-                                </React.Fragment>
+                                </>
                             : null}
 
                             {context.control_type ?
@@ -565,22 +729,28 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
+                            {isEnhancerExperiment && biosamples.length > 0 ?
+                                <div data-test="biosamples">
+                                    <dt>Biosample</dt>
+                                    <dd>
+                                        <ul>
+                                            {biosamples.map((biosample) => (
+                                                <li key={biosample['@id']}>
+                                                    <a href={biosample['@id']}>
+                                                        {biosample.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.biosample_summary ?
                                 <div data-test="biosample-summary">
                                     <dt>Biosample summary</dt>
                                     <dd>
-                                        {organismNames.length > 0 ?
-                                            <span>
-                                                {organismNames.map((organismName, i) =>
-                                                    <span key={organismName}>
-                                                        {i > 0 ? <span> and </span> : null}
-                                                        <i>{organismName}</i>
-                                                    </span>
-                                                )}
-                                                &nbsp;
-                                            </span>
-                                        : null}
-                                        <span>{context.biosample_summary}</span>
+                                        {context.biosample_summary ? <div><BiosampleSummaryDisplay summary={context.biosample_summary} organisms={organismNames.concat(GeneticModificationOrganismNames(biosamples))} /></div> : null}
                                     </dd>
                                 </div>
                             : null}
@@ -589,6 +759,67 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="biosample-type">
                                     <dt>Biosample Type</dt>
                                     <dd>{context.biosample_ontology.classification}</dd>
+                                </div>
+                            : null}
+
+                            {context.perturbation_type ?
+                                <div data-test="perturbationtype">
+                                    <dt>Perturbation type</dt>
+                                    <dd>{context.perturbation_type}</dd>
+                                </div>
+                            : null}
+
+                            {tilingModality.length > 0 ?
+                                <div data-test="crisprscreentiling">
+                                    <dt>Tiling modality</dt>
+                                    <dd>{tilingModality.join(', ')}</dd>
+                                </div>
+                            : null}
+
+                            {context.examined_loci && context.examined_loci.length > 0 ?
+                                <div data-test="examined-loci">
+                                    <dt>Examined loci</dt>
+                                    <dd>
+                                        {/* A user can have a loci repeat. Therefore, uuid alone is not sufficient as an identifier */}
+                                        {context.examined_loci.map((loci, i) => (
+                                            loci.gene ?
+                                                <span key={`${loci.gene.uuid}-${i}`}>
+                                                    {i > 0 ? <span>, </span> : null}
+                                                    <a href={loci.gene['@id']}>{loci.gene.symbol}</a>
+                                                    {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
+                                                    {loci.expression_percentile || loci.expression_percentile === 0 ? <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span> : null}
+                                                    {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ? <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span> : null}
+                                                </span>
+                                            : null
+                                        ))}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {(expressedGenes && expressedGenes.length > 0) ?
+                                <div data-test="expressed-genes">
+                                    <dt>Sorted gene expression</dt>
+                                    <dd>
+                                        {expressedGenes.map((loci, i) => (
+                                            <span key={`${loci.gene.uuid}-${i}`}>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={loci.gene['@id']}>{loci.gene.symbol}</a>
+                                                {loci.expression_percentile || loci.expression_percentile === 0 ?
+                                                    <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span>
+                                                : null}
+                                                {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ?
+                                                    <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span>
+                                                : null}
+                                            </span>
+                                        ))}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.crispr_screen_readout ?
+                                <div data-test="crisprscreenreadout">
+                                    <dt>CRISPR screen readout</dt>
+                                    <dd>{context.crispr_screen_readout}</dd>
                                 </div>
                             : null}
 
@@ -606,30 +837,35 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            <LibraryProperties replicates={replicates} />
+                            {/* Display library properties for Experiment, FunctionalCharacterizationExperiment, and SingleCellUnit only. */}
+                            {!isEnhancerExperiment ?
+                                <>
+                                    <LibraryProperties replicates={replicates} />
+                                    <DatasetConstructionPlatform context={context} />
+                                </>
+                            : null}
+
 
                             {Object.keys(platforms).length > 0 ?
                                 <div data-test="platform">
                                     <dt>Platform</dt>
                                     <dd>
-                                        {Object.keys(platforms).map((platformId, i) =>
+                                        {Object.keys(platforms).map((platformId, i) => (
                                             <span key={platformId}>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
                                             </span>
-                                        )}
+                                        ))}
                                     </dd>
                                 </div>
                             : null}
-
-                            <DatasetConstructionPlatform context={context} />
 
                             {context.possible_controls && context.possible_controls.length > 0 ?
                                 <div data-test="possible-controls">
                                     <dt>Controls</dt>
                                     <dd>
                                         <ul>
-                                            {context.possible_controls.map(control => (
+                                            {context.possible_controls.map((control) => (
                                                 <li key={control['@id']} className="multi-comma">
                                                     <a href={control['@id']}>
                                                         {control.accession}
@@ -646,10 +882,26 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Elements references</dt>
                                     <dd>
                                         <ul>
-                                            {context.elements_references.map(reference => (
-                                                <li key={reference} className="multi-comma">
-                                                    <a href={reference}>
-                                                        {globals.atIdToAccession(reference)}
+                                            {context.elements_references.map((reference) => (
+                                                <li key={reference.uuid}>
+                                                    <a className="stacked-link" href={reference['@id']}>{reference.accession}</a>
+                                                    <ElementsReferences reference={reference} />
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.elements_mappings && context.elements_mappings.length > 0 ?
+                                <div data-test="elements-mappings">
+                                    <dt>Elements mappings</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.elements_mappings.map((mapping) => (
+                                                <li key={mapping}>
+                                                    <a href={mapping}>
+                                                        {globals.atIdToAccession(mapping)}
                                                     </a>
                                                 </li>
                                             ))}
@@ -658,10 +910,49 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {context.elements_mapping ?
-                                <div data-test="elements-mapping">
-                                    <dt>Elements mapping</dt>
-                                    <dd><a href={context.elements_mapping}>{globals.atIdToAccession(context.elements_mapping)}</a></dd>
+                            {context.elements_cloning ?
+                                <div data-test="elements-cloning">
+                                    <dt>Elements cloning</dt>
+                                    <dd><a href={context.elements_cloning}>{globals.atIdToAccession(context.elements_cloning)}</a></dd>
+                                </div>
+                            : null}
+
+                            {appliedModifications.length > 0 ?
+                                <div data-test="applied-modifications">
+                                    <dt>Genetic modification</dt>
+                                    <dd>
+                                        <ul>
+                                            {appliedModifications.map((am) => (
+                                                <li key={am}>
+                                                    <a href={am}>
+                                                        {am.split('/', 3)[2]}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.element_location ?
+                                <div data-test="element-location">
+                                    <dt>Element location</dt>
+                                    <dd>{`${context.element_location.assembly} ${context.element_location.chromosome}:${context.element_location.start}-${context.element_location.end}`}</dd>
+                                </div>
+                            : null}
+
+                            {context.tissue_with_enhancer_activity && context.tissue_with_enhancer_activity.length > 0 ?
+                                <div data-test="tissue-with-enhancer-activity">
+                                    <dt>Tissues with enhancer activity</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.tissue_with_enhancer_activity.map((tissue) => (
+                                                <li key={tissue}>
+                                                    <span>{tissue}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
                                 </div>
                             : null}
                         </dl>
@@ -685,10 +976,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <dd>{context.award.project}</dd>
                             </div>
 
-                            {context.dbxrefs.length > 0 ?
+                            {groupedDbxrefs.normal ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
-                                    <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                                    <dd><DbxrefList context={context} dbxrefs={groupedDbxrefs.normal} /></dd>
                                 </div>
                             : null}
 
@@ -720,10 +1011,97 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {seriesList.length > 0 ?
-                                <div data-test="relatedseries">
-                                    <dt>Related datasets</dt>
-                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                            {Object.keys(seriesMap).map((seriesType) => (
+                                <div data-test="relatedseries" key={seriesType}>
+                                    <dt>{seriesType.replace(/([A-Z])/g, ' $1')}</dt>
+                                    <dd>
+                                        <RelatedSeriesList seriesList={seriesMap[seriesType]} />
+                                    </dd>
+                                </div>
+                            ))}
+
+                            {genotypingAnnotations.length > 0 ?
+                                <div data-test="genotypingannotations">
+                                    <dt>Annotation (genotyping)</dt>
+                                    <dd>
+                                        <ul>
+                                            {genotypingAnnotations.map((genotyping) => (
+                                                <li key={genotyping['@id']} className="multi-comma">
+                                                    <a href={genotyping['@id']}>
+                                                        {genotyping.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {gkmsvmAnnotations.length > 0 ?
+                                <div data-test="gkmsvmannotations">
+                                    <dt>Annotation (gkmsvm-model)</dt>
+                                    <dd>
+                                        <ul>
+                                            {gkmsvmAnnotations.map((gkmsvm) => (
+                                                <li key={gkmsvm['@id']} className="multi-comma">
+                                                    <a href={gkmsvm['@id']}>
+                                                        {gkmsvm.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {physicalModeling.length > 0 ?
+                                <div data-test="physicalmodelingannotations">
+                                    <dt>Annotation (physical modeling)</dt>
+                                    <dd>
+                                        <ul>
+                                            {physicalModeling.map((model) => (
+                                                <li key={model['@id']} className="multi-comma">
+                                                    <a href={model['@id']}>
+                                                        {model.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {bpnetModel.length > 0 ?
+                                <div data-test="bpnetModelannotations">
+                                    <dt>Annotation (BPNet-model)</dt>
+                                    <dd>
+                                        <ul>
+                                            {bpnetModel.map((bpnet) => (
+                                                <li key={bpnet['@id']} className="multi-comma">
+                                                    <a href={bpnet['@id']}>
+                                                        {bpnet.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {chromModel.length > 0 ?
+                                <div data-test="chromModelannotations">
+                                    <dt>Annotation (ChromBPNet-model)</dt>
+                                    <dd>
+                                        <ul>
+                                            {chromModel.map((chrombpnet) => (
+                                                <li key={chrombpnet['@id']} className="multi-comma">
+                                                    <a href={chrombpnet['@id']}>
+                                                        {chrombpnet.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
                                 </div>
                             : null}
 
@@ -734,13 +1112,37 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            <LibrarySubmitterComments replicates={replicates} />
+                            {!isEnhancerExperiment ?
+                                <LibrarySubmitterComments replicates={replicates} />
+                            : null}
 
                             {context.internal_tags && context.internal_tags.length > 0 ?
                                 <div className="tag-badges" data-test="tags">
                                     <dt>Tags</dt>
                                     <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                 </div>
+                            : null}
+
+                            {groupedDbxrefs.SCREEN || groupedDbxrefs.FactorBook ?
+                                <>
+                                    <div className="panel__split-heading panel__split-heading--experiment">
+                                        <h4>Encyclopedia Integration</h4>
+                                    </div>
+
+                                    {groupedDbxrefs.SCREEN ?
+                                        <div data-test="external-resources-screen">
+                                            <dt>Registry of cCREs</dt>
+                                            <dd><DbxrefList context={context} dbxrefs={[groupedDbxrefs.SCREEN[0]]} title="view regulatory elements in this cell type on SCREEN" /></dd>
+                                        </div>
+                                    : null}
+
+                                    {groupedDbxrefs.FactorBook ?
+                                        <div data-test="external-resources-factorbook">
+                                            <dt>Factorbook</dt>
+                                            <dd><DbxrefList context={context} dbxrefs={[groupedDbxrefs.FactorBook[0]]} title="view motifs and integrative analysis" /></dd>
+                                        </div>
+                                    : null}
+                                </>
                             : null}
                         </dl>
                     </div>
@@ -751,12 +1153,41 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
             : null}
 
-            {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
+
+            {/* Display the file widget with the facet, graph, and tables for Experiment and FunctionalCharacterizationExperiment only. */}
+            {!isEnhancerExperiment ?
+                <FileGallery context={context} />
+            : null}
+
+            {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?
+                    <DocumentsPanelReq documents={biosampleCharacterizations} title="Characterizations" />
+            : null}
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
             <FetchedItems context={context} url={fcexperimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems context={context} url={singlecellunitsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems context={context} url={transgenicexptsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems
+                context={context}
+                url={fcelementsmappingUrl}
+                Component={ExperimentTable}
+                title={`Functional characterization experiments with ${context.accession} as an elements mapping`}
+            />
+
+            <FetchedItems
+                context={context}
+                url={fcelementscloningUrl}
+                Component={ExperimentTable}
+                title={`Functional characterization experiments with ${context.accession} as an elements cloning`}
+            />
+
+            {isFunctionalExperiment && plasmidMapDocs.length > 0 ?
+                <DocumentsPanelReq documents={plasmidMapDocs} title="Plasmid maps" />
+            : null}
 
             {combinedDocuments.length > 0 ?
                 <DocumentsPanelReq documents={combinedDocuments} />
@@ -782,17 +1213,19 @@ export default Experiment;
 
 globals.contentViews.register(Experiment, 'Experiment');
 globals.contentViews.register(Experiment, 'FunctionalCharacterizationExperiment');
+globals.contentViews.register(Experiment, 'SingleCellUnit');
+globals.contentViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 
 const replicateTableColumns = {
     biological_replicate_number: {
         title: 'Biological replicate',
-        getValue: condensedReplicate => condensedReplicate[0].biological_replicate_number,
+        getValue: (condensedReplicate) => condensedReplicate[0].biological_replicate_number,
     },
 
     technical_replicate_number: {
         title: 'Technical replicate',
-        getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).sort().join(),
+        getValue: (condensedReplicate) => condensedReplicate.map((replicate) => replicate.technical_replicate_number).sort().join(),
     },
 
     summary: {
@@ -812,7 +1245,7 @@ const replicateTableColumns = {
 
             // Else, display biosample summary if the biosample exists
             if (replicate.library && replicate.library.biosample) {
-                return <span>{BiosampleSummaryString(replicate.library.biosample, true)}</span>;
+                return <span><BiosampleSummaryDisplay summary={replicate.library.biosample.summary} organisms={[replicate.library.biosample.organism.scientific_name].concat(GeneticModificationOrganismNames([replicate.library.biosample]))} /></span>;
             }
 
             // Else, display nothing
@@ -826,7 +1259,7 @@ const replicateTableColumns = {
         display: (condensedReplicate) => {
             const replicate = condensedReplicate[0];
             if (replicate.library && replicate.library.biosample) {
-                const biosample = replicate.library.biosample;
+                const { biosample } = replicate.library;
                 return <a href={biosample['@id']} title={`View biosample ${biosample.accession}`}>{biosample.accession}</a>;
             }
             return null;
@@ -862,7 +1295,7 @@ const replicateTableColumns = {
             }
             return null;
         },
-        hide: list => _(list).all((condensedReplicate) => {
+        hide: (list) => _(list).all((condensedReplicate) => {
             const replicate = condensedReplicate[0];
             return !(replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length > 0);
         }),
@@ -885,12 +1318,12 @@ const replicateTableColumns = {
             }
             return (aReplicate.antibody) ? -1 : ((bReplicate.antibody) ? 1 : 0);
         },
-        hide: list => _(list).all(condensedReplicate => !condensedReplicate[0].antibody),
+        hide: (list) => _(list).all((condensedReplicate) => !condensedReplicate[0].antibody),
     },
 
     library: {
         title: 'Library',
-        getValue: condensedReplicate => (condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''),
+        getValue: (condensedReplicate) => (condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''),
     },
 };
 
@@ -933,7 +1366,7 @@ class RelatedSeriesList extends React.Component {
         // Initial component state.
         this.state = {
             currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
-            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
+            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indication
             clicked: false, // True if info button was clicked (vs hovered)
         };
 
@@ -971,7 +1404,7 @@ class RelatedSeriesList extends React.Component {
     }
 
     render() {
-        const seriesList = this.props.seriesList;
+        const { seriesList } = this.props;
 
         return (
             <span>
@@ -997,75 +1430,22 @@ RelatedSeriesList.propTypes = {
 
 
 // Display a one dataset related to the experiment
-class RelatedSeriesItem extends React.Component {
-    constructor() {
-        super();
-
-        // Intialize component state.
-        this.state = {
-            touchOn: false, // True if icon has been touched
-        };
-
-        // Bind `this` to non-React methods.
-        this.touchStart = this.touchStart.bind(this);
-        this.handleInfoHoverIn = this.handleInfoHoverIn.bind(this);
-        this.handleInfoHoverOut = this.handleInfoHoverOut.bind(this);
-        this.handleInfoClick = this.handleInfoClick.bind(this);
-    }
-
-    // Touch screen
-    touchStart() {
-        this.setState({ touchOn: !this.state.touchOn });
-        this.props.handleInfoClick(this.props.series, true);
-    }
-
-    handleInfoHoverIn() {
-        this.props.handleInfoHover(this.props.series, true);
-    }
-
-    handleInfoHoverOut() {
-        this.props.handleInfoHover(this.props.series, false);
-    }
-
-    handleInfoClick() {
-        this.props.handleInfoClick(this.props.series, false);
-    }
-
-    render() {
-        const { series, detailOpen } = this.props;
-
-        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-        return (
-            <span>
-                <a href={series['@id']} title={`View page for series dataset ${series.accession}`}>{series.accession}</a>&nbsp;
-                <div className="tooltip-trigger">
-                    <i
-                        className="icon icon-info-circle"
-                        onMouseEnter={this.handleInfoHoverIn}
-                        onMouseLeave={this.handleInfoHoverOut}
-                        onClick={this.handleInfoClick}
-                        onTouchStart={this.touchStart}
-                    />
-                    <div className={`tooltip bottom${detailOpen ? ' tooltip-open' : ''}`}>
-                        <div className="tooltip-arrow" />
-                        <div className="tooltip-inner">
-                            {series.description ? <span>{series.description}</span> : <em>No description available</em>}
-                        </div>
-                    </div>
-                </div>
-            </span>
-        );
-        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-    }
-}
+const RelatedSeriesItem = (props) => {
+    const { series } = props;
+    return (
+        <span>
+            <a href={series['@id']} title={`View page for series dataset ${series.accession}`}>{series.accession}</a>&nbsp;
+            <Tooltip
+                trigger={<i className="icon icon-question-circle" />}
+                tooltipId={series.accession}
+                css="series-tooltip"
+            >
+                {series.description ? <span>{series.description}</span> : <em>No description available</em>}
+            </Tooltip>
+        </span>
+    );
+};
 
 RelatedSeriesItem.propTypes = {
     series: PropTypes.object.isRequired, // Series object to display
-    detailOpen: PropTypes.bool, // TRUE to open the series' detail tooltip
-    handleInfoClick: PropTypes.func.isRequired, // Function to call to handle click in info icon
-    handleInfoHover: PropTypes.func.isRequired, // Function to call when mouse enters or leaves info icon
-};
-
-RelatedSeriesItem.defaultProps = {
-    detailOpen: false,
 };

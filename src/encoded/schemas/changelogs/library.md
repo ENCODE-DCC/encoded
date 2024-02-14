@@ -1,5 +1,65 @@
 ## Changelog for library.json
 
+### Minor changes since schema version 20
+* Added *inclusion_list* property which will accept a Reference object containing the inclusion list of barcodes used in library preparation.
+* Added *hic_construction* property to represent the protocol type used to derive the library.
+
+### Schema version 20
+* Added *construction_method* enum *capped RNA enrichment*, *uncapped RNA enrichment*, and *PCR-free*. The property is now also submittable as an array.
+* Added *Streptavidin magnetic beads* enum to the *library_size_selection_method* property.
+
+### Schema version 19
+* Modified regex pattern for *lot_id* and *product_id* to disallow blank strings.
+
+### Schema version 18
+* The *nucleic_acid_starting_quantity* property must now be formatted as a number.
+
+### Schema version 17
+* The *strand_specificity* property is now required for all RNA library objects; unstranded libraries may use the new enum *unstranded*.
+
+### Minor changes since schema version 16
+* Calculated properties *replicates* and *antibodies* are removed.
+* Added *Parse Single Cell Whole Transcriptome Kit* to the enum list for *construction_method*
+
+### Schema version 16
+* *linkers* property was modified to remove *linker a* and *linker b*. The *linkers* property can now accept sequencing linkers for the following: *linker a top*, *linker a bottom*, *linker b top*, and *linker b bottom*.
+* *NucleoBond PC Giga kit (Machery-Nagel cat#: 740548)* was added to the *extraction_method* enum.
+
+### Minor changes since schema version 15
+* A new property *mixed_biosamples* is now available for specifying the mixture of two or more biosamples used in a technical sample.
+
+### Schema version 15
+* *capped mRNA* may now be specified in the property *nucleic_acid_term_name*, this cannot be submitted in combination with *capped mRNA* in *depleted_in_term_name*. Specifying *polyadenylated mRNA* in both *nucleic_acid_term_name* and *depleted_in_term_name* is also disallowed.
+
+### Minor changes since schema version 14
+
+* *linkers* property is added to specify the linker(s) used during ChIA-PET library preparation.
+* *construction_method* property is added to specify the kit or protocol technique used to generate the nucleic acid library to be sequenced (such as CapTrap or Nanopore Direct RNA Kit).
+
+### Schema version 14
+
+* Added dependency that does not allow *nucleic_acid_term_name* and *depleted_in_term_name* to have the same value of *polyadenylated mRNA*.
+
+### Schema version 13
+
+* The *adapter* enum list of *type* options was adjusted to make sequencing adapters specific to each read; now *read1 5' adapter*, *read2 5' adapter*, *read1 3' adapter*, and *read2 3' adapter* are available.
+
+### Schema version 12
+
+* *chemical (HindIII/DpnII restriction)* was removed from *fragmentation_methods* enum.
+* *NucleoBond Xtra Midi kit (Machery-Nagel cat#: 740410)* was added to the *extraction_method* enum.
+
+### Minor changes since schema version 11
+
+* The properties *fragmentation_duration_time* and *fragmentation_duration_time_units* were added.
+* *chemical (NEBNext Ultra II Directional)* was added to the *fragmentation_methods* enum, and *Animal tissue kit (Norgen Biotek cat#: 25700)* was added to the *extraction_method* enum.
+* *adapters* property is modified to allows specification of adapters as strings.
+* The properties *average_fragment_size*, *fragment_length_CV*, and *fragment_length_SD* were added.
+
+### Schema version 11
+
+The boolean property *strand_specificity* has been converted to enum; this now allows strandedness to be specified as forward or reverse.
+
 ### Schema version 10
 
 The properties *extraction_method*, *lysis_method*, and *library_size_selection_method* were converted to enum, and multiple descriptions or wordings of a specific category were collapsed into single entries. Entries that didn't add substantive information (e.g., "see document" or "n/a") were removed. 

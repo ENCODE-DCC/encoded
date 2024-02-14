@@ -1,127 +1,241 @@
+$graph-download-font: 'Helvetica Neue', sans-serif;
+
 $pipeline-node-types:
-    (file, #FFF5BA),
-    (analysis-step, #D3E9FF),
+    (file, #fff5ba),
+    (analysis-step, #d3e9ff),
     (quality-metric, #80ffc0),
     (file-type, #e0e0e0);
-    
 
 // FUnction to return black for light background colors passed in $color, and white for dark
-// backbground colors passed in $color.
+// background colors passed in $color.
 @function node-text-color($color) {
     @if (lightness($color) > 65) {
-        @return #000000; // Lighter backgorund, return dark color
-    } @else {
+        @return #000000; // Lighter background, return dark color
+    }
+
+    @else {
         @return #ffffff; // Darker background, return light color
     }
 }
-      
 
-@each $node-type, $color in $pipeline-node-types {
-    // Audit icons
-    g.pipeline-node-#{$node-type} {
-        fill: $color;
-        
-        &.highlight {
-            > rect, > ellipse {
-                stroke: #F4442E;
-                stroke-width: 3px;
+.pipeline-graph {
+    @each $node-type, $color in $pipeline-node-types {
+        // Audit icons
+        g.pipeline-node-#{$node-type} {
+            fill: $color;
+
+            &.highlight {
+                > rect, > ellipse {
+                    stroke: #f4442e;
+                    stroke-width: 3px;
+                }
+
+                line {
+                    stroke: #f4442e;
+                    stroke-width: 1px;
+                }
             }
 
-            line {
-                stroke: #F4442E;
+            &.active {
+                fill: desaturate(darken($color, 20%), 30%);
+            }
+
+            &.error, &.restricted {
+                fill: #ffc0c0;
+            }
+
+            &.revoked, &.deleted {
+                fill: #b24342;
+
+                g.label {
+                    fill: #fff;
+                }
+            }
+
+            &.archived, &.replaced {
+                fill: #c0c0c0;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            > text {
+                fill: #000;
+            }
+        }
+
+        .graph-modal--#{$node-type} {
+            background-color: $color;
+        }
+    }
+
+    g.pipeline-node-file-type {
+        pointer-events: none;
+    }
+
+    g.label {
+        font-family: $graph-download-font;
+        font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
+        font-weight: bold;
+        fill: #000;
+        pointer-events: none;
+    }
+
+    g.node {
+        > rect, > ellipse {
+            stroke: #a0a0a0;
+            stroke-width: 1.5px;
+        }
+
+        &.contributing {
+            stroke-dasharray: 4, 2;
+
+            rect, ellipse {
+                stroke: #a0a0a0;
+                stroke-width: 1.5px;
+            }
+
+            .decoration {
+                stroke-dasharray: none;
+            }
+        }
+
+        // Stacks of coalesced reads files. Make border slightly finer for cleaner look.
+        &.reads {
+            .stack {
+                stroke: #a0a0a0;
                 stroke-width: 1px;
             }
         }
 
-        &.active {
-            fill: desaturate(darken($color, 20%), 30%);
+        line {
+            stroke: #a0a0a0;
+            stroke-width: 0.5px;
         }
 
-        &.error, &.restricted {
-            fill: #ffc0c0;
-        }
+        .decoration {
+            rect {
+                fill: #e0e0e0;
+            }
 
-        &.revoked, &.deleted {
-            fill: #B24342;
+            &__border {
+                fill: none;
+                stroke-width: 1px;
+                stroke: #a0a0a0;
+            }
 
-            g.label {
-                fill: #fff;
+            &__icon {
+                fill: #606060;
+            }
+
+            &.decoration--active {
+                rect {
+                    fill: #606060;
+                }
+
+                .decoration__icon {
+                    fill: #e0e0e0;
+                }
             }
         }
+    }
 
-        &.archived, &.replaced {
-            fill: #c0c0c0;
+    g.subnodes {
+        text {
+            font-size: 10px;
+            pointer-events: none;
+        }
+    }
+
+    g.cluster {
+        rect {
+            fill: #f0f8f0;
+            stroke: #c0c0c0;
         }
 
-        &:hover {
-            cursor: pointer;
-        }
-
-        > text {
+        text {
+            font-size: $font-size-base; // Don't use rems; maintain size on mobile
             fill: #000;
         }
     }
 
-    .graph-modal--#{$node-type} {
-        background-color: $color;
-    }
-}
+    /* stylelint-disable-next-line selector-class-pattern */
+    g.edgePath {
+        path.path {
+            stroke: #c0c0c0;
+            stroke-width: 2px;
+        }
 
-g.pipeline-node-file-type {
-    pointer-events: none;
-}
+        defs > marker > path {
+            fill: #c0c0c0;
+        }
 
-g.label {
-    font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    fill: #000;
-}
+        &.active {
+            path.path {
+                stroke: #00f;
+            }
 
-g.node {
-    > rect, > ellipse {
-        stroke: #a0a0a0;
-        stroke-width: 1.5px;
-    }
-
-    &.contributing {
-        stroke-dasharray: 4,2;
-
-        rect, ellipse {
-            stroke: #a0a0a0;
-            stroke-width: 1.5px;
+            defs > marker > path {
+                fill: #00f;
+            }
         }
     }
 
-    line {
-        stroke: #a0a0a0;
-        stroke-width: .5px;
-    }
-}
+    g.pipeline-node-qc-metric {
+        > circle {
+            stroke-width: 2px;
+            stroke: #a0a0a0;
+            fill: #80ffc0;
+        }
 
-g.subnodes {
-    text {
-        font-size: 10px;
+        > text {
+            font-family: $graph-download-font;
+            font-weight: bold;
+            fill: #000;
+        }
+
+        &.active {
+            > circle {
+                fill: darken(#80ffc0, 50%);
+            }
+
+            > text {
+                fill: #fff;
+            }
+        }
+
+        &.highlight {
+            > circle {
+                stroke: #f4442e;
+            }
+
+            > text {
+                fill: #fff;
+            }
+        }
+
+        // Handle hovering over the QC circle to bring up the tooltip.
+        > circle:hover {
+            + text + g {
+                display: block;
+            }
+        }
+    }
+
+    g.qc-tooltip {
+        display: none;
         pointer-events: none;
-    }
-}
 
-g.cluster {
-    rect {
-        fill: #f0f8f0;
-        stroke: #c0c0c0;
-    }
+        rect, polygon {
+            fill: #000;
+        }
 
-    text {
-        font-size: $font-size-base; // Don't use rems; maintain size on mobile
-        fill: #000;
-    }
-}
-
-g.edgePath {
-    path {
-        stroke: #c0c0c0;
-        stroke-width: 1.5px;
+        text {
+            fill: #fff;
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
     }
 }
 
@@ -153,6 +267,7 @@ g.edgePath {
 
 .selected-step {
     @extend .step-info;
+
     background-color: #e8f0e8;
 }
 
@@ -164,47 +279,6 @@ g.edgePath {
 
 .btn.btn-orient {
     margin-right: 5px;
-}
-
-g.pipeline-node-qc-metric {
-    > circle {
-        stroke-width: 2px;
-        stroke: #a0a0a0;
-        fill: #80ffc0;
-    }
-
-    > text {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-weight: bold;
-        fill: #000;
-    }
-
-    &.active {
-        > circle {
-            fill: darken(#80ffc0, 50%);
-        }
-
-        > text {
-            fill: #fff;
-        }
-    }
-    
-    &.highlight {
-        > circle {
-            stroke: #F4442E;
-        }
-
-        > text {
-            fill: #fff;
-        }
-    }
-
-    // Handle hovering over the QC circle to bring up the tooltip.
-    > circle:hover {
-        + text + g {
-            display: block;
-        }
-    }
 }
 
 .file-qc-buttons {
@@ -241,6 +315,10 @@ g.pipeline-node-qc-metric {
 .quality-metrics-modal {
     @media screen and (min-width: $screen-md-min) {
         display: flex;
+
+        hr {
+            margin-right: 10px;
+        }
     }
 
     @at-root #{&}__data {
@@ -311,7 +389,7 @@ g.pipeline-node-qc-metric {
     }
 
     button:focus {
-        outline:none;
+        outline: none;
     }
 }
 
@@ -329,6 +407,7 @@ g.pipeline-node-qc-metric {
         h2 {
             margin: 0;
             font-size: 1.3rem;
+            border-bottom: none;
         }
 
         h5 {
@@ -347,21 +426,6 @@ g.pipeline-node-qc-metric {
     }
 }
 
-g.qc-tooltip {
-    display: none;
-    pointer-events: none;
-
-    rect, polygon {
-        fill: #000;
-    }
-
-    text {
-        fill: #fff;
-        font-size: 0.8rem;
-        font-weight: normal;
-    }
-}
-
 // Special unknown status color.
 $color-unknown: #ffc0c0;
 
@@ -375,11 +439,28 @@ $color-unknown: #ffc0c0;
         margin-right: 1px;
         margin-bottom: 1px;
         text-align: center;
-    };
+    }
 
     .status--status-unknown {
         fill: label-color($color-unknown);
         background-color: $color-unknown;
         box-shadow: inset 0 0 0 1px lighten($color-unknown, 20%);
     }
+}
+
+.analyses-selector {
+    @at-root #{&}--file-gallery-facets {
+        margin-bottom: 25px;
+    }
+
+    .file-gallery-facets.collapsed & {
+        display: none;
+    }
+}
+
+// Hidden div within which to draw a temporary file graph for downloading. Though hidden, it must
+// take up space so that the viewBox gets configured correctly. Therefore, no display:none.
+#graph-download-container {
+    position: absolute;
+    opacity: 0;
 }

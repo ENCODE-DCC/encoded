@@ -1,7 +1,9 @@
 import {
     cacheSavedCart,
     replaceCart,
+    replaceFileViews,
     setCartIdentifier,
+    setCartLocked,
     setCartName,
     setCartStatus,
     setCurrentCart,
@@ -17,7 +19,7 @@ import cartSetOperationInProgress from './in_progress';
  * @param {func} fetch - System fetch function
  */
 const switchCart = (currentCartAtId, fetch) => (
-    dispatch => (
+    (dispatch) => (
         new Promise((resolve, reject) => {
             cartSetOperationInProgress(true, dispatch);
             return cartRetrieve(currentCartAtId, fetch).then((savedCartObj) => {
@@ -25,7 +27,9 @@ const switchCart = (currentCartAtId, fetch) => (
                 dispatch(replaceCart(savedCartObj.elements));
                 dispatch(setCartName(savedCartObj.name));
                 dispatch(setCartIdentifier(savedCartObj.identifier));
+                dispatch(setCartLocked(savedCartObj.locked));
                 dispatch(setCartStatus(savedCartObj.status));
+                dispatch(replaceFileViews(savedCartObj.file_views));
                 dispatch(cacheSavedCart(savedCartObj));
                 cartSetOperationInProgress(false, dispatch);
                 resolve(savedCartObj);

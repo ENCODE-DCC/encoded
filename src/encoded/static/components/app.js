@@ -11,12 +11,8 @@ import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
 import { BrowserFeat } from './browserfeat';
 import cartStore, {
+    CartAlert,
     cartCacheSaved,
-    cartCreateAutosave,
-    cartIsUnsaved,
-    cartMergeElements,
-    cartRetrieve,
-    cartSave,
     cartSetOperationInProgress,
     cartGetSettings,
     cartSetSettingsCurrent,
@@ -26,10 +22,14 @@ import cartStore, {
 import * as globals from './globals';
 import Navigation from './navigation';
 import Footer from './footer';
-import Home from './home';
-import { requestSearch } from './objectutils';
+import jsonldFormatter from '../libs/jsonld';
 import newsHead from './page';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+import {
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+} from '../libs/ui/modal';
 
 
 const portal = {
@@ -40,26 +40,37 @@ const portal = {
             title: 'Data',
             children: [
                 { id: 'functional-genomics', title: 'Functional Genomics data' },
-                { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&status=released', tag: 'collection' },
-                { id: 'chip', title: 'ChIP-seq matrix', url: '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens&assay_title=Histone%20ChIP-seq&status=released', tag: 'collection' },
-                { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&status=released', tag: 'collection' },
+                { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&control_type!=*&status=released&perturbed=false', tag: 'collection' },
+                { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&control_type!=*&status=released&perturbed=false', tag: 'collection' },
+                { id: 'chip', title: 'ChIP-seq matrix', url: '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released', tag: 'collection' },
+                { id: 'bodymap', title: 'Human and mouse body maps', url: '/summary/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&status=released', tag: 'collection' },
+                { id: 'series', title: 'Functional genomics series', url: '/series-search/?type=OrganismDevelopmentSeries&status=released', tag: 'collection' },
+                { id: 'single-cell', title: 'Single-cell experiments', url: '/single-cell/?type=Experiment&assay_slims=Single+cell&status=released&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens', tag: 'collection' },
                 { id: 'sep-mm-0' },
                 { id: 'functional-characterization', title: 'Functional Characterization data' },
-                { id: 'functional-char-assays', title: 'Experiment search', url: '/search/?type=FunctionalCharacterizationExperiment', tag: 'collection' },
+                { id: 'functional-char-assays', title: 'Experiment search', url: '/search/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false&control_type!=*&status=released', tag: 'collection' },
+                { id: 'functional-characterization', title: 'Experiment matrix', url: '/functional-characterization-matrix/?type=FunctionalCharacterizationExperiment&type=FunctionalCharacterizationSeries&type=TransgenicEnhancerExperiment&config=FunctionalCharacterization&datapoint=false&control_type!=*&status=released', tag: 'collection' },
                 { id: 'sep-mm-1' },
                 { id: 'cloud', title: 'Cloud Resources' },
                 { id: 'aws-link', title: 'AWS Open Data', url: 'https://registry.opendata.aws/encode-project/', tag: 'cloud' },
+                { id: 'azure-link', title: 'Azure Open Datasets', url: 'https://docs.microsoft.com/en-us/azure/open-datasets/dataset-encode', tag: 'azure' },
                 { id: 'sep-mm-2' },
                 { id: 'collections', title: 'Collections' },
-                { id: 'encore', title: 'ENCORE', url: '/matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
-                { id: 'entex', title: 'ENTEx', url: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
-                { id: 'sescc', title: 'SE Stem Cell Consortium', url: '/matrix/?type=Experiment&status=released&internal_tags=SESCC', tag: 'collection' },
-                { id: 'reference-epigenomes-human', title: 'Human reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
-                { id: 'reference-epigenomes-mouse', title: 'Mouse reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', tag: 'collection' },
-                { id: 'mouse-dev-series', title: 'Mouse development series', url: '/search/?type=OrganismDevelopmentSeries&internal_tags=MouseDevSeries&status=released', tag: 'collection' },
+                { id: 'encore', title: 'RNA-protein interactions (ENCORE)', url: '/encore-matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
+                { id: 'entex', title: 'Epigenomes from four individuals (ENTEx)', url: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
+                { id: 'brain', title: 'Rush Alzheimer’s disease study', url: '/brain-matrix/?type=Experiment&status=released&internal_tags=RushAD', tag: 'collection' },
+                { id: 'sescc', title: 'Stem cell differentiation', url: '/stem-cell-matrix/?type=Experiment&replicates.library.biosample.donor.accession=ENCDO222AAA&status=released&control_type!=*', tag: 'collection' },
+                { id: 'deeplyProfiled', title: 'Deeply profiled cell lines', url: '/deeply-profiled-uniform-batch-matrix/?type=Experiment&control_type!=*&status=released&replicates.library.biosample.biosample_ontology.term_id=EFO:0002106&replicates.library.biosample.biosample_ontology.term_id=EFO:0001203&replicates.library.biosample.biosample_ontology.term_id=EFO:0006711&replicates.library.biosample.biosample_ontology.term_id=EFO:0002713&replicates.library.biosample.biosample_ontology.term_id=EFO:0002847&replicates.library.biosample.biosample_ontology.term_id=EFO:0002074&replicates.library.biosample.biosample_ontology.term_id=EFO:0001200&replicates.library.biosample.biosample_ontology.term_id=EFO:0009747&replicates.library.biosample.biosample_ontology.term_id=EFO:0002824&replicates.library.biosample.biosample_ontology.term_id=CL:0002327&replicates.library.biosample.biosample_ontology.term_id=CL:0002618&replicates.library.biosample.biosample_ontology.term_id=EFO:0002784&replicates.library.biosample.biosample_ontology.term_id=EFO:0001196&replicates.library.biosample.biosample_ontology.term_id=EFO:0001187&replicates.library.biosample.biosample_ontology.term_id=EFO:0002067&replicates.library.biosample.biosample_ontology.term_id=EFO:0001099&replicates.library.biosample.biosample_ontology.term_id=EFO:0002819&replicates.library.biosample.biosample_ontology.term_id=EFO:0009318&replicates.library.biosample.biosample_ontology.term_id=EFO:0001086&replicates.library.biosample.biosample_ontology.term_id=EFO:0007950&replicates.library.biosample.biosample_ontology.term_id=EFO:0003045&replicates.library.biosample.biosample_ontology.term_id=EFO:0003042&replicates.library.biosample.internal_tags=Deeply%20Profiled', tag: 'collection' },
+                { id: 'human-donor', title: 'Human donor matrix', url: '/human-donor-matrix/?type=Experiment&control_type!=*&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&biosample_ontology.classification=tissue&status=released&config=HumanDonorMatrix', tag: 'collection' },
+                { id: 'immunecells', title: 'Immune cells', url: '/immune-cells/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&biosample_ontology.cell_slims=hematopoietic+cell&biosample_ontology.classification=primary+cell&control_type!=*&status=released&biosample_ontology.system_slims=immune+system&biosample_ontology.system_slims=circulatory+system&config=immune', tag: 'collection' },
+                { id: 'reference-epigenomes-human', title: 'Human reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&control_type!=*&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens&status=released', tag: 'collection' },
+                { id: 'reference-epigenomes-mouse', title: 'Mouse reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&control_type!=*&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus&status=released', tag: 'collection' },
+                { id: 'mouse-development-matrix', title: 'Mouse development matrix', url: '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries&replicates.library.biosample.organism.scientific_name=Mus+musculus', tag: 'collection' },
+                { id: 'degron', title: 'Protein knockdown (Degron)', url: '/degron-matrix/?type=Experiment&control_type!=*&status=released&internal_tags=Degron', tag: 'collection' },
                 { id: 'sep-mm-3' },
                 { id: 'region-search', title: 'Search by region', url: '/region-search/' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
+                { id: 'rna-get', title: 'RNA-Get (gene expression)', url: '/rnaget-report/?type=RNAExpression' },
             ],
         },
         {
@@ -69,8 +80,8 @@ const portal = {
                 { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
                 { id: 'sep-mm-1' },
                 { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'https://screen.wenglab.org/' },
-                { id: 'annotationmatrix', title: 'Annotation matrix', url: '/matrix/?type=Annotation&encyclopedia_version=ENCODE+v4' },
-                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=ENCODE+v4' },
+                { id: 'encyclopedia', title: 'Encyclopedia browser', url: '/encyclopedia/?type=File&annotation_type=candidate+Cis-Regulatory+Elements&assembly=GRCh38&file_format=bigBed&file_format=bigWig&encyclopedia_version=current' },
+                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=current&status=released' },
                 { id: 'annotationmethods', title: 'Methods', url: 'https://screen.wenglab.org/index/about' },
             ],
         },
@@ -82,8 +93,9 @@ const portal = {
                 { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
                 { id: 'sep-mm-1' },
                 { id: 'datastandards', title: 'Assays and standards', url: '/data-standards/' },
+                { id: 'glossary', title: 'Glossary', url: '/glossary/' },
                 { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
-                { id: 'softwaretools', title: 'Software tools', url: '/software/' },
+                { id: 'softwaretools', title: 'Software tools', url: '/encode-software/?type=Software' },
                 { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
                 { id: 'sep-mm-2' },
                 { id: 'dataorg', title: 'Data organization', url: '/help/data-organization/' },
@@ -113,7 +125,7 @@ const portal = {
 
 
 // See https://github.com/facebook/react/issues/2323 for an IE8 fix removed for Redmine #4755.
-const Title = props => <title {...props}>{props.children}</title>;
+const Title = (props) => <title {...props}>{props.children}</title>;
 
 Title.propTypes = {
     children: PropTypes.node.isRequired,
@@ -191,7 +203,7 @@ class UnsavedChangesToken {
 const SLOW_REQUEST_TIME = 250;
 class Timeout {
     constructor(timeout) {
-        this.promise = new Promise(resolve => setTimeout(resolve.bind(undefined, this), timeout));
+        this.promise = new Promise((resolve) => setTimeout(resolve.bind(undefined, this), timeout));
     }
 }
 
@@ -247,7 +259,7 @@ const AccountCreatedModal = ({ closeModal }) => (
         </ModalBody>
         <ModalFooter
             closeModal={closeModal}
-            cancelTitle={'Close'}
+            cancelTitle="Close"
         />
     </Modal>
 );
@@ -255,6 +267,19 @@ const AccountCreatedModal = ({ closeModal }) => (
 AccountCreatedModal.propTypes = {
     closeModal: PropTypes.func.isRequired,
 };
+
+
+// Include paths of all pages that require full-page reloads even when navigating within the page.
+const fullPageReloadPaths = [
+    '/chip-seq-matrix/',
+    '/reference-epigenome-matrix/',
+    '/single-cell/',
+    '/summary/',
+    '/encyclopedia/',
+    '/immune-cells/',
+    '/human-donor-matrix/',
+];
+
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -265,7 +290,7 @@ class App extends React.Component {
     }
 
     static scrollTo() {
-        const hash = window.location.hash;
+        const { hash } = window.location;
         if (hash && document.getElementById(hash.slice(1))) {
             window.location.replace(hash);
         } else {
@@ -276,7 +301,6 @@ class App extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            href: props.href, // Current URL bar
             slow: false, // `true` if we expect response from server, but it seems slow
             errors: [],
             assayTermNameColors: null,
@@ -285,7 +309,6 @@ class App extends React.Component {
             session_properties: {},
             session_cookie: '',
             profilesTitles: {},
-            contextRequest: null,
             unsavedChanges: [],
             promisePending: false,
             eulaModalVisibility: false,
@@ -300,8 +323,10 @@ class App extends React.Component {
             logout: 'triggerLogout',
         };
 
+        this.href = props.href;
         this.domain = 'encode.auth0.com';
         this.clientId = 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH';
+        this.contextRequest = null;
 
         // Bind this to non-React methods.
         this.fetch = this.fetch.bind(this);
@@ -330,13 +355,14 @@ class App extends React.Component {
         this.signup = this.signup.bind(this);
     }
 
-    // Data for child components to subscrie to.
+    // Data for child components to subscribe to.
     getChildContext() {
         return {
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
-            location_href: this.state.href,
+            location_href: this.href,
             portal,
+            isHomePage: this.state.context?.['@type']?.[0] === 'Portal',
             fetch: this.fetch,
             fetchSessionProperties: this.fetchSessionProperties,
             navigate: this.navigate,
@@ -358,16 +384,17 @@ class App extends React.Component {
         }
         this.fetchProfilesTitles();
         this.setState({
-            href: window.location.href,
             session_cookie: sessionCookie,
             session,
         });
+
+        this.href = window.location.href;
 
         // Set browser features in the <html> CSS class.
         BrowserFeat.setHtmlFeatClass();
 
         // Make a URL for the logo.
-        const hrefInfo = url.parse(this.state.href);
+        const hrefInfo = url.parse(this.href);
         const logoHrefInfo = {
             hostname: hrefInfo.hostname,
             port: hrefInfo.port,
@@ -387,7 +414,7 @@ class App extends React.Component {
             },
             socialButtonStyle: 'big',
             languageDictionary: {
-                title: 'Log in to ENCODE',
+                title: 'Log in or Create Account',
             },
             allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
         });
@@ -409,7 +436,10 @@ class App extends React.Component {
             }
         });
 
-        // Initialize browesr history mechanism
+        // Indicate cart operation no longer in progress when page loads while logged out.
+        cartSetOperationInProgress(false, cartStore.dispatch);
+
+        // Initialize browser history mechanism
         if (this.constructor.historyEnabled()) {
             const data = this.props.context;
             try {
@@ -422,7 +452,7 @@ class App extends React.Component {
             // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
             // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
             if (window.location.href) {
-                const splitHref = this.state.href.split('#');
+                const splitHref = this.href.split('#');
                 if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
                     // URL has hash tag, but not the '#!edit' type
                     const hashTarget = splitHref[1];
@@ -458,6 +488,7 @@ class App extends React.Component {
         return false;
     }
 
+    /* eslint-disable react/no-did-update-set-state */
     componentDidUpdate(prevProps, prevState) {
         if (!this.state.session || (this.state.session_cookie !== prevState.session_cookie)) {
             const updateState = {};
@@ -485,7 +516,7 @@ class App extends React.Component {
             });
         }
 
-        const xhr = this.state.contextRequest;
+        const xhr = this.contextRequest;
         if (!xhr || !xhr.xhr_end || xhr.browser_stats) {
             return;
         }
@@ -501,10 +532,256 @@ class App extends React.Component {
         xhr.browser_stats.total_time = browserEnd - xhr.xhr_begin;
         recordBrowserStats(xhr.browser_stats, 'contextRequest');
     }
+    /* eslint-enable react/no-did-update-set-state */
+
+    /**
+    * Login with existing user or bring up account-creation modal
+    *
+    * @param {object} authResult- Authorization information
+    * @param {boolean} retrying- Attempt to retry login or not
+    * @param {boolean} createAccount- Where or not to attempt to create an account
+    * @returns Null
+    * @memberof App
+    */
+    handleAuth0Login(authResult, retrying, createAccount = true) {
+        const { accessToken } = authResult;
+        if (!accessToken) {
+            return;
+        }
+        this.sessionPropertiesRequest = true;
+        this.setState({ authResult });
+        this.fetch('/login', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ accessToken }),
+        }).then((response) => {
+            this.lock.hide();
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        }).then((sessionProperties) => {
+            this.setState({ session_properties: sessionProperties });
+            this.sessionPropertiesRequest = null;
+            return this.initializeCartFromSessionProperties(sessionProperties);
+        }).then(() => {
+            let nextUrl = window.location.href;
+            if (window.location.hash === '#logged-out') {
+                nextUrl = window.location.pathname + window.location.search;
+            }
+            this.navigate(nextUrl, { replace: true });
+        }, (err) => {
+            if (err.status === 403 && createAccount) {
+                this.setState({ eulaModalVisibility: true });
+            } else {
+                this.sessionPropertiesRequest = null;
+                globals.parseError(err).then((data) => {
+                // Server session creds might have changed.
+                    if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
+                        if (!retrying) {
+                            window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
+                            return;
+                        }
+                    }
+                    // If there is an error, show the error messages
+                    this.setState({ context: data });
+                });
+            }
+        });
+    }
+
+    handleError(msg, uri, line, column) {
+        let mutatableUri = uri;
+
+        // When an unhandled exception occurs, reload the page on navigation
+        this.constructor.historyEnabled = false;
+        const parsed = mutatableUri && require('url').parse(mutatableUri);
+        if (mutatableUri && parsed.hostname === window.location.hostname) {
+            mutatableUri = parsed.path;
+        }
+        ga('send', 'exception', {
+            exDescription: `${mutatableUri}@${line},${column}: ${msg}`,
+            exFatal: true,
+            location: window.location.href,
+        });
+    }
+
+    /* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
+    handleClick(event) {
+        const options = {};
+
+        // https://github.com/facebook/react/issues/1691
+        if (event.isDefaultPrevented()) {
+            return;
+        }
+
+        let { target } = event;
+        const { nativeEvent } = event;
+
+        // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
+        while (
+            target
+            && (target.tagName.toLowerCase() !== 'a' || target.getAttribute('data-href'))
+            && (target.tagName.toLowerCase() !== 'button' || !target.getAttribute('data-trigger'))
+        ) {
+            target = target.parentElement;
+        }
+        if (!target) {
+            return;
+        }
+
+        if (target.getAttribute('disabled')) {
+            event.preventDefault();
+            return;
+        }
+
+        // data-trigger links invoke custom handlers.
+        const dataTrigger = target.getAttribute('data-trigger');
+        if (dataTrigger !== null) {
+            event.preventDefault();
+            this.trigger(dataTrigger);
+            return;
+        }
+
+        // data-noscroll attribute prevents scrolling to the top when clicking a link.
+        if (target.getAttribute('data-noscroll') === 'true') {
+            options.noscroll = true;
+        }
+
+        // data-reload forces a page reload after navigating.
+        if (target.getAttribute('data-reload') === 'true') {
+            options.reload = true;
+        }
+
+        // Ensure this is a plain click
+        if (nativeEvent.which > 1 || nativeEvent.shiftKey || nativeEvent.altKey || nativeEvent.metaKey) {
+            return;
+        }
+
+        // Skip links with a data-bypass attribute.
+        if (target.getAttribute('data-bypass')) {
+            return;
+        }
+
+        let href = target.getAttribute('href');
+        if (href === null) {
+            href = target.getAttribute('data-href');
+        }
+        if (href === null) {
+            return;
+        }
+
+        // Skip javascript links
+        if (href.indexOf('javascript:') === 0) {
+            return;
+        }
+
+        // Skip external links
+        if (!origin.same(href)) {
+            return;
+        }
+
+        // Skip links with a different target
+        if (target.getAttribute('target')) {
+            return;
+        }
+
+        // Skip @@download links
+        if (href.indexOf('/@@download') !== -1) {
+            return;
+        }
+
+        // With HTML5 history supported, local navigation is passed
+        // through the navigate method.
+        if (this.constructor.historyEnabled) {
+            event.preventDefault();
+            this.navigate(href, options);
+        }
+    }
+
+    // Submitted forms are treated the same as links
+    handleSubmit(event) {
+        const { target } = event;
+
+        // Skip POST forms
+        if (target.method !== 'get') {
+            return;
+        }
+
+        // Skip forms with a data-bypass attribute.
+        if (target.getAttribute('data-bypass')) {
+            return;
+        }
+
+        // Skip external forms
+        if (!origin.same(target.action)) {
+            return;
+        }
+
+        const options = {};
+        const actionUrl = url.parse(url.resolve(this.href, target.action));
+        let search = serialize(target);
+        if (target.getAttribute('data-removeempty')) {
+            search = search.split('&').filter((item) => item.slice(-1) !== '=').join('&');
+        }
+        let href = actionUrl.pathname;
+        if (search) {
+            href += `?${search}`;
+        }
+        options.skipRequest = target.getAttribute('data-skiprequest');
+
+        if (this.constructor.historyEnabled) {
+            event.preventDefault();
+            this.navigate(href, options);
+        }
+    }
+
+    handlePopState(event) {
+        if (this.DISABLE_POPSTATE) {
+            return;
+        }
+        if (!this.confirmNavigation()) {
+            window.history.pushState(window.state, '', this.href);
+            return;
+        }
+        if (!this.constructor.historyEnabled) {
+            window.location.reload();
+            return;
+        }
+        const request = this.contextRequest;
+        const { href } = window.location;
+        if (event.state) {
+            // Abort inflight xhr before setProps
+            if (request && this.requestCurrent) {
+                // Abort the current request, then remember we've aborted it so that we don't render
+                // the Network Request Error page.
+                request.abort();
+                this.requestAborted = true;
+                this.requestCurrent = false;
+            }
+            this.href = href;
+            this.setState({
+                context: event.state,
+            });
+        }
+        // Always async update in case of server side changes.
+        // Triggers standard analytics handling.
+        this.navigate(href, { replace: true });
+    }
+
+    handleBeforeUnload() {
+        if (this.state.unsavedChanges.length > 0) {
+            return 'You have unsaved changes.';
+        }
+        return undefined;
+    }
 
     onHashChange() {
         // IE8/9
-        this.setState({ href: window.location.href });
+        this.href = window.location.href;
     }
 
     // Handle http requests to the server, using the given URL and options.
@@ -515,7 +792,7 @@ class App extends React.Component {
         if (!(httpMethod === 'GET' || httpMethod === 'HEAD')) {
             const headers = _.extend({}, extendedOptions.headers);
             extendedOptions.headers = headers;
-            const session = this.state.session;
+            const { session } = this.state;
             if (session && session._csrft_) {
                 headers['X-CSRF-Token'] = session._csrft_;
             }
@@ -589,13 +866,13 @@ class App extends React.Component {
     }
 
     signup() {
-        const authResult = this.state.authResult;
+        const { authResult } = this.state;
 
         if (!authResult || !authResult.accessToken) {
             console.warn('authResult object or access token not available');
             return;
         }
-        const accessToken = authResult.accessToken;
+        const { accessToken } = authResult;
         this.closeSignupModal();
         this.fetch(`${window.location.origin}/users/@@sign-up`, {
             method: 'POST',
@@ -615,65 +892,6 @@ class App extends React.Component {
         });
     }
 
-    /**
-    * Login with exisiting user or bring up account-creation modal
-    *
-    * @param {object} authResult- Authorization information
-    * @param {boolean} retrying- Attempt to retry login or not
-    * @param {boolean} createAccount- Where or not to attempt to create an account
-    * @returns Null
-    * @memberof App
-    */
-    handleAuth0Login(authResult, retrying, createAccount = true) {
-        const accessToken = authResult.accessToken;
-        if (!accessToken) {
-            return;
-        }
-        this.sessionPropertiesRequest = true;
-        this.setState({ authResult });
-        this.fetch('/login', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ accessToken }),
-        }).then((response) => {
-            this.lock.hide();
-            if (!response.ok) {
-                throw response;
-            }
-            return response.json();
-        }).then((sessionProperties) => {
-            this.setState({ session_properties: sessionProperties });
-            this.sessionPropertiesRequest = null;
-            return this.initializeCartFromSessionProperties(sessionProperties);
-        }).then(() => {
-            let nextUrl = window.location.href;
-            if (window.location.hash === '#logged-out') {
-                nextUrl = window.location.pathname + window.location.search;
-            }
-            this.navigate(nextUrl, { replace: true });
-        }, (err) => {
-            if (err.status === 403 && createAccount) {
-                this.setState({ eulaModalVisibility: true });
-            } else {
-                this.sessionPropertiesRequest = null;
-                globals.parseError(err).then((data) => {
-                // Server session creds might have changed.
-                    if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
-                        if (!retrying) {
-                            window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
-                            return;
-                        }
-                    }
-                    // If there is an error, show the error messages
-                    this.setState({ context: data });
-                });
-            }
-        });
-    }
-
     triggerLogin() {
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
@@ -682,7 +900,7 @@ class App extends React.Component {
     }
 
     triggerLogout() {
-        const session = this.state.session;
+        const { session } = this.state;
         if (!(session && session['auth.userid'])) return;
         this.fetch('/logout?redirect=false', {
             headers: { Accept: 'application/json' },
@@ -698,7 +916,7 @@ class App extends React.Component {
             }
         }, (err) => {
             globals.parseError(err).then((data) => {
-                const newContext = Object.assign({}, data);
+                const newContext = { ...data };
                 newContext.title = `Logout failure: ${data.title}`;
                 this.setState({ context: newContext });
             });
@@ -707,13 +925,13 @@ class App extends React.Component {
 
     adviseUnsavedChanges() {
         const token = new UnsavedChangesToken(this);
-        this.setState({ unsavedChanges: this.state.unsavedChanges.concat([token]) });
+        this.setState((state) => ({ unsavedChanges: state.unsavedChanges.concat([token]) }));
         return token;
     }
 
     releaseUnsavedChanges(token) {
         console.assert(this.state.unsavedChanges.indexOf(token) !== -1);
-        this.setState({ unsavedChanges: this.state.unsavedChanges.filter(x => x !== token) });
+        this.setState((state) => ({ unsavedChanges: state.unsavedChanges.filter((x) => x !== token) }));
     }
 
     trigger(name) {
@@ -723,68 +941,20 @@ class App extends React.Component {
         }
     }
 
-    handleError(msg, uri, line, column) {
-        let mutatableUri = uri;
-
-        // When an unhandled exception occurs, reload the page on navigation
-        this.constructor.historyEnabled = false;
-        const parsed = mutatableUri && require('url').parse(mutatableUri);
-        if (mutatableUri && parsed.hostname === window.location.hostname) {
-            mutatableUri = parsed.path;
-        }
-        ga('send', 'exception', {
-            exDescription: `${mutatableUri}@${line},${column}: ${msg}`,
-            exFatal: true,
-            location: window.location.href,
-        });
-    }
-
     // Called when the user logs in, or the page loads for a logged-in user. Handle any items
     // collected in the cart while logged out. Retrieve the cart contents for the current logged-
     // in user.
     initializeCartFromSessionProperties(sessionProperties) {
-        // If the newly logged-in user has an in-memory cart, find or create the user's auto-save
-        // cart (has a "disabled" status) and add the in-memory cart items to it.
-        let autosaveCartPromise;
-        cartSetOperationInProgress(true, cartStore.dispatch);
-        if (cartIsUnsaved()) {
-            // The user has an in-memory cart that needs to be saved to the auto-save cart,
-            // so get the auto-save cart with a search.
-            autosaveCartPromise = requestSearch(`type=Cart&submitted_by=${sessionProperties.user['@id']}&status=disabled`).then((cartSearchResults) => {
-                if (Object.keys(cartSearchResults).length === 0) {
-                    // User has no auto-save cart, so create one.
-                    return cartCreateAutosave(this.fetch).then(autosaveCartAtId => (
-                        // Creating a cart returns its @id, so retrieve the auto-save cart object.
-                        cartRetrieve(autosaveCartAtId, this.fetch)
-                    ));
-                }
-
-                // User should never have more than one signed-out cart, but if they do, get the
-                // first one returned.
-                return cartSearchResults['@graph'][0];
-            }).then((autosaveCart) => {
-                // We now have the auto-save cart object, new or existing. Merge the in-memory cart
-                // with it and write it back to the DB.
-                const memoryCartElements = cartStore.getState().elements;
-                const mergedCart = cartMergeElements(autosaveCart, memoryCartElements);
-                return cartSave(mergedCart.elements, mergedCart, this.fetch);
-            });
-        } else {
-            // Nothing in the in-memory cart, so just pass null downstream.
-            autosaveCartPromise = Promise.resolve(null);
-        }
-
         // Retrieve the logged-in user's carts. If the user has never logged in before, an initial
         // empty cart gets created and returned here.
         cartCacheSaved({}, cartStore.dispatch);
-        autosaveCartPromise.then(() => (
-            this.fetch('/carts/@@get-cart', {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                },
-            })
-        )).then((response) => {
+        cartSetOperationInProgress(true, cartStore.dispatch);
+        this.fetch('/carts/@@get-cart', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
             cartSetOperationInProgress(false, cartStore.dispatch);
             if (response.ok) {
                 return response.json();
@@ -808,153 +978,6 @@ class App extends React.Component {
         });
     }
 
-    /* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
-    handleClick(event) {
-        // https://github.com/facebook/react/issues/1691
-        if (event.isDefaultPrevented()) {
-            return;
-        }
-
-        let target = event.target;
-        const nativeEvent = event.nativeEvent;
-
-        // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
-        while (target && (target.tagName.toLowerCase() !== 'a' || target.getAttribute('data-href'))) {
-            target = target.parentElement;
-        }
-        if (!target) {
-            return;
-        }
-
-        if (target.getAttribute('disabled')) {
-            event.preventDefault();
-            return;
-        }
-
-        // data-trigger links invoke custom handlers.
-        const dataTrigger = target.getAttribute('data-trigger');
-        if (dataTrigger !== null) {
-            event.preventDefault();
-            this.trigger(dataTrigger);
-            return;
-        }
-
-        // Ensure this is a plain click
-        if (nativeEvent.which > 1 || nativeEvent.shiftKey || nativeEvent.altKey || nativeEvent.metaKey) {
-            return;
-        }
-
-        // Skip links with a data-bypass attribute.
-        if (target.getAttribute('data-bypass')) {
-            return;
-        }
-
-        let href = target.getAttribute('href');
-        if (href === null) {
-            href = target.getAttribute('data-href');
-        }
-        if (href === null) {
-            return;
-        }
-
-        // Skip javascript links
-        if (href.indexOf('javascript:') === 0) {
-            return;
-        }
-
-        // Skip external links
-        if (!origin.same(href)) {
-            return;
-        }
-
-        // Skip links with a different target
-        if (target.getAttribute('target')) {
-            return;
-        }
-
-        // Skip @@download links
-        if (href.indexOf('/@@download') !== -1) {
-            return;
-        }
-
-        // With HTML5 history supported, local navigation is passed
-        // through the navigate method.
-        if (this.constructor.historyEnabled) {
-            event.preventDefault();
-            this.navigate(href);
-        }
-    }
-
-    // Submitted forms are treated the same as links
-    handleSubmit(event) {
-        const target = event.target;
-
-        // Skip POST forms
-        if (target.method !== 'get') {
-            return;
-        }
-
-        // Skip forms with a data-bypass attribute.
-        if (target.getAttribute('data-bypass')) {
-            return;
-        }
-
-        // Skip external forms
-        if (!origin.same(target.action)) {
-            return;
-        }
-
-        const options = {};
-        const actionUrl = url.parse(url.resolve(this.state.href, target.action));
-        let search = serialize(target);
-        if (target.getAttribute('data-removeempty')) {
-            search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');
-        }
-        let href = actionUrl.pathname;
-        if (search) {
-            href += `?${search}`;
-        }
-        options.skipRequest = target.getAttribute('data-skiprequest');
-
-        if (this.constructor.historyEnabled) {
-            event.preventDefault();
-            this.navigate(href, options);
-        }
-    }
-
-    handlePopState(event) {
-        if (this.DISABLE_POPSTATE) {
-            return;
-        }
-        if (!this.confirmNavigation()) {
-            window.history.pushState(window.state, '', this.state.href);
-            return;
-        }
-        if (!this.constructor.historyEnabled) {
-            window.location.reload();
-            return;
-        }
-        const request = this.state.contextRequest;
-        const href = window.location.href;
-        if (event.state) {
-            // Abort inflight xhr before setProps
-            if (request && this.requestCurrent) {
-                // Abort the current request, then remember we've aborted it so that we don't render
-                // the Network Request Error page.
-                request.abort();
-                this.requestAborted = true;
-                this.requestCurrent = false;
-            }
-            this.setState({
-                href, // href should be consistent with context
-                context: event.state,
-            });
-        }
-        // Always async update in case of server side changes.
-        // Triggers standard analytics handling.
-        this.navigate(href, { replace: true });
-    }
-
     /* eslint no-alert: 0 */
     confirmNavigation() {
         // check for beforeunload confirmation
@@ -968,13 +991,6 @@ class App extends React.Component {
         return true;
     }
 
-    handleBeforeUnload() {
-        if (this.state.unsavedChanges.length > 0 || cartIsUnsaved()) {
-            return 'You have unsaved changes.';
-        }
-        return undefined;
-    }
-
     navigate(href, options) {
         const mutatableOptions = options || {};
         if (!this.confirmNavigation()) {
@@ -983,7 +999,14 @@ class App extends React.Component {
 
         // options.skipRequest only used by collection search form
         // options.replace only used handleSubmit, handlePopState, handleAuth0Login
-        let mutatableHref = url.resolve(this.state.href, href);
+        // options.noscroll to prevent scrolling to the top of the page after navigating
+        // options.reload to force reloading the URL
+        let mutatableHref = url.resolve(this.href, href);
+
+        // trick to page to reload if user is making an edit/addition
+        if (href.includes('/#!')) {
+            options.reload = true;
+        }
 
         // Strip url fragment.
         let fragment = '';
@@ -1002,17 +1025,15 @@ class App extends React.Component {
             decodedHref = mutatableHref;
         }
         const isDownload = decodedHref.includes('/@@download') || decodedHref.includes('/batch_download/');
-        if (!this.constructor.historyEnabled() || isDownload) {
+        if (!this.constructor.historyEnabled() || isDownload || mutatableOptions.reload) {
             this.fallbackNavigate(mutatableHref, fragment, mutatableOptions);
             return null;
         }
 
-        let request = this.state.contextRequest;
-
-        if (request && this.requestCurrent) {
+        if (this.contextRequest && this.requestCurrent) {
             // Abort the current request, then remember we've aborted the request so that we
             // don't render the Network Request Error page.
-            request.abort();
+            this.contextRequest.abort();
             this.requestAborted = true;
             this.requestCurrent = false;
         }
@@ -1023,11 +1044,11 @@ class App extends React.Component {
             } else {
                 window.history.pushState(window.state, '', mutatableHref + fragment);
             }
-            this.setState({ href: mutatableHref + fragment });
+            this.href = mutatableHref + fragment;
             return null;
         }
 
-        request = this.fetch(mutatableHref, {
+        const request = this.fetch(mutatableHref, {
             headers: { Accept: 'application/json' },
         });
         this.requestCurrent = true; // Remember we have an outstanding GET request
@@ -1059,22 +1080,18 @@ class App extends React.Component {
             } else {
                 window.history.pushState(null, '', responseUrl);
             }
-            this.setState({
-                href: responseUrl,
-            });
+            this.href = responseUrl;
             if (!response.ok) {
                 throw response;
             }
             return response.json();
         }).catch(globals.parseAndLogError.bind(undefined, 'contextRequest')).then(this.receiveContextResponse);
 
-        if (!mutatableOptions.replace) {
+        // Scroll to the top of the page unless replacing the URL or option to not scroll given.
+        if (!mutatableOptions.replace && !mutatableOptions.noscroll) {
             promise.then(this.constructor.scrollTo);
         }
 
-        this.setState({
-            contextRequest: request,
-        });
         return request;
     }
 
@@ -1104,7 +1121,7 @@ class App extends React.Component {
 
         // Set up new properties for the page after a navigation click. First disable slow now that we've
         // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
-        // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
+        // the data for a Network Request Error. Don't render that, but clear the requestAborted flag.
         // Otherwise we have good page data to render.
         const newState = { slow: false };
         if (!this.requestAborted) {
@@ -1151,7 +1168,7 @@ class App extends React.Component {
     }
 
     currentAction() {
-        const hrefUrl = url.parse(this.state.href);
+        const hrefUrl = url.parse(this.href);
         const hash = hrefUrl.hash || '';
         let name = '';
         if (hash.slice(0, 2) === '#!') {
@@ -1163,25 +1180,23 @@ class App extends React.Component {
     render() {
         console.log('render app');
         let content;
-        let context = this.state.context;
-        const hrefUrl = url.parse(this.state.href);
-        // Every component is remounted when a new search is executed because 'key' is the full url
-        const key = context['@id'];
+        let { context } = this.state;
+        const hrefUrl = url.parse(this.href);
+
+        // Determine conditions to unmount the entire page and rerender from scratch. Any paths
+        // included in `fullPageReloadPaths` rerender the entire page on navigation. Other paths
+        // cause a rerender only when the path changes.
+        const key = fullPageReloadPaths.includes(hrefUrl.pathname) ? context['@id'] : hrefUrl.pathname;
+
         const currentAction = this.currentAction();
-        const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
-        if (isHomePage) {
+        if (!currentAction && context.default_page) {
             context = context.default_page;
-            content = <Home context={context} />;
-        } else {
-            if (!currentAction && context.default_page) {
-                context = context.default_page;
-            }
-            if (context) {
-                const ContentView = globals.contentViews.lookup(context, currentAction);
-                content = <ContentView context={context} />;
-            }
         }
-        const errors = this.state.errors.map(i => <div key={i} className="alert alert-error" />);
+        if (context) {
+            const ContentView = globals.contentViews.lookup(context, currentAction);
+            content = <ContentView context={context} />;
+        }
+        const errors = this.state.errors.map((i) => <div key={i} className="alert alert-error" />);
 
         let appClass = 'done';
         if (this.state.slow) {
@@ -1195,7 +1210,7 @@ class App extends React.Component {
             title = portal.portal_title;
         }
 
-        let canonical = this.state.href;
+        let canonical = this.href;
         if (context.canonical_uri) {
             if (hrefUrl.host) {
                 canonical = `${hrefUrl.protocol || ''}//${hrefUrl.host + context.canonical_uri}`;
@@ -1212,9 +1227,12 @@ class App extends React.Component {
             this.constructor.historyEnabled = false;
         }
 
-        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+        const hasSpecialHashTag = hrefUrl.hash?.length > 2 && hrefUrl.hash?.startsWith('#!');
+        const isHomePage = context['@type']?.[0] === 'Portal' && !hasSpecialHashTag;
+
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
         return (
-            <html lang="en" ref={this.props.domReader ? node => this.props.domReader(node) : null}>
+            <html lang="en" ref={this.props.domReader ? (node) => this.props.domReader(node) : null}>
                 <head>
                     <meta charSet="utf-8" />
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -1222,22 +1240,41 @@ class App extends React.Component {
                     {/* The following line is a get around for GO server not being HTTPS */}
                     {/* https://encodedcc.atlassian.net/browse/ENCD-5005 */}
                     {/* https://stackoverflow.com/questions/33507566/mixed-content-blocked-when-running-an-http-ajax-operation-in-an-https-page#answer-48700852 */}
-                    {this.props.context['@type'].includes('Gene') ? <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> : null}
+                    {this.props.context['@type'] && this.props.context['@type'].includes('Gene') ? <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" /> : null}
                     <Title>{title}</Title>
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
-                    <script async src="//www.google-analytics.com/analytics.js" />
-                    <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
-                    {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
+                    <link href="https://fonts.googleapis.com/css2?family=Mada:wght@200;400;500;600;700&family=Oswald:wght@200;300;400;500&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet" />
+                    <script async src="//www.google-analytics.com/analytics.js" />
+                    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GY70FXW0SB" />
+                    <script
+                        dangerouslySetInnerHTML={{ __html: `
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-GY70FXW0SB');
+                        ` }}
+                    />
+                    {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
+                    {this.state.context && this.state.context['@type'] && this.state.context['@type'].some((type) => ['experiment', 'functionalcharacterizationexperiment', 'annotation'].includes(type.toLowerCase())) ?
+                        <script
+                            data-prop-name="context"
+                            type="application/ld+json"
+                            dangerouslySetInnerHTML={{
+                                __html: `\n\n${jsonScriptEscape(JSON.stringify(jsonldFormatter(this.state.context, hrefUrl.host)))}\n\n`,
+                            }}
+                        />
+                    : null
+                    }
                 </head>
-                <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
+                <body onClick={this.handleClick} onSubmit={this.handleSubmit} className={isHomePage ? 'body-portal' : null}>
                     <script
                         data-prop-name="context"
-                        type="application/ld+json"
+                        type="application/json"
                         dangerouslySetInnerHTML={{
-                            __html: `\n\n${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
+                            __html: `\n\n${jsonScriptEscape(JSON.stringify((this.state.context)))}\n\n`,
                         }}
                     />
                     <div id="slot-application" className={appClass}>
@@ -1245,12 +1282,13 @@ class App extends React.Component {
                             <div className="loading-spinner" />
                             <Provider store={cartStore}>
                                 <div id="layout">
-                                    <Navigation isHomePage={isHomePage} />
-                                    <div id="content" className="container" key={key}>
+                                    <Navigation />
+                                    <div id="content" className={context['@type'] ? `container ${context['@type'].join(' ')}` : 'container'} key={key}>
                                         {content}
                                     </div>
                                     {errors}
                                     <div id="layout-footer" />
+                                    <CartAlert />
                                 </div>
                             </Provider>
                             {this.state.eulaModalVisibility ?
@@ -1303,6 +1341,7 @@ App.childContextTypes = {
     fetchSessionProperties: PropTypes.func,
     navigate: PropTypes.func,
     portal: PropTypes.object,
+    isHomePage: PropTypes.bool,
     projectColors: PropTypes.object,
     biosampleTypeColors: PropTypes.object,
     adviseUnsavedChanges: PropTypes.func,

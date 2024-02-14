@@ -1,0 +1,16 @@
+[
+    {
+        "_test": "differential accessibility series",
+        "accession": "ENCSR001DAS",
+        "award": "UM1HG009390",
+        "description": "Differential Accessibility series.",
+        "lab": "ali-mortazavi",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR808ATA"
+        ],
+        "uuid": "c621f43b-4768-4953-9c39-a6548e7f288e",
+        "date_released": "2020-09-11"
+    }
+]

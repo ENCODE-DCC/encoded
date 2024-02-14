@@ -1,223 +1,254 @@
-/**
- * Module to support the registration and display of view-control buttons used at the top of
- * various search-result displays that allow people to view the same search results as a list,
- * matrix, etc.
- *
- * REGISTRATION
- * Specific kinds of objects (e.g. Experiment) can optionally register predefined view button
- * types. For example, Experiments support all currently supported types: search (list), report,
- * matrix, and summary.
- *
- * This function call in the module space of experiment.js registers those four views and an
- * optional type filter:
- *
- * ViewControlRegistry.register('Experiment', [
- *     ViewControlTypes.SEARCH,
- *     ViewControlTypes.MATRIX,
- *     ViewControlTypes.REPORT,
- *     ViewControlTypes.SUMMARY,
- * ], typeFilter);
- *
- * When any of /search/, /matrix/, /report/, or /summary/ specify type=Experiment and no other
- * types in the query string, the three view buttons for the search results pages not currently
- * viewed get displayed.
- *
- * Any object types not registered still display search and report buttons on search-result pages
- * specifying only that type, as these two buttons get displayed for all type=<whatever> search
- * results when only one type= exists in the query string.
- *
- * The optional type filter lets you alter the list of returned views from what you specified in
- * the array parameter. You pass a function that takes two parameters:
- * - Array of views -- the same array as you passed in the second parameter to the `register`
- *   method.
- * - Search results object for the current page.
- * This type-filter function returns the actual list of views to display, so that specific searches
- * can alter the available views.
- *
- * DISPLAY
- * To display the buttons at the top of any search results, use the <ViewControls> component,
- * passing it the search results object received in React props.context. <SearchControls> includes
- * <ViewControls> and might serve as the better option.
- */
-import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import * as encoding from '../libs/query_encoding';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+import url from 'url';
+import QueryString from '../libs/query_string';
 import { svgIcon } from '../libs/svg-icons';
+import * as DropdownButton from '../libs/ui/button';
+import { getIsCartSearch } from './cart';
+import { BatchDownloadActuator, SearchBatchDownloadController } from './batch_download';
 
 
 /**
- * Specifies the possible types of view controls. Extend this object with new view-control types
- * on the rare occasions that a new search view gets implemented. The string value matches the
- * @type of the search-view JSON. This object is visible externally to this module, so enforce its
- * immutability.
+ * Displays any of the view type bu†tons, wrapping the actual button title.
  */
-export const ViewControlTypes = {
-    SEARCH: 'Search',
-    REPORT: 'Report',
-    MATRIX: 'Matrix',
-    SUMMARY: 'Summary',
+const ViewControlButton = ({ viewType, queryString, children }) => (
+    <a
+        href={`/${viewType.path}/?${queryString}`}
+        role="button"
+        className="btn btn-info btn-sm"
+        id={`search-control-${viewType.type}`}
+        data-test={viewType.type}
+        aria-label={`${viewType.label}`}
+    >
+        {svgIcon(viewType.icon)}
+        {children}
+    </a>
+);
+
+ViewControlButton.propTypes = {
+    /** Single relevant entry from `viewTypeMap` */
+    viewType: PropTypes.object.isRequired,
+    /** Current search query string */
+    queryString: PropTypes.string.isRequired,
+    /** Button title content */
+    children: PropTypes.node.isRequired,
 };
-Object.freeze(ViewControlTypes);
 
 
 /**
- * Maps search result @type[0] to corresponding view control path link components. Extend this
- * object with new pairs on the rare occasions that a new search view gets implemented. The keys
- * correspond to the values in `ViewControlTypes`, and the values fit in the view-control link
- * paths, e.g. the Matrix value, 'matrix', would fit between the slashes in the path "/matrix/" for
- * the matrix view control button.
+ * Renders the view type button for the search page.
  */
-const viewPathMap = {
-    Search: { path: 'search', icon: 'search', label: 'View results as a list' },
-    Report: { path: 'report', icon: 'table', label: 'View tabular report' },
-    Matrix: { path: 'matrix', icon: 'matrix', label: 'View summary matrix' },
-    Summary: { path: 'summary', icon: 'summary', label: 'View summary report' },
+const SearchViewButton = ({ viewType, query }) => {
+    // In case the user goes to the search page from the report page with columns specified, strip
+    // the "field" query-string elements.
+    const searchQuery = query.clone();
+    searchQuery.deleteKeyValue('field');
+    return (
+        <ViewControlButton viewType={viewType} queryString={searchQuery.format()}>
+            {viewType.title}
+        </ViewControlButton>
+    );
+};
+
+SearchViewButton.propTypes = {
+    /** Single relevant entry from `viewTypeMap` */
+    viewType: PropTypes.object.isRequired,
+    /** Current search query object */
+    query: PropTypes.object.isRequired,
 };
 
 
 /**
- * Specifies the order of the view buttons in the UI. Extend this array if you add new views.
+ * Renders the view type button for the report page. This renders a normal button like the search
+ * and matrix views when one "type=" exists in the query string, but renders a dropdown button when
+ * more than one "type=" exists in the query string -- one entry in the dropdown for each "type="
+ * in the query string.
  */
-const viewOrder = [
-    'Search',
-    'Report',
-    'Matrix',
-    'Summary',
+const ReportViewButton = ({ viewType, query }, reactContext) => {
+    const typeValues = query.getKeyValues('type');
+    if (typeValues.length === 1) {
+        // One "type=" in the query string so render a regular link to the report page.
+        return <SearchViewButton viewType={viewType} query={query} />;
+    }
+
+    // More than one "type=" in the query string so render a dropdown button. The menu items
+    // display the "type=" value until the <App> component has loaded the human-readable type
+    // names.
+    const uniqueTypeValues = new Set(typeValues);
+    return (
+        <DropdownButton.Immediate
+            label={
+                <div className="view-type-report-dropdown">
+                    {svgIcon(viewType.icon)}
+                    {viewType.title}
+                    {svgIcon('chevronDown')}
+                </div>
+            }
+            id="view-type-report"
+            css="view-type-report"
+        >
+            {_.sortBy([...uniqueTypeValues]).map((typeValue) => {
+                query.deleteKeyValue('type').addKeyValue('type', typeValue);
+                return (
+                    <a key={typeValue} href={`/${viewType.path}/?${query.format()}`}>
+                        {reactContext.profilesTitles[typeValue] || typeValue}
+                    </a>
+                );
+            })}
+        </DropdownButton.Immediate>
+    );
+};
+
+ReportViewButton.propTypes = {
+    /** Single relevant entry from `viewTypeMap` */
+    viewType: PropTypes.object.isRequired,
+    /** Current search query object */
+    query: PropTypes.object.isRequired,
+};
+
+ReportViewButton.contextTypes = {
+    profilesTitles: PropTypes.object,
+};
+
+
+/**
+ * Some search query-string types (?type={something}) don't have a matrix view and would generate
+ * a user-visible error if you tried. This list includes the possible search types to allow a
+ * matrix button on the /search/ and /report/ pages. Add to this list for any new object types that
+ * should include a matrix button on those pages.
+ */
+const matrixTypes = ['Experiment', 'Annotation'];
+
+
+/**
+ * Renders the view type button for the matrix pages. The query type gets inserted in the button
+ * label.
+ */
+const MatrixViewButton = ({ viewType, query }) => {
+    // In case the user goes to the matrix page from the report page with columns specified, strip
+    // the "field" query-string elements.
+    const matrixQuery = query.clone();
+    matrixQuery.deleteKeyValue('field');
+    const typeValues = matrixQuery.getKeyValues('type');
+
+    return (
+        (typeValues.length === 1 && matrixTypes.includes(typeValues[0])) &&
+            <ViewControlButton viewType={viewType} queryString={matrixQuery.format()}>
+                {`${typeValues[0]} ${viewType.title}`}
+            </ViewControlButton>
+    );
+};
+
+MatrixViewButton.propTypes = {
+    /** Single relevant entry from `viewTypeMap` */
+    viewType: PropTypes.object.isRequired,
+    /** Current search query object */
+    query: PropTypes.object.isRequired,
+};
+
+
+/**
+ * Maps the page type to the corresponding view control elements. Extend this array on the rare
+ * occasions that a new search view gets implemented.
+ *   type: identifier for each element
+ *   renderer: React component to render the button for the type
+ *   path: goes between slashes in search path /{path}/
+ *   icon: variable name of icon in svg-icons.js for icon in button
+ *   title: Used in button; matrix prepended by type
+ *   label: Used for screen readers
+ */
+const viewTypeMap = [
+    { type: 'search', renderer: SearchViewButton, path: 'search', icon: 'search', title: 'List', label: 'View search results as a list' },
+    { type: 'report', renderer: ReportViewButton, path: 'report', icon: 'table', title: 'Report', label: 'View search results as a tabular report' },
+    { type: 'matrix', renderer: MatrixViewButton, path: 'matrix', icon: 'matrix', title: 'matrix', label: 'View search results as a matrix' },
 ];
 
 
 /**
- * Object types that have child object types, and therefore cannot display /report/ views.
- */
-const parentTypes = [
-    'Characterization',
-    'Dataset',
-    'Donor',
-    'FileSet',
-    'QualityMetric',
-    'Series',
-];
-
-
-/**
- * Manages the view-control registry. Objects (e.g. Experiment) register with a global object of
- * this class to indicate what kinds of view buttons that search results that specify that "type="
- * of object should display.
- */
-class ViewControl {
-    constructor() {
-        this._registry = {};
-    }
-
-    /**
-     * Register a list of views available for an object @type. Add Search view, and Report view if
-     * not disallowed by the object type.
-     * @param {string} type @type of object to register
-     * @param {array} controlTypes Elements of ViewControlTypes to register
-     * @param {func} typeFilter Callback for type-specific filtering of views
-     */
-    register(type, controlTypes, typeFilter) {
-        const defaultViewControlTypes = [ViewControlTypes.SEARCH];
-        if (!parentTypes.includes(type)) {
-            // Add report view if object type has no child types.
-            defaultViewControlTypes.push(ViewControlTypes.REPORT);
-        }
-        this._registry[type] = { types: new Set(controlTypes.concat(defaultViewControlTypes)) };
-        if (typeFilter) {
-            this._registry[type].typeFilter = typeFilter;
-        }
-    }
-
-    /**
-     * Look up the views available for the given object @type. If the given @type was never
-     * registered, an array of the default types gets returned. Mostly this gets used internally
-     * but available for external use if needed.
-     * @param {string} resultType `type` property of search result `filters` property.
-     *
-     * @return {array} Array of available/registered views for the given type.
-     */
-    lookup(resultType) {
-        if (this._registry[resultType]) {
-            // Registered search result type. Sort and return saved views for that type.
-            return {
-                types: _.sortBy(Array.from(this._registry[resultType].types), viewName => viewOrder.indexOf(viewName)),
-                typeFilter: this._registry[resultType].typeFilter,
-            };
-        }
-
-        // Unregistered search result type. Return all default views that apply to the type.
-        const defaultViewControlTypes = { types: [ViewControlTypes.SEARCH] };
-        if (!parentTypes.includes(resultType)) {
-            // Add report view if object type has no child types.
-            defaultViewControlTypes.types.push(ViewControlTypes.REPORT);
-        }
-        return defaultViewControlTypes;
-    }
-}
-
-
-/**
- * Global ViewControl object that other modules import to register for the kinds of views their
- * object types support.
- */
-const ViewControlRegistry = new ViewControl();
-export default ViewControlRegistry;
-
-
-/**
- * Generate a query string from the elements of the `filters` property of search results. All
- * "type" queries come first, followed by other fields, followed by "searchTerm" quries.
- * @param {array} filters From `filters` property of search results
+ * Based on the search-result context, determine which of the three types of search-result pages
+ * the user currently views. For this to work, matrix JSON has to have a `matrix` property at the
+ * top level of the JSON. If no criteria gets met, this returns an empty string. The "Summary"
+ * entry exists because the summary page shows the view controls though no view controls link to
+ * the summary page.
+ * @param {object} context Object currently in view.
  *
- * @return {string} Ampersand-separated query string, not including initial question mark.
+ * @return {string} Type of search page currently in view: list, report, matrix, summary.
  */
-const getQueryFromFilters = (filters) => {
-    const typeQueries = filters.filter(searchFilter => searchFilter.field === 'type');
-    const termQueries = filters.filter(searchFilter => searchFilter.field !== 'type' && searchFilter.field !== 'searchTerm');
-    const searchTermQueries = filters.filter(searchFilter => searchFilter.field === 'searchTerm');
-    const queryElements = typeQueries.concat(termQueries, searchTermQueries).map(searchFilter => `${searchFilter.field}=${encoding.encodedURIComponentOLD(searchFilter.term)}`);
-    return `${queryElements.join('&')}`;
+const getSearchPageType = (context) => {
+    const atType = context['@type'][0];
+    if (atType === 'Search') {
+        return 'search';
+    }
+    if (atType === 'Report') {
+        return 'report';
+    }
+    if (atType === 'Summary') {
+        return 'summary';
+    }
+    if (context.matrix) {
+        return 'matrix';
+    }
+    return '';
 };
+
+
+/**
+ * Determine whether the given search results is for a rnaget search or not.
+ * @param {object} context Search-results object
+ *
+ * @return {boolean} True if search results are for a rnaget search.
+ */
+const getIsRNAGetSearch = (context) => (
+    url.parse(context['@id']).pathname === '/rnaget-report/'
+);
+
+
+/**
+* Check conditions for rendering view control buttons.
+* @param {object} context Search-results object
+*
+* @return {boolean} True if should show view controls for search.
+*/
+const shouldShowViewControls = (context) => (
+    !getIsCartSearch(context) && !getIsRNAGetSearch(context)
+);
 
 
 /**
  * Displays view control buttons appropriate for the given search results.
  */
-export const ViewControls = ({ results, filterTerm }) => {
-    // Add the hard-coded type filter if given.
-    let filters = [];
-    if (filterTerm) {
-        filters = results.filters.concat({ field: 'type', term: filterTerm });
-    } else {
-        filters = results.filters;
-    }
+export const ViewControls = ({ results, additionalFilters, dropConfig }) => {
+    // Don't render view controls for cart searches.
+    if (shouldShowViewControls(results)) {
+        const searchPageType = getSearchPageType(results);
+        const parsedUrl = url.parse(results['@id']);
+        const query = new QueryString(parsedUrl.query);
 
-    // Get all "type=" in query string. We only display controls when URL has exactly one "type=".
-    const typeFilters = filters.filter(filter => filter.field === 'type');
-    if (typeFilters.length === 1) {
-        // We'll get at least one `views` array element because /report/ is a view available to
-        // every "type=" even if nothing has been registered for that type.
-        let views;
-        const viewInfo = ViewControlRegistry.lookup(typeFilters[0].term);
-        if (viewInfo.typeFilter) {
-            // Custom type filter defined, so call that to get the relevant views.
-            views = viewInfo.typeFilter(viewInfo.types, results);
-        } else {
-            // No custom filter, so just get the default relevant views.
-            views = viewInfo.types.filter(item => item !== results['@type'][0]);
+        // Add any additional filters to the query from pages that do front-end filtering without
+        // doing a new query.
+        additionalFilters.forEach((filter) => {
+            query.addKeyValue(filter.field, filter.term);
+        });
+        if (dropConfig) {
+            query.deleteKeyValue('config');
         }
-        const queryString = getQueryFromFilters(results.filters);
-        return (
+
+        // Only render these buttons if at least one 'type=' is in the query string.
+        return (query.getKeyValues('type').length > 0 &&
             <div className="btn-attached">
-                {views.map((view) => {
-                    const buttonData = viewPathMap[view];
-                    return (
-                        <a key={buttonData.path} href={`/${buttonData.path}/?${queryString}`} role="button" className="btn btn-info btn-sm" data-test={buttonData.path} aria-label={buttonData.label}>
-                            {svgIcon(buttonData.icon)}
-                        </a>
-                    );
+                {viewTypeMap.map((viewType) => {
+                    // Don't render a view control button linking to the currently viewed page.
+                    if (viewType.type !== searchPageType) {
+                        const ViewTypeRenderer = viewType.renderer;
+                        return (
+                            <ViewTypeRenderer
+                                key={viewType.type}
+                                viewType={viewType}
+                                query={query}
+                            />
+                        );
+                    }
+                    return null;
                 })}
             </div>
         );
@@ -228,13 +259,33 @@ export const ViewControls = ({ results, filterTerm }) => {
 ViewControls.propTypes = {
     /** Displayed search result object; @type[0] === 'Search', 'Report', etc */
     results: PropTypes.object.isRequired,
-    /** Filter `type` to use in addition to `filters` property for missing "type" filter cases */
-    filterTerm: PropTypes.string,
+    /** Filters to add to `results.filters` for views that filter without modifying query string */
+    additionalFilters: PropTypes.array,
+    /** Flag to drop config parameter if needed */
+    dropConfig: PropTypes.bool,
 };
 
 ViewControls.defaultProps = {
-    filterTerm: null,
+    additionalFilters: [],
+    dropConfig: false,
 };
+
+
+const modalDefaultText = (
+    <>
+        <p>
+            Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+            The first line of the file has the URL or command line to download the metadata file.
+        </p>
+        <p>
+            Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
+        </p>
+        <p>
+            The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+            The following command using cURL can be used to download all the files in the list:
+        </p>
+        <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
+    </>);
 
 
 /**
@@ -243,6 +294,8 @@ ViewControls.defaultProps = {
 const BATCH_DOWNLOAD_DOC_TYPES = [
     'Experiment',
     'Annotation',
+    'FunctionalCharacterizationExperiment',
+    'SingleCellUnit',
 ];
 
 /**
@@ -254,96 +307,78 @@ const BATCH_DOWNLOAD_PROHIBITED_PATHS = [
 
 
 /**
- * Display the modal for batch download, and pass back clicks in the Download button
+ * Convert the filters from the file-gallery facets to QueryString form.
+ * @param {object} filters Filters from file gallery facets
+ * @param {string} fileQueryKey Query-string key to specify file facet query-string parameters
+ * @param {boolean} inclusionOn True if "Include deprecated" checked
+ * @returns {object} QueryString containing equivalent selections
  */
-export const BatchDownloadModal = ({ handleDownloadClick, title, additionalContent, disabled }) => (
-    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled} data-test="batch-download">{title}</button>} focusId="batch-download-submit">
-        <ModalHeader title="Using batch download" closeModal />
-        <ModalBody>
-            <p>
-                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file has the URL or command line to download the metadata file.
-            </p>
-            <p>
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-            </p>
-            <p>
-                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:
-            </p>
-            <code>xargs -L 1 curl -O -L &lt; files.txt</code><br />
-            <div>{additionalContent}</div>
-        </ModalBody>
-        <ModalFooter
-            closeModal={<button className="btn btn-default">Close</button>}
-            submitBtn={<button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={handleDownloadClick}>Download</button>}
-            dontClose
-        />
-    </Modal>
-);
-
-BatchDownloadModal.propTypes = {
-    /** Function to call when Download button gets clicked */
-    handleDownloadClick: PropTypes.func.isRequired,
-    /** Title to override usual actuator "Download" button title */
-    title: PropTypes.string,
-    /** True to disable Download button */
-    disabled: PropTypes.bool,
-    /** Additional content in modal as component */
-    additionalContent: PropTypes.object,
-};
-
-BatchDownloadModal.defaultProps = {
-    title: 'Download',
-    disabled: false,
-    additionalContent: null,
+const convertFiltersToQuery = (filters) => {
+    const query = new QueryString();
+    filters.forEach((filter) => {
+        const negativeFilter = filter.field.slice(-1) === '!';
+        const field = negativeFilter ? filter.field.slice(0, -1) : filter.field;
+        query.addKeyValue(field, filter.term, negativeFilter);
+    });
+    return query;
 };
 
 
 /**
  * Display batch download button if the search results qualify for one.
  */
-export class BatchDownloadControls extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleDownloadClick = this.handleDownloadClick.bind(this);
-    }
+export const BatchDownloadControls = ({ results, additionalFilters, modalText, canDownload }) => {
+    const filters = results ? results.filters.concat(additionalFilters) : null;
 
-    handleDownloadClick() {
-        const queryString = getQueryFromFilters(this.props.results.filters);
-        this.context.navigate(`/batch_download/?${queryString}`);
-    }
-
-    render() {
-        const { results } = this.props;
-
+    if (results) {
         // No Download button if the search path is prohibited.
-        const hasProhibitedPath = BATCH_DOWNLOAD_PROHIBITED_PATHS.some(path => results['@id'].startsWith(path));
+        const hasProhibitedPath = BATCH_DOWNLOAD_PROHIBITED_PATHS.some((path) => results['@id'].startsWith(path));
         if (hasProhibitedPath) {
             return null;
         }
 
         // No download button if "type=" for an allowed type doesn't exist in query string.
-        const hasDownloadDocType = results.filters.some(filter => filter.field === 'type' && BATCH_DOWNLOAD_DOC_TYPES.includes(filter.term));
+        const hasDownloadDocType = filters.some((filter) => filter.field === 'type' && BATCH_DOWNLOAD_DOC_TYPES.includes(filter.term));
         if (!hasDownloadDocType) {
             return null;
         }
 
         // No download button if no files.
-        const hasFiles = results.facets.some(facet => facet.field === 'files.file_type' && facet.total > 0);
+        const hasFiles = results.facets.some((facet) => facet.field === 'files.file_type' && facet.total > 0);
         if (!hasFiles) {
             return null;
         }
-
-        return <BatchDownloadModal handleDownloadClick={this.handleDownloadClick} />;
     }
-}
+
+    // Prepare the batch download controller. Because of earlier tests, at this point we know we
+    // have exactly one allowed "type={something}" in the filters.
+    const viewedType = filters.find((filter) => filter.field === 'type').term;
+    const query = convertFiltersToQuery(filters);
+    const controller = new SearchBatchDownloadController(viewedType, query);
+    return <BatchDownloadActuator controller={controller} modalContent={modalText} disabled={!canDownload} />;
+};
+
+const testBatchDownloadControlsProps = (props, propName, componentName) => {
+    if (!(props.results || props.queryString) || (props.results && props.queryString)) {
+        return new Error(`Props 'results' or 'queryString' but not both required in '${componentName}'.`);
+    }
+    return null;
+};
 
 BatchDownloadControls.propTypes = {
     /** Search results object */
-    results: PropTypes.object.isRequired,
+    results: testBatchDownloadControlsProps,
+    /** Filters not included in results.filters */
+    additionalFilters: PropTypes.array,
+    /** Message in modal body */
+    modalText: PropTypes.element,
+    /** Yes if download option is available, false otherwise */
+    canDownload: PropTypes.bool,
 };
 
-BatchDownloadControls.contextTypes = {
-    navigate: PropTypes.func,
+BatchDownloadControls.defaultProps = {
+    results: null,
+    additionalFilters: [],
+    modalText: modalDefaultText,
+    canDownload: true,
 };

@@ -33,7 +33,7 @@ import PropTypes from 'prop-types';
  * Displays and reacts to clicks in the hamburger menu button
  */
 const HamburgerTrigger = ({ expanded, navigationId, clickHandler }) => (
-    <button className={`navbar__trigger${expanded ? '' : ' collapsed'}`} aria-label="Navigation trigger" aria-controls={navigationId} aria-expanded={expanded} onClick={clickHandler}>
+    <button type="button" className={`navbar__trigger${expanded ? '' : ' collapsed'}`} aria-label="Navigation trigger" aria-controls={navigationId} aria-expanded={expanded} onClick={clickHandler}>
         <svg focusable="false" width="29" height="29" viewBox="0 0 29 29">
             <path d="M27.92,5H1.08C0.48,5,0,4.52,0,3.92V1.08C0,0.48,0.48,0,1.08,0h26.85C28.52,0,29,0.48,29,1.08v2.85 C29,4.52,28.52,5,27.92,5z" />
             <path d="M27.92,17H1.08C0.48,17,0,16.52,0,15.92v-2.85C0,12.48,0.48,12,1.08,12h26.85c0.59,0,1.08,0.48,1.08,1.08v2.85 C29,16.52,28.52,17,27.92,17z" />
@@ -82,7 +82,7 @@ export class Navbar extends React.Component {
       * Click on the Navbar mobile "collapse" button.
       */
     collapseClick() {
-        this.setState(prevState => ({ expanded: !prevState.expanded }));
+        this.setState((prevState) => ({ expanded: !prevState.expanded }));
     }
 
     render() {
@@ -91,7 +91,7 @@ export class Navbar extends React.Component {
         // Add openDropdown and dropdownClick props to the child components.
         let children = [];
         if (this.props.children && this.props.children.length > 0) {
-            children = React.Children.map(this.props.children, child => (
+            children = React.Children.map(this.props.children, (child) => (
                 child ? React.cloneElement(child, { openDropdown, dropdownClick }) : null
             ));
         }
@@ -239,6 +239,7 @@ class NavItemButton extends React.Component {
         const { dropdownOpen, dropdownTitle, dropdownId, label, css } = this.props;
         return (
             <button
+                type="button"
                 id={dropdownId}
                 className={`dropdown__toggle${dropdownOpen ? ' dropdown__toggle--open' : ''}${css ? ` ${css}` : ''}`}
                 data-toggle="dropdown"

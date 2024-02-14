@@ -1,0 +1,751 @@
+{
+    "title": "HiC quality metric",
+    "description": "HiC quality metrics",
+    "id": "/profiles/hic_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of", "award", "lab"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+    ],
+    "dependencies": {
+        "avg_insert_size": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "2_alignments_a1_a2b_a1b2_b1a2": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "library_complexity_estimate": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "2_alignments_a_b": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "pct_2_alignments_a1_a2b_a1b2_b1a2": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "pct_2_alignments_a_b": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "pct_one_or_both_reads_unmapped": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "sequenced_read_pairs": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "one_or_both_reads_unmapped": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
+        "library_complexity_estimate_1_alignment": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "library_complexity_estimate_2_alignments": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "library_complexity_estimate_1_and_2_alignments": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "2_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "2_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "0_alignments": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_0_alignments": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_1_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_1_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_sequenced_1_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_sequenced_1_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_sequenced_2_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "pct_sequenced_2_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "sequenced_reads": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "1_alignment_unique": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        },
+        "1_alignment_duplicates": {
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["single-ended"]
+                }
+            }
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "2"
+        },
+        "run_type": {
+            "title": "Run type of sequencing run",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended"
+            ]
+        },
+        "sequenced_reads": {
+            "title": "Number of sequenced read",
+            "type": "integer",
+            "description": "Number of total reads sequenced for library",
+            "minimum": 0
+        },
+        "sequenced_read_pairs": {
+            "title": "Number of sequenced read pairs",
+            "type": "integer",
+            "description": "Number of total read pairs sequenced for library",
+            "minimum": 0
+        },
+        "no_chimera_found": {
+            "title": "Number of no chimera found",
+            "type": "integer",
+            "description": "Number of reads where no chimera was found",
+            "minimum": 0
+        },
+        "0_alignments": {
+            "title": "Number of 0 alignments",
+            "type": "integer",
+            "description": "Number of reads that did not align to the reference genome",
+            "minimum": 0
+        },
+        "1_alignment": {
+            "title": "Number of 1 alignment",
+            "type": "integer",
+            "description": "Number of reads that align to one position in the reference genome",
+            "minimum": 0
+        },
+        "1_alignment_unique": {
+            "title": "Number of 1 alignment unique",
+            "type": "integer",
+            "description": "Number of unique reads that align to one position in the reference genome",
+            "minimum": 0
+        },
+        "1_alignment_duplicates": {
+            "title": "Number of 1 alignment duplicates",
+            "type": "integer",
+            "description": "Number of duplicate reads that align to one position in the reference genome",
+            "minimum": 0
+        },
+        "2_alignments": {
+            "title": "Number of 2 alignments",
+            "type": "integer",
+            "description": "Number of reads that align to two positions in the reference genome",
+            "minimum": 0
+        },
+        "2_alignments_a_b": {
+            "title": "Number of 2 alignments (A...B)",
+            "type": "integer",
+            "description": "Number of reads that align to two positions in the reference genome of the type A...B",
+            "minimum": 0
+        },
+        "2_alignment_duplicates": {
+            "title": "Number of 2 alignments duplicates",
+            "type": "integer",
+            "description": "Number of duplicate reads that align to two positions in the reference genome",
+            "minimum": 0
+        },
+        "2_alignment_unique": {
+            "title": "Number of 2 alignments unique",
+            "type": "integer",
+            "description": "Number of unique reads that align to two positions in the reference genome",
+            "minimum": 0
+        },
+        "2_alignments_a1_a2b_a1b2_b1a2": {
+            "title": "Number of 2 alignments (A1...A2B; A1B2...B1A2)",
+            "type": "integer",
+            "description": "Number of reads that align to two positions in the reference genome of the type A1...A2B; A1B2...B1A2",
+            "minimum": 0
+        },
+        "3_or_more_alignments": {
+            "title": "Number of 3 or more alignments",
+            "type": "integer",
+            "description": "Number of reads that align to three or more positions in the reference genome",
+            "minimum": 0
+        },
+        "pct_no_chimera_found": {
+            "title": "Percentage of no chimera found",
+            "type": "number",
+            "description": "Percent of reads where no chimera was found",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_0_alignments": {
+            "title": "Percentage of 0 alignments",
+            "type": "number",
+            "description": "Percent of reads that did not align to the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_1_alignment": {
+            "title": "Percentage of 1 alignment",
+            "type": "number",
+            "description": "Percent of reads that align to one position in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_1_alignment_unique": {
+            "title": "Percentage of 1 alignment unique",
+            "type": "number",
+            "description": "Percent of unique reads that align to one position in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_1_alignment_duplicates": {
+            "title": "Percentage of 1 alignment duplicates",
+            "type": "number",
+            "description": "Percent of duplicate reads that align to one position in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_sequenced_1_alignment_unique": {
+            "title": "Percentage of 1 alignment unique",
+            "type": "number",
+            "description": "Percent of unique reads that align to one position in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_sequenced_1_alignment_duplicates": {
+            "title": "Percentage of 1 alignment duplicates",
+            "type": "number",
+            "description": "Percent of duplicate reads that align to one position in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignments": {
+            "title": "Percentage of 2 alignments",
+            "type": "number",
+            "description": "Percent of reads that align to two positions in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignment_unique": {
+            "title": "Percentage of 2 alignment unique",
+            "type": "number",
+            "description": "Percent of unique reads that align to two positions in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignment_duplicates": {
+            "title": "Percentage of 2 alignment duplicates",
+            "type": "number",
+            "description": "Percent of duplicate reads that align to two positions in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignments_a_b": {
+            "title": "Percentage of 2 alignments a_b",
+            "type": "number",
+            "description": "Percent of reads that align to two positions in the reference genome of the type A...B",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_2_alignments_a1_a2b_a1b2_b1a2": {
+            "title": "Percentage of 2 alignments a1_a2b_a1b2_b1a2",
+            "type": "number",
+            "description": "Percent of reads that align to two positions in the reference genome of the type A1...A2B; A1B2...B1A2",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_sequenced_2_alignment_unique": {
+            "title": "Percentage of 2 alignment unique",
+            "type": "number",
+            "description": "Percent of unique reads that align to two positions in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_sequenced_2_alignment_duplicates": {
+            "title": "Percentage of 2 alignment duplicates",
+            "type": "number",
+            "description": "Percent of duplicate reads that align to two positions in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_3_or_more_alignments": {
+            "title": "Percentage of 3 or more alignments",
+            "type": "number",
+            "description": "Percent of reads that align to three or more positions in the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_total_duplicates": {
+            "title": "Percentage of unique total duplicates",
+            "type": "number",
+            "description": "Percent of duplicate reads that align to the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_total_unique": {
+            "title": "Percentage of unique total unique",
+            "type": "number",
+            "description": "Percent of unique reads that align to the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "one_or_both_reads_unmapped": {
+            "title": "one_or_both_reads_unmapped",
+            "type": "integer",
+            "description": "Number of read pairs where one or both reads is unmapped",
+            "minimum": 0
+        },
+        "pct_one_or_both_reads_unmapped": {
+            "title": "Percentage of one or both reads unmapped",
+            "type": "number",
+            "description": "Percent of read pairs where one or both reads is unmapped",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "ligation_motif_present": {
+            "title": "Number of reads with ligation motif present",
+            "type": "integer",
+            "description": "Number of reads containing a ligation motif",
+            "minimum": 0
+        },
+        "pct_ligation_motif_present": {
+            "title": "Percentage of reads with ligation motif present",
+            "type": "number",
+            "description": "Percent of reads containing a ligation motif",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "avg_insert_size": {
+            "title": "Average of the insert size",
+            "type": "number",
+            "description": "Average insert size",
+            "minimum": 0
+        },
+        "total_unique": {
+            "title": "Number of total unique",
+            "type": "integer",
+            "description": "Number of unique reads that align to the reference genome",
+            "minimum": 0
+        },
+        "pct_sequenced_total_unique": {
+            "title": "Percentage of sequenced total reads",
+            "type": "number",
+            "description": "Percent of unique reads that align to the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "total_duplicates": {
+            "title": "Number of total duplicates",
+            "type": "integer",
+            "description": "Number of duplicate reads that align to the reference genome",
+            "minimum": 0
+        },
+        "pct_sequenced_total_duplicates": {
+            "title": "Percentage of total duplicates",
+            "type": "number",
+            "description": "Percent of duplicate reads that align to the reference genome",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "library_complexity_estimate": {
+            "title": "Library complexity estimate",
+            "type": "integer",
+            "description": "Estimate of Library Complexity",
+            "minimum": 0
+        },
+        "library_complexity_estimate_1_alignment": {
+            "title": "Library complexity estimate (1 alignment)",
+            "type": "integer",
+            "description": "Estimate of Library Complexity (for reads with one alignment)",
+            "minimum": 0
+        },
+        "library_complexity_estimate_2_alignments": {
+            "title": "Library complexity estimate (2 alignment)",
+            "type": "integer",
+            "description": "Estimate of Library Complexity (for reads with two alignments)",
+            "minimum": 0
+        },
+        "library_complexity_estimate_1_and_2_alignments": {
+            "title": "Library complexity estimate (1 and 2 alignments)",
+            "type": "integer",
+            "description": "Estimate of Library Complexity (for reads with one and two alignments)",
+            "minimum": 0
+        },
+        "intra_fragment_reads": {
+            "title": "Number of intra fragment reads",
+            "type": "integer",
+            "description": "Number of intra-fragment reads",
+            "minimum": 0
+        },
+        "pct_sequenced_intra_fragment_reads": {
+            "title": "Percentage of sequenced intra fragment reads",
+            "type": "number",
+            "description": "Percent of intra-fragment reads",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_intra_fragment_reads": {
+            "title": "Percentage of unique intra fragment reads",
+            "type": "number",
+            "description": "Percent of unique intra-fragment reads",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "below_mapq_threshold": {
+            "title": "Number of reads below mapq threshold",
+            "type": "integer",
+            "description": "Number of reads below the mapQ threshold",
+            "minimum": 0
+        },
+        "pct_sequenced_below_mapq_threshold": {
+            "title": "Percentage of sequenced reads below mapq threshold",
+            "type": "number",
+            "description": "Percent of reads below the mapQ threshold",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_below_mapq_threshold": {
+            "title": "Percentage of unique reads below mapq threshold",
+            "type": "number",
+            "description": "Percent of unique reads below the mapQ threshold",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "hic_contacts": {
+            "title": "Number of hic contacts",
+            "type": "integer",
+            "description": "Number of Hi-C contacts",
+            "minimum": 0
+        },
+        "pct_sequenced_hic_contacts": {
+            "title": "Percentage of sequenced reads in hic contacts",
+            "type": "number",
+            "description": "Percent of Hi-C contacts",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_hic_contacts": {
+            "title": "Percentage of unique reads in hic contacts",
+            "type": "number",
+            "description": "Percent of unique Hi-C contacts",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_5_prime_bias_long_range": {
+            "title": "Percentage of 5' bias long range",
+            "type": "number",
+            "description": "Percent of read ends from long range contacts mapping closer to the 5’ end of the fragment",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_3_prime_bias_long_range": {
+            "title": "Percentage of 3' bias long range",
+            "type": "number",
+            "description": "Percent of read ends from long range contacts mapping closer to the 3’ end of the fragment",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "lior_convergence": {
+            "title": "L-I-O-R (Left Inner Outer Right) convergence",
+            "type": "integer",
+            "description": "Distance in basepairs at which left, right, inner, and outer pair types converge",
+            "minimum": 0
+        },
+        "pct_left_pair_type": {
+            "title": "Left pair type percentage",
+            "type": "number",
+            "description": "Percentage of Hi-C contacts with left pair type",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_right_pair_type": {
+            "title": "Right pair type percentage",
+            "type": "number",
+            "description": "Percentage of Hi-C contacts with right pair type",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_inner_pair_type": {
+            "title": "Inner pair type percentage",
+            "type": "number",
+            "description": "Percentage of Hi-C contacts with inner pair type",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_outer_pair_type": {
+            "title": "Outer pair type percentage",
+            "type": "number",
+            "description": "Percentage of Hi-C contacts with outer pair type",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "inter_chromosomal": {
+            "title": "Number of inter chromosomal contacts",
+            "type": "integer",
+            "description": "Number of inter-chromosomal Hi-C contacts",
+            "minimum": 0
+        },
+        "pct_sequenced_inter_chromosomal": {
+            "title": "Percentage of sequenced reads in inter chromosomal contacts",
+            "type": "number",
+            "description": "Percent of inter-chromosomal Hi-C contacts",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_inter_chromosomal": {
+            "title": "Percentage of unique reads in inter chromosomal contacts",
+            "type": "number",
+            "description": "Percent of unique inter-chromosomal Hi-C contacts",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "intra_chromosomal": {
+            "title": "Number of intra chromosomal contacts",
+            "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts",
+            "minimum": 0
+        },
+        "pct_sequenced_intra_chromosomal": {
+            "title": "Percentage of sequenced reads in intra chromosomal contacts",
+            "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_intra_chromosomal": {
+            "title": "Percentage of unique reads in intra chromosomal contacts",
+            "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "short_range_less_than_500bp": {
+            "title": "Number of short range (<500bp) contacts",
+            "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts with loci less than 500 basepairs apart",
+            "minimum": 0
+        },
+        "pct_sequenced_short_range_less_than_500bp": {
+            "title": "Percentage of sequenced reads in short range (<500bp) contacts",
+            "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts with loci less than 500 basepairs apart",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_short_range_less_than_500bp": {
+            "title": "Percentage of unique reads in short range (<500bp) contacts",
+            "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts with loci less than 500 basepairs apart",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "short_range_500bp_to_5kb": {
+            "title": "Number of short range (500bp-5kb) contacts",
+            "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts with loci between 500 basepairs and 5 kilobases apart",
+            "minimum": 0
+        },
+        "pct_sequenced_short_range_500bp_to_5kb": {
+            "title": "Percentage of sequenced reads in short range (500bp-5kb) contacts",
+            "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts with loci between 500 basepairs and 5 kilobases apart",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_short_range_500bp_to_5kb": {
+            "title": "Percentage of unique reads in short range (500bp-5kb) contacts",
+            "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts with loci between 500 basepairs and 5 kilobases apart",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "short_range_5kb_to_20kb": {
+            "title": "Number of short range (5kb-20kb) contacts",
+            "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts with loci between 5 and 20 kilobases apart",
+            "minimum": 0
+        },
+        "pct_sequenced_short_range_5kb_to_20kb": {
+            "title": "Percentage of sequenced reads in short range (5kb-20kb) contacts",
+            "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts with loci between 5 and 20 kilobases apart",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_short_range_5kb_to_20kb": {
+            "title": "Percentage of unique reads in short range (5kb-20kb) contacts",
+            "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts with loci between 5 and 20 kilobases apart",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "long_range_greater_than_20kb": {
+            "title": "Number of long range (>20kb) contacts",
+            "type": "integer",
+            "description": "Number of intra-chromosomal Hi-C contacts with loci greater than 20 kilobases apart",
+            "minimum": 0
+        },
+        "pct_sequenced_long_range_greater_than_20kb": {
+            "title": "Percentage of sequenced reads in long range (>20kb) contacts",
+            "type": "number",
+            "description": "Percent of intra-chromosomal Hi-C contacts with loci greater than 20 kilobases apart",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "pct_unique_long_range_greater_than_20kb": {
+            "title": "Percentage of unique reads in long range (>20kb) contacts",
+            "type": "number",
+            "description": "Percent of unique intra-chromosomal Hi-C contacts with loci greater than 20 kilobases apart",
+            "minimum": 0,
+            "maximum": 100.0
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/hic_quality_metric.md"
+}

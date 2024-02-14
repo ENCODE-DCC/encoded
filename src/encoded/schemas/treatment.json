@@ -28,7 +28,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "documents": {
             "description": "Documents that describe the treatment protocol."
@@ -93,7 +93,12 @@
             "type": "string",
             "enum": [
                 "activation",
-                "deactivation"
+                "control",
+                "deactivation",
+                "labeling",
+                "perturbation",
+                "selection",
+                "stimulation"
             ]
         },
         "temperature": {
@@ -141,6 +146,9 @@
     "facets": {
         "treatment_type": {
             "title": "Treatment type"
+        },
+        "purpose": {
+            "title": "Purpose"
         },
         "status": {
             "title": "Status"

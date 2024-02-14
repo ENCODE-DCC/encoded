@@ -18,7 +18,7 @@ $border-color:                              #ced4da;
 $input-border-radius:                       3px;
 $grid-float-breakpoint:                     $screen-md;
 $navbar-height:                             40px;
-$navbar-inverse-link-active-bg:             #4E7294;//darken($navbar-inverse-bg, 10%)
+$navbar-inverse-link-active-bg:             #4e7294;//darken($navbar-inverse-bg, 10%)
 $navbar-inverse-toggle-hover-bg:            #19334b;
 $navbar-inverse-toggle-border-color:        #19334b;
 $headings-font-weight:                      bold;
@@ -43,7 +43,7 @@ $border-radius-base:        4px !default;
 $border-radius-large:       6px !default;
 $border-radius-small:       3px !default;
 
-$font-size-base:               14px;
+$font-size-base:               16px;
 $font-size-large:              ceil(($font-size-base * 1.25)) !default; // ~18px
 $font-size-small:              ceil(($font-size-base * 0.85)) !default; // ~12px
 $mobile-font-factor:           1.2; // Amount text increases size on mobile
@@ -65,7 +65,6 @@ $brand-success:         #4c994c;
 $brand-info:            #4f689e;
 $brand-warning:         #e59545;
 $brand-danger:          #b24342;
-
 
 // Button styles copied from Bootstrap 3
 $btn-font-weight:                normal !default;
@@ -107,11 +106,11 @@ $link-hover-color:                          darken($link-color, 15%);
 // Global mixins
 // Keep images from scaling beyond the width of their parents; copied from Bootstrap 3
 @mixin img-responsive($display: block) {
-  display: $display;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 100%; // Part 1: Set a maximum relative to the parent
-  height: auto; // Part 2: Scale the height according to the width, otherwise you get stretching
+    display: $display;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%; // Part 1: Set a maximum relative to the parent
+    height: auto; // Part 2: Scale the height according to the width, otherwise you get stretching
 }
 
 // CSS image replacement
@@ -137,9 +136,9 @@ $link-hover-color:                          darken($link-color, 15%);
 }
 
 @mixin user-select($select) {
-  -webkit-user-select: $select;
-      -ms-user-select: $select;
-          user-select: $select;
+    -webkit-user-select: $select;
+    -ms-user-select: $select;
+    user-select: $select;
 }
 
 // WebKit-style focus
@@ -152,8 +151,8 @@ $link-hover-color:                          darken($link-color, 15%);
 }
 
 @mixin box-shadow($shadow...) {
-  -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
-          box-shadow: $shadow;
+    -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
+    box-shadow: $shadow;
 }
 
 // Button variants
@@ -173,22 +172,21 @@ $link-hover-color:                          darken($link-color, 15%);
         background-color: darken($background, 8%);
         border-color: darken($border, 12%);
     }
+
     .open & {
         &.dropdown-toggle {
             color: $color;
             background-color: darken($background, 8%);
             border-color: darken($border, 12%);
+            background-image: none;
         }
     }
+
     &:active,
     &.active {
         background-image: none;
     }
-    .open & {
-        &.dropdown-toggle {
-            background-image: none;
-        }
-    }
+
     &.disabled,
     &[disabled],
     fieldset[disabled] & {
@@ -197,17 +195,16 @@ $link-hover-color:                          darken($link-color, 15%);
         &:focus,
         &:active,
         &.active {
-        background-color: $background;
-        border-color: $border;
+            background-color: $background;
+            border-color: $border;
+        }
     }
-}
 
-.badge {
-    color: $background;
+    .badge {
+        color: $background;
         background-color: $color;
     }
 }
-
 
 // ENCODED
 // Font Awesome
@@ -220,44 +217,55 @@ $link-hover-color:                          darken($link-color, 15%);
 @import "encoded/math";
 @import "encoded/layout";
 @import "encoded/modules/common_item",
-        "encoded/modules/breadcrumbs",
-        "encoded/modules/pager",
-        "encoded/modules/forms",
-        "encoded/modules/cart",
-        "encoded/modules/key-value-display",
-        "encoded/modules/lightbox",
-        "encoded/modules/facet",
-        "encoded/modules/matrix",
-        "encoded/modules/auditmatrix",
-        "encoded/modules/collection",
-        "encoded/modules/lists",
-        "encoded/modules/loading-spinner",
-        "encoded/modules/modals",
-        "encoded/modules/navbar",
-        "encoded/modules/panels",
-        "encoded/modules/tables",
-        "encoded/modules/search",
-        "encoded/modules/summary",
-        "encoded/modules/genome_browser",
-        "encoded/modules/characterizations",
-        "encoded/modules/audits",
-        "encoded/modules/genetic_modification",
-        "encoded/modules/award",
-        "encoded/modules/pipeline",
-        "encoded/modules/quality_metric",
-        "encoded/modules/report",
-        "encoded/modules/schema",
-        "encoded/modules/tooltip",
-        "encoded/modules/badge",
-        "encoded/modules/status",
-        "encoded/modules/news",
-        "encoded/modules/visualize",
-        "encoded/modules/home",
-        "encoded/modules/blocks",
-        "encoded/modules/layout-editor",
-        "encoded/modules/layout",
-        "encoded/modules/schema",
-        "encoded/modules/faq",
-        "encoded/modules/user";
+    "encoded/modules/batch_download",
+    "encoded/modules/boolean_toggle",
+    "encoded/modules/breadcrumbs",
+    "encoded/modules/pager",
+    "encoded/modules/forms",
+    "encoded/modules/key-value-display",
+    "encoded/modules/lightbox",
+    "encoded/modules/facet",
+    "encoded/modules/matrix",
+    "encoded/modules/auditmatrix",
+    "encoded/modules/collection",
+    "encoded/modules/lists",
+    "encoded/modules/loading-spinner",
+    "encoded/modules/modals",
+    "encoded/modules/navbar",
+    "encoded/modules/panels",
+    "encoded/modules/tables",
+    "encoded/modules/search",
+    "encoded/modules/summary",
+    "encoded/modules/body_map",
+    "encoded/modules/body_map_facet",
+    "encoded/modules/genome_browser",
+    "encoded/modules/characterizations",
+    "encoded/modules/audits",
+    "encoded/modules/genetic_modification",
+    "encoded/modules/award",
+    "encoded/modules/pipeline",
+    "encoded/modules/quality_metric",
+    "encoded/modules/report",
+    "encoded/modules/schema",
+    "encoded/modules/tooltip",
+    "encoded/modules/badge",
+    "encoded/modules/status",
+    "encoded/modules/news",
+    "encoded/modules/visualize",
+    "encoded/modules/home",
+    "encoded/modules/blocks",
+    "encoded/modules/layout-editor",
+    "encoded/modules/layout",
+    "encoded/modules/schema",
+    "encoded/modules/faq_glossary",
+    "encoded/modules/user",
+    "encoded/modules/cart",
+    "encoded/modules/tabs",
+    "encoded/modules/mouse_map",
+    "encoded/modules/top_hits_search",
+    "encoded/modules/encode-software",
+    "encoded/modules/top_hits_search",
+    "encoded/modules/immune_cells",
+    "encoded/modules/encyclopedia";
 @import "encoded/state";
-@import "encoded/theme"; 
+@import "encoded/theme";

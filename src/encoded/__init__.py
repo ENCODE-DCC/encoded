@@ -3,9 +3,10 @@ install_aliases()  # NOQA
 import encoded.schema_formats # needed to import before snovault to add FormatCheckers
 import base64
 import codecs
+import copy
 import json
-import netaddr
 import os
+from pathlib import Path
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
 except ImportError:
@@ -65,7 +66,9 @@ def changelogs(config):
 
 
 def configure_engine(settings):
-    engine_url = settings['sqlalchemy.url']
+    settings = copy.deepcopy(settings)
+    engine_url = os.environ.get("SQLALCHEMY_URL") or settings['sqlalchemy.url']
+    settings["sqlalchemy.url"] = engine_url
     engine_opts = {}
     if engine_url.startswith('postgresql'):
         if settings.get('indexer_worker'):
@@ -223,8 +226,13 @@ def main(global_config, **local_config):
     config.include('.server_defaults')
     config.include('.types')
     config.include('.root')
+    # Must include before anything that uses, or imports from something that uses, cache.
+    config.include('.searches.caches')
     config.include('.batch_download')
+    config.include('.reports.batch_download')
+    config.include('.reports.metadata')
     config.include('.visualization')
+    config.include('.glossary')
 
     if 'elasticsearch.server' in config.registry.settings:
         config.include('snovault.elasticsearch')
@@ -233,7 +241,10 @@ def main(global_config, **local_config):
         config.include('encoded.search_views')
 
     if 'snp_search.server' in config.registry.settings:
-        addresses = aslist(config.registry.settings['snp_search.server'])
+        addresses = aslist(
+            os.environ.get("ELASTICSEARCH_URL")
+            or config.registry.settings['snp_search.server']
+        )
         config.registry['snp_search'] = Elasticsearch(
             addresses,
             serializer=PyramidJSONSerializer(json_renderer),
@@ -243,13 +254,12 @@ def main(global_config, **local_config):
             maxsize=50
         )
         config.include('.region_search')
-        config.include('.region_indexer')
     config.include(static_resources)
     config.include(changelogs)
-    config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
-    aws_ip_ranges = json_from_path(settings.get('aws_ip_ranges_path'), {'prefixes': []})
-    config.registry['aws_ipset'] = netaddr.IPSet(
-        record['ip_prefix'] for record in aws_ip_ranges['prefixes'] if record['service'] == 'AMAZON')
+    ontology_path = Path(__file__).resolve().parents[2] / "ontology.json"
+    config.registry['ontology'] = (
+        json_from_path(str(ontology_path)) if ontology_path.exists() else {}
+    )
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
@@ -258,6 +268,8 @@ def main(global_config, **local_config):
     # registered.
     config.include('.upgrade')
     config.include('.audit')
+    config.include('.searches.configs')
+
 
     app = config.make_wsgi_app()
 

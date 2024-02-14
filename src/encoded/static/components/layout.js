@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import url from 'url';
 import FallbackBlockEdit from './blocks/fallback';
 import closest from '../libs/closest';
 import offset from '../libs/offset';
@@ -82,7 +83,7 @@ class BlockEditModal extends React.Component {
                     <BlockEdit schema={blocktype.schema} value={this.state.value} onChange={this.onChange} />
                 </ModalBody>
                 <ModalFooter
-                    closeBtn={<button className="btn btn-default" onClick={this.cancel}>Cancel</button>}
+                    closeModal={<button type="button" className="btn btn-default" onClick={this.cancel}>Cancel</button>}
                     submitBtn={this.save}
                 />
             </Modal>
@@ -148,11 +149,15 @@ class Block extends React.Component {
     }
 
     mouseEnter() { this.setState({ hover: true }); }
+
     mouseLeave() { this.setState({ hover: false }); }
+
     focus() { this.setState({ focused: true }); }
+
     blur() { this.setState({ focused: false }); }
 
     dragStart(e) { this.context.dragStart(e, this.props.value, this.props.pos); }
+
     dragOver(e) { this.context.dragOver(e, this); }
 
     remove() {
@@ -238,7 +243,7 @@ Block.defaultProps = {
     pos: null,
 };
 
-Block.contextTypes = Object.assign({}, MODAL_CONTEXT, LAYOUT_CONTEXT);
+Block.contextTypes = { ...MODAL_CONTEXT, ...LAYOUT_CONTEXT };
 
 
 class BlockAddButton extends React.Component {
@@ -266,19 +271,17 @@ class BlockAddButton extends React.Component {
     render() {
         const classes = `icon-lg ${this.props.blockprops.icon}`;
         return (
-            <span>
-                <button
-                    className="btn btn-primary navbar-btn btn-sm"
-                    onClick={BlockAddButton.click}
-                    draggable="true"
-                    onDragStart={this.dragStart}
-                    onDragEnd={this.context.dragEnd}
-                    title={this.props.blockprops.label}
-                >
-                    <span className={classes} />
-                </button>
-                {' '}
-            </span>
+            <button
+                type="button"
+                className="btn btn-primary navbar-btn btn-sm"
+                onClick={BlockAddButton.click}
+                draggable="true"
+                onDragStart={this.dragStart}
+                onDragEnd={this.context.dragEnd}
+                title={this.props.blockprops.label}
+            >
+                <span className={classes} />
+            </button>
         );
     }
 }
@@ -301,19 +304,27 @@ class LayoutToolbar extends React.Component {
 
         // Bind this to non-React methods.
         this.scrollspy = this.scrollspy.bind(this);
+        this.cancel = this.cancel.bind(this);
     }
 
     componentDidMount() {
         this.origTop = offset(this.domNode).top;
-        globals.bindEvent(window, 'scroll', this.scrollspy);
+        window.addEventListener('scroll', this.scrollspy);
     }
 
     componentWillUnmount() {
-        globals.unbindEvent(window, 'scroll', this.scrollspy);
+        window.removeEventListener('scroll', this.scrollspy);
     }
 
     scrollspy() {
         this.setState({ fixed: window.pageYOffset > this.origTop });
+    }
+
+    cancel() {
+        const link = url.parse(this.context.location_href, true);
+
+        // the last '/' is a hack to reload the page. In app.js, fallbackNavigate() did not without it.
+        this.context.navigate(`${link.pathname}/`, { reload: true });
     }
 
     render() {
@@ -328,9 +339,9 @@ class LayoutToolbar extends React.Component {
                     })}
                 </div>
                 <div className="layout-toolbar__controls">
-                    <a href="" className="btn btn-default navbar-btn">Cancel</a>
+                    <button type="button" className="btn btn-default" onClick={() => this.cancel()}>Cancel</button>
                     {' '}
-                    <button onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
+                    <button type="button" onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
                 </div>
             </div>
         );
@@ -352,6 +363,8 @@ class LayoutToolbar extends React.Component {
 LayoutToolbar.contextTypes = {
     canSave: PropTypes.func,
     onTriggerSave: PropTypes.func,
+    location_href: PropTypes.string,
+    navigate: PropTypes.func,
 };
 
 
@@ -381,7 +394,7 @@ class Col extends React.Component {
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
             classes[`drop-${this.context.dst_quad}`] = true;
         }
-        const blocks = this.props.value.blocks;
+        const { blocks } = this.props.value;
         const classStr = Object.keys(classes).join(' ');
         return (
             <div
@@ -426,7 +439,7 @@ class Row extends React.Component {
             classes[`drop-${this.context.dst_quad}`] = true;
         }
         const classStr = Object.keys(classes).join(' ');
-        const cols = this.props.value.cols;
+        const { cols } = this.props.value;
         let colClass = 'layout__block';
         switch (cols.length) {
         case 2:
@@ -469,7 +482,7 @@ Row.contextTypes = LAYOUT_CONTEXT;
 
 export default class Layout extends React.Component {
     static stateFromProps(props) {
-        let value = props.value;
+        let { value } = props;
 
         const blockMap = {};
         let nextBlockNum = 2;
@@ -479,7 +492,7 @@ export default class Layout extends React.Component {
             const blockNum = parseInt(blockId.replace(/\D/g, ''), 10);
             if (blockNum >= nextBlockNum) nextBlockNum = blockNum + 1;
         });
-        value = Object.assign({}, value, { blocks: blockMap });
+        value = { ...value, blocks: blockMap };
 
         return {
             nextBlockNum,
@@ -491,10 +504,11 @@ export default class Layout extends React.Component {
     }
 
     static isBlockDragEvent(e) {
-        const types = e.dataTransfer.types;
+        const { types } = e.dataTransfer;
         if (types.indexOf && types.indexOf('application/x-encoded-block') !== -1) {
             return true;
-        } else if (types.contains && types.contains('application/x-encoded-block')) {
+        }
+        if (types.contains && types.contains('application/x-encoded-block')) {
             return true;
         }
         e.preventDefault();
@@ -541,14 +555,17 @@ export default class Layout extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    /* eslint-disable camelcase */
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState(Layout.stateFromProps(nextProps));
     }
+    /* eslint-enable camelcase */
 
     onChange() {
-        let value = this.state.value;
+        let { value } = this.state;
         const blockList = Object.keys(value.blocks).map(
-            blockId => value.blocks[blockId]);
+            (blockId) => value.blocks[blockId]
+        );
         value = _.extend({}, value, { blocks: blockList });
         this.props.onChange(value);
     }
@@ -675,7 +692,7 @@ export default class Layout extends React.Component {
         this.state.dst_quad = null;
 
         // make sure we re-render and notify form of new value
-        this.setState(this.state);
+        this.setState((state) => state);
         this.onChange(this.state.value);
     }
 
@@ -710,7 +727,7 @@ export default class Layout extends React.Component {
             quad = 'top';
         }
 
-        const pos = target.props.pos;
+        const { pos } = target.props;
         if (pos.length === 0) {
             if (this.state.value.rows.length === 0) {
                 quad = 'bottom'; // first block in layout; always show indicator on bottom
@@ -730,7 +747,7 @@ export default class Layout extends React.Component {
 
     change(value) {
         this.state.value.blocks[value['@id']] = value;
-        this.setState(this.state);
+        this.setState((state) => state);
         this.onChange(this.state.value);
     }
 
@@ -739,15 +756,17 @@ export default class Layout extends React.Component {
         const dest = this.traverse(pos);
         dest.container.obj.blocks.splice(dest.target_idx, 1);
         this.cleanup();
-        this.setState(this.state);
+        this.setState((state) => state);
         this.onChange(this.state.value);
     }
 
+    // Contains intentional side effects.
     filter(objs) {
         return objs.filter((obj) => {
             if (obj === 'CUT') { // block
                 return false;
-            } else if (obj.blocks !== undefined) { // col
+            }
+            if (obj.blocks !== undefined) { // col
                 delete obj.droptarget;
                 obj.blocks = this.filter(obj.blocks);
                 if (obj.blocks.length === 1 && obj.blocks[0].cols !== undefined && obj.blocks[0].cols.length === 1) {
@@ -755,7 +774,8 @@ export default class Layout extends React.Component {
                     obj.blocks = obj.blocks[0].cols[0].blocks;
                 }
                 return obj.blocks.length;
-            } else if (obj.cols !== undefined) {
+            }
+            if (obj.cols !== undefined) {
                 obj.cols = this.filter(obj.cols);
                 return obj.cols.length;
             }

@@ -42,6 +42,17 @@
                 "pattern": "^(ENCSR\\d{3}[A-Z]{3})$|^(TSTSR\\d{6})$"
             }
         },
+        "analyses": {
+            "title": "Analysis objects",
+            "description": "A list of analysis objects.",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "linkTo": "Analysis"
+            }
+        },
         "description": {
             "title": "Description",
             "description": "A plain text description of the dataset.",
@@ -85,6 +96,13 @@
             ],
             "permission": "import_items"
         },
+        "doi": {
+            "title": "Digital object identifier",
+            "description": "Assigned DOI from Crossref.",
+            "type": "string",
+            "pattern": "^(10.17989/ENCSR\\d{3}[A-Z]{3})$",
+            "permission": "import_items"
+        },
         "internal_tags": {
             "title": "Internal tags",
             "description": "Some datasets are part of particular data collections",
@@ -98,15 +116,29 @@
                     "ccre_inputv1",
                     "ccre_inputv2",
                     "dbGaP",
+                    "Degron",
+                    "Deeply Profiled",
                     "DREAM",
+                    "ENCYCLOPEDIAv0.3",
+                    "ENCYCLOPEDIAv1",
+                    "ENCYCLOPEDIAv2",
                     "ENCYCLOPEDIAv3",
                     "ENCYCLOPEDIAv4",
                     "ENCYCLOPEDIAv5",
                     "ENCORE",
                     "ENTEx",
+                    "LRGASP",
                     "MouseDevSeries",
+                    "RushAD",
                     "SESCC",
-                    "RegulomeDB"
+                    "RegulomeDB_1_0",
+                    "RegulomeDB_2_0",
+                    "RegulomeDB_2_1",
+                    "RegulomeDB_2_2",
+                    "RegulomeDB_2_3",
+                    "RegulomeDB_3_0",
+                    "RegulomeDB_3_1",
+                    "YaleImmuneCells"
                 ]
             }
         },
@@ -143,26 +175,6 @@
             "title": "Project"
         }
     },
-    "columns": {
-        "accession": {
-            "title": "Accession"
-        },
-        "description": {
-            "title": "Description"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "boost_values": {
         "accession": 20.0,
         "alternate_accessions": 1.0,
@@ -170,8 +182,8 @@
         "award.project": 5.0,
         "description": 1.0,
         "dbxrefs": 1.0,
+        "doi": 1.0,
         "award.title": 1.0,
-        "award.project": 1.0,
         "submitted_by.email": 1.0,
         "submitted_by.first_name": 1.0,
         "submitted_by.last_name": 1.0,

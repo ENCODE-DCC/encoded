@@ -19,6 +19,60 @@ import * as queryEncoding from './query_encoding';
 
 
 class QueryString {
+    /**
+     * Find the value of the key in a parsed QueryString element. Each element (documented in
+     * `_parse`) is an object with the query-string key as the object key and the query-string
+     * value as this object key's value, as well as a `negative` boolean.
+     * @param {object} queryElement One parsed element of a QueryString object
+     * @returns {string} Value of the key in an element of a parsed QueryString object
+     */
+    static _getQueryElementKey(queryElement) {
+        return Object.keys(queryElement).find((key) => key !== 'negative');
+    }
+
+    /**
+     * Compare two `QueryString` objects to see if they represent the same query. The two query
+     * strings don't need to have their elements in the same order to consider them equal -- they
+     * simply need to have the same keys and values, and the same negations ("=" vs "!=") for each.
+     * If `isExact` is true, then the two query strings must also have the same number of elements.
+     * Otherwise, `equal()` returns true if `query1` has all the elements of `query2` even if
+     * `query2` has other elements not in `query1`. `equal()` might not return the correct value if
+     * either query string has repeated key/element values.
+     * @param {QueryString} query1 First QueryString object to compare
+     * @param {QueryString} query2 Second QueryString object to compare
+     * @param {boolean} isExact True to match all keys/values exactly; false to match key subset
+     * @returns {boolean} True if the two query strings represent the same query
+     */
+    static equal(query1, query2, isExact = true) {
+        const isSubsetMatching = query1._parsedQuery.reduce((equal, query1Element) => {
+            if (equal) {
+                // Find the key this element represents. Assume it exists; we have a bug if not.
+                const query1Key = QueryString._getQueryElementKey(query1Element);
+
+                // So far only equal elements have been found. Search query2 for an element
+                // matching an element from query1.
+                const equalElement = query2._parsedQuery.find((query2Element) => {
+                    const query2Key = QueryString._getQueryElementKey(query2Element);
+                    return (
+                        query1Key === query2Key
+                        && query1Element[query1Key] === query2Element[query2Key]
+                        && query1Element.negative === query2Element.negative
+                    );
+                });
+                return !!equalElement;
+            }
+
+            // Once we can't find an equal element, we can stop searching.
+            return false;
+        }, true);
+
+        return (
+            isExact
+                ? isSubsetMatching && query1._parsedQuery.length === query2._parsedQuery.length
+                : isSubsetMatching
+        );
+    }
+
     constructor(query) {
         this._query = query;
         this._parse();
@@ -48,7 +102,7 @@ class QueryString {
     _parse() {
         // Filter out any empty elements caused by a trailing ampersand.
         if (this._query) {
-            const inputQueryElements = this._query.split('&').filter(element => element);
+            const inputQueryElements = this._query.split('&').filter((element) => element);
             this._parsedQuery = inputQueryElements.map((element) => {
                 // Split each query string element into its key and value in `queryElement`. If "!"
                 // is at the end of the key, then this was a != query-string element. In that case
@@ -92,7 +146,7 @@ class QueryString {
      * @return {object} Reference to this object for method chaining.
      */
     deleteKeyValue(key, value) {
-        this._parsedQuery = this._parsedQuery.filter(element => element[key] === undefined || (value !== undefined ? element[key] !== value : false));
+        this._parsedQuery = this._parsedQuery.filter((element) => element[key] === undefined || (value !== undefined ? element[key] !== value : false));
         return this;
     }
 
@@ -102,7 +156,7 @@ class QueryString {
      * key/value pair.
      * @param {string} key Key value to replace
      * @param {string} value Non-URL-encoded value to replace
-     * @param {string} negative True if new key/value is a negative (a!=b)
+     * @param {bool} negative True if new key/value is a negative (a!=b)
      *
      * @param {object} Reference to this object for method chaining.
      */
@@ -122,7 +176,22 @@ class QueryString {
      * @return {array} Non-URL-encoded values that have `key` as their key.
      */
     getKeyValues(key, negative) {
-        return this._parsedQuery.filter(queryElement => queryElement[key] && queryElement.negative === !!negative).map(queryElement => queryElement[Object.keys(queryElement)[0]]);
+        return this._parsedQuery.filter((queryElement) => queryElement[key] && queryElement.negative === !!negative).map((queryElement) => queryElement[Object.keys(queryElement)[0]]);
+    }
+
+    /**
+     * Returns an array of values whose keys match the `key` string parameter REGARDLESS of the relationship
+     * between the key and value in the query string. For example, query string "a=1&b=2&a=3&b!=3", a `key`
+     * value of "b" would return [2,3]. This method does not take "==" and "!=" into consideration.
+     * @param {string} key
+     * @memberof QueryString
+     *
+     *  @return {array} Non-URL-encoded values that have `key` as their key.
+     */
+    getKeyValuesIfPresent(key) {
+        return this._parsedQuery
+            .filter((queryElement) => queryElement[key])
+            .map((queryElement) => queryElement[Object.keys(queryElement)[0]]);
     }
 
     /**
@@ -133,7 +202,7 @@ class QueryString {
      */
     queryCount(key) {
         if (key) {
-            return this._parsedQuery.filter(queryElement => queryElement[key]).length;
+            return this._parsedQuery.filter((queryElement) => queryElement[key]).length;
         }
         return this._parsedQuery.length;
     }

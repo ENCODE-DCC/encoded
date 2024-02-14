@@ -66,7 +66,7 @@ import { Panel, PanelHeading } from '../libs/ui/panel';
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
 export const SortTablePanel = (props) => {
-    const { title, header, css, noDefaultClasses } = props;
+    const { title, header, subheader, css, noDefaultClasses } = props;
 
     return (
         <Panel addClasses={`table-sort${noDefaultClasses ? '' : ' table-panel'}${css ? ` ${css}` : ''}`} noDefaultClasses={noDefaultClasses}>
@@ -78,6 +78,8 @@ export const SortTablePanel = (props) => {
                 <PanelHeading key="heading">{props.header}</PanelHeading>
             : null)}
 
+            {subheader ? <>{subheader}</> : null}
+
             <div className="table__scrollarea" key="table">
                 {props.children}
             </div>
@@ -86,16 +88,18 @@ export const SortTablePanel = (props) => {
 };
 
 SortTablePanel.propTypes = {
-    /** Title to display in tabel panel header. `title` overrides `header` */
+    /** Title to display in table panel header. `title` overrides `header` */
     title: PropTypes.oneOfType([
         PropTypes.string, // When title is a simple string
-        PropTypes.object, // When title is JSX
+        PropTypes.element, // When title is JSX
     ]),
     /** CSS class string to add to <Panel> classes */
     css: PropTypes.string,
     /** React component to render inside header */
-    header: PropTypes.object,
-    /** T to skip default <Panel> classes */
+    header: PropTypes.element,
+    /** React component to render above the table below the header */
+    subheader: PropTypes.element,
+    /** React component to render below the table inside the panel */
     noDefaultClasses: PropTypes.bool,
     /** Table components within a SortTablePanel */
     children: PropTypes.node,
@@ -105,6 +109,7 @@ SortTablePanel.defaultProps = {
     title: '',
     css: '',
     header: null,
+    subheader: null,
     noDefaultClasses: false,
     children: null,
 };
@@ -166,7 +171,7 @@ export class SortTable extends React.Component {
 
         // Get the given sort column ID, or the default (first key in columns object) if none given
         if (this.props.sortColumn) {
-            sortColumn = this.props.sortColumn;
+            ({ sortColumn } = this.props);
         } else {
             sortColumn = Object.keys(this.props.columns)[0];
         }
@@ -193,22 +198,23 @@ export class SortTable extends React.Component {
 
     // Handle clicks in the column headers for sorting columns
     sortDir(column) {
-        const reversed = column === this.state.sortColumn ? !this.state.reversed : false;
-        this.setState({ sortColumn: column, reversed });
+        this.setState((state) => {
+            const reversed = column === state.sortColumn ? !state.reversed : false;
+            return { sortColumn: column, reversed };
+        });
     }
 
     // Called when any column needs sorting. If the column has a sorter function, call it
     // to handle its sorting. Otherwise assume the values can be retrieved from the currently sorted column ID.
     sortColumn(a, b) {
         const columnId = this.state.sortColumn;
-        const sorter = this.props.columns[columnId].sorter;
+        const { sorter } = this.props.columns[columnId];
 
         if (sorter !== false) {
             let aVal;
             let bVal;
             let result;
-            const objSorter = this.props.columns[columnId].objSorter;
-            const getValue = this.props.columns[columnId].getValue;
+            const { objSorter, getValue } = this.props.columns[columnId];
 
             // If the columns for this column has `getValue` defined, use it to get the cell's value. Otherwise
             // just get it from the passed objects directly.
@@ -240,7 +246,7 @@ export class SortTable extends React.Component {
     }
 
     render() {
-        const { list, columns, css, rowClasses, meta } = this.props;
+        const { list, rowKeys, columns, css, rowClasses, meta } = this.props;
         const columnIds = Object.keys(columns);
         const hiddenColumns = {};
         let hiddenCount = 0;
@@ -295,8 +301,9 @@ export class SortTable extends React.Component {
                         <tbody>
                             {sortedList.map((item, i) => {
                                 const rowClassStr = rowClasses ? rowClasses(item, i) : '';
+                                const rowKey = rowKeys ? rowKeys[i] : i;
                                 return (
-                                    <tr key={i} className={rowClassStr}>
+                                    <tr key={rowKey} className={rowClassStr}>
                                         {columnIds.map((columnId) => {
                                             if (!hiddenColumns[columnId]) {
                                                 if (columns[columnId].display) {
@@ -347,6 +354,8 @@ SortTable.propTypes = {
     meta: PropTypes.object,
     /** Array of objects to display in the table */
     list: PropTypes.array,
+    /** Array of React row keys */
+    rowKeys: PropTypes.array,
     /** Defines the columns of the table */
     columns: PropTypes.object.isRequired,
     /** CSS classes to add to SortTable <table> tag */
@@ -368,6 +377,7 @@ SortTable.defaultProps = {
     title: null,
     meta: null,
     list: null,
+    rowKeys: null,
     css: '',
     rowClasses: null,
     sortColumn: '',

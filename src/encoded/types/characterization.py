@@ -32,6 +32,7 @@ ALLOW_REVIEWER_EDIT = [
     })
 class Characterization(ItemWithAttachment, Item):
     base_types = ['Characterization'] + Item.base_types
+    schema = load_schema('encoded:schemas/characterization.json')
     embedded = ['lab', 'award', 'submitted_by', 'documents']
     set_status_up = [
         'documents',

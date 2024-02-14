@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Field } from '../form';
 import * as globals from '../globals';
-import { Panel } from '../item';
+import { Panel } from '../../libs/ui/panel';
 
 
-const FallbackBlockView = props => (
+const FallbackBlockView = (props) => (
     <div>
         <h2>{props.blocktype.label}</h2>
         <Panel context={props.value} />
@@ -37,7 +37,7 @@ class JSONInput extends React.Component {
     }
 
     handleChange(event) {
-        let value = event.target.value;
+        let { value } = event.target;
         this.setState({ value });
         let error = false;
         try {

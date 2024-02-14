@@ -1,0 +1,25 @@
+/*
+ * Everything within the ENCODE Software page area.
+ */
+$encode-software-border: 1px solid black;
+
+.encode-software {
+    .nav-tabs {
+        // modification of Tab panel to make entire tab-area clickable
+        li {
+            a {
+                width: 100%;
+            }
+
+            .tab-inner {
+                padding: 0;
+
+                a {
+                    font-size: 1.2rem;
+                    padding: 5px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

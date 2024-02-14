@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { DefaultDateSelectorFacet } from './defaults';
 import FacetRegistry from './registry';
@@ -7,13 +6,17 @@ import FacetRegistry from './registry';
 /**
  * Handles the facet to control submission and release dates.
  */
-const DateReleasedFacet = ({ facet, results, mode, relevantFilters, pathname, queryString }) => (
+const DateReleasedFacet = ({ facet, results, mode, relevantFilters, pathname, isExpanded, handleExpanderClick, handleKeyDown, isExpandable, queryString }) => (
     <DefaultDateSelectorFacet
         facet={facet}
         results={results}
         mode={mode}
         relevantFilters={relevantFilters}
         pathname={pathname}
+        isExpanded={isExpanded}
+        handleExpanderClick={handleExpanderClick}
+        handleKeyDown={handleKeyDown}
+        isExpandable={isExpandable}
         queryString={queryString}
     />
 );
@@ -29,15 +32,27 @@ DateReleasedFacet.propTypes = {
     relevantFilters: PropTypes.array.isRequired,
     /** Search results path without query-string portion */
     pathname: PropTypes.string.isRequired,
+    /** True if facet is to be expanded */
+    isExpanded: PropTypes.bool,
+    /** Expand or collapse facet */
+    handleExpanderClick: PropTypes.func,
+    /** Handles key-press and toggling facet */
+    handleKeyDown: PropTypes.func,
+    /** True if expandable, false otherwise */
+    isExpandable: PropTypes.bool,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string,
 };
 
 DateReleasedFacet.defaultProps = {
     mode: '',
+    isExpanded: false,
+    handleExpanderClick: () => {},
+    handleKeyDown: () => {},
+    isExpandable: true,
     queryString: '',
 };
 
 
 FacetRegistry.Facet.register('date_released', DateReleasedFacet);
-FacetRegistry.Facet.register('date_submitted', null);
+FacetRegistry.Facet.register('date_submitted', DateReleasedFacet);

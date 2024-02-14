@@ -1,4 +1,9 @@
-// Contains the summary title and horizontal facets
+$inset-size: 65px;
+$small-inset-size: 55px;
+$smallest-inset-size: 45px;
+
+$results-background: #e9e9e9;
+
 .summary-header {
     @at-root #{&}__facets-horizontal {
         @media print {
@@ -14,20 +19,122 @@
         }
     }
 
+    .clear-filters-control {
+        margin: 10px 10px 20px;
+
+        > div {
+            font-size: 1rem;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            position: relative;
+
+            > div {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
     .clear-filters-control--summary {
         margin: 5px 0 0;
     }
 
+    /* stylelint-disable-next-line selector-class-pattern */
     .summary-header__title_control {
         position: relative;
-        margin-bottom: 40px;
+        margin: auto;
+        margin-bottom: 10px;
+        max-width: 1600px;
     }
 }
 
+// Make summary page full-width
+.container {
+    /* stylelint-disable-next-line selector-class-pattern */
+    &.Summary {
+        width: 100%;
+        max-width: 100%;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            width: calc(100% - 20px);
+            max-width: calc(100% - 20px);
+        }
+    }
+}
+
+// Container which organizes summary page components:
+// (1) The body map facet ("body-facet-container")
+// (2) Summary page elements, the donut and bar charts ("summary-content__data")
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1600px;
+    margin: auto;
+
+    .body-facet-container {
+        flex: 0 1 80%;
+        width: 80%;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: 1400px) {
+            flex: 0 1 100%;
+            width: 100%;
+        }
+    }
+
+    .summary-content__data {
+        background: $results-background;
+        flex: 0 1 calc(20% - 20px);
+        width: calc(20% - 20px);
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: 1400px) {
+            flex: 0 1 100%;
+            width: 100%;
+        }
+
+        .summary-content__snapshot {
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: auto;
+            display: flex;
+        }
+
+        .award-charts__chart {
+            flex: 0 0 100%;
+            width: 100%;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: 1400px) {
+                flex: 0 1 33%;
+                width: 33%;
+            }
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 1 100%;
+                width: 100%;
+            }
+        }
+    }
+}
 
 // Contains the vertical facets and the charts.
 .summary-content {
     display: block;
+
+    .summary-content__data {
+        background: $results-background;
+        padding: 30px;
+        margin-bottom: 30px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            padding: 10px 0;
+        }
+    }
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
@@ -38,20 +145,33 @@
         padding: 20px;
     }
 
-    @at-root #{&}__facets-vertical {
-        @media screen and (min-width: $screen-md-min) {
-            flex: 0 0 20%;
-        }
-
-        @media print {
-            display: none;
-        }
-    }
-
     // Contains all the charts.
     @at-root #{&}__data {
+        max-width: 1600px;
+        margin: auto;
+        padding: 10px;
+
+        .award-charts__chart {
+            position: relative;
+        }
+
+        #category-chart-assay-legend, #lab-chart-experiments-legend {
+            display: none;
+        }
+
+        .award-charts__legend {
+            position: absolute;
+            width: auto;
+            text-align: left;
+            padding: 5px;
+            background: white;
+            border: 1px solid #d2d2d2;
+            top: 20px;
+            right: 10px;
+        }
+
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 80%;
+            flex: 0 1 100%;
             min-width: 0; // https://github.com/chartjs/Chart.js/issues/4156#issuecomment-345773111
         }
 
@@ -89,7 +209,11 @@
 
     // Contains a full-width chart.
     @at-root #{&}__statistics {
-        display: block;     
+        display: block;
+
+        .panel {
+            background: $results-background;
+        }
 
         @media print {
             width: 100%;
@@ -120,5 +244,461 @@
 .chartjs-size-monitor {
     @media print {
         display: none;
+    }
+}
+
+.results-count {
+    font-style: italic;
+    margin: 10px;
+    font-size: 1rem;
+    text-align: left;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-sm-min) {
+        font-size: 0.9rem;
+    }
+}
+
+.results-controls {
+    display: inline-block;
+}
+
+.results-controls {
+    margin: 10px 0 30px;
+    max-width: 1600px;
+    width: 100%;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-sm-min) {
+        margin: 0 0 30px;
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    &:not(.Homo-sapiens) &:not(.Mus-musculus) {
+        margin-bottom: 0;
+    }
+}
+
+.summary-controls {
+    text-align: center;
+
+    .organism-button-instructions {
+        margin-bottom: 5px;
+        font-size: 1.5rem;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 1rem;
+        }
+    }
+
+    .search-results__facets {
+        .summary-horizontal-facets {
+            border: 0;
+            padding: 30px 0;
+            max-width: 1600px;
+            margin: auto;
+
+            &.human {
+                border-top: 2px solid #d2d2d2;
+
+                /* stylelint-disable-next-line media-feature-name-disallowed-list */
+                @media screen and (max-width: 1400px) {
+                    border: none;
+                }
+            }
+
+            .horizontal {
+                display: flex;
+                justify-content: center;
+
+                .facet-list-wrapper {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    padding: 10px;
+                }
+            }
+        }
+    }
+}
+
+.box.facets.summary-horizontal-facets.facet-num-4 {
+    .horizontal {
+        .facet {
+            flex: 0 0 25%;
+            max-width: 250px;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 0 100%;
+                max-width: none;
+            }
+        }
+    }
+}
+
+.box.facets.summary-horizontal-facets.facet-num-3 {
+    .horizontal {
+        .facet {
+            flex: 0 0 33%;
+            max-width: 250px;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 0 100%;
+                max-width: none;
+            }
+        }
+    }
+}
+
+.box.facets.summary-horizontal-facets.facet-num-2 {
+    .horizontal {
+        .facet {
+            flex: 0 0 50%;
+            max-width: 250px;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 0 100%;
+                max-width: none;
+            }
+        }
+    }
+}
+
+.cls-nervebackground {
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.highlight {
+        cursor: pointer;
+    }
+}
+
+.clear-organs {
+    border: 0;
+    padding: 3px 10px;
+    font-size: 1rem;
+    color: $Homo-sapiens;
+    border-radius: 3px;
+    background: #e0e0e0;
+    position: absolute;
+    bottom: -50px;
+    right: 10px;
+
+    .icon {
+        margin-right: 3px;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: lighten($Homo-sapiens, 45%);
+    }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-md-min) {
+        left: 10px;
+        bottom: -60px;
+    }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-sm-min) {
+        font-size: 0.8rem;
+        bottom: -80px;
+        left: 10px;
+        width: 100px;
+    }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-xs-min) {
+        bottom: -90px;
+    }
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.type-Summary {
+    .body-list {
+        .body-list-element {
+            display: inline-block;
+            line-height: 1;
+            margin-right: 2px;
+        }
+    }
+}
+
+.body-list {
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-sm-min) {
+        padding: 0;
+        font-size: 0.8rem;
+    }
+
+    .body-list-inner {
+        padding: 10px;
+        text-align: left;
+        position: relative;
+        line-height: 1.8;
+    }
+
+    .body-list-element {
+        display: inline;
+        padding: 2px 5px;
+        width: calc(50% - 4px);
+        text-align: left;
+        background: none;
+        border-radius: 3px;
+        border: none;
+        font-size: 1rem;
+        margin-bottom: 4px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 0.8rem;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &.active {
+            background-color: $Homo-sapiens;
+            color: white;
+        }
+
+        &:hover:not(.active) {
+            background-color: lighten($Homo-sapiens, 45%);
+        }
+
+        &.highlight:not(.active) {
+            background-color: lighten($Homo-sapiens, 45%);
+        }
+    }
+}
+
+.body-list-top {
+    max-width: 1000px;
+    margin: auto;
+    border-bottom: 2px solid #d2d2d2;
+    border-top: 2px solid #d2d2d2;
+
+    .body-list-element {
+        width: calc(20% - 4px);
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            width: calc(50% - 4px);
+        }
+    }
+}
+
+.body-facet :nth-child(1) {
+    order: 1;
+    -webkit-order: 1;
+}
+
+.body-facet :nth-child(2) {
+    order: 2;
+    -webkit-order: 2;
+}
+
+.body-facet :nth-child(3) {
+    order: 3;
+    -webkit-order: 3;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-sm-min) {
+        order: 4;
+        -webkit-order: 4;
+    }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-xs-min) {
+        order: 3;
+        -webkit-order: 3;
+    }
+}
+
+.body-facet :nth-child(4) {
+    order: 4;
+    -webkit-order: 4;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-sm-min) {
+        order: 3;
+        -webkit-order: 3;
+    }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-xs-min) {
+        order: 4;
+        -webkit-order: 4;
+    }
+}
+
+.body-facet {
+    display: flex;
+    padding: 20px 0 0 20px;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-sm-min) {
+        padding: 0;
+    }
+
+    .body-image-container {
+        flex: 0 1 33%;
+        max-width: 600px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 50%;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+
+        svg {
+            margin-right: -25px;
+        }
+    }
+
+    .body-inset-container {
+        flex: 0 1 150px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 60%;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+
+        .tissue-container {
+            width: 65px;
+        }
+
+        .body-inset {
+            position: relative;
+            background: none;
+            padding: 0;
+            margin: 0;
+            margin-right: 9px;
+            border: 0;
+
+            img {
+                width: $inset-size;
+
+                /* stylelint-disable-next-line media-feature-name-disallowed-list */
+                @media screen and (max-width: $screen-md-min) {
+                    width: $smallest-inset-size;
+                }
+
+                /* stylelint-disable-next-line media-feature-name-disallowed-list */
+                @media screen and (max-width: $screen-md-min) {
+                    width: $small-inset-size;
+                }
+            }
+
+            &:hover:not(.active)::after {
+                cursor: pointer;
+                opacity: 0.5;
+            }
+
+            &.highlight:not(.active)::after {
+                cursor: pointer;
+                opacity: 0.5;
+            }
+        }
+
+        .body-inset::after {
+            content: '\A';
+            position: absolute;
+            width: $inset-size;
+            height: $inset-size;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-md-min) {
+                width: $smallest-inset-size;
+                height: $smallest-inset-size;
+            }
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-md-min) {
+                width: $small-inset-size;
+                height: $small-inset-size;
+            }
+
+            top: 0;
+            left: 0;
+            background: #63326e;
+            opacity: 0;
+            transition: all 200ms;
+            -webkit-transition: all 200ms;
+            border-radius: 50%;
+        }
+    }
+
+    .body-list {
+        flex: 0 1 calc(33% - 65px);
+        text-align: left;
+        margin-left: -30px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 50%;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+            margin-left: 0;
+        }
+    }
+
+    .body-list-narrow {
+        flex: 0 1 calc(18% - 65px);
+        margin-left: 0;
+
+        .body-list-element {
+            width: calc(100% - 4px);
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-sm-min) {
+                width: calc(50% - 4px);
+            }
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            flex: 0 1 40%;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+    }
+}
+
+.container {
+    /* stylelint-disable-next-line selector-class-pattern */
+    &.Summary {
+        width: 100%;
+        max-width: 100%;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            width: calc(100% - 20px);
+            max-width: calc(100% - 20px);
+        }
     }
 }

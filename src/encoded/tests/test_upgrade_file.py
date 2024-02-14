@@ -1,209 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def file_base(experiment):
-    return {
-        'accession': 'ENCFF000TST',
-        'dataset': experiment['uuid'],
-        'file_format': 'fasta',
-        'file_size': 243434,
-        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
-        'output_type': 'raw data',
-    }
-
-
-@pytest.fixture
-def file_1(file_base):
-    item = file_base.copy()
-    item.update({
-        'schema_version': '1',
-        'status': 'CURRENT',
-        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
-    })
-    return item
-
-
-@pytest.fixture
-def file_2(file_base):
-    item = file_base.copy()
-    item.update({
-        'schema_version': '2',
-        'status': 'current',
-        'download_path': 'bob.bigBed'
-    })
-    return item
-
-
-@pytest.fixture
-def file_3(file_base):
-    item = file_base.copy()
-    item.update({
-        'schema_version': '3',
-        'status': 'current',
-        'download_path': 'bob.bigBed'
-    })
-    return item
-
-
-@pytest.fixture
-def file_4(file_base):
-    item = file_base.copy()
-    item.update({
-        'schema_version': '4',
-        'file_format': 'bed_bedMethyl',
-        'download_path': 'bob.bigBed',
-        'output_type': 'Base_Overlap_Signal'
-    })
-    return item
-
-
-@pytest.fixture
-def file_5(file_base):
-    item = file_base.copy()
-    item.update({
-        'schema_version': '5',
-        'file_format': 'bigWig',
-        'output_type': 'signal of multi-mapped reads'
-    })
-    return item
-
-
-@pytest.fixture
-def file_7(file_base):
-    item = file_base.copy()
-    item.update({
-        'schema_version': '7'
-    })
-    return item
-
-
-@pytest.fixture
-def file_8a(file_base):
-    item = file_base.copy()
-    item.update({
-        'file_format': 'fastq',
-        'assembly': 'hg19',
-        'schema_version': '8'
-    })
-    return item
-
-
-@pytest.fixture
-def file_9(file_base):
-    item = file_base.copy()
-    item.update({
-        'date_created': '2017-04-28'
-    })
-    return item
-
-
-@pytest.fixture
-def file_10(file_base):
-    item = file_base.copy()
-    item.update({
-        'schema_version': '10'
-    })
-    return item
-
-
-@pytest.fixture
-def file_12(file_base):
-    item = file_base.copy()
-    item.update({
-        'platform': 'ced61406-dcc6-43c4-bddd-4c977cc676e8',
-        'schema_version': '12',
-        'file_format': 'fastq',
-        'run_type': 'single-ended',
-        'read_length': 55,
-        'file_size': 243434,
-        'md5sum': 'd41d8cd98f00b204e9800998ecf8423e',
-        'output_type': 'reads'
-    })
-    return item
-
-
-@pytest.fixture
-def old_file(experiment):
-    return {
-        'accession': 'ENCFF000OLD',
-        'dataset': experiment['uuid'],
-        'file_format': 'fasta',
-        'md5sum': 'e41d9ce97b00b204e9811998ecf8427b',
-        'output_type': 'raw data',
-        'uuid': '627ef1f4-3426-44f4-afc3-d723eccd20bf'
-    }
-
-
-@pytest.fixture
-def file_8b(file_base, old_file):
-    item = file_base.copy()
-    item.update({
-        'schema_version': '8',
-        'supercedes': list(old_file['uuid'])
-    })
-    return item
-
-@pytest.fixture
-def file_13(file_base):
-    item = file_base.copy()
-    item.update({
-        'output_type': 'candidate regulatory elements'
-    })
-    return item
-
-@pytest.fixture
-def file_14_optimal(file_base):
-    item = file_base.copy()
-    item.update({
-        'output_type': 'optimal idr thresholded peaks'
-    })
-    return item
-
-
-@pytest.fixture
-def file_14_conservative(file_base):
-    item = file_base.copy()
-    item.update({
-        'output_type': 'conservative idr thresholded peaks'
-    })
-    return item
-
-
-@pytest.fixture
-def file_14_pseudoreplicated(file_base):
-    item = file_base.copy()
-    item.update({
-        'output_type': 'pseudoreplicated idr thresholded peaks'
-    })
-    return item
-
-
-@pytest.fixture
-def file_15(file_base):
-    item = file_base.copy()
-    item.update({
-        'platform': 'e2be5728-5744-4da4-8881-cb9526d0389e',
-        'schema_version': '15',
-        'file_format': 'fastq',
-        'run_type': 'single-ended',
-        'read_length': 55,
-        'file_size': 243434,
-        'md5sum': 'd41d8cd98f00b204e9800998ecf8423e',
-        'output_type': 'reads'
-    })
-    return item
-
-@pytest.fixture
-def file_16(file_base):
-    item = file_base.copy()
-    item.update({
-        'platform': '6c275b37-018d-4bf8-85f6-6e3b830524a9',
-        'schema_version': '16'
-    })
-    return item
-
-
 def test_file_upgrade(upgrader, file_1):
     value = upgrader.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -327,3 +124,101 @@ def test_file_upgrade_16_to_17(upgrader, file_16):
     assert value['schema_version'] == '17'
     assert 'run_type' not in value
     assert 'read_length' not in value
+
+
+def test_file_upgrade_17_to_18(upgrader, file_17):
+    value = upgrader.upgrade('file', file_17, current_version='17', target_version='18')
+    assert value['schema_version'] == '18'
+    assert 'assembly' not in value
+
+
+def test_file_upgrade_18_to_19(upgrader, file_18):
+    value = upgrader.upgrade('file', file_18, current_version='18', target_version='19')
+    assert value['schema_version'] == '19'
+    assert value['output_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
+
+
+def test_file_upgrade_19_to_20(upgrader, file_19):
+    value = upgrader.upgrade('file', file_19, current_version='19', target_version='20')
+    assert value['schema_version'] == '20'
+    assert value['run_type'] == 'single-ended'
+    assert value['notes'] == 'The run_type of this file was automatically upgraded by ENCD-5258.'
+
+
+def test_file_upgrade_20_to_21(root, testapp, upgrader, registry, file_dnase_enrichment, file_chip_enrichment):
+    value = upgrader.upgrade('file', file_dnase_enrichment, registry=registry, current_version='20', target_version='21')
+    assert value['schema_version'] == '21'
+    assert value['output_type'] == 'FDR cut rate'
+    value = upgrader.upgrade('file', file_chip_enrichment, registry=registry, current_version='20', target_version='21')
+    assert value['schema_version'] == '21'
+    assert value['output_type'] == 'enrichment'
+
+
+def test_file_upgrade_21_to_22(root, testapp, upgrader, registry, file_21_22):
+    # https://encodedcc.atlassian.net/browse/ENCD-5286
+    value = upgrader.upgrade('file', file_21_22, current_version='21', target_version='22')
+    assert value['schema_version'] == '22'
+    assert value['replicate'] == '70d6e704-bba5-4475-97b8-03bf717eecf3'
+    assert value['notes'] == 'Prior entry. This file lacks its correct replicate specified.'
+
+
+def test_file_upgrade_22_to_23(upgrader, file_22):
+    value = upgrader.upgrade('file', file_22, current_version='22', target_version='23')
+    assert value['schema_version'] == '23'
+    assert value['output_type'] == 'spike-ins'
+
+
+def test_file_upgrade_23_to_24(root, testapp, upgrader, registry, file_23):
+    value = upgrader.upgrade(
+        'file', file_23, current_version='23', target_version='24'
+    )
+    assert value['schema_version'] == '24'
+    assert value['output_type'] == 'pseudo-replicated peaks'
+
+
+def test_file_upgrade_24_to_25(root, testapp, upgrader, registry, file_24):
+    value = upgrader.upgrade(
+        'file', file_24, current_version='24', target_version='25'
+    )
+    assert value['schema_version'] == '25'
+    assert value['output_type'] == 'smoothed methylation state at CpG'
+
+
+def test_file_upgrade_25_to_26(upgrader, file_25):
+    value = upgrader.upgrade('file', file_25, current_version='25', target_version='26')
+    assert value['schema_version'] == '26'
+    assert value['output_type'] == 'representative DNase hypersensitivity sites'
+
+
+def test_file_upgrade_26_to_27(upgrader, file_26):
+    value = upgrader.upgrade('file', file_26, current_version='26', target_version='27')
+    assert value['schema_version'] == '27'
+    assert value['output_type'] == 'pseudoreplicated peaks'
+
+
+def test_file_upgrade_27_to_28(upgrader, file_27):
+    value = upgrader.upgrade('file', file_27, current_version='27', target_version='28')
+    assert value['schema_version'] == '28'
+    assert value['output_type'] == 'exclusion list regions'
+
+
+def test_file_upgrade_28_to_29(upgrader, file_28):
+    value = upgrader.upgrade('file', file_28, current_version='28', target_version='29')
+    assert value['schema_version'] == '29'
+    assert 'read_length' not in value
+
+
+def test_file_upgrade_29_to_30(upgrader, file_29):
+    value = upgrader.upgrade('file', file_29, current_version='29', target_version='30')
+    assert value['schema_version'] == '30'
+    assert value['output_type'] == 'contact matrix'
+
+
+def test_file_upgrade_30_to_31(upgrader, file_30_predicted_profile, file_30_bias_model):
+    value = upgrader.upgrade('file', file_30_predicted_profile, current_version='30', target_version='31')
+    assert value['schema_version'] == '31'
+    assert value['output_type'] == 'predicted signal profile'
+
+    value = upgrader.upgrade('file', file_30_bias_model, current_version='30', target_version='31')
+    assert value['schema_version'] == '31'
+    assert value['output_type'] == 'bias models'

@@ -19,8 +19,7 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "file_set.json#/properties" },
-        { "$ref": "mixins.json#/assay" }
+        { "$ref": "file_set.json#/properties" }
     ],
     "dependencies": {
         "biosample_ontology": {
@@ -64,11 +63,49 @@
                     }
                 }
             ]
+        },
+        "trait": {
+            "comment": "Only fine-mapped variants annotations can have trait specified.",
+            "properties": {
+                "annotation_type": {
+                    "enum": [
+                        "fine-mapped variants"
+                    ]
+                }
+            }
+        },
+        "annotation_subtype": {
+            "properties": {
+                "annotation_type": {
+                    "enum": [
+                        "candidate Cis-Regulatory Elements",
+                        "representative DNase hypersensitivity sites"
+                    ]
+                }
+            }
+        },
+        "post_treatment_time": {
+            "required":["post_treatment_time_units", "treatments"],
+            "comment": "Biosample with a specified post_treatment_time requires non-empty treatments list and post_treatment_time_units specification.",
+            "properties":{
+                "treatments": {
+                    "minItems": 1
+                }
+            }
+        },
+        "post_treatment_time_units": {
+            "required":["post_treatment_time", "treatments"],
+            "comment": "Biosample with a specified post_treatment_time_units requires non-empty treatments list post_treatment_time specification.",
+            "properties":{
+                "treatments": {
+                    "minItems": 1
+                }
+            }
         }
     },
     "properties": {
         "schema_version": {
-            "default": "27"
+            "default": "40"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -76,20 +113,40 @@
             "type": "string",
             "enum": [
                 "binding sites",
-                "blacklist",
+                "BPNet-control",
+                "BPNet-model",
+                "cell type annotation",
+                "curated SNVs",
+                "caQTLs",
+                "element gene regulatory interaction predictions",
+                "eQTLs",
+                "exclusion list",
                 "candidate Cis-Regulatory Elements",
                 "chromatin state",
+                "ChromBPNet-model",
+                "ChromBPNet-bias-model",
                 "consensus DNase hypersensitivity sites",
+                "cross-species functional conservation",
                 "enhancer predictions",
+                "fine-mapped variants",
+                "footprints",
                 "functional characterization elements",
                 "gene expression",
+                "genotyping",
+                "gkm-SVM-model",
                 "imputation",
                 "in vivo enhancer evaluations",
-                "long-range chromatin interactions",
+                "loops",
                 "methylation summary",
                 "other",
                 "overlap",
+                "physical modeling",
+                "proteomics analysis",
+                "pseudobulk",
+                "PWMs",
+                "regulatory elements signal matrix",
                 "representative DNase hypersensitivity sites",
+                "representative IDR thresholded peaks",
                 "transcript expression",
                 "transcription factor motifs",
                 "transcription start sites",
@@ -97,19 +154,128 @@
                 "variant calls"
             ]
         },
+        "annotation_subtype": {
+            "title": "Annotation subtype",
+            "description": "The category of elements in a cell-type agnostic candidate Cis-Regulatory Elements or representative DNase hypersensitivity sites annotation.",
+            "type": "string",
+            "permission": "import_items",
+            "enum": [
+                "all",
+                "promoter-like",
+                "proximal enhancer-like",
+                "distal enhancer-like",
+                "DNase-H3K4me3",
+                "CTCF-only",
+                "DHS"
+            ]
+        },
+        "assay_term_name": {
+            "title": "Assay names",
+            "comment": "A list of assay names that providing data relevant to the annotation",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Assay name",
+                "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+                "type": "string",
+                "enum": [
+                    "3' RACE",
+                    "4C",
+                    "5' RACE",
+                    "5' RLM RACE",
+                    "5C",
+                    "ATAC-seq",
+                    "Bru-seq",
+                    "BruChase-seq",
+                    "BruUV-seq",
+                    "CAGE",
+                    "capture Hi-C",
+                    "ChIA-PET",
+                    "ChIP-seq",
+                    "Circulome-seq",
+                    "Clone-seq",
+                    "comparative genomic hybridization by array",
+                    "CRISPR genome editing followed by RNA-seq",
+                    "CRISPRi followed by RNA-seq",
+                    "CUT&RUN",
+                    "CUT&Tag",
+                    "direct RNA-seq",
+                    "DNA methylation profiling by array assay",
+                    "DNA-PET",
+                    "DNase-seq",
+                    "eCLIP",
+                    "FAIRE-seq",
+                    "genetic modification followed by DNase-seq",
+                    "genotype phasing by HiC",
+                    "GRO-cap",
+                    "GRO-seq",
+                    "HiC",
+                    "iCLIP",
+                    "icLASER",
+                    "icSHAPE",
+                    "LC/MS label-free quantitative proteomics",
+                    "LC-MS/MS isobaric label quantitative proteomics",
+                    "long read RNA-seq",
+                    "long read single-cell RNA-seq",
+                    "MeDIP-seq",
+                    "microRNA counts",
+                    "microRNA-seq",
+                    "Mint-ChIP-seq",
+                    "MNase-seq",
+                    "MRE-seq",
+                    "PAS-seq",
+                    "PLAC-seq",
+                    "polyA plus RNA-seq",
+                    "polyA minus RNA-seq",
+                    "PRO-cap",
+                    "PRO-seq",
+                    "protein sequencing by tandem mass spectrometry assay",
+                    "RAMPAGE",
+                    "Repli-chip",
+                    "Repli-seq",
+                    "Ribo-seq",
+                    "RIP-chip",
+                    "RIP-seq",
+                    "RNA Bind-n-Seq",
+                    "RNA-PET",
+                    "RNA-seq",
+                    "RRBS",
+                    "seqFISH",
+                    "shRNA knockdown followed by RNA-seq",
+                    "single-cell RNA sequencing assay",
+                    "single-nucleus ATAC-seq",
+                    "siRNA knockdown followed by RNA-seq",
+                    "small RNA-seq",
+                    "SPRITE",
+                    "SPRITE-IP",
+                    "Switchgear",
+                    "TAB-seq",
+                    "transcription profiling by array assay",
+                    "whole genome sequencing assay",
+                    "whole-genome shotgun bisulfite sequencing"
+                ]
+            }
+        },
         "encyclopedia_version": {
             "title": "Encyclopedia version",
             "description": " The version of the ENCODE encyclopedia to which this annotation belongs.",
-            "type": "string",
-            "enum": [
-                "ENCODE v1",
-                "ENCODE v2",
-                "ENCODE v3",
-                "ENCODE v4",
-                "ENCODE v5",
-                "ENCODE v6",
-                "Roadmap"
-            ]
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "ENCODE v0.1",
+                    "ENCODE v0.2",
+                    "ENCODE v0.3",
+                    "ENCODE v1",
+                    "ENCODE v2",
+                    "ENCODE v3",
+                    "ENCODE v4",
+                    "ENCODE v5",
+                    "Roadmap",
+                    "current"
+                ]
+            }
         },
         "dbxrefs": {
             "@type": "@id",
@@ -147,8 +313,7 @@
                 "day",
                 "week",
                 "month",
-                "year",
-                "stage"
+                "year"
             ]
         },
         "relevant_life_stage": {
@@ -158,6 +323,8 @@
             "type": "string",
             "enum": [
                 "adult",
+                "calf",
+                "child",
                 "dauer",
                 "early embryonic",
                 "embryonic",
@@ -171,8 +338,10 @@
                 "larva",
                 "late embryonic",
                 "midembryonic",
+                "mixed stage",
                 "mixed stage (embryonic)",
                 "mixed stage (late embryonic and L1 larva)",
+                "newborn",
                 "postnatal",
                 "prepupa",
                 "pupa",
@@ -198,6 +367,132 @@
                 "linkTo": "Target"
             }
         },
+        "trait": {
+            "title": "Trait",
+            "description": "The trait associated with the fine-mapped variants.",
+            "type": "string",
+            "enum": [
+                "Morning person",
+                "Insomnia",
+                "Migraine",
+                "Mood swings",
+                "Miserableness",
+                "Irritability",
+                "Sensitivity",
+                "Fed-up feelings",
+                "Nervous feelings",
+                "Worrier",
+                "Tense",
+                "Worry too long",
+                "Suffer from nerves",
+                "Smoking",
+                "Neuroticism",
+                "Loneliness",
+                "Guilty feelings",
+                "Risk taking",
+                "Depression",
+                "BMI",
+                "Body weight",
+                "Body fat percentage",
+                "Serum creatinine",
+                "Age at menarche",
+                "White blood cell count",
+                "Red blood cell count",
+                "Hemoglobin",
+                "Hematocrit percentage",
+                "Mean corpuscular volume",
+                "Mean corpuscular hemoglobin count",
+                "Mean corpuscular hemoglobin",
+                "Platelet count",
+                "Lymphocyte count",
+                "Monocyte count",
+                "Neutrophil count",
+                "Eosinophil count",
+                "Basophil count",
+                "Albumin",
+                "Alkaline phosphatase",
+                "Alanine aminotransferase",
+                "Apolipoprotein A",
+                "Apolipoprotein B",
+                "Aspartate aminotransferase",
+                "Urea",
+                "Calcium",
+                "Total cholesterol",
+                "C-reactive protein",
+                "Gamma-glutamyl transferase",
+                "Glucose concentration",
+                "Glycated hemoglobin",
+                "High-density lipoprotein cholesterol",
+                "IGF-1",
+                "Low-density lipoprotein cholesterol",
+                "Lipoprotein A concentration",
+                "Phosphate concentration",
+                "Sex hormone-binding globulin",
+                "Total bilirubin",
+                "Testosterone (females)",
+                "Testosterone (males)",
+                "Total protein",
+                "Triglyceride concentration",
+                "Uric acid concentration",
+                "Vitamin D concentration",
+                "Age at menopause",
+                "Diastolic blood pressure",
+                "Systolic blood pressure",
+                "Adult height",
+                "College completion",
+                "Years of education",
+                "Blood clot (lung)",
+                "Blood clot (leg)",
+                "Colorectal cancer",
+                "Lung cancer",
+                "Skin cancer",
+                "Breast cancer",
+                "Prostate cancer",
+                "Uterine fibroids",
+                "Hypothyroidism",
+                "Type 1 diabetes",
+                "Type 2 diabetes",
+                "Carpal tunnel syndrome",
+                "Cataract",
+                "Coronary artery disease",
+                "Myocardial infarction",
+                "Atrial fibrillation",
+                "Ischemic stroke",
+                "Varicose veins",
+                "Asthma",
+                "Chronic obstructive pulmonary disease",
+                "Inguinal hernia",
+                "Inflammatory bowel disease",
+                "Crohn's disease",
+                "Diverticulosis",
+                "Cirrhosis",
+                "Cholelithiasis",
+                "Urolithiasis",
+                "Rheumatoid arthritis",
+                "Coxarthrosis",
+                "Atopic dermatitis",
+                "Benign neoplasms",
+                "Cancer",
+                "Fibroblastic disorders",
+                "Alzheimer",
+                "Waist-to-hip ratio",
+                "Tiffeneau-Pinelli index",
+                "Balding (type 4)",
+                "Albumin/Globulin ratio",
+                "Mean arterial pressure",
+                "eGFR (cystatin C)",
+                "eGFR (creatinine)",
+                "Mean heel bone mineral density",
+                "Pulse pressure",
+                "Non-albumin protein level",
+                "Multi-site chronic pain",
+                "Cigarettes smoked per day",
+                "Age-related macular degeneration",
+                "Glaucoma",
+                "Autoimmune disease",
+                "Loss of Y chromosome"
+            ]
+        },
         "software_used": {
             "title": "Software used",
             "description": "A list of software used to derive the annotation calls.",
@@ -222,14 +517,202 @@
                     "type": "string",
                     "linkTo": "Annotation"
             }
+        },
+        "experimental_input": {
+            "title": "Experimental input" ,
+            "description": "The experiment that this annotation was derived from.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See Experiment.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "Experiment"
+            }
+        },
+        "donor": {
+            "title": "Donor",
+            "comment": "See donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Donor"
+        },
+        "disease_term_id": {
+            "title": "Disease ontology IDs",
+            "description": "Ontology identifiers describing the disease(s) relevant to the annotation.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Disease ontology ID",
+                "description": "Ontology identifier describing the disease relevant to the annotation.",
+                "type": "string",
+                "pattern": "^(DOID:[0-9]{2,7}|HP:[0-9]{7})$"
+            }
+        },
+        "treatments": {
+            "title": "Treatments",
+            "description": "A list of treatments applied to the annotated sample.",
+            "comment": "A list of treatments applied to the annotated sample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Treatment",
+                "comment": "See treatment.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Treatment"
+            }
+        },
+        "post_treatment_time": {
+            "title": "Post-treatment time",
+            "description": "The time that elapsed past the point of treatment(s) in annotated sample.",
+            "comment": "Use in conjunction with treatment and post_treatment_time_units to specify time elapsed post-treatment. post_treatment_time specification requires non-empty treatments list and post_treatment_time_units specification.",
+            "type": "string",
+            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
+        },
+        "post_treatment_time_units": {
+            "title": "Post-treatment time units",
+            "description": "The units of time that elapsed past point of treatment(s) in annotated sample.",
+            "comment": "Use in conjunction with post_treatment_time and treatment to specify time elapsed post-treatment. post_treatment_time_units specification requires non-empty treatments list and post_treatment_time specification.",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month",
+                "stage"
+            ]
         }
     },
+    "facet_groups": [
+        {
+            "title": "Annotation",
+            "facet_fields": [
+                "annotation_type",
+                "annotation_subtype",
+                "encyclopedia_version",
+                "biochemical_inputs"
+            ]
+        },
+        {
+            "title": "Assays",
+            "facet_fields": [
+                "assay_term_name",
+                "targets.investigated_as",
+                "targets.label"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "organism.scientific_name",
+                "biosample_ontology.classification",
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "relevant_life_stage",
+                "trait"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "software_used.software.name",
+                "assembly",
+                "files.file_type",
+                "files.read_length",
+                "files.mapped_read_length"
+            ]
+        },
+        {
+            "title": "Library",
+            "facet_fields": [
+                "files.run_type"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title",
+                "award.project",
+                "award.rfa"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "annotation_type": {
-            "title": "Annotation type"
+            "title": "Annotation type",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
+        },
+        "annotation_subtype": {
+            "title": "Annotation subtype",
+            "length": "long",
+            "open_on_load": true
         },
         "assay_term_name": {
-            "title": "Assay name"
+            "title": "Assay names"
+        },
+        "status": {
+            "title": "Status",
+            "open_on_load": true
+        },
+        "organism.scientific_name": {
+            "title": "Organism",
+            "open_on_load": true
+        },
+        "biochemical_inputs": {
+            "title": "Biochemical activity"
+        },
+        "targets.investigated_as": {
+            "title": "Target category"
+        },
+        "targets.label": {
+            "title": "Target",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
+        },
+        "biosample_ontology.classification": {
+            "title": "Biosample classification"
+        },
+        "biosample_ontology.term_name" : {
+            "title": "Biosample",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ"
+        },
+        "biosample_ontology.cell_slims": {
+            "title": "Cell"
+        },
+        "relevant_life_stage": {
+            "title": "Life stage"
+        },
+        "trait": {
+            "title": "Trait" 
+        },
+        "software_used.software.name": {
+            "title": "Software used"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -242,39 +725,6 @@
         },
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
-        },
-        "status": {
-            "title": "Status"
-        },
-        "assembly": {
-            "title": "Genome assembly"
-        },
-        "organism.scientific_name": {
-            "title": "Organism"
-        },
-        "targets.investigated_as": {
-            "title": "Target category"
-        },
-         "targets.label": {
-            "title": "Target"
-        },
-       "biosample_ontology.classification": {
-            "title": "Biosample classification"
-        },
-        "biosample_ontology.organ_slims": {
-            "title": "Organ"
-        },
-        "biosample_ontology.cell_slims": {
-            "title": "Cell"
-        },
-        "relevant_life_stage": {
-            "title": "Life stage"
-        },
-        "software_used.software.name": {
-            "title": "Software used"
-        },
-        "encyclopedia_version": {
-            "title": "Encyclopedia version"
         },
         "lab.title": {
             "title": "Lab"
@@ -290,6 +740,9 @@
         "accession": {
             "title": "Accession",
             "type": "string"
+        },
+        "targets.@id": {
+            "title": "Targets"
         },
         "targets.label":{
             "title": "Target",
@@ -334,10 +787,14 @@
         "software_used.software.name": {
             "title": "Software used",
             "type": "array"
+        },
+        "treatments.treatment_term_name": {
+            "title": "Annotation treatment"
         }
     },
     "boost_values": {
         "accession": 1.0,
+        "@type": 1.0,
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
@@ -365,12 +822,14 @@
         "targets.aliases": 1.0,
         "targets.genes.symbol": 1.0,
         "targets.label": 1.0,
-        "targets.dbxref": 1.0,
+        "targets.genes.dbxrefs": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
         "annotation_type": 1.0,
-        "internal_tags": 1.0
+        "annotation_subtype": 1.0,
+        "internal_tags": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/annotation.md"
 }

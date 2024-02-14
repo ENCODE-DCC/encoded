@@ -23,18 +23,6 @@
                     "properties": {
                         "classification": {
                             "enum" : [
-                                "single cell"
-                            ]
-                        },
-                        "term_id":{
-                            "pattern": "^(CL|EFO|UBERON|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "classification": {
-                            "enum" : [
                                 "tissue",
                                 "whole organisms",
                                 "organoid"
@@ -49,7 +37,7 @@
                     "properties": {
                         "classification": {
                             "enum" : [
-                                "primary cell"                               
+                                "primary cell"
                             ]
                         },
                         "term_id":{
@@ -65,7 +53,7 @@
                             ]
                         },
                         "term_id":{
-                            "pattern": "^(EFO|NTR):[0-9]{2,8}$"
+                            "pattern": "^(CLO|EFO|NTR):[0-9]{2,8}$"
                         }
                     }
                 },
@@ -73,7 +61,7 @@
                     "properties": {
                         "classification": {
                             "enum" : [
-                                "in vitro differentiated cells"                               
+                                "in vitro differentiated cells"
                             ]
                         },
                         "term_id":{
@@ -85,7 +73,7 @@
                     "properties": {
                         "classification": {
                             "enum" : [
-                                "cell-free sample"                               
+                                "cell-free sample"
                             ]
                         },
                         "term_name": {
@@ -93,6 +81,36 @@
                         },
                         "term_id": {
                             "pattern": "^NTR:0000471$"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "classification": {
+                            "enum": [
+                                "cloning host"
+                            ]
+                        },
+                        "term_name": {
+                            "pattern": "^DNA cloning sample$"
+                        },
+                        "term_id": {
+                            "pattern": "^NTR:0000545$"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "classification": {
+                            "enum": [
+                                "technical sample"
+                            ]
+                        },
+                        "term_name": {
+                            "pattern": "^technical sample$"
+                        },
+                        "term_id": {
+                            "pattern": "^NTR:0000637$"
                         }
                     }
                 }
@@ -110,14 +128,15 @@
             "permission": "import_items",
             "type": "string",
             "enum" : [
-                "single cell",
                 "cell line",
                 "in vitro differentiated cells",
                 "primary cell",
                 "cell-free sample",
+                "cloning host",
                 "tissue",
                 "whole organisms",
-                "organoid"
+                "organoid",
+                "technical sample"
             ]
         },
         "dbxrefs": {
@@ -143,7 +162,7 @@
             "permission": "import_items",
             "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
             "type": "string",
-            "pattern": "^(UBERON|EFO|CL|NTR):[0-9]{2,8}$"
+            "pattern": "^(UBERON|EFO|CL|CLO|NTR):[0-9]{2,8}$"
         },
         "term_name": {
             "title": "Biosample name",
@@ -184,6 +203,7 @@
     },
     "boost_values": {
         "aliases": 1.0,
+        "@type": 1.0,
         "classification": 1.0,
         "dbxrefs": 1.0,
         "developmental_slims": 1.0,

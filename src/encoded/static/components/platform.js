@@ -1,11 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { PanelBody } from '../libs/ui/panel';
 
 const Platform = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'key-value');
     return (
         <PanelBody>

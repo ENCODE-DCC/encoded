@@ -206,3 +206,155 @@ def analysis_step_7_8(value, system):
             output_file_types.remove('pseudoreplicated idr thresholded peaks')
             output_file_types.append('pseudoreplicated IDR thresholded peaks')
             value['output_file_types'] = output_file_types
+
+
+@upgrade_step('analysis_step', '8', '9')
+def analysis_step_8_9(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    if output_file_types and 'representative dnase hypersensitivity sites' in output_file_types:
+        output_file_types.remove('representative dnase hypersensitivity sites')
+        output_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
+    if input_file_types and 'representative dnase hypersensitivity sites' in input_file_types:
+        input_file_types.remove('representative dnase hypersensitivity sites')
+        input_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
+    return
+
+
+@upgrade_step('analysis_step', '9', '10')
+def analysis_step_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5424
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    if output_file_types and 'spike-in sequence' in output_file_types:
+        output_file_types.remove('spike-in sequence')
+        output_file_types.append('spike-ins')
+    if input_file_types and 'spike-in sequence' in input_file_types:
+        input_file_types.remove('spike-in sequence')
+        input_file_types.append('spike-ins')
+    return
+
+
+@upgrade_step('analysis_step', '10', '11')
+def analysis_step_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5480
+
+    if 'stable peaks' in value.get('input_file_types', []):
+        value['input_file_types'].remove('stable peaks')
+        value['input_file_types'].append('pseudo-replicated peaks')
+    if 'stable peaks' in value.get('output_file_types', []):
+        value['output_file_types'].remove('stable peaks')
+        value['output_file_types'].append('pseudo-replicated peaks')
+
+
+@upgrade_step('analysis_step', '11', '12')
+def analysis_step_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5551
+
+    if 'smoothed methylation stage at CpG' in value.get('input_file_types', []):
+        value['input_file_types'].remove('smoothed methylation stage at CpG')
+        value['input_file_types'].append('smoothed methylation state at CpG')
+    if 'smoothed methylation stage at CpG' in value.get('output_file_types', []):
+        value['output_file_types'].remove('smoothed methylation stage at CpG')
+        value['output_file_types'].append('smoothed methylation state at CpG')
+
+
+@upgrade_step('analysis_step', '12', '13')
+def analysis_step_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5573
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    if output_file_types and 'consensus DNase hypersensitivity sites (cDHSs)' in output_file_types:
+        output_file_types.remove('consensus DNase hypersensitivity sites (cDHSs)')
+        output_file_types.append('consensus DNase hypersensitivity sites')
+    if output_file_types and 'representative DNase hypersensitivity sites (rDHSs)' in output_file_types:
+        output_file_types.remove('representative DNase hypersensitivity sites (rDHSs)')
+        output_file_types.append('representative DNase hypersensitivity sites')
+    if input_file_types and 'consensus DNase hypersensitivity sites (cDHSs)' in input_file_types:
+        input_file_types.remove('consensus DNase hypersensitivity sites (cDHSs)')
+        input_file_types.append('consensus DNase hypersensitivity sites')
+    if input_file_types and 'representative DNase hypersensitivity sites (rDHSs)' in input_file_types:
+        input_file_types.remove('representative DNase hypersensitivity sites (rDHSs)')
+        input_file_types.append('representative DNase hypersensitivity sites')
+    return
+
+
+@upgrade_step('analysis_step', '13', '14')
+def analysis_step_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5662
+    if 'pseudo-replicated peaks' in value.get('input_file_types', []):
+        value['input_file_types'].remove('pseudo-replicated peaks')
+        value['input_file_types'].append('pseudoreplicated peaks')
+    if 'pseudo-replicated peaks' in value.get('output_file_types', []):
+        value['output_file_types'].remove('pseudo-replicated peaks')
+        value['output_file_types'].append('pseudoreplicated peaks')
+
+
+@upgrade_step('analysis_step', '14', '15')
+def analysis_step_14_15(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5657
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    term_pairs = [
+        ('blacklisted regions', 'exclusion list regions'), 
+        ('mitochondria blacklisted regions', 'mitochondrial exclusion list regions'),
+    ]
+    
+    for old_term, new_term in term_pairs:
+        if output_file_types and old_term in output_file_types:
+            output_file_types.remove(old_term)
+            output_file_types.append(new_term)
+        if input_file_types and old_term in input_file_types:
+            input_file_types.remove(old_term)
+            input_file_types.append(new_term)
+
+
+@upgrade_step('analysis_step', '15', '16')
+def analysis_step_15_16(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-97
+    if 'topologically associated domain identification' in value.get('analysis_step_types', []):
+        value['analysis_step_types'].remove('topologically associated domain identification')
+        value['analysis_step_types'].append('contact domain identification')
+
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    term_pairs = [
+        ('topologically associated domains', 'contact domains'),
+        ('chromatin interactions', 'contact matrix'),
+        ('DNA accessibility raw signal', 'nuclease cleavage frequency'),
+        ('long range chromatin interactions', 'loops'),
+        ('nested topologically associated domains', 'nested contact domains'),
+        ('allele-specific chromatin interactions', 'allele-specific contact domain'),
+        ('variants chromatin interactions', 'variants contact matrix'),
+        ('haplotype-specific chromatin interactions', 'haplotype-specific contact matrix'),
+        ('haplotype-specific DNA accessibility raw signal', 'haplotype-specific nuclease cleavage frequency'),
+        ('haplotype-specific DNA accessibility corrected signal', 'haplotype-specific nuclease cleavage corrected frequency')
+    ]
+
+    for old_term, new_term in term_pairs:
+        if output_file_types and old_term in output_file_types:
+            output_file_types.remove(old_term)
+            output_file_types.append(new_term)
+        if input_file_types and old_term in input_file_types:
+            input_file_types.remove(old_term)
+            input_file_types.append(new_term)
+
+
+@upgrade_step('analysis_step', '16', '17')
+def analysis_step_16_17(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-132
+    output_type_map = {
+        'predicted profile': 'predicted signal profile',
+        'bias model': 'bias models'
+    }
+    for prop in ['input_file_types', 'output_file_types']:
+        for output_type in output_type_map:
+            if output_type in value.get(prop, []):
+                value[prop].remove(output_type)
+                value[prop].append(output_type_map[output_type])

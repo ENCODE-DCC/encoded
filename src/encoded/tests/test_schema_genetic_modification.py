@@ -1,151 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def crispr_deletion(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'deletion',
-        'purpose': 'repression',
-        'method': 'CRISPR'
-    }
-
-
-@pytest.fixture
-def tale_deletion(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'deletion',
-        'purpose': 'repression',
-        'method': 'TALEN',
-        'zygosity': 'heterozygous'
-    }
-
-
-@pytest.fixture
-def crispr_tag(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'insertion',
-        'purpose': 'tagging',
-        'method': 'CRISPR'
-    }
-
-
-@pytest.fixture
-def bombardment_tag(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'insertion',
-        'purpose': 'tagging',
-        'method': 'bombardment'
-    }
-
-
-@pytest.fixture
-def recomb_tag(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'insertion',
-        'purpose': 'tagging',
-        'method': 'site-specific recombination'
-    }
-
-
-@pytest.fixture
-def transfection_tag(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'insertion',
-        'purpose': 'tagging',
-        'method': 'stable transfection'
-    }
-
-
-@pytest.fixture
-def crispri(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'interference',
-        'purpose': 'repression',
-        'method': 'CRISPR'
-    }
-
-
-@pytest.fixture
-def rnai(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'interference',
-        'purpose': 'repression',
-        'method': 'RNAi'
-    }
-
-
-@pytest.fixture
-def mutagen(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'mutagenesis',
-        'purpose': 'repression',
-        'method': 'mutagen treatment'
-    }
-
-
-@pytest.fixture
-def tale_replacement(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'replacement',
-        'purpose': 'characterization',
-        'method': 'TALEN',
-        'zygosity': 'heterozygous'
-    }
-
-@pytest.fixture
-def mpra(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'insertion',
-        'purpose': 'characterization',
-        'method': 'transduction'
-    }
-
-
-@pytest.fixture
-def starr_seq(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'episome',
-        'purpose': 'characterization',
-        'method': 'transient transfection'
-    }
-
-
-@pytest.fixture
-def introduced_elements(lab, award):
-    return {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'episome',
-        'purpose': 'characterization',
-        'method': 'transient transfection',
-        'introduced_elements': 'genomic DNA regions'
-    }
-
-
 def test_crispr_deletion_missing_site(testapp, crispr_deletion):
     # modified_site_(by_target_id|by_coordinates|by_sequence) must be specified for deletions
     res = testapp.post_json('/genetic_modification', crispr_deletion, expect_errors=True)
@@ -200,7 +55,7 @@ def test_tag_targeting_gene(testapp, ctcf, crispr_tag, source):
 
 
 def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, transfection_tag, 
-                                       recomb_tag, target, source, treatment, document):
+                                       recomb_tag, target, source, treatment_5, document):
     # We shouldn't allow purpose = tagging if modification_type != insertion
     crispr_tag.update({'modified_site_by_target_id': target['@id'],
                        'guide_rna_sequences': ['ATTAGGCAT'],
@@ -235,7 +90,7 @@ def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, tra
     recomb_tag.update({'modified_site_by_target_id': target['@id'],
                        'modified_site_nonspecific': 'random',
                        'category': 'insertion',
-                       'treatments': [treatment['@id']],
+                       'treatments': [treatment_5['@id']],
                        'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', recomb_tag, expect_errors=True)
     assert res.status_code == 422
@@ -330,36 +185,25 @@ def test_rnai_properties(testapp, rnai, target, source, document):
     assert res.status_code == 200
 
 
-def test_mutagen_properties(testapp, mutagen, target, treatment, document):
+def test_mutagen_properties(testapp, mutagen, target, treatment_5, document):
     # Modifications by mutagen treatment should have non-specific modified sites
-    mutagen.update({'modified_site_by_target_id': target['@id'], 'treatments': [treatment['@id']]})
+    mutagen.update({'modified_site_by_target_id': target['@id'], 'treatments': [treatment_5['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 201
     del mutagen['modified_site_by_target_id']
-    mutagen.update({'modified_site_by_sequence': 'ATTATGACAT', 'treatments': [treatment['@id']]})
+    mutagen.update({'modified_site_by_sequence': 'ATTATGACAT', 'treatments': [treatment_5['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 201
     del mutagen['modified_site_by_sequence']
     mutagen.update({'modified_site_by_coordinates': 
                     {'assembly': 'GRCh38', 'start': 383892, 'end': 482980, 'chromosome': 'chr11'},
-                     'treatments': [treatment['@id']]})
+                     'treatments': [treatment_5['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 201
     del mutagen['modified_site_by_coordinates']
-    mutagen.update({'modified_site_nonspecific': 'random', 'treatments': [treatment['@id']],
+    mutagen.update({'modified_site_nonspecific': 'random', 'treatments': [treatment_5['@id']],
                     'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
-    assert res.status_code == 201
-
-
-def test_tale_replacement_properties(testapp, tale_replacement, source):
-    # Replacement modifications need to include introduced_sequence
-    tale_replacement.update({'modified_site_by_sequence': 'ATTTTAGGCAGGTAGGATTACGAGGACCCAGGTACGATCAGGT',
-                             'reagents': [{'source': source['@id'], 'identifier': 'addgene:12345'}]})
-    res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
-    assert res.status_code == 422
-    tale_replacement.update({'introduced_sequence': 'TTATCGATCGATTTGAGCATAGAAATGGCCGATTTATATGCCCGA'})
-    res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
     assert res.status_code == 201
 
 
@@ -382,7 +226,7 @@ def test_starr_seq_properties(testapp, starr_seq, mouse_donor):
     starr_seq.update({'introduced_elements': 'sheared genomic DNA'})
     res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
     assert res.status_code == 422
-    starr_seq.update({'donor': mouse_donor['@id']})
+    starr_seq.update({'introduced_elements_donor': mouse_donor['@id']})
     res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
     assert res.status_code == 201
 
@@ -390,5 +234,71 @@ def test_starr_seq_properties(testapp, starr_seq, mouse_donor):
 def test_introduced_elements_properties(testapp, introduced_elements, mouse_donor):
     # genomic DNA regions in introduced_elements property requires donor specification
     testapp.post_json('/genetic_modification', introduced_elements, status=422)
-    introduced_elements.update({'donor': mouse_donor['@id']})
+    introduced_elements.update({'introduced_elements_donor': mouse_donor['@id']})
     testapp.post_json('/genetic_modification', introduced_elements, status=201)
+
+
+def test_crispr_knockout(testapp, crispr_knockout):
+    # Category of CRISPR characterization GMs must be one of ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
+    testapp.post_json('/genetic_modification', crispr_knockout, status=201)
+    crispr_knockout.update({'category': 'CRISPR cutting'})
+    testapp.post_json('/genetic_modification', crispr_knockout, status=201)
+    crispr_knockout.update({'category': 'CRISPR cutting'})
+    testapp.post_json('/genetic_modification', crispr_knockout, status=201)
+    crispr_knockout.update({'category': 'expression'})
+    testapp.post_json('/genetic_modification', crispr_knockout, status=422)
+
+
+def test_recombination_knockout(testapp, recombination_knockout, treatment_5):
+    testapp.post_json('/genetic_modification', recombination_knockout, status=422)
+    recombination_knockout.update({'treatments': [treatment_5['@id']]})
+    testapp.post_json('/genetic_modification', recombination_knockout, status=201)
+    recombination_knockout.update({'category': 'disruption'})
+    testapp.post_json('/genetic_modification', recombination_knockout, status=422)
+
+
+def test_characterization_insertion(testapp, characterization_insertion_CRISPR, characterization_insertion_transfection, treatment):
+    res = testapp.post_json('/genetic_modification', characterization_insertion_CRISPR, expect_errors=True)
+    assert res.status_code == 201
+    res = testapp.post_json('/genetic_modification', characterization_insertion_transfection, expect_errors=True)
+    assert res.status_code == 201
+
+
+def test_homologous_recombination(testapp, HR_knockout):
+    testapp.post_json('/genetic_modification', HR_knockout, status=201)
+    HR_knockout.pop('modified_site_by_target_id')
+    testapp.post_json('/genetic_modification', HR_knockout, status=422)
+
+
+def test_CRISPR_introduction_step_one(testapp, CRISPR_introduction):
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+    CRISPR_introduction.update({'introduced_elements': 'gRNAs and CRISPR machinery',
+                                'guide_type': 'sgRNA'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
+
+
+def test_CRISPR_guide_type(testapp, CRISPR_introduction):
+    CRISPR_introduction.update({
+        'introduced_elements': 'gRNAs and CRISPR machinery'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+    CRISPR_introduction.update({'guide_type': 'sgRNA'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
+    CRISPR_introduction.update({
+        'introduced_elements': 'synthesized DNA'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+
+
+def test_transduction_MOI(testapp, CRISPR_introduction):
+    CRISPR_introduction.update({
+        'introduced_elements': 'gRNAs and CRISPR machinery',
+        'guide_type': 'sgRNA',
+        'MOI': 'high'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+    CRISPR_introduction.update({'nucleic_acid_delivery_method': ['transduction']})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
+
+
+def test_reagent_identifier_dharmacon_fect(testapp, genetic_modification_source, source):
+    res = testapp.patch_json(genetic_modification_source['@id'], {'reagents': [{'source': source['@id'], 'identifier': 'dharmacon:T-2005-01'}]})
+    assert res.status_code == 200
+    

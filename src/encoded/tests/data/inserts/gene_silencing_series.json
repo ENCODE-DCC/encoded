@@ -1,0 +1,17 @@
+[
+	{
+        "_test": "gene silencing series",
+		"accession": "ENCSR001GSS",
+        "award": "UM1HG009390",
+        "description": "Gene silencing series.",
+        "lab": "tim-reddy",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR611ZAL",
+            "/experiments/ENCSR001EPI"
+        ],
+        "uuid": "c0114093-5696-43f6-9a8d-b1b19072e846",
+        "date_released": "2020-09-28"
+    }
+]

@@ -30,12 +30,200 @@
     "dependencies": {
         "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
         "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
+        "fragmentation_duration_time_units": ["fragmentation_duration_time", "fragmentation_methods"],
+        "fragmentation_duration_time": ["fragmentation_duration_time_units", "fragmentation_methods"],
         "product_id": ["source"],
-        "lot_id": ["source", "product_id"]
+        "lot_id": ["source", "product_id"],
+        "average_fragment_size": {"not": {"required": ["size_range"]}},
+        "size_range": {"not": {"required": ["average_fragment_size"]}},
+        "fragment_length_CV": {"not": {"required": ["fragment_length_SD"]}},
+        "fragment_length_SD": {"not": {"required": ["fragment_length_CV"]}},
+        "mixed_biosamples": {"not": {"required": ["biosample"]}},
+        "adapters": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "adapters": {
+                            "items": {
+                                "required": ["file", "type"],
+                                "not": {
+                                    "required": ["sequence"]
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "adapters": {
+                            "items": {
+                                "required": ["sequence", "type"],
+                                "not": {
+                                    "required": ["file"]
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "nucleic_acid_term_name": {
+            "oneOf": [
+                {
+                    "required": ["strand_specificity"],
+                    "properties": {
+                        "nucleic_acid_term_name": {
+                            "enum": [
+                                "RNA",
+                                "miRNA",
+                                "polyadenylated mRNA",
+                                "capped mRNA"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "nucleic_acid_term_name": {
+                            "enum": [
+                                "DNA",
+                                "protein"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "depleted_in_term_name": {
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "depleted_in_term_name": {
+                                    "items": {
+                                        "enum": [
+                                            "capped mRNA",
+                                            "rRNA"
+                                        ]
+                                    }
+                                },
+                                "nucleic_acid_term_name": {
+                                    "enum": ["polyadenylated mRNA"]
+                                }
+                            }
+                        },
+                        {
+                            "allOf": [
+                                {
+                                    "not": {
+                                        "properties": {
+                                            "nucleic_acid_term_name": {
+                                                "enum": ["polyadenylated mRNA"]
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "depleted_in_term_name": {
+                                            "items": {
+                                                "enum": [
+                                                    "capped mRNA",
+                                                    "polyadenylated mRNA",
+                                                    "rRNA"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "depleted_in_term_name": {
+                                    "items": {
+                                        "enum": [
+                                            "polyadenylated mRNA",
+                                            "rRNA"
+                                        ]
+                                    }
+                                },
+                                "nucleic_acid_term_name": {
+                                    "enum": ["capped mRNA"]
+                                }
+                            }
+                        },
+                        {
+                            "allOf": [
+                                {
+                                    "not": {
+                                        "properties": {
+                                            "nucleic_acid_term_name": {
+                                                "enum": ["capped mRNA"]
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "depleted_in_term_name": {
+                                            "items": {
+                                                "enum": [
+                                                    "capped mRNA",
+                                                    "polyadenylated mRNA",
+                                                    "rRNA"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "linkers": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "linkers": {
+                            "maxItems": 1,
+                            "items": {
+                                "properties": {
+                                    "type": {
+                                        "enum": ["bridge linker"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "linkers": {
+                            "minItems": 4,
+                            "items": {
+                                "properties": {
+                                    "type": {
+                                        "enum": ["linker a top", "linker a bottom", "linker b top", "linker b bottom"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "20"
         },
         "accession": {
             "accessionType": "LB"
@@ -106,6 +294,21 @@
             "type": "string",
             "linkTo": "Biosample"
         },
+        "mixed_biosamples": {
+            "title": "Mixed biosamples",
+            "description": "Nucleic acid derived from two or more biosamples mixed together for library generation.",
+            "comment": "See biosample.json for available identifiers.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 2,
+            "items": {
+                "title": "Biosample",
+                "description": "The biosample that nucleic acid was isolated from to generate the library.",
+                "comment": "See biosample.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Biosample"
+            }
+        },
         "product_id": {
             "description": "The product identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
@@ -138,7 +341,8 @@
                 "miRNA",
                 "polyadenylated mRNA",
                 "protein",
-                "RNA"
+                "RNA",
+                "capped mRNA"
             ]
         },
         "dbxrefs": {
@@ -159,8 +363,8 @@
         "nucleic_acid_starting_quantity": {
             "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",
-            "type": "string",
-            "pattern": "[0-9]+"
+            "type": "number",
+            "minimum": 0
         },
         "nucleic_acid_starting_quantity_units": {
             "title": "Nucleic acid starting quantity units",
@@ -183,10 +387,13 @@
                 {
                     "enum": [
                         "Ambion mirVana",
+                        "Animal tissue kit (Norgen Biotek cat#: 25700)",
                         "ATAC-seq (Greenleaf & Chang Lab protocol)",
                         "C1 fluidigm",
                         "Maxwell 16 LEV simpleRNA Cells Kit (Promega cat#: AS1270)",
                         "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                        "NucleoBond PC Giga kit (Machery-Nagel cat#: 740548)",
+                        "NucleoBond Xtra Midi kit (Machery-Nagel cat#: 740410)",
                         "QIAGEN DNeasy Blood & Tissue Kit",
                         "Qiagen RNA extraction",
                         "RNeasy",
@@ -221,11 +428,11 @@
                     "chemical (DpnII restriction)",
                     "chemical (generic)",
                     "chemical (HindIII restriction)",
-                    "chemical (HindIII/DpnII restriction)",
                     "chemical (Illumina TruSeq)",
                     "chemical (MboI restriction)",
                     "chemical (micrococcal nuclease)",
                     "chemical (NcoI restriction)",
+                    "chemical (NEBNext Ultra II Directional)",
                     "chemical (Nextera tagmentation)",
                     "chemical (RNase III)",
                     "chemical (Tn5 transposase)",
@@ -262,6 +469,21 @@
                 {"format": "date"}
             ]
         },
+        "fragmentation_duration_time": {
+            "title": "Fragmentation duration time",
+            "description": "The amount of time a library spent undergoing fragmentation.",
+            "type": "number",
+            "minimum": 0
+        },
+        "fragmentation_duration_time_units": {
+            "title": "Fragmentation duration time units",
+            "description": "The units used for time spent undergoing fragmentation.",
+            "type": "string",
+            "enum": [
+                "seconds",
+                "minutes"
+            ]
+        },
         "library_size_selection_method": {
             "title": "Size selection method",
             "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
@@ -280,7 +502,8 @@
                         "Invitrogen EGel EX 2% agarose (Cat# G402002)",
                         "Pippin HT",
                         "Sera-mag SpeedBeads",
-                        "SPRI beads"
+                        "SPRI beads",
+                        "Streptavidin magnetic beads"
                     ]
                 },
                 {
@@ -337,6 +560,25 @@
             "type": "string",
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
+        "average_fragment_size": {
+            "title": "Average fragment size",
+            "description": "The average size of a fragment in the library, in bp.",
+            "type": "number",
+            "minimum": 0
+        },
+        "fragment_length_CV": {
+            "title": "Coefficient of variation of library fragment length",
+            "description": "The coefficient of variation for the size distribution of library fragments expressed as a percentage.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "fragment_length_SD": {
+            "title": "Standard deviation in library fragment size",
+            "description": "The standard deviation for the size distribution of library fragments.",
+            "type": "number",
+            "minimum": 0
+        },
         "queried_RNP_size_range": {
             "title": "Queried RNP size range",
             "description": "The measured size range of queried ribonucleoprotein (RNP), in kD.",
@@ -352,10 +594,25 @@
             "maximum": 10
         },
         "strand_specificity": {
-            "title": "Strand specific",
-            "description": "The preparation of the library uses a strand-specific protocol.",
-            "type": "boolean",
-            "default": false
+            "title": "Strand specificity",
+            "description": "The strandedness of the library, forward or reverse resulting from a strand-specific protocol or unstranded.",
+            "type": "string",
+            "oneOf": [
+                {
+                    "enum": [
+                        "forward",
+                        "reverse",
+                        "unstranded"
+                    ]
+                },
+                {
+                    "comment": "Libraries that have indicated specificity in the past, not for new submissions.",
+                    "permissions": "import_items",
+                    "enum": [
+                        "strand-specific"
+                    ]
+                }
+            ]
         },
         "treatments": {
             "title": "Treatments",
@@ -393,15 +650,27 @@
                 "title": "Sequencing adapter",
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["file"],
                 "properties": {
                     "type": {
                         "title": "Adapter type",
-                        "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
+                        "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be fed to a pipeline.",
                         "type": "string",
-                        "enum": [
-                            "5' adapter",
-                            "3' adapter"
+                        "oneOf": [
+                            {
+                                "enum": [
+                                    "read1 5' adapter",
+                                    "read2 5' adapter",
+                                    "read1 3' adapter",
+                                    "read2 3' adapter"
+                                ]
+                            },
+                            {
+                                "comment": "Adapters lacking end and read information, not for new submissions.",
+                                "permissions": "import_items",
+                                "enum": [
+                                    "unspecified adapter"
+                                ]
+                            }
                         ]
                     },
                     "file": {
@@ -409,9 +678,85 @@
                         "description": "One file with adapter sequence(s).",
                         "type": "string",
                         "linkTo": "File"
+                    },
+                    "sequence": {
+                        "title": "Adapter sequence",
+                        "description": "The sequence of an adapter used for library construction",
+                        "type": "string",
+                        "pattern": "^[ACUNTGacuntg]+$"
                     }
                 }
             }
+        },
+        "linkers": {
+            "type": "array",
+            "title": "Linkers",
+            "description": "Linker(s) used during ChIA-PET library preparation",
+            "uniqueItems": true,
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+                "title": "Linker",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["type", "sequence"],
+                "properties": {
+                    "type": {
+                        "title": "Linker type",
+                        "description": "Name of linker.",
+                        "type": "string",
+                        "enum": [
+                            "bridge linker",
+                            "linker a top",
+                            "linker a bottom",
+                            "linker b top",
+                            "linker b bottom"
+                        ]
+                    },
+                    "sequence": {
+                        "title": "Linker sequence",
+                        "description": "The sequence of the linker ligated to the library DNA fragments.",
+                        "type": "string",
+                        "pattern": "^[ACTG]+$"
+                    }
+                }
+            }
+        },
+        "construction_method": {
+            "title": "The kit or protocol technique used to generate the library.",
+            "description": "The kit or protocol technique used to generate the library of nucleic acid material being sequenced.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "capped RNA enrichment",
+                    "CapTrap",
+                    "Nanopore Direct RNA Kit",
+                    "Nanopore PCR-cDNA Kit",
+                    "Parse Single Cell Whole Transcriptome Kit",
+                    "PCR-free",
+                    "R2C2",
+                    "uncapped RNA enrichment"
+                ]
+            }
+        },
+        "inclusion_list": {
+            "title": "Reference containing inclusion list used",
+            "description": "The reference dataset containing the inclusion list of barcodes in the library preparation.",
+            "type": "string",
+            "linkTo": "Reference",
+            "comment": "See reference.json for available identifiers."
+        },
+        "hic_construction": {
+            "title": "Hi-C construction",
+            "description": "The Hi-C approach used to create the library.",
+            "type": "string",
+            "enum": [
+                "intact",
+                "in situ",
+                "dilution"
+            ]
         }
     },
     "columns": {

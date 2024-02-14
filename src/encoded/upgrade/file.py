@@ -1,4 +1,7 @@
-from snovault import upgrade_step
+from snovault import (
+    CONNECTION,
+    upgrade_step,
+)
 from pyramid.traversal import find_root
 from datetime import datetime, time
 
@@ -532,9 +535,9 @@ def file_9_10(value, system):
         if '%' in rest:
             rest = re.sub(r'%', 'pct', rest)
         if '[' or '{' in rest:
-            rest = re.sub('[\[{]', '(', rest)
+            rest = re.sub(r'[\[{]', '(', rest)
         if ']' or '}' in rest:
-            rest = re.sub('[\]}]', ')', rest)
+            rest = re.sub(r'[\]}]', ')', rest)
 
         new_alias = ':'.join([namespace, rest])
         if new_alias not in aliases:
@@ -623,3 +626,170 @@ def file_16_17(value, system):
             value.pop('read_length', None)
             value.pop('run_type', None)
     return
+
+
+@upgrade_step('file', '17', '18')
+def file_17_18(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5087
+    output_type = value.get('output_type', None)
+
+    if output_type == "subreads" and 'assembly' in value:
+        value.pop('assembly', None)
+    return
+
+
+@upgrade_step('file', '18', '19')
+def file_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    output_type = value.get('output_type', None)
+
+    if output_type == "representative dnase hypersensitivity sites":
+        value['output_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
+    return
+
+
+@upgrade_step('file', '19', '20')
+def file_19_20(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5258
+    platforms_to_exclude = [
+        'ced61406-dcc6-43c4-bddd-4c977cc676e8',
+        'c7564b38-ab4f-4c42-a401-3de48689a998',
+        'e2be5728-5744-4da4-8881-cb9526d0389e',
+        '6c275b37-018d-4bf8-85f6-6e3b830524a9',
+        '8f1a9a8c-3392-4032-92a8-5d196c9d7810'
+    ]
+    formats_to_check = ['fastq', 'sra']
+    file_format = value.get('file_format', None)
+    platform = value.get('platform', None)
+    run_type = value.get('run_type', None)
+    notes = value.get('notes', '')
+
+    if file_format in formats_to_check and \
+            run_type is None and \
+            platform not in platforms_to_exclude:
+        value['run_type'] = 'single-ended'
+        value['notes'] = (notes + ' The run_type of this file was automatically upgraded by ENCD-5258.').strip()
+    return
+
+
+@upgrade_step('file', '20', '21')
+def file_20_21(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5271
+    output_type = value.get('output_type', None)
+
+    conn = system['registry'][CONNECTION]
+    datasetContext = conn.get_by_uuid(value['dataset'])
+    assay_type = datasetContext.properties.get('assay_term_name', None)
+
+    if assay_type == 'DNase-seq' and output_type == 'enrichment':
+        value['output_type'] = 'FDR cut rate'
+    return
+
+
+@upgrade_step('file', '21', '22')
+def file_21_22(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5286
+    output_type = value.get('output_type', None)
+    notes = value.get('notes', '')
+    if output_type == 'subreads':
+        if 'replicate' not in value:
+            value['replicate'] = '70d6e704-bba5-4475-97b8-03bf717eecf3'
+            value['notes'] = notes + ' This file lacks its correct replicate specified.'
+
+
+@upgrade_step('file', '22', '23')
+def file_22_23(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5424
+    output_type = value.get('output_type', None)
+    if output_type == 'spike-in sequence':
+        value['output_type'] = 'spike-ins'
+    return
+
+
+@upgrade_step('file', '23', '24')
+def file_23_24(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5480
+    if value.get('output_type', '') == 'stable peaks':
+        value['output_type'] = 'pseudo-replicated peaks'
+
+
+@upgrade_step('file', '24', '25')
+def file_24_25(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5480
+    if value.get('output_type', '') == 'smoothed methylation stage at CpG':
+        value['output_type'] = 'smoothed methylation state at CpG'
+
+
+@upgrade_step('file', '25', '26')
+def file_25_26(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5573
+    output_type = value.get('output_type', None)
+
+    if output_type == "representative DNase hypersensitivity sites (rDHSs)":
+        value['output_type'] = 'representative DNase hypersensitivity sites'
+    elif output_type == "consensus DNase hypersensitivity sites (cDHSs)":
+        value['output_type'] = 'consensus DNase hypersensitivity sites'
+    return
+
+
+@upgrade_step('file', '26', '27')
+def file_26_27(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5662
+    if value.get('output_type', '') == 'pseudo-replicated peaks':
+        value['output_type'] = 'pseudoreplicated peaks'
+    return
+
+
+@upgrade_step('file', '27', '28')
+def file_27_28(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5657
+    term_pairs = [
+        ('blacklisted regions', 'exclusion list regions'), 
+        ('mitochondria blacklisted regions', 'mitochondrial exclusion list regions'),
+    ]
+    output_type = value.get('output_type', None)
+    for old_term, new_term in term_pairs:
+        if output_type == old_term:
+            value['output_type'] = new_term
+
+
+@upgrade_step('file', '28', '29')
+def file_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5975
+    platform = value.get('platform', None)
+
+    if platform == "25acccbd-cb36-463b-ac96-adbac11227e6":
+            value.pop('read_length', None)
+    return
+
+
+@upgrade_step('file', '29', '30')
+def file_29_30(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-97
+    term_pairs = [
+        ('topologically associated domains', 'contact domains'),
+        ('mapping quality thresholded chromatin interactions', 'mapping quality thresholded contact matrix'),
+        ('chromatin interactions', 'contact matrix'),
+        ('DNA accessibility raw signal', 'nuclease cleavage frequency'),
+        ('long range chromatin interactions', 'loops'),
+        ('nested topologically associated domains', 'nested contact domains'),
+        ('allele-specific chromatin interactions', 'allele-specific contact domain'),
+        ('variants chromatin interactions', 'variants contact matrix'),
+        ('haplotype-specific chromatin interactions', 'haplotype-specific contact matrix'),
+        ('haplotype-specific DNA accessibility raw signal', 'haplotype-specific nuclease cleavage frequency'),
+        ('haplotype-specific DNA accessibility corrected signal', 'haplotype-specific nuclease cleavage corrected frequency')
+    ]
+    output_type = value.get('output_type', None)
+    for old_term, new_term in term_pairs:
+        if output_type == old_term:
+            value['output_type'] = new_term
+
+
+@upgrade_step('file', '30', '31')
+def file_30_31(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-132
+    output_type = value.get('output_type', None)
+    if output_type == 'predicted profile':
+        value['output_type'] = 'predicted signal profile'
+    if output_type == 'bias model':
+        value['output_type'] = 'bias models'

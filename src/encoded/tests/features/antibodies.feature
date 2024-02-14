@@ -1,4 +1,4 @@
-@antibodies @usefixtures(workbook)
+@antibodies
 Feature: Antibodies
 
     Scenario: Collection

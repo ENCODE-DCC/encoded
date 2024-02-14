@@ -6,10 +6,8 @@ from encoded.vis_defines import (
     vis_format_url,
     browsers_available
     )
-from .biosample import (
-    construct_biosample_summary,
-    generate_summary_dictionary
-)
+from .biosample import construct_biosample_summary
+from .shared_biosample import biosample_summary_information
 from .base import (
     paths_filtered_by_status
 )
@@ -57,7 +55,7 @@ class CalculatedFileSetBiosample:
     })
     def organism(self, request, related_files):
         return request.select_distinct_values(
-            'library.biosample.organism', *related_files)
+            'replicate.library.biosample.organism', *related_files)
 
 
 class CalculatedFileSetAssay:
@@ -111,6 +109,19 @@ class CalculatedSeriesAssay:
             'assay_term_id', *related_datasets)
 
 
+class CalculatedSeriesAssayType:
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_slims(self, request, related_datasets):
+        return request.select_distinct_values(
+            'assay_slims', *related_datasets)
+
+
 class CalculatedSeriesBiosample:
     @calculated_property(condition='related_datasets', schema={
         "title": "Biosample ontology",
@@ -134,7 +145,7 @@ class CalculatedSeriesBiosample:
     })
     def organism(self, request, related_datasets):
         return request.select_distinct_values(
-            'replicates.libraries.biosample.organism', *related_datasets)
+            'replicates.library.biosample.organism', *related_datasets)
 
 
 class CalculatedSeriesTreatment:
@@ -147,7 +158,7 @@ class CalculatedSeriesTreatment:
     })
     def treatment_term_name(self, request, related_datasets):
         return request.select_distinct_values(
-            'replicates.libraries.biosample.treatments.treatment_term_name',
+            'replicates.library.biosample.treatments.treatment_term_name',
             *related_datasets)
 
 
@@ -187,7 +198,7 @@ class CalculatedVisualize:
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         vis_assembly = set()
-        viewable_file_formats = ['bigWig', 'bigBed', 'hic']
+        viewable_file_formats = ['bigWig', 'bigBed', 'hic', 'bigInteract']
         viewable_file_status = ['released', 'in progress']
         vis_assembly = {
             properties['assembly']
@@ -219,6 +230,8 @@ class CalculatedBiosampleSummary:
                           request,
                           replicates=None):
         drop_age_sex_flag = False
+        add_classification_flag = False
+        biosample_drop_originated_from_flag = False
         dictionaries_of_phrases = []
         biosample_accessions = set()
         if replicates is not None:
@@ -236,120 +249,101 @@ class CalculatedBiosampleSummary:
                             continue
                         if biosampleObject['accession'] not in biosample_accessions:
                             biosample_accessions.add(biosampleObject['accession'])
-
-                            biosampleTypeObject = request.embed(
-                                biosampleObject['biosample_ontology'],
-                                '@@object'
-                            )
-                            if biosampleTypeObject.get('classification') in [
-                                    'in vitro differentiated cells']:
+                            biosample_info = biosample_summary_information(request, biosampleObject)
+                            biosample_summary_dictionary = biosample_info[0]
+                            biosample_drop_age_sex_flag = biosample_info[1]
+                            biosample_add_classification_flag = biosample_info[2]
+                            biosample_drop_originated_from_flag = biosample_info[3]
+                            dictionaries_of_phrases.append(biosample_summary_dictionary)
+                            if biosample_drop_age_sex_flag is True:
                                 drop_age_sex_flag = True
+                            if biosample_add_classification_flag is True:
+                                add_classification_flag = True
+            if len(biosample_accessions) == 0:
+                for rep in replicates:
+                    replicateObject = request.embed(rep, '@@object')
+                    if replicateObject['status'] == 'deleted':
+                        continue
+                    if 'library' in replicateObject:
+                        libraryObject = request.embed(replicateObject['library'], '@@object')
+                        if libraryObject['status'] == 'deleted':
+                            continue
+                        elif 'mixed_biosamples' in libraryObject:
+                            for each_biosample in libraryObject['mixed_biosamples']:
+                                biosampleObject = request.embed(each_biosample, '@@object')
+                                if biosampleObject['status'] == 'deleted':
+                                    continue
+                                if biosampleObject['accession'] not in biosample_accessions:
+                                    biosample_accessions.add(biosampleObject['accession'])
+                                    biosample_info = biosample_summary_information(request, biosampleObject)
+                                    biosample_summary_dictionary = biosample_info[0]
+                                    biosample_drop_age_sex_flag = biosample_info[1]
+                                    biosample_add_classification_flag = biosample_info[2]
+                                    biosample_drop_originated_from_flag = biosample_info[3]
+                                    dictionaries_of_phrases.append(biosample_summary_dictionary)
+                                    if biosample_drop_age_sex_flag is True:
+                                        drop_age_sex_flag = True
+                                    if biosample_add_classification_flag is True:
+                                        add_classification_flag = True
 
-                            organismObject = None
-                            if 'organism' in biosampleObject:
-                                organismObject = request.embed(biosampleObject['organism'],
-                                                               '@@object')
-                            donorObject = None
-                            if 'donor' in biosampleObject:
-                                donorObject = request.embed(biosampleObject['donor'], '@@object')
+        sentence_parts = [
+            'organism_name',
+            'genotype_strain',
+            'disease_term_name',
+            'experiment_term_phrase',
+            'phase',
+            'fractionated',
+            'sex_stage_age',
+            'post_nucleic_acid_delivery_time',
+            'post_differentiation_time',
+            'synchronization',
+            'modifications_list',
+            'originated_from',
+            'treatments_phrase',
+            'depleted_in',
+            'pulse_chase_time'
+        ]
+        if drop_age_sex_flag:
+            sentence_parts.remove('sex_stage_age')
+            for entry in dictionaries_of_phrases:
+                if 'disease_term_name' in entry and entry['disease_term_name'] != '':
+                    entry['disease_term_name'] = f"from a donor {entry['disease_term_name']}"
+        if add_classification_flag:
+            sentence_parts.insert(4, 'sample_type')
+        if biosample_drop_originated_from_flag:
+            sentence_parts.remove('originated_from')
 
-                            treatment_objects_list = None
-                            treatments = biosampleObject.get('treatments')
-                            if treatments is not None and len(treatments) > 0:
-                                treatment_objects_list = []
-                                for t in treatments:
-                                    treatment_objects_list.append(request.embed(t, '@@object'))
-
-                            part_of_object = None
-                            if 'part_of' in biosampleObject:
-                                part_of_object = request.embed(biosampleObject['part_of'],
-                                                               '@@object')
-                            originated_from_object = None
-                            if 'originated_from' in biosampleObject:
-                                originated_from_object = request.embed(biosampleObject['originated_from'],
-                                                                       '@@object')
-
-                            modifications_list = None
-                            genetic_modifications = biosampleObject.get('applied_modifications')
-                            if genetic_modifications:
-                                modifications_list = []
-                                for gm in genetic_modifications:
-                                    gm_object = request.embed(gm, '@@object')
-                                    modification_dict = {'category': gm_object.get('category')}
-                                    if gm_object.get('modified_site_by_target_id'):
-                                        modification_dict['target'] = request.embed(
-                                            gm_object.get('modified_site_by_target_id'),
-                                                          '@@object')['label']
-                                    if gm_object.get('introduced_tags_array'):
-                                        modification_dict['tags'] = []
-                                        for tag in gm_object.get('introduced_tags_array'):
-                                            tag_dict = {'location': tag['location']}
-                                            if tag.get('promoter_used'):
-                                                tag_dict['promoter'] = request.embed(
-                                                    tag.get('promoter_used'),
-                                                            '@@object').get['label']
-                                            modification_dict['tags'].append(tag_dict)
-
-                                    modifications_list.append((gm_object['method'], modification_dict))
-
-                            preservation_method = None
-                            dictionary_to_add = generate_summary_dictionary(
-                                request,
-                                organismObject,
-                                donorObject,
-                                biosampleObject.get('age'),
-                                biosampleObject.get('age_units'),
-                                biosampleObject.get('life_stage'),
-                                biosampleObject.get('sex'),
-                                biosampleTypeObject.get('term_name'),
-                                biosampleTypeObject.get('classification'),
-                                biosampleObject.get('starting_amount'),
-                                biosampleObject.get('starting_amount_units'),
-                                biosampleObject.get('depleted_in_term_name'),
-                                biosampleObject.get('phase'),
-                                biosampleObject.get('subcellular_fraction_term_name'),
-                                biosampleObject.get('synchronization'),
-                                biosampleObject.get('post_synchronization_time'),
-                                biosampleObject.get('post_synchronization_time_units'),
-                                biosampleObject.get('post_treatment_time'),
-                                biosampleObject.get('post_treatment_time_units'),
-                                treatment_objects_list,
-                                preservation_method,
-                                part_of_object,
-                                originated_from_object,
-                                modifications_list,
-                                True)
-
-                            dictionaries_of_phrases.append(dictionary_to_add)
-
-        if drop_age_sex_flag is True:
-            sentence_parts = [
-                'strain_background',
-                'experiment_term_phrase',
-                'phase',
-                'fractionated',
-                'synchronization',
-                'modifications_list',
-                'originated_from',
-                'treatments_phrase',
-                'depleted_in'
-            ]
-        else:
-            sentence_parts = [
-                'strain_background',
-                'experiment_term_phrase',
-                'phase',
-                'fractionated',
-                'sex_stage_age',
-                'synchronization',
-                'modifications_list',
-                'originated_from',
-                'treatments_phrase',
-                'depleted_in'
-            ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
+
+class CalculatedSimpleSummary:
+    @calculated_property(schema={
+        "title": "Simple Biosample summary",
+        "type": "string",
+    })
+    def simple_biosample_summary(self,
+                                 request,
+                                 replicates=None):
+        sub_summaries = set()
+        biosample_accessions = set()
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object')
+                    if libraryObject['status'] == 'deleted':
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] == 'deleted':
+                            continue
+                        if biosampleObject['accession'] not in biosample_accessions:
+                            biosample_accessions.add(biosampleObject['accession'])
+                            sub_summaries.add(biosampleObject['simple_summary'])
+            return " ".join(list(sub_summaries))
 
 class CalculatedReplicates:
     @calculated_property(schema={
@@ -385,36 +379,27 @@ class CalculatedAssayTitle:
         "type": "string",
     })
     def assay_title(self, request, registry, assay_term_name,
-                    control_type=None, replicates=None, target=None):
+                    control_type=None, replicates=None, target=None, documents=None):
         # This is the preferred name in generate_ontology.py if exists
         assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
             preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
                                                                      assay_term_name)
-            if preferred_name == 'RNA-seq' and replicates is not None:
+            if preferred_name == 'RNA-seq':
+                preferred_name = 'total RNA-seq'
+            elif preferred_name == 'scRNA-seq':
+                subcellular_fractions = set()
                 for rep in replicates:
-                    replicate_object = request.embed(rep, '@@object')
-                    if replicate_object['status'] == 'deleted':
-                        continue
-                    if 'libraries' in replicate_object:
-                        preferred_name = 'total RNA-seq'
-                        for lib in replicate_object['libraries']:
-                            library_object = request.embed(lib, '@@object')
-                            if 'size_range' in library_object and \
-                            library_object['size_range'] == '<200':
-                                preferred_name = 'small RNA-seq'
-                                break
-                            elif 'depleted_in_term_name' in library_object and \
-                                'polyadenylated mRNA' in library_object['depleted_in_term_name']:
-                                preferred_name = 'polyA minus RNA-seq'
-                                break
-                            elif 'nucleic_acid_term_name' in library_object and \
-                                library_object['nucleic_acid_term_name'] == 'polyadenylated mRNA':
-                                preferred_name = 'polyA plus RNA-seq'
-                                break
-                        else:
-                            continue
-                        break
+                    replicate_object = request.embed(rep, '@@object?skip_calculated=true')
+                    if 'library' in replicate_object:
+                        library_object = request.embed(replicate_object['library'], '@@object?skip_calculated=true')
+                        if 'biosample' in library_object:
+                            biosample_object = request.embed(library_object['biosample'], '@@object?skip_calculated=true')
+                            subcellular_fraction_term_name = biosample_object.get('subcellular_fraction_term_name')
+                            if subcellular_fraction_term_name:
+                                subcellular_fractions.add(subcellular_fraction_term_name)
+                if len(subcellular_fractions) == 1 and list(subcellular_fractions)[0] == 'nucleus':
+                    preferred_name = 'snRNA-seq'
             elif preferred_name == 'ChIP-seq':
                 preferred_name = 'Control ChIP-seq'
                 if not control_type and target is not None:
@@ -424,9 +409,22 @@ class CalculatedAssayTitle:
                         preferred_name = 'Histone ChIP-seq'
                     else:
                         preferred_name = 'TF ChIP-seq'
-            elif control_type and assay_term_name == 'eCLIP':
-                preferred_name = 'Control eCLIP'
-            elif control_type == 'control' and assay_term_name in ['MPRA', 'CRISPR screen', 'STARR-seq']:
+            elif preferred_name == 'Hi-C' and replicates:
+                for rep in replicates:
+                    replicate_object = request.embed(rep, '@@object?skip_calculated=true')
+                    if 'library' in replicate_object:
+                        library_object = request.embed(replicate_object['library'], '@@object?skip_calculated=true')
+                        hic_type = library_object.get('hic_construction')
+                        if hic_type:
+                            if hic_type == 'intact':
+                                return 'intact Hi-C'
+                            elif hic_type == 'in situ':
+                                return 'in situ Hi-C'
+                            elif hic_type == 'dilution':
+                                return 'dilution Hi-C'
+                        else:
+                            return 'Hi-C'
+            elif control_type and assay_term_name in ['eCLIP', 'MPRA', 'proliferation CRISPR screen', 'Flow-FISH CRISPR screen', 'FACS CRISPR screen', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
                 preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
         return assay_term_name
@@ -484,50 +482,33 @@ class CalculatedReplicationType:
         "type": "string"
     })
     def replication_type(self, request, replicates=None, assay_term_name=None):
-        # ENCD-4251 loop through replicates and select one replicate, which has
-        # the smallest technical_replicate_number, per biological replicate.
-        # That replicate should have a libraries property which, as calculated
-        # in replicate.libraries (ENCD-4251), should have collected all
-        # possible technical replicates belong to the biological replicate.
-        # TODO: change this once we remove technical_replicate_number.
-        bio_rep_dict = {}
-        for rep in replicates:
-            replicate_object = request.embed(rep, '@@object')
-            if replicate_object['status'] == 'deleted':
-                continue
-            bio_rep_num = replicate_object['biological_replicate_number']
-            if bio_rep_num not in bio_rep_dict:
-                bio_rep_dict[bio_rep_num] = replicate_object
-                continue
-            tech_rep_num = replicate_object['technical_replicate_number']
-            if tech_rep_num < bio_rep_dict[bio_rep_num]['technical_replicate_number']:
-                bio_rep_dict[bio_rep_num] = replicate_object
-
+        # ENCD-5185 decided to return None for replication type for all
+        # pooled clone sequencing
+        if assay_term_name == 'pooled clone sequencing':
+            return None
         # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
+        biosample_dict = {}
         biosample_donor_list = []
         biosample_number_list = []
 
-        for replicate_object in bio_rep_dict.values():
-            if 'libraries' in replicate_object and replicate_object['libraries']:
-                biosamples = request.select_distinct_values(
-                    'biosample', *replicate_object['libraries']
-                )
-                if biosamples:
-                    for b in biosamples:
-                        biosample_object = request.embed(b, '@@object')
-                        biosample_donor_list.append(
-                            biosample_object.get('donor')
-                        )
-                        biosample_number_list.append(
-                            replicate_object.get('biological_replicate_number')
-                        )
-                        biosample_species = biosample_object.get('organism')
-                        biosample_type_object = request.embed(
-                            biosample_object['biosample_ontology'],
-                            '@@object'
-                        )
-                        biosample_type = biosample_type_object.get('classification')
+        for rep in replicates:
+            replicateObject = request.embed(rep, '@@object')
+            if replicateObject['status'] == 'deleted':
+                continue
+            if 'library' in replicateObject:
+                libraryObject = request.embed(replicateObject['library'], '@@object')
+                if 'biosample' in libraryObject:
+                    biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                    biosample_dict[biosampleObject['accession']] = biosampleObject
+                    biosample_donor_list.append(biosampleObject.get('donor'))
+                    biosample_number_list.append(replicateObject.get('biological_replicate_number'))
+                    biosample_species = biosampleObject.get('organism')
+                    biosampleTypeObject = request.embed(
+                        biosampleObject['biosample_ontology'],
+                        '@@object'
+                    )
+                    biosample_type = biosampleTypeObject.get('classification')
                 else:
                     # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
                     # untill we change our mind
@@ -565,3 +546,35 @@ class CalculatedReplicationType:
                 return 'isogenic'
 
         return 'anisogenic'
+
+
+class CalculatedReplicationCounts:
+    @calculated_property(schema={
+        "title": "Biological replicate count",
+        "description": "Calculated field that indicates the number of biological replicates in a dataset",
+        "type": "integer",
+    })
+    def bio_replicate_count(self, request, replicates):
+        biological_replicate_numbers = set()
+        if replicates:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                biological_replicate_numbers.add(replicateObject.get('biological_replicate_number'))
+        return len(biological_replicate_numbers)
+
+    @calculated_property(schema={
+        "title": "Technical replicate count",
+        "description": "Calculated field that indicates the number of technical replicates in a dataset",
+        "type": "integer",
+    })
+    def tech_replicate_count(self, request, replicates):
+        technical_replicate_numbers = [] 
+        if replicates:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                technical_replicate_numbers.append(replicateObject.get('technical_replicate_number'))
+        return len(technical_replicate_numbers)

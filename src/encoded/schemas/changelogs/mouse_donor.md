@@ -1,5 +1,9 @@
 ## Changelog for mouse_donor.json
 
+### Minor changes since schema version 11
+
+* *supersedes* list property was added along with the calculated list property *superseded_by*
+
 ### Schema version 11
 
 * *parent_strains* list was limited to maximum 2 entries of strains of the same organism

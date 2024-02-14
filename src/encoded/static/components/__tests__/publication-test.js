@@ -1,11 +1,13 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 import _ from 'underscore';
 
 // Import test component and data.
 import Publication from '../publication';
 import context from '../testdata/publication/publication';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Publication', () => {
     describe('Publication without references', () => {

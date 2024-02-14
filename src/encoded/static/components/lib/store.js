@@ -37,7 +37,7 @@ export default class ItemStore {
             method: 'PUT',
             body: JSON.stringify(data),
         }, () => {
-            const item = _.find(this._items, i => i['@id'] === data['@id']);
+            const item = _.find(this._items, (i) => i['@id'] === data['@id']);
             _.extend(item, data);
             this.dispatch('onUpdate', item);
         });
@@ -49,8 +49,8 @@ export default class ItemStore {
             method: 'PATCH',
             body: JSON.stringify({ status: 'deleted' }),
         }, () => {
-            const item = _.find(this._items, i => i['@id'] === id);
-            this._items = _.reject(this._items, i => i['@id'] === id);
+            const item = _.find(this._items, (i) => i['@id'] === id);
+            this._items = _.reject(this._items, (i) => i['@id'] === id);
             this.dispatch('onDelete', item);
         });
     }
@@ -66,11 +66,11 @@ export default class ItemStore {
         ).then((response) => {
             if (!response.ok) throw response;
             return response.json();
-        }).then(then).catch(err =>
+        }).then(then).catch((err) => (
             parseAndLogError('ItemStore', err).then((response) => {
                 this.dispatch('onError', response);
             })
-        );
+        ));
     }
 
     /* notify listening views of actions and update their state
@@ -78,7 +78,7 @@ export default class ItemStore {
     */
     dispatch(method, arg) {
         this._listeners.forEach((listener) => {
-            const view = listener.view;
+            const { view } = listener;
             if (view[method] !== undefined) {
                 view[method](arg);
             }

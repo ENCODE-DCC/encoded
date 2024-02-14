@@ -1,5 +1,26 @@
 ## Changelog for matched_set.json
 
+### Schema version 18
+
+* Upgraded *internal_tags* as follows:
+    * *ENCYCLOPEDIAv3* is now *ENCYCLOPEDIAv0.3*
+    * *ENCYCLOPEDIAv4* is now *ENCYCLOPEDIAv1*
+    * *ENCYCLOPEDIAv5* is now *ENCYCLOPEDIAv2*
+    * *ENCYCLOPEDIAv6* is now *ENCYCLOPEDIAv3*
+
+### Minor changes since schema version 17
+
+* Added *LRGASP* and *ENCYCLOPEDIAv6* to the *internal_tags* enums list
+* Added *doi* property
+* Added *analyses* property
+* Added *assay_slims* calculated property
+* Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *biosample_summary* calculated property
+* Added *Deeply Profiled* to the *internal_tags* enum
+* *related_datasets* now includes FunctionalCharacterizationExperiment.json and TransgenicEnhancerExperiment.json
+* Removed *control_type* calculated property
+* Added *Degron* to *internal_tags* enums list.
+
 ### Schema version 17
 
 * Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects

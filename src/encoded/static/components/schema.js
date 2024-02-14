@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
 import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
+import UserRoles from '../libs/user_roles';
 import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
@@ -40,55 +41,14 @@ const excludedTerms = [
 
 // Functions to display simple schema term types, keyed by `typeof` result.
 const simpleTypeDisplay = {
-    string: item => <span>{item}</span>,
-    boolean: item => <span>{item ? 'True' : 'False'}</span>,
-    number: item => <span >{item}</span>,
+    string: (item) => <span>{item}</span>,
+    boolean: (item) => <span>{item ? 'True' : 'False'}</span>,
+    number: (item) => <span>{item}</span>,
 };
 
 
 // Keys in a schema for objects that should be searched for links to other schemas.
 const linkedTerms = ['properties'];
-
-
-/**
- * Create a brace read-only editor instance that goes into the HTML element with the given ID and
- * displaying the given schema term.
- *
- * @param {*} elementId - HTML element ID to draw the editor into.
- * @param {*} term - Schema term object to display.
- */
-function createJsonDisplay(elementId, term) {
-    return new Promise((resolve) => {
-        require.ensure([
-            'brace',
-            'brace/mode/json',
-            'brace/theme/katzenmilch',
-        ], (require) => {
-            const ace = require('brace');
-            require('brace/mode/json');
-            require('brace/theme/katzenmilch');
-            const value = JSON.stringify(term, null, 4);
-            const editor = ace.edit(elementId);
-            const session = editor.getSession();
-            session.setMode('ace/mode/json');
-            editor.setTheme('ace/theme/katzenmilch');
-            editor.setValue(value);
-            editor.setOptions({
-                maxLines: 500,
-                minLines: 1,
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                showGutter: false,
-                showPrintMargin: false,
-            });
-            editor.clearSelection();
-            editor.textInput.getElement().disabled = true;
-            editor.renderer.$cursorLayer.element.style.opacity = 0;
-            resolve(editor);
-        }, 'brace');
-    });
-}
 
 
 /**
@@ -176,7 +136,7 @@ SchemaTermLinks.propTypes = {
 };
 
 
-// Display linkFrom and linkTo property values as links to the respecive schema pages, given a
+// Display linkFrom and linkTo property values as links to the respective schema pages, given a
 // property in the schema that contains at least one linkTo and/or linkFrom.
 const SchemaTermLinksSection = (props) => {
     const { schemaProp, profilesMap } = props;
@@ -213,50 +173,6 @@ SchemaTermLinksSection.propTypes = {
 };
 
 
-// Display JSON for one schema term.
-class SchemaTermJsonDisplay extends React.Component {
-    constructor(props) {
-        super(props);
-
-        // Initialize component properties.
-        this.editor = null; // Tracks brace editor reference.
-        this.id = `profile-value-json-${props.term}`; // HTML ID of component to draw brace editor into
-    }
-
-    componentDidMount() {
-        // Now that the JSON display component has mounted,
-        const { schemaValue, term } = this.props;
-
-        // Create a read-only brace editor to display the formatted JSON.
-        createJsonDisplay(this.id, schemaValue[term]).then((editor) => {
-            // The brace editor successfully created. Save the reference to the brace editor
-            // instance so we can get rid of it when the JSON display is closed.
-            this.editor = editor;
-        });
-    }
-
-    componentWillUnmount() {
-        if (this.editor) {
-            this.editor.destroy();
-            this.editor = null;
-        }
-    }
-
-    render() {
-        return (
-            <div className="profile-value__json-content">
-                <div id={this.id} />
-            </div>
-        );
-    }
-}
-
-SchemaTermJsonDisplay.propTypes = {
-    schemaValue: PropTypes.object.isRequired, // Schema object to display
-    term: PropTypes.string.isRequired, // Item within the schema object to display
-};
-
-
 // Display one object-type term, with associated JSON.
 class SchemaTermItemDisplay extends React.Component {
     constructor() {
@@ -275,7 +191,7 @@ class SchemaTermItemDisplay extends React.Component {
     }
 
     handleDisclosureClick() {
-        this.setState(prevState => ({ jsonOpen: !prevState.jsonOpen }));
+        this.setState((prevState) => ({ jsonOpen: !prevState.jsonOpen }));
     }
 
     render() {
@@ -284,12 +200,12 @@ class SchemaTermItemDisplay extends React.Component {
         return (
             <div>
                 <div className="profile-value__item">
-                    <button className="profile-value__disclosure-button" onClick={this.handleDisclosureClick}>{collapseIcon(!this.state.jsonOpen)}</button>
+                    <button type="button" className="profile-value__disclosure-button" onClick={this.handleDisclosureClick}>{collapseIcon(!this.state.jsonOpen)}</button>
                     <span> {term}</span>
                 </div>
                 {this.state.jsonOpen ?
                     <div>
-                        <SchemaTermJsonDisplay schemaValue={schemaValue} term={term} />
+                        <DisplayRawObject schema={schemaValue} term={term} />
                         {linkedTerm ? <SchemaTermLinksSection schemaProp={schemaValue[term]} profilesMap={profilesMap} /> : null}
                     </div>
                 : null}
@@ -312,9 +228,9 @@ const SchemaTermDisplay = (props) => {
 
     return (
         <div>
-            {Object.keys(props.schemaValue).sort().map(key =>
+            {Object.keys(props.schemaValue).sort().map((key) => (
                 <SchemaTermItemDisplay key={`${schemaName}-${key}`} term={key} schemaValue={schemaValue} schemaName={schemaName} linkedTerm={linkedTerm} profilesMap={profilesMap} />
-            )}
+            ))}
         </div>
     );
 };
@@ -345,7 +261,7 @@ const TermDisplay = (props) => {
             // The value's an array, so display a list. Filter out any non-simple types in the
             // array (at this time, I don't think any schema array values have non-simple types)
             // and sort the results.
-            const simpleTermValues = termSchema.filter(item => !!simpleTypeDisplay[typeof item]).sort();
+            const simpleTermValues = termSchema.filter((item) => !!simpleTypeDisplay[typeof item]).sort();
             if (simpleTermValues.length > 0) {
                 return (
                     <div>
@@ -390,7 +306,7 @@ class DisplayObjectSection extends React.PureComponent {
     handleDisclosureClick() {
         // Click in the disclosure icon. Toggle the `sectionOpen` state to show or hide the list of
         // child properties.
-        this.setState(prevState => ({ sectionOpen: !prevState.sectionOpen }));
+        this.setState((prevState) => ({ sectionOpen: !prevState.sectionOpen }));
     }
 
     render() {
@@ -402,7 +318,7 @@ class DisplayObjectSection extends React.PureComponent {
         const schemaIsArray = Array.isArray(schemaTerm);
         let simpleTermValuesExist = true;
         if (schemaIsObject && schemaIsArray) {
-            const simpleTermValues = schemaTerm.filter(item => !!simpleTypeDisplay[typeof item]).sort();
+            const simpleTermValues = schemaTerm.filter((item) => !!simpleTypeDisplay[typeof item]).sort();
             simpleTermValuesExist = simpleTermValues.length > 0;
         }
 
@@ -414,6 +330,7 @@ class DisplayObjectSection extends React.PureComponent {
             <div className={`profile-display__section${this.state.sectionOpen ? ' profile-display__section--open' : ''}`}>
                 <h3 className="profile-value__item" id={accordionLabel}>
                     <button
+                        type="button"
                         className="profile-value__disclosure-button"
                         data-toggle="collapse"
                         data-target={`#${accordionId}`}
@@ -450,12 +367,12 @@ DisplayObjectSection.propTypes = {
 // Display an entire formatted schema.
 const DisplayObject = (props) => {
     const { schema, schemaName, profilesMap } = props;
-    const schemaTerms = Object.keys(schema).filter(term => excludedTerms.indexOf(term) === -1);
+    const schemaTerms = Object.keys(schema).filter((term) => excludedTerms.indexOf(term) === -1);
     return (
         <div className="profile-display">
-            {schemaTerms.map(term =>
+            {schemaTerms.map((term) => (
                 <DisplayObjectSection key={`${schemaName}-${term}`} term={term} schemaName={schemaName} profilesMap={profilesMap} schema={schema} />
-            )}
+            ))}
         </div>
     );
 };
@@ -471,38 +388,117 @@ DisplayObject.defaultProps = {
 };
 
 
-// Display a complete raw schema object.
-class DisplayRawObject extends React.Component {
-    constructor() {
-        super();
-
-        // Set object properties.
-        this.editor = null;
-    }
-
-    componentDidMount() {
-        // Create a read-only brace editor to display the formatted JSON.
-        createJsonDisplay('raw-schema', this.props.schema).then((editor) => {
-            // The brace editor successfully created. Save the reference to the brace editor
-            // instance so we can get rid of it when the JSON display is closed.
-            this.editor = editor;
-        });
-    }
-
-    componentWillUnmount() {
-        if (this.editor) {
-            this.editor.destroy();
-            this.editor = null;
+/**
+ * Display the copy-JSON controls at the top of raw schema displays.
+ */
+const RawObjectControls = ({ rawSchemaElement, textHasSelection }) => {
+    const copyHandler = () => {
+        // Select all raw schema text in preparation for copying it, but only if the user hasn't
+        // manually selected raw schema text.
+        // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#Using_execCommand()
+        if (rawSchemaElement && !textHasSelection) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(rawSchemaElement);
+            selection.removeAllRanges();
+            selection.addRange(range);
         }
-    }
 
-    render() {
-        return <div id="raw-schema" />;
-    }
-}
+        // Execute copy command. Firefox can throw errors on rare occasion. As this is so unusual,
+        // we just show a console warning in that case.
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.warn('Text copy failed.');
+        }
+
+        // Deselect text if the user hasn't manually selected raw schema text.
+        if (!textHasSelection) {
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+        }
+    };
+
+    return (
+        <div className="raw-schema__controls">
+            <button type="button" className="btn btn-info btn-xs" onClick={copyHandler}>
+                {textHasSelection ? <>Copy selected JSON</> : <>Copy all JSON</>}
+            </button>
+        </div>
+    );
+};
+
+RawObjectControls.propTypes = {
+    /** DOM element for the raw schema display */
+    rawSchemaElement: PropTypes.object,
+    /** True if text in the raw schema has a user selection */
+    textHasSelection: PropTypes.bool,
+};
+
+RawObjectControls.defaultProps = {
+    rawSchemaElement: null,
+    textHasSelection: false,
+};
+
+
+/**
+ * Display a complete schema object as text. At mount rawSchemaRef.current gets mutated with
+ * <pre>'s DOM node, which we need to handle text selections within it.
+ */
+const DisplayRawObject = ({ schema, term }) => {
+    // True if user has selected raw schema text.
+    const [textHasSelection, setTextHasSelection] = React.useState(false);
+    // Raw schema DOM element; `rawSchemaRef.current` doesn't cause the rerender we need.
+    const [rawSchemaElement, setRawSchemaElement] = React.useState(null);
+
+    // For displaying a fragment of the schema instead of the whole thing.
+    const schemaFragment = term ? schema[term] : '';
+
+    // Called when the user selects or deselects text anywhere on the page so we can tell if the
+    // user has selected text in the raw schema element or simply clicked to clear a text
+    // selection. Cache so we don't set this function as the event listener on every render.
+    const handleSelection = React.useCallback(() => {
+        const selection = window.getSelection();
+        const isRangeSelection = !selection.isCollapsed;
+        const isSchemaSelection = selection.anchorNode && selection.anchorNode.parentNode === rawSchemaElement;
+        setTextHasSelection(isSchemaSelection ? isRangeSelection : false);
+    }, [rawSchemaElement]);
+
+    // Callback ref to set the state that holds the raw schema DOM element. Need this as a state so
+    // that RawObjectControls can rerender at mount.
+    const rawSchemaRef = (element) => {
+        if (element) {
+            setRawSchemaElement(element);
+        }
+    };
+
+    React.useEffect(() => {
+        // React to text-selection changes anywhere on the page, partly because text selections
+        // outside the raw schema change the raw schema selection, and partly because
+        // 'selectionchange' only works on `document`.
+        document.addEventListener('selectionchange', handleSelection);
+        return (() => {
+            document.removeEventListener('selectionchange', handleSelection);
+        });
+    }, [handleSelection]);
+
+    return (
+        <div className="raw-schema">
+            <RawObjectControls rawSchemaElement={rawSchemaElement} textHasSelection={textHasSelection} />
+            <pre ref={rawSchemaRef}>{JSON.stringify(schemaFragment || schema, null, 4)}</pre>
+        </div>
+    );
+};
 
 DisplayRawObject.propTypes = {
-    schema: PropTypes.object.isRequired, // Schema to display as a raw object
+    /** Schema or fragment to display as a raw object */
+    schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    /** Term within schema to display if not displaying the whole thing */
+    term: PropTypes.string,
+};
+
+DisplayRawObject.defaultProps = {
+    term: '',
 };
 
 
@@ -522,7 +518,7 @@ Markdown.defaultProps = {
 
 
 // Display the Markdown-formatted change log.
-const ChangeLog = props => (
+const ChangeLog = (props) => (
     <div>
         <Markdown source={props.source} />
     </div>
@@ -546,17 +542,15 @@ const SchemaPanel = (props, reactContext) => {
 
     // Determine whether we should display an "Add" button or not depending on the user's logged-in
     // state.
-    const roles = globals.getRoles(reactContext.session_properties);
-    const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
-    const decoration = isAuthorized ? <a href={`/${schemaName}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
-    const decorationClasses = isAuthorized ? 'profiles-add-obj' : '';
+    const userRoles = new UserRoles(reactContext.session_properties);
+    const decoration = userRoles.isPrivileged && <a href={`/${schemaName}/#!add`} className="btn btn-info">Add</a>;
 
     return (
         <Panel>
             <TabPanel
                 tabs={{ formatted: 'Formatted', raw: 'Raw' }}
                 decoration={decoration}
-                decorationClasses={decorationClasses}
+                decorationClasses="profiles-controls"
             >
                 <TabPanelPane key="formatted">
                     <PanelBody>
@@ -589,9 +583,9 @@ SchemaPanel.contextTypes = {
 
 // Displays a page for a single schema given in the `context` prop.
 const SchemaPage = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context);
-    const title = context.title;
+    const { title } = context;
 
     // The schema id is a path to the schema's JSON. Convert that to just the schema name.
     const schemaName = schemaIdToName(context.id);
@@ -610,7 +604,7 @@ const SchemaPage = (props) => {
         <div className={itemClass}>
             <header>
                 <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                <h2>{title}</h2>
+                <h1>{title}</h1>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <SchemaPanel schema={context} schemaName={schemaName} />
@@ -652,7 +646,7 @@ const AllSchemasPage = (props, reactContext) => {
     // Get a sorted list of all available schema object names (e.g. GeneticModification). Filter
     // out those without any `identifyingProperties` because the user can't add objects of that
     // type, nor display their schemas.
-    const objectNames = Object.keys(context).sort().filter(objectName => (
+    const objectNames = Object.keys(context).sort().filter((objectName) => (
         context[objectName].identifyingProperties && context[objectName].identifyingProperties.length > 0
     ));
 

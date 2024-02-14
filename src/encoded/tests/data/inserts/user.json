@@ -714,7 +714,6 @@
         "uuid": "7e763d5a-634b-4181-a812-4361183359e9"
     },
     {
-        "uuid": "e7bb4fa6-ef92-41b7-871a-5f64db3848fe",
         "email": "david@glicksoftware.com",
         "first_name": "David",
         "groups": [
@@ -1180,5 +1179,21 @@
             "ENCORE"
         ],
         "uuid": "85c75ed3-269b-4273-b4ba-e269ee350dd6"
+    },
+    {
+        "email": "mingjiel@stanford.edu",
+        "first_name": "Mingjie",
+        "groups": [
+            "admin",
+            "verified"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Li",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "uuid": "6674945a-27a2-422a-92f5-d30a0a6aea20"
     }
 ]

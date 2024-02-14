@@ -4,6 +4,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -13,16 +14,37 @@ from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedAssayTitle,
+    CalculatedAssaySlims,
+    CalculatedBiosampleSummary,
+    CalculatedSimpleSummary,
+    CalculatedReplicates,
+    CalculatedReplicationType,
+    CalculatedCategorySlims,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
     CalculatedSeriesAssay,
+    CalculatedSeriesAssayType,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
     CalculatedSeriesTarget,
+    CalculatedObjectiveSlims,
+    CalculatedTypeSlims,
     CalculatedVisualize
 )
 
+from .biosample import (
+    construct_biosample_summary,
+    generate_modification_summary
+)
+
+from .shared_biosample import biosample_summary_information
+
+from .assay_data import assay_terms
+
 from itertools import chain
+from pkg_resources import parse_version
 import datetime
 
 
@@ -51,7 +73,10 @@ def calculate_assembly(request, files_list, status):
     })
 class Dataset(Item):
     base_types = ['Dataset'] + Item.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
     embedded = [
+        'analyses',
+        'analyses.quality_metrics.quality_metric',
         'files',
         'files.replicate',
         'files.replicate.experiment',
@@ -70,7 +95,21 @@ class Dataset(Item):
         'submitted_by',
         'lab',
         'award.pi.lab',
-        'references'
+    ]
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data']),
+        Path(
+            'files.analyses',
+            include=[
+                '@id',
+                '@type',
+                'uuid',
+                'status',
+                'pipeline_award_rfas',
+                'pipeline_version',
+                'title',
+            ],
+        ),
     ]
     audit_inherit = [
         'original_files',
@@ -82,7 +121,10 @@ class Dataset(Item):
         'documents.lab',
     ]
     set_status_up = [
-        'documents'
+        'original_files',
+        'replicates',
+        'documents',
+        'target',
     ]
     set_status_down = []
     name_key = 'accession'
@@ -118,10 +160,10 @@ class Dataset(Item):
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
         outside_files = list(derived_from.difference(original_files))
-        if status in ('released'):
+        if status in ('released',):
             return paths_filtered_by_status(
                 request, outside_files,
-                include=('released',),
+                include=('released', 'archived', 'in progress'),
             )
         else:
             return paths_filtered_by_status(
@@ -180,14 +222,236 @@ class Dataset(Item):
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
+    @calculated_property(condition='analyses', schema={
+        "title": "Default analysis",
+        "description": "One default analysis that should be checked first.",
+        "comment": "Do not submit. This field is calculated from files in this analysis.",
+        "type": "string",
+        "linkTo": "Analysis",
+        "notSubmittable": True
+    })
+    def default_analysis(self, request, status, analyses):
+        types = request.registry['types']
+        unreleased_status = ['in progress', 'submitted', 'deleted', 'replaced']
+        # Easier to sort everything by max, so reverse order of all
+        status_order = list(reversed(types['analysis'].schema['properties']['status']['enum']))
+        award_rfa_order = list(reversed(types['award'].schema['properties']['rfa']['enum']))
+        assembly_order = list(reversed(types['file'].schema['properties']['assembly']['enum'] + ['mixed']))
+        genome_annotation_order = list(reversed(types['file'].schema['properties']['genome_annotation']['enum'] + ['mixed']))
 
+        analyses = (
+            request.embed(
+                analysis_id,
+                '@@object_with_select_calculated_properties'
+                '?field=@id'
+                '&field=pipeline_labs'
+                '&field=pipeline_award_rfas'
+                '&field=assembly'
+                '&field=genome_annotation',
+            )
+            for analysis_id in analyses
+        )
+        if status not in unreleased_status:
+            status_order = [
+                s
+                for s in status_order
+                if s not in unreleased_status
+            ]
+            analyses = (
+                analysis
+                for analysis in analyses
+                if  analysis['status'] in status_order
+            )
+        analysis_ranking = {}
+
+        for analysis in analyses:
+            status_rank = status_order.index(analysis['status'])
+            # True ranked higher than False.
+            lab_rank = '/labs/encode-processing-pipeline/' in analysis.get('pipeline_labs', [])
+            # Get max index or zero if field doesn't exist.
+            pipeline_award_rfa_rank = max(chain(
+                (award_rfa_order.index(rfa)
+                for rfa in analysis.get('pipeline_award_rfa', [])), [0])
+            )
+            # Get max index or zero if field doesn't exist. 
+            assembly_rank = 0
+            if analysis.get('assembly', '') in assembly_order:
+                assembly_rank = assembly_order.index(analysis.get('assembly', ''))
+            genome_annotation_rank = 0
+            if analysis.get('genome_annotation', '') in genome_annotation_order:
+                genome_annotation_rank = genome_annotation_order.index(analysis.get('genome_annotation', ''))
+            # We reverse sort order at the end so later version numbers will rank higher.
+            pipeline_version_rank = parse_version(analysis.get('pipeline_version', ''))
+            # We reverse sort order at the end so later dates rank higher.
+            date_rank = datetime.datetime.strptime(
+                convert_date_string(
+                    analysis['date_created']
+                ),
+                "%Y-%m-%dT%H:%M:%S.%f%z"
+            )
+            # Store all the ranking numbers for an analysis in a tuple that can be sorted.
+            analysis_ranking[
+                (
+                    status_rank,
+                    lab_rank,
+                    pipeline_award_rfa_rank,
+                    assembly_rank,
+                    genome_annotation_rank,
+                    pipeline_version_rank,
+                    date_rank,
+                )
+            ] = analysis['@id']
+        
+        if analysis_ranking:
+            # We want highest version, date, etc. so reverse sort order. Access value from top item.
+            return sorted(analysis_ranking.items(), reverse=True)[0][1]
+
+
+def convert_date_string(date_string):
+    if ":" == date_string[-3]:
+        date_string = date_string[:-3]+date_string[-2:]
+    return date_string
+
+
+@collection(
+    name='single-cell-units',
+    unique_key='accession',
+    properties={
+        'title': 'Single cell units',
+        'description': 'Listing of single cell units',
+    })
+class SingleCellUnit(
+    Dataset,
+    CalculatedBiosampleSummary,
+    CalculatedSimpleSummary,
+    CalculatedReplicates,
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedVisualize,
+    CalculatedAssaySlims,
+    CalculatedAssayTitle,
+    CalculatedCategorySlims,
+    CalculatedTypeSlims,
+    CalculatedObjectiveSlims,
+    CalculatedReplicationType):
+    item_type = 'single_cell_unit'
+    schema = load_schema('encoded:schemas/single_cell_unit.json')
+    embedded = Dataset.embedded + [
+        'biosample_ontology',
+        'files.platform',
+        'files.analysis_step_version.analysis_step',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'related_series',
+        'replicates.antibody',
+        'replicates.library',
+        'replicates.library.biosample.biosample_ontology',
+        'replicates.library.biosample.submitted_by',
+        'replicates.library.biosample.source',
+        'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.applied_modifications.documents',
+        'replicates.library.biosample.organism',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.part_of',
+        'replicates.library.biosample.part_of.donor',
+        'replicates.library.biosample.part_of.treatments',
+        'replicates.library.biosample.treatments',
+        'replicates.library.construction_platform',
+        'replicates.library.treatments',
+        'possible_controls',
+    ]
+    audit_inherit = [
+        'original_files',
+        'original_files.replicate',
+        'original_files.platform',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'revoked_files',
+        'revoked_files.replicate',
+        'submitted_by',
+        'lab',
+        'award',
+        'analyses',
+        'documents',
+        'replicates.antibody.characterizations.biosample_ontology',
+        'replicates.antibody.characterizations',
+        'replicates.antibody.targets',
+        'replicates.library',
+        'replicates.library.documents',
+        'replicates.library.biosample',
+        'replicates.library.biosample.biosample_ontology',
+        'replicates.library.biosample.organism',
+        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.originated_from',
+        'replicates.library.biosample.originated_from.biosample_ontology',
+        'replicates.library.biosample.part_of',
+        'replicates.library.biosample.part_of.biosample_ontology',
+        'replicates.library.biosample.pooled_from',
+        'replicates.library.biosample.pooled_from.biosample_ontology',
+        'replicates.library.spikeins_used',
+        'replicates.library.treatments',
+    ]
+    set_status_up = [
+        'original_files',
+        'replicates',
+        'documents',
+        'analyses',
+    ]
+    set_status_down = [
+        'original_files',
+        'replicates',
+        'analyses',
+    ]
+    rev = Dataset.rev.copy()
+    rev.update({
+        'related_series': ('Series', 'related_datasets'),
+        'replicates': ('Replicate', 'experiment'),
+        'superseded_by': ('SingleCellUnit', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Related series",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Series.related_datasets",
+        },
+        "notSubmittable": True,
+    })
+    def related_series(self, request, related_series):
+        return paths_filtered_by_status(request, related_series)
+
+    @calculated_property(schema={
+            "title": "Superseded by",
+            "type": "array",
+            "items": {
+                "type": ['string', 'object'],
+                "linkFrom": "SingleCellUnit.supersedes",
+            },
+            "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
+
+@abstract_collection(
+    name='file-set',
+    unique_key='accession',
+    properties={
+        'title': "File set",
+        'description': 'A set of files.',
+    }
+)
 class FileSet(Dataset):
     item_type = 'file_set'
     base_types = ['FileSet'] + Dataset.base_types
     schema = load_schema('encoded:schemas/file_set.json')
     embedded = Dataset.embedded
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Contributing files",
         "type": "array",
         "items": {
@@ -207,7 +471,7 @@ class FileSet(Dataset):
         if status in ('released'):
             return paths_filtered_by_status(
                 request, outside_files,
-                include=('released',),
+                include=('released', 'archived'),
             )
         else:
             return paths_filtered_by_status(
@@ -227,7 +491,7 @@ class FileSet(Dataset):
         if status in ('released'):
             return paths_filtered_by_status(
                 request, chain(original_files, related_files),
-                include=('released',),
+                include=('released', 'archived'),
             )
         else:
             return paths_filtered_by_status(
@@ -272,11 +536,13 @@ class Annotation(FileSet, CalculatedVisualize):
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + [
         'biosample_ontology',
+        'documents',
         'software_used',
         'software_used.software',
         'organism',
         'targets',
         'targets.genes',
+        'treatments',
         'files.dataset',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
@@ -289,7 +555,15 @@ class Annotation(FileSet, CalculatedVisualize):
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'files.library',
+    ]
+    audit_inherit = FileSet.audit_inherit + [
+        'analyses',
+    ]
+    set_status_up = [
+        'analyses'
+    ]
+    set_status_down = [
+        'analyses'
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -355,6 +629,83 @@ class Annotation(FileSet, CalculatedVisualize):
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
 
+    @calculated_property(condition='contributing_files', schema={
+        "title": "Biochemical profile inputs",
+        "description": "The input data used to generate a cCRE annotation.",
+        "type": "array",
+        "items": {
+            "type": "string"
+        },
+        "notSubmittable": True
+    })
+    def biochemical_inputs(
+        self,
+        request,
+        annotation_type,
+        encyclopedia_version=None,
+        contributing_files=None
+    ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5288
+        inputs_set = set()
+        inputs_list = []
+        if encyclopedia_version is not None and \
+                any(version in ['ENCODE v1', 'ENCODE v2', 'ENCODE v3'] for version in encyclopedia_version):
+            if annotation_type == 'candidate Cis-Regulatory Elements':
+                if contributing_files is not None:
+                    for input_file in contributing_files:
+                        file = request.embed(input_file, '@@object?skip_calculated=true')
+                        if file['output_type'] == 'candidate Cis-Regulatory Elements':
+                            if 'derived_from' in file:
+                                for derived_from_file in file['derived_from']:
+                                    derived_from_file_embedded = request.embed(derived_from_file,
+                                                                               '@@object?skip_calculated=true')
+                                    if derived_from_file_embedded['output_type'] == \
+                                            'representative DNase hypersensitivity sites':
+                                        inputs_set.add('rDHS')
+                                    if derived_from_file_embedded['output_type'] == \
+                                            'consensus DNase hypersensitivity sites':
+                                        inputs_set.add('cDHS')
+                        else:
+                            if file['dataset']:
+                                properties = request.embed(file['dataset'], '@@object')
+                                if 'assay_term_name' in properties:
+                                    if properties['assay_term_name'] == 'ChIP-seq':
+                                        target = request.embed(properties['target'],
+                                                               '@@object?skip_calculated=true')
+                                        inputs_set.add(target['label'])
+                                    elif properties['assay_term_name'] == 'DNase-seq':
+                                        inputs_set.add('DNase-seq')
+        inputs_list = sorted(inputs_set)
+        if inputs_list:
+            return list(inputs_list)
+
+    @calculated_property(define=True, schema={
+        "title": "Disease term names",
+        "description": "Ontology term(s) describing the disease(s) relevant to the annotation.",
+        "comment": "Calculated from disease_term_id",
+        "type": "array",
+        "notSubmittable": True,
+        "uniqueItems": True,
+        "minItems": 1,
+        "items": {
+            "title": "Disease term name",
+            "description": "Ontology term describing the disease(s) relevant to the annotation.",
+            "type": "string",
+        }
+    })
+    def disease_term_name(self, request, registry, disease_term_id=None):
+        if disease_term_id is not None:
+            term_name = list()
+            for term_id in disease_term_id:
+                if term_id in registry['ontology']:
+                    term_name.append(registry['ontology'][term_id]['name'])
+                else:
+                    msg = 'Disease term ID {} is not a valid ID'.format(
+                        term_id
+                    )
+                    raise ValidationFailure('body', ['disease_term_id'], msg)
+            return term_name
+
 
 @collection(
     name='publication-data',
@@ -369,8 +720,10 @@ class PublicationData(FileSet):
     embedded = [
         'submitted_by',
         'lab',
-        'award.pi.lab',
-        'references'
+        'award.pi.lab'
+    ]
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data']),
     ]
 
 
@@ -384,8 +737,15 @@ class PublicationData(FileSet):
 class Reference(FileSet):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/reference.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'files.dataset']
-
+    embedded = FileSet.embedded + [
+        'software_used',
+        'software_used.software',
+        'organism',
+        'files.dataset',
+        'donor',
+        'examined_loci',
+        'related_pipelines'
+    ]
 
 @collection(
     name='ucsc-browser-composites',
@@ -400,8 +760,7 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
     embedded = FileSet.embedded + [
         'organism',
         'files.dataset',
-        'files.replicate.library',
-        'files.library'
+        'files.replicate.library'
     ]
 
     @calculated_property(condition='files', schema={
@@ -418,13 +777,15 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
             for idx, path in enumerate(files):
                 # Need to cap this due to the large numbers of files in related_files
                 if idx < 100:
-                    f = request.embed(path, '@@object')
-                    if 'library' in f:
-                        lib = request.embed(f['library'], '@@object?skip_calculated=true')
-                        if 'biosample' in lib:
-                            bio = request.embed(lib['biosample'], '@@object?skip_calculated=true')
-                            if 'organism' in bio:
-                                organisms.append(bio['organism'])
+                    f = request.embed(path, '@@object?skip_calculated=true')
+                    if 'replicate' in f:
+                        rep = request.embed(f['replicate'], '@@object?skip_calculated=true')
+                        if 'library' in rep:
+                            lib = request.embed(rep['library'], '@@object?skip_calculated=true')
+                            if 'biosample' in lib:
+                                bio = request.embed(lib['biosample'], '@@object?skip_calculated=true')
+                                if 'organism' in bio:
+                                    organisms.append(bio['organism'])
             if organisms:
                 return paths_filtered_by_status(request, list(set(organisms)))
             else:
@@ -445,7 +806,6 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
         'biosample_ontology',
         'files.dataset',
         'files.replicate.library',
-        'files.library',
         'files.replicate.experiment.target',
         'organism'
     ]
@@ -477,7 +837,7 @@ class ComputationalModel(FileSet):
         'title': "Series",
         'description': 'Listing of all types of series datasets.',
     })
-class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
+class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesAssayType, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
     item_type = 'series'
     base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
@@ -487,12 +847,12 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'target',
         'target.genes',
         'target.organism',
-        'references',
         'related_datasets.biosample_ontology',
         'related_datasets.files',
         'related_datasets.files.analysis_step_version',
         'related_datasets.files.analysis_step_version.analysis_step',
         'related_datasets.files.analysis_step_version.analysis_step.pipelines',
+        'related_datasets.files.target',
         'related_datasets.lab',
         'related_datasets.submitted_by',
         'related_datasets.award.pi.lab',
@@ -504,20 +864,14 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.library.biosample.organism',
         'related_datasets.replicates.library.biosample.donor.organism',
         'related_datasets.replicates.library.biosample.treatments',
+        'related_datasets.replicates.library.biosample.applied_modifications',
+        'related_datasets.replicates.library.biosample.expressed_genes',
+        'related_datasets.replicates.library.biosample.expressed_genes.gene',
         'related_datasets.replicates.library.spikeins_used',
         'related_datasets.replicates.library.treatments',
-        'related_datasets.replicates.libraries',
-        'related_datasets.replicates.libraries.biosample.submitted_by',
-        'related_datasets.replicates.libraries.biosample.source',
-        'related_datasets.replicates.libraries.biosample.organism',
-        'related_datasets.replicates.libraries.biosample.donor.organism',
-        'related_datasets.replicates.libraries.biosample.treatments',
-        'related_datasets.replicates.libraries.spikeins_used',
-        'related_datasets.replicates.libraries.treatments',
         'related_datasets.possible_controls',
         'related_datasets.possible_controls.lab',
-        'related_datasets.target.organism',
-        'related_datasets.references',
+        'related_datasets.target',
         'files.platform',
         'files.lab',
         'files.analysis_step_version.analysis_step',
@@ -528,10 +882,67 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.analysis_step_version.software_versions',
         'files.analysis_step_version.software_versions.software',
         'files.replicate.library.biosample',
-        'files.library.biosample',
         'files.quality_metrics',
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+    ]
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data']),
+        Path('related_datasets.references', exclude=['datasets', 'publication_data']),
+        Path(
+            'related_datasets.files.analyses',
+            include=[
+                '@id',
+                '@type',
+                'uuid',
+                'status',
+                'pipeline_award_rfas',
+                'pipeline_version',
+                'title',
+            ],
+        ),
+        Path(
+            'series_files',
+            include=[
+                '@id',
+                '@type',
+                'title',
+                'file_type',
+                'file_format',
+                'file_format_type',
+                'output_type',
+                'assembly',
+                'biological_replicates',
+                'technical_replicates',
+                'read_length',
+                'mapped_read_length',
+                'run_type',
+                'paired_end',
+                'paired_with',
+                'index_of',
+                'derived_from',
+                'file_size',
+                'lab',
+                'md5sum',
+                'dbxrefs',
+                'href',
+                'genome_annotation',
+                'platform',
+                'controlled_by',
+                'status',
+                'no_file_available',
+                'restricted',
+                's3_uri',
+                'azure_uri',
+                'analyses',
+                'preferred_default',
+                'processed',
+                'output_category',
+            ],
+        ),
+        Path('series_files.lab', include=['@id', '@type', 'title']),
+        Path('series_files.platform', include=['@id', '@type', 'title']),
+        Path('series_files.analyses', include=['@id', '@type', 'title', 'status']),
     ]
 
     @calculated_property(schema={
@@ -566,15 +977,248 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
                     combined_assembly.add(assembly_from_related_dataset)
         return list(combined_assembly)
 
-    @calculated_property(define=True, schema={
-        "title": "Control types",
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self, request, related_datasets):
+        all_summaries = set()
+        all_ontologies = set()
+        biosample_accessions = set()
+        all_strains = set()
+        all_treatments = set()
+        all_gm_summaries = set()
+        all_elements_references = set()
+        all_biosample_terms = []
+        strain_name = ''
+        treatment_names = ''
+        gm_summaries = ''
+        elements_references_summaries = ''
+
+        for dataset in related_datasets:
+            datasetObject = request.embed(dataset, '@@object')
+            if datasetObject['status'] not in ('deleted', 'replaced'):
+                if 'biosample_summary' in datasetObject:
+                    all_summaries.add(datasetObject['biosample_summary'])
+                all_ontologies.add(datasetObject['biosample_ontology'])
+                replicates = datasetObject.get('replicates')
+                if replicates:
+                    for rep in replicates:
+                        replicateObject = request.embed(rep, '@@object')
+                        if replicateObject['status'] == 'deleted':
+                            continue
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object')
+                            if libraryObject['status'] == 'deleted':
+                                continue
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                                if biosampleObject['status'] == 'deleted':
+                                    continue
+                                if biosampleObject['accession'] not in biosample_accessions:
+                                    biosample_accessions.add(biosampleObject['accession'])
+                                    if biosampleObject['organism'] in ['/organisms/mouse/', '/organisms/dmelanogaster/', '/organisms/celegans/' ]:
+                                        if 'donor' in biosampleObject:
+                                            donorObject = request.embed(biosampleObject['donor'], '@@object')
+                                            if donorObject['status'] != 'deleted':
+                                                strain_name = donorObject.get('strain_name')
+                                                strain_background = donorObject.get('strain_background')
+                                                if strain_name and strain_name.lower() != 'unknown':
+                                                    all_strains.add(strain_name)
+                                                elif strain_background and strain_background.lower() != 'unknown':
+                                                    all_strains.add(strain_background)
+                                    treatments = biosampleObject.get('treatments')
+                                    if treatments:
+                                        for treatment in treatments:
+                                            treatmentObject = request.embed(treatment, '@@object')
+                                            all_treatments.add(treatmentObject['treatment_term_name'])
+
+                                    genetic_modifications = biosampleObject.get('genetic_modifications')
+                                    modifications_list = []
+                                    if genetic_modifications:
+                                        for gm in genetic_modifications:
+                                            gm_object = request.embed(gm, '@@object')
+
+                                            guides = ''
+                                            if 'guide_type' in gm_object:
+                                                guides = gm_object['guide_type']
+
+                                            modification_dict = {'category': gm_object.get('category')}
+                                            if gm_object.get('modified_site_by_target_id'):
+                                                target = request.embed(gm_object.get('modified_site_by_target_id'),'@@object')
+                                                if 'genes' in target:
+                                                    genes = target['genes']
+                                                    if len(genes) >= 1:
+                                                        gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
+                                                        modification_dict['target_gene'] = gene_object.get('symbol')
+                                                        gene_organism_name_parts = request.embed(
+                                                            gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name').split(' ')
+                                                        modification_dict['organism'] = f'{gene_organism_name_parts[0][0]}. {gene_organism_name_parts[1]}'
+                                                    else:
+                                                        modification_dict['target'] = target['label']
+                                                else:
+                                                    modification_dict['target'] = target['label']
+                                            if gm_object.get('introduced_tags'):
+                                                modification_dict['tags'] = []
+                                                for tag in gm_object.get('introduced_tags'):
+                                                    tag_dict = {'location': tag['location'], 'name': tag['name']}
+                                                    if tag.get('promoter_used'):
+                                                        tag_dict['promoter'] = request.embed(
+                                                            tag.get('promoter_used'),'@@object').get('label')
+                                                    modification_dict['tags'].append(tag_dict)
+                                            if gm_object.get('introduced_gene'):
+                                                gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
+                                                modification_dict['gene'] = gene_object.get('symbol')
+                                                gene_organism_name_parts = request.embed(
+                                                    gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name').split(' ')
+                                                modification_dict['organism'] = f'{gene_organism_name_parts[0][0]}. {gene_organism_name_parts[1]}'
+
+                                            if 'method' in gm_object:
+                                                if (gm_object['method'] == 'CRISPR' and guides != ''):
+                                                    entry = f'CRISPR ({guides})'
+                                                    modifications_list.append((entry, modification_dict))
+                                                else:
+                                                    modifications_list.append((gm_object['method'], modification_dict))
+                                            elif 'nucleic_acid_delivery_method' in gm_object:
+                                                for item in gm_object['nucleic_acid_delivery_method']:
+                                                    if (item == 'transduction' and 'MOI' in gm_object):
+                                                        moi = gm_object['MOI']
+                                                        entry = f'transduction ({moi} MOI)'
+                                                        modifications_list.append((entry, modification_dict))
+                                                    else:
+                                                        modifications_list.append((item, modification_dict))
+                                    for (method, obj) in modifications_list:
+                                        all_gm_summaries.add(generate_modification_summary(method, obj))
+
+                elements_references = datasetObject.get('elements_references')
+                if elements_references:
+                    for element_reference in elements_references:
+                        loci_terms = []
+                        elements_reference_object = request.embed(element_reference, '@@object')
+                        if 'examined_loci' not in elements_reference_object and \
+                                'examined_regions' not in elements_reference_object:
+                            loci_terms.append('')
+                        else:
+                            if 'examined_loci' in elements_reference_object:
+                                if len(elements_reference_object['examined_loci']) > 1:
+                                    loci_terms.append('multiple loci')
+                                else:
+                                    examined_loci_object = request.embed(elements_reference_object['examined_loci'][0], '@@object')
+                                    loci_terms.append(f"{examined_loci_object['symbol']} locus")
+                            if 'examined_regions' in elements_reference_object:
+                                if len(elements_reference_object['examined_regions']) > 1:
+                                    loci_terms.append('multiple loci')
+                                else:
+                                    examined_region_object = elements_reference_object['examined_regions'][0]
+                                    loci_terms.append(
+                                        f"{examined_region_object['chromosome']}:"
+                                        f"{examined_region_object['start']}-{examined_region_object['end']}"
+                                    )
+
+                        filtered_loci_terms = [term for term in loci_terms if term not in ['', 'multiple loci']]
+                        if len(set(loci_terms)) == 1 and '' in set(loci_terms):
+                            all_elements_references.add('')
+                        elif 'multiple loci' in loci_terms or \
+                                len(set(filtered_loci_terms)) > 1:
+                            all_elements_references.add('for multiple loci')
+                        elif len(set(filtered_loci_terms)) == 1:
+                            all_elements_references.add(f'for {filtered_loci_terms[0]}')
+
+                    else:
+                        all_elements_references.add('')
+        if all_ontologies:
+            for ontology in all_ontologies:
+                biosample_ontology = str(ontology)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    term = biosample_classification
+                else:
+                    term = f"{biosample_name} {biosample_classification}"
+                all_biosample_terms.append(term)
+            all_terms = ', '.join(all_biosample_terms)
+        if len(all_strains) == 1:
+            strain_name = ', '.join(str(s) for s in all_strains)
+        if all_treatments:
+            treatment_names = ', '.join(str(s) for s in all_treatments)
+        if all_gm_summaries:
+            gm_summaries = ', '.join(str(s) for s in all_gm_summaries)
+        if all_elements_references:
+            elements_references_summaries = ', '.join(str(s) for s in all_elements_references)
+        if all_summaries and all_ontologies:
+            suffix = ''
+            if treatment_names:
+                suffix = f'{suffix} treated with {treatment_names}'
+            if gm_summaries:
+                suffix = f'{suffix} {gm_summaries}'
+            if elements_references_summaries:
+                suffix = f'{suffix} {elements_references_summaries}'
+
+            if len(all_summaries) == 1 and len(all_ontologies) == 1:
+                return ', '.join(list(map(str, all_summaries)))
+            elif len(all_summaries) > 1 and len(all_ontologies) == 1:
+                biosample_ontology = ', '.join(str(s) for s in all_ontologies)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    biosample_display = 'whole organisms'
+                else:
+                    biosample_display = f"{biosample_name} {biosample_classification}"
+                if strain_name:
+                    return f"{strain_name} {biosample_display}{suffix}"
+                else:
+                    return f'{biosample_display}{suffix}'
+            elif len(all_summaries) > 1 and len(all_ontologies) > 1:
+                if strain_name:
+                    return f'{strain_name} {all_terms}{suffix}'
+                else:
+                    return f'{all_terms}{suffix}'
+            elif len(all_ontologies) > 1:
+                if strain_name:
+                    return f'{strain_name} {all_terms}{suffix}'
+                else:
+                    return f'{all_terms}{suffix}'
+        if all_ontologies and not all_summaries:
+            return all_terms
+
+    @calculated_property(schema={
+        "title": "Files",
         "type": "array",
         "items": {
             "type": "string",
+            "linkTo": "File",
         },
     })
-    def control_type(self, request, related_datasets):
-        return request.select_distinct_values('control_type', *related_datasets)
+    def series_files(self, request, original_files, related_datasets, status):  
+        elements_cloning_datasets = request.select_distinct_values('elements_cloning', *related_datasets)
+        elements_mapping_datasets = request.select_distinct_values('elements_mappings', *related_datasets)
+        related_datasets_paths = paths_filtered_by_status(
+            request, 
+            related_datasets + elements_cloning_datasets + elements_mapping_datasets
+        )
+        original_related_datasets_files = []
+        for path in related_datasets_paths:
+            related_dataset = request.embed(
+                path,
+                '@@object_with_select_calculated_properties'
+                '?field=@id'
+                '&field=original_files'
+            )
+            original_related_datasets_files.extend(related_dataset.get('original_files', []))
+
+        if status in ('released', 'archived'):
+            return paths_filtered_by_status(
+                request, original_files + original_related_datasets_files,
+                include=('released', 'archived'),
+            )
+        else:
+            return paths_filtered_by_status(
+                request, original_files + original_related_datasets_files,
+                exclude=('revoked', 'deleted', 'replaced'),
+            )
 
 
 @collection(
@@ -587,7 +1231,10 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
 class MatchedSet(Series):
     item_type = 'matched_set'
     schema = load_schema('encoded:schemas/matched_set.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
 
 
 @collection(
@@ -595,13 +1242,271 @@ class MatchedSet(Series):
     unique_key='accession',
     properties={
         'title': "Aggregate series",
-        'description': 'A series that groups two or more datastes to allow meta-analysis.',
+        'description': 'A series that groups two or more datasets to allow meta-analysis.',
     })
 class AggregateSeries(Series):
     item_type = 'aggregate_series'
     schema = load_schema('encoded:schemas/aggregate_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
 
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self, request, related_datasets, related_series):
+        all_series_summaries = set()
+        if related_series and len(related_series) > 0:
+            for series in related_series:
+                seriesObject = request.embed(series, '@@object')
+                if 'biosample_summary' in seriesObject:
+                    all_series_summaries.add(seriesObject['biosample_summary'])
+
+        all_summaries = set()
+        all_ontologies = set()
+        biosample_accessions = set()
+        all_strains = set()
+        all_treatments = set()
+        all_gm_summaries = set()
+        all_elements_references = set()
+        all_biosample_terms = []
+        strain_name = ''
+        treatment_names = ''
+        gm_summaries = ''
+        elements_references_summaries = ''
+        series_summaries = ''
+
+        for dataset in related_datasets:
+            datasetObject = request.embed(dataset, '@@object')
+            if datasetObject['status'] not in ('deleted', 'replaced'):
+                if 'biosample_summary' in datasetObject:
+                    all_summaries.add(datasetObject['biosample_summary'])
+                all_ontologies.add(datasetObject['biosample_ontology'])
+                replicates = datasetObject.get('replicates')
+                if replicates:
+                    for rep in replicates:
+                        replicateObject = request.embed(rep, '@@object')
+                        if replicateObject['status'] == 'deleted':
+                            continue
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object')
+                            if libraryObject['status'] == 'deleted':
+                                continue
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                                if biosampleObject['status'] == 'deleted':
+                                    continue
+                                if biosampleObject['accession'] not in biosample_accessions:
+                                    biosample_accessions.add(biosampleObject['accession'])
+                                    if biosampleObject['organism'] in ['/organisms/mouse/', '/organisms/dmelanogaster/', '/organisms/celegans/' ]:
+                                        if 'donor' in biosampleObject:
+                                            donorObject = request.embed(biosampleObject['donor'], '@@object')
+                                            if donorObject['status'] != 'deleted':
+                                                strain_name = donorObject.get('strain_name')
+                                                strain_background = donorObject.get('strain_background')
+                                                if strain_name and strain_name.lower() != 'unknown':
+                                                    all_strains.add(strain_name)
+                                                elif strain_background and strain_background.lower() != 'unknown':
+                                                    all_strains.add(strain_background)
+                                    treatments = biosampleObject.get('treatments')
+                                    if treatments:
+                                        for treatment in treatments:
+                                            treatmentObject = request.embed(treatment, '@@object')
+                                            all_treatments.add(treatmentObject['treatment_term_name'])
+
+                                    genetic_modifications = biosampleObject.get('genetic_modifications')
+                                    modifications_list = []
+                                    if genetic_modifications:
+                                        for gm in genetic_modifications:
+                                            gm_object = request.embed(gm, '@@object')
+
+                                            guides = ''
+                                            if 'guide_type' in gm_object:
+                                                guides = gm_object['guide_type']
+
+                                            modification_dict = {'category': gm_object.get('category')}
+                                            if gm_object.get('modified_site_by_target_id'):
+                                                target = request.embed(gm_object.get('modified_site_by_target_id'),'@@object')
+                                                if 'genes' in target:
+                                                    genes = target['genes']
+                                                    if len(genes) >= 1:
+                                                        gene_object = request.embed(genes[0], '@@object?skip_calculated=true')
+                                                        modification_dict['target_gene'] = gene_object.get('symbol')
+                                                        gene_organism_name_parts = request.embed(
+                                                            gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name').split(' ')
+                                                        modification_dict['organism'] = f'{gene_organism_name_parts[0][0]}. {gene_organism_name_parts[1]}'
+                                                    else:
+                                                        modification_dict['target'] = target['label']
+                                                else:
+                                                    modification_dict['target'] = target['label']
+                                            if gm_object.get('introduced_tags'):
+                                                modification_dict['tags'] = []
+                                                for tag in gm_object.get('introduced_tags'):
+                                                    tag_dict = {'location': tag['location'], 'name': tag['name']}
+                                                    if tag.get('promoter_used'):
+                                                        tag_dict['promoter'] = request.embed(
+                                                            tag.get('promoter_used'),'@@object').get('label')
+                                                    modification_dict['tags'].append(tag_dict)
+                                            if gm_object.get('introduced_gene'):
+                                                gene_object = request.embed(gm_object['introduced_gene'], '@@object?skip_calculated=true')
+                                                modification_dict['gene'] = gene_object.get('symbol')
+                                                gene_organism_name_parts = request.embed(
+                                                    gene_object['organism'], '@@object?skip_calculated=true').get('scientific_name').split(' ')
+                                                modification_dict['organism'] = f'{gene_organism_name_parts[0][0]}. {gene_organism_name_parts[1]}'
+
+                                            if 'method' in gm_object:
+                                                if (gm_object['method'] == 'CRISPR' and guides != ''):
+                                                    entry = f'CRISPR ({guides})'
+                                                    modifications_list.append((entry, modification_dict))
+                                                else:
+                                                    modifications_list.append((gm_object['method'], modification_dict))
+                                            elif 'nucleic_acid_delivery_method' in gm_object:
+                                                for item in gm_object['nucleic_acid_delivery_method']:
+                                                    if (item == 'transduction' and 'MOI' in gm_object):
+                                                        moi = gm_object['MOI']
+                                                        entry = f'transduction ({moi} MOI)'
+                                                        modifications_list.append((entry, modification_dict))
+                                                    else:
+                                                        modifications_list.append((item, modification_dict))
+                                    for (method, obj) in modifications_list:
+                                        all_gm_summaries.add(generate_modification_summary(method, obj))
+
+                elements_references = datasetObject.get('elements_references')
+                if elements_references:
+                    for element_reference in elements_references:
+                        loci_terms = []
+                        elements_reference_object = request.embed(element_reference, '@@object')
+                        if 'examined_loci' not in elements_reference_object and \
+                                'examined_regions' not in elements_reference_object:
+                            loci_terms.append('')
+                        else:
+                            if 'examined_loci' in elements_reference_object:
+                                if len(elements_reference_object['examined_loci']) > 1:
+                                    loci_terms.append('multiple loci')
+                                else:
+                                    examined_loci_object = request.embed(elements_reference_object['examined_loci'][0], '@@object')
+                                    loci_terms.append(f"{examined_loci_object['symbol']} locus")
+                            if 'examined_regions' in elements_reference_object:
+                                if len(elements_reference_object['examined_regions']) > 1:
+                                    loci_terms.append('multiple loci')
+                                else:
+                                    examined_region_object = elements_reference_object['examined_regions'][0]
+                                    loci_terms.append(
+                                        f"{examined_region_object['chromosome']}:"
+                                        f"{examined_region_object['start']}-{examined_region_object['end']}"
+                                    )
+
+                        filtered_loci_terms = [term for term in loci_terms if term not in ['', 'multiple loci']]
+                        if len(set(loci_terms)) == 1 and '' in set(loci_terms):
+                            all_elements_references.add('')
+                        elif 'multiple loci' in loci_terms or \
+                                len(set(filtered_loci_terms)) > 1:
+                            all_elements_references.add('for multiple loci')
+                        elif len(set(filtered_loci_terms)) == 1:
+                            all_elements_references.add(f'for {filtered_loci_terms[0]}')
+
+                    else:
+                        all_elements_references.add('')
+        if all_ontologies:
+            for ontology in all_ontologies:
+                biosample_ontology = str(ontology)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    term = biosample_classification
+                else:
+                    term = f"{biosample_name} {biosample_classification}"
+                all_biosample_terms.append(term)
+            all_terms = ', '.join(all_biosample_terms)
+        if len(all_strains) == 1:
+            strain_name = ', '.join(str(s) for s in all_strains)
+        if all_treatments:
+            treatment_names = ', '.join(str(s) for s in all_treatments)
+        if all_gm_summaries:
+            gm_summaries = ', '.join(str(s) for s in all_gm_summaries)
+        if all_elements_references:
+            elements_references_summaries = ', '.join(str(s) for s in all_elements_references)
+        if all_series_summaries:
+            series_summaries = ', '.join(str(s) for s in all_series_summaries)
+        if all_summaries and all_ontologies:
+            suffix = ''
+            if treatment_names:
+                suffix = f'{suffix} treated with {treatment_names}'
+            if gm_summaries:
+                suffix = f'{suffix} {gm_summaries}'
+            if elements_references_summaries:
+                suffix = f'{suffix} {elements_references_summaries}'
+            if series_summaries:
+                suffix = f'{suffix}, {series_summaries}'
+
+            if len(all_summaries) == 1 and len(all_ontologies) == 1:
+                if series_summaries:
+                    return f"{', '.join(list(map(str, all_summaries)))}, {series_summaries}"
+                else:
+                    return ', '.join(list(map(str, all_summaries)))
+            elif len(all_summaries) > 1 and len(all_ontologies) == 1:
+                biosample_ontology = ', '.join(str(s) for s in all_ontologies)
+                biosample_type_object = request.embed(biosample_ontology, '@@object')
+                biosample_name = biosample_type_object['term_name']
+                biosample_classification = biosample_type_object['classification']
+                if biosample_classification == 'whole organisms':
+                    biosample_display = 'whole organisms'
+                else:
+                    biosample_display = f"{biosample_name} {biosample_classification}"
+                if strain_name:
+                    return f"{strain_name} {biosample_display}{suffix}"
+                else:
+                    return f'{biosample_display}{suffix}'
+            elif len(all_summaries) > 1 and len(all_ontologies) > 1:
+                if strain_name:
+                    return f'{strain_name} {all_terms}{suffix}'
+                else:
+                    return f'{all_terms}{suffix}'
+            elif len(all_ontologies) > 1:
+                if strain_name:
+                    return f'{strain_name} {all_terms}{suffix}'
+                else:
+                    return f'{all_terms}{suffix}'
+        if all_series_summaries and not all_summaries and not all_ontologies:
+            return series_summaries
+        if all_series_summaries and all_ontologies and not all_summaries:
+            if strain_name:
+                return f'{strain_name} {all_terms}, {series_summaries}'
+            else:
+                return f'{all_terms}, {series_summaries}'
+        if all_ontologies and not all_summaries and not all_series_summaries:
+            return all_terms
+
+
+    @calculated_property(define=True, schema={
+        "title": "Assay name",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_name(self, request, related_datasets, related_series=[]):
+        all_assay_terms = request.select_distinct_values(
+            'assay_term_name', *related_datasets) + request.select_distinct_values(
+            'assay_term_name', *related_series)
+        return list(set(all_assay_terms))
+
+
+    @calculated_property(define=True, schema={
+        "title": "Assay term ID",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_id(self, request, related_datasets, related_series=[]):
+        all_assay_ids = request.select_distinct_values(
+            'assay_term_id', *related_datasets) + request.select_distinct_values(
+            'assay_term_id', *related_series)
+        return list(set(all_assay_ids))
 
 @collection(
     name='treatment-time-series',
@@ -613,7 +1518,10 @@ class AggregateSeries(Series):
 class TreatmentTimeSeries(Series):
     item_type = 'treatment_time_series'
     schema = load_schema('encoded:schemas/treatment_time_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
 
 
 @collection(
@@ -626,7 +1534,10 @@ class TreatmentTimeSeries(Series):
 class TreatmentConcentrationSeries(Series):
     item_type = 'treatment_concentration_series'
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
 
 
 @collection(
@@ -639,7 +1550,10 @@ class TreatmentConcentrationSeries(Series):
 class OrganismDevelopmentSeries(Series):
     item_type = 'organism_development_series'
     schema = load_schema('encoded:schemas/organism_development_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
 
 
 @collection(
@@ -652,7 +1566,10 @@ class OrganismDevelopmentSeries(Series):
 class ReplicationTimingSeries(Series):
     item_type = 'replication_timing_series'
     schema = load_schema('encoded:schemas/replication_timing_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
 
 
 @collection(
@@ -665,7 +1582,10 @@ class ReplicationTimingSeries(Series):
 class ReferenceEpigenome(Series):
     item_type = 'reference_epigenome'
     schema = load_schema('encoded:schemas/reference_epigenome.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
 
     rev = Dataset.rev.copy()
     rev.update({
@@ -701,6 +1621,8 @@ class ExperimentSeries(Series):
         'contributing_awards',
         'contributors',
         'organism',
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
         'related_datasets.award',
         'related_datasets.lab',
         'related_datasets.replicates.library.biosample',
@@ -709,6 +1631,7 @@ class ExperimentSeries(Series):
         'target.genes',
         'target.organism',
     ]
+    embedded_with_frame = []
 
     @calculated_property(schema={
         "title": "Assay type",
@@ -773,7 +1696,18 @@ class ExperimentSeries(Series):
 class SingleCellRnaSeries(Series):
     item_type = 'single_cell_rna_series'
     schema = load_schema('encoded:schemas/single_cell_rna_series.json')
-    embedded = Series.embedded
+    embedded = [
+        'biosample_ontology',
+        'organism',
+        'lab',
+        'award',
+        'submitted_by',
+        'related_datasets.lab',
+        'related_datasets.biosample_ontology',
+        'related_datasets.replicates.library',
+        'related_datasets.replicates.library.biosample',
+        'related_datasets.replicates.library.construction_platform'
+    ]
 
 
 @collection(
@@ -786,4 +1720,385 @@ class SingleCellRnaSeries(Series):
 class FunctionalCharacterizationSeries(Series):
     item_type = 'functional_characterization_series'
     schema = load_schema('encoded:schemas/functional_characterization_series.json')
-    embedded = Series.embedded
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+        'related_datasets.examined_loci',
+        'related_datasets.examined_loci.gene',
+        'related_datasets.elements_mappings',
+        'related_datasets.elements_mappings.analyses',
+        'related_datasets.elements_mappings.lab',
+        'related_datasets.elements_cloning',
+        'related_datasets.elements_cloning.analyses',
+        'related_datasets.elements_cloning.lab',
+        'related_datasets.elements_references',
+        'related_datasets.elements_references.examined_loci',
+        'elements_references',
+        'elements_references.examined_loci',
+        'elements_references.files',
+    ]
+    embedded_with_frame = Series.embedded_with_frame + [
+        Path(
+            'biosamples',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'disease_term_name',
+                'life_stage',
+                'donor',
+                'treatments',
+                'applied_modifications',
+                'sex',
+            ]
+        ),
+        Path(
+            'biosamples.treatments',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'treatment_term_name',
+            ]
+        ),
+        Path(
+            'biosamples.applied_modifications',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'reagents',
+                'guide_type',
+                'MOI',
+            ]
+        ),
+        Path(
+            'biosamples.applied_modifications.reagents',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'treatment_terpromoter_details',
+            ]
+        ),
+        Path(
+            'biosamples.donor',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'organism',
+            ]
+        ),
+        Path(
+            'biosamples.donor.organism',
+            include=[
+                '@id',
+                '@type',
+                'status',
+                'scientific_name',
+            ]
+        ),
+    ]
+    @calculated_property(schema={
+        "title": "Biosamples",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Biosample",
+        },
+        "notSubmittable": True,
+    })
+    def biosamples(self, request, related_datasets=None):
+        biosamples = set()
+        if related_datasets:
+            replicates = request.select_distinct_values('replicates', *related_datasets)
+            properties = {'replicates': replicates}
+            path = Path(
+                'replicates.library.biosample', 
+                include=[
+                    '@id',
+                    'library',
+                    'biosample',
+                ]
+            )
+            path.expand(request, properties)
+            
+            if properties['replicates']:
+                for rep in properties['replicates']:
+                    if 'library' in rep and 'biosample' in rep['library']:
+                        biosamples.add(rep['library']['biosample']['@id'])
+
+        return list(biosamples)
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Examined loci",
+        "type": "array",
+        "items": {
+            "type": "object",
+        },
+        "notSubmittable": True,
+    })
+    def examined_loci(self, request, related_datasets):
+        examined_loci = []
+        examined_loci_identifiers = []
+
+        for related_dataset in related_datasets:
+            related_datasetObject = request.embed(related_dataset, '@@object?skip_calculated=true')
+            dataset_examined_loci = related_datasetObject.get('examined_loci', [])
+            for examined_locus in dataset_examined_loci:
+                examined_loci_identifier = calculate_examined_locus_id(examined_locus)
+                if examined_loci_identifier not in examined_loci_identifiers:
+                    examined_loci_identifiers.append(examined_loci_identifier)
+                    examined_locus['gene'] = request.embed(examined_locus.get('gene'), '@@object?skip_calculated=true')
+                    examined_loci.append(examined_locus)
+        if examined_loci:
+            return examined_loci
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Elements references",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": ["Annotation", "Reference"]
+        }
+    })
+    def elements_references(self, request, related_datasets):
+        return request.select_distinct_values('elements_references', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_slims(self, request, related_datasets):
+        return request.select_distinct_values('assay_slims', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Assay title",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_title(self, request, related_datasets):
+        titles = request.select_distinct_values('assay_title', *related_datasets)
+        not_controls = [title for title in titles if (
+            (not title.startswith('Control')) 
+            and 
+            (not title == 'pooled clone sequencing')
+            )
+        ]
+        if not_controls:
+            return not_controls
+        else:
+            return titles
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Assay name",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_name(self, request, related_datasets):
+        terms = set()
+        control_terms = set()
+        for related_dataset in related_datasets:
+            related_dataset_object = request.embed(related_dataset, '@@object?skip_calculated=true')
+            if related_dataset_object.get('control_type', None):
+                control_terms.add(related_dataset_object.get('assay_term_name', None))
+            else:
+                terms.add(related_dataset_object.get('assay_term_name', None))
+        if len(terms) > 0:
+            return list(terms)
+        else:
+            return list(control_terms)
+
+    @calculated_property(schema={
+        "title": "Datapoint",
+        "description": "A flag to indicate whether the FC Series is a datapoint that should not be displayed on it's own.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def datapoint(self, request):
+        return False
+
+
+def calculate_examined_locus_id(dataset_examined_loci):
+    gene = dataset_examined_loci.get("gene", "")
+    expression_percentile = dataset_examined_loci.get("expression_percentile", "")
+    expression_range_minimum = dataset_examined_loci.get("expression_range_minimum", "")
+    expression_range_maximum = dataset_examined_loci.get("expression_range_maximum", "")
+    expression_measurement_method = dataset_examined_loci.get("expression_measurement_method", "")
+    return f'{gene}:{expression_percentile}:{expression_range_minimum}:{expression_range_maximum}:{expression_measurement_method}'
+
+
+@collection(
+    name='gene-silencing-series',
+    unique_key='accession',
+    properties={
+        'title': "Gene silencing series",
+        'description': 'A series that group gene silencing experiments with the relevant controls.',
+    })
+class GeneSilencingSeries(Series):
+    item_type = 'gene_silencing_series'
+    schema = load_schema('encoded:schemas/gene_silencing_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
+
+
+@collection(
+    name='differentiation-series',
+    unique_key='accession',
+    properties={
+        'title': "Differentiation series",
+        'description': 'A series that groups experiments investigating biosamples along a differentiation trajectory.',
+    })
+class DifferentiationSeries(Series):
+    item_type = 'differentiation_series'
+    schema = load_schema('encoded:schemas/differentiation_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
+
+
+@collection(
+    name='pulse-chase-time-series',
+    unique_key='accession',
+    properties={
+        'title': "Pulse chase time series",
+        'description': 'A series that groups experiments investigating biosamples using pulse-chase analysis.',
+    })
+class PulseChaseTimeSeries(Series):
+    item_type = 'pulse_chase_time_series'
+    schema = load_schema('encoded:schemas/pulse_chase_time_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
+
+
+@collection(
+    name='disease-series',
+    unique_key='accession',
+    properties={
+        'title': "Disease series",
+        'description': 'A series that groups experiments investigating samples with an identified disease.',
+    })
+class DiseaseSeries(Series):
+    item_type = 'disease_series'
+    schema = load_schema('encoded:schemas/disease_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
+    
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('DiseaseSeries', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "DiseaseSeries.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
+
+@collection(
+    name='multiomics-series',
+    unique_key='accession',
+    properties={
+        'title': "Multiomics series",
+        'description': 'Experimental data investigating biosamples via multiple genomic analyses.',
+    })
+class MultiomicsSeries(Series):
+    item_type = 'multiomics_series'
+    schema = load_schema('encoded:schemas/multiomics_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
+
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('MultiomicsSeries', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "MultiomicsSeries.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
+
+@collection(
+    name='collection-series',
+    unique_key='accession',
+    properties={
+        'title': "Collection series",
+        'description': 'A collection of experiments.',
+    })
+class CollectionSeries(Series):
+    item_type = 'collection_series'
+    schema = load_schema('encoded:schemas/collection_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+    ]
+
+
+@collection(
+    name='differential-accessibility-series',
+    unique_key='accession',
+    properties={
+        'title': "Differential accessibility series",
+        'description': 'Chromatin accessibility data investigating cells sorted based on expression of specific genes.',
+    })
+class DifferentialAccessibilitySeries(Series):
+    item_type = 'differential_accessibility_series'
+    schema = load_schema('encoded:schemas/differential_accessibility_series.json')
+    embedded = Series.embedded + [
+        'related_datasets.analyses',
+        'related_datasets.analyses.quality_metrics.quality_metric',
+        'related_datasets.replicates',
+        'related_datasets.replicates.library',
+        'related_datasets.replicates.library.biosample',
+        'related_datasets.replicates.library.biosample.expressed_genes',
+        'related_datasets.replicates.library.biosample.expressed_genes.gene',
+    ]
+
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('DifferentialAccessibilitySeries', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "DifferentialAccessibilitySeries.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)

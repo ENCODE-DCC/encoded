@@ -372,6 +372,12 @@
                 "lane": 5,
                 "biosample_ontology": "cell_line_EFO_0002791",
                 "lane_status": "not compliant"
+            },
+            {
+                "organism": "human",
+                "lane": 6,
+                "biosample_ontology": "cell_line_NTR_0000838",
+                "lane_status": "exempt from standards"
             }
         ],
         "notes": "The HepG2 and HeLa-S3 lanes look terrible.",

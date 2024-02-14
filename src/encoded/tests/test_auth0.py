@@ -319,7 +319,7 @@ def test_signup_fails_if_given_improper_credentials(mock_get, mock_collection_ad
     }, {
         'email': 'fakeemail@email.com',
         'first_name': 'fakefirstname',
-        'last_name': 'fakeemail@email.com',
+        'last_name': 'fakeemail',
     }),
     ])
 def test_get_user_info_assigns_valid_data_properly(json_data, expected):
@@ -333,6 +333,21 @@ def test_get_user_info_assigns_valid_data_properly(json_data, expected):
 @pytest.mark.parametrize('json_data, expected', [
     (None, None,),
     ({}, None),
+    ({
+        'email': None,
+        'first_name': 'fakefirstname',
+        'last_name': 'fakeemail',
+    }, None),
+    ({
+        'email': '',
+        'first_name': 'fakefirstname',
+        'last_name': 'fakeemail',
+    }, None),
+    ({
+        'email': '    ',
+        'first_name': 'fakefirstname',
+        'last_name': 'fakeemail',
+    }, None),
     ])
 def test_get_user_info_throws_proper_exception(json_data, expected):
     with pytest.raises(ValidationError):

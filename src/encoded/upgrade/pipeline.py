@@ -77,3 +77,49 @@ def pipeline_9_10(value, system):
     for i, a in enumerate(value.get('assay_term_names', [])):
         if a == 'single-nuclei ATAC-seq':
             value['assay_term_names'][i] = 'single-nucleus ATAC-seq'
+
+
+@upgrade_step('pipeline', '10', '11')
+def pipeline_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5304
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'single cell isolation followed by RNA-seq':
+            value['assay_term_names'][i] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('pipeline', '11', '12')
+def pipeline_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5787
+    notes = ''
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'single-nucleus RNA-seq':
+            value['assay_term_names'][i] = 'single-cell RNA sequencing assay'
+            notes += 'This pipeline is now compatible with scRNA-seq, upgraded from snRNA-seq.'
+        elif a == 'genotyping by high throughput sequencing assay':
+            value['assay_term_names'][i] = 'whole genome sequencing assay'
+            notes += 'This pipeline is now compatible with WGS, upgraded from genotyping HTS assay.'
+    if notes != '':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {notes}'
+        else:
+            value['notes'] = notes
+
+
+@upgrade_step('pipeline', '12', '13')
+def pipeline_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5828
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'single-cell ATAC-seq':
+            value['assay_term_names'][i] = 'single-nucleus ATAC-seq'
+            if 'notes' in value:
+                value['notes'] = f'{value.get("notes")}. This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.'
+            else:
+                value['notes'] = 'This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.'
+
+
+@upgrade_step('pipeline', '13', '14')
+def pipeline_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5964
+    for i, a in enumerate(value.get('assay_term_names', [])):
+        if a == 'Capture Hi-C':
+            value['assay_term_names'][i] = 'capture Hi-C'

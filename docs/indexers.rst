@@ -15,7 +15,7 @@ Followup indexers act on uuids staged by the primary indexer at the end if its c
 
 The **vis indexer** is a followup indexer used to generate and store metadata reformatted for browser visualization of files.  The vis indexer acts on uuids staged by the primary indexer and retrieves embedded objects from elasticsearch.  The list of uuids will usually be filtered down to only those for visualizable objects (datasets) with files.  These objects (sometimes referred to as 'vis_blobs') are stored in elasticsearch (as a 'vis_cache') and retrieved primarily for visualization in UCSC trackhubs.  A complete reindexing by the vis indexer on an unclustered demo currently takes ~30 minutes on ~26K of vis_blobs (2018-03-01).
 
-The **region indexer** is a followup indexer used to load genomic regions from files into an elasticsearch index.  This indexer receives a list of uuids staged by the primary indexer and will usually filter that down to "regionable datasets" which may contain files of interest to be added to the index.  The embedded dataset objects are retrieved from elasticsearch and each dataset's files are reduced to those that are candidates for the region index.  Since the content of files will not change, once a file is in the region index it will not be reindexed.  Therefore, after the initial index, it is quite common for a complete primary reindex to result in 0 files reindexed by the region indexer.  It should be noted that the region index is in most cases a separate instance of elasticsearch and may be located on a separate machine.  Additionally, the region index may contain regions from other systems, not just encoded.  The regions in the index are retrieved by region search queries.  A complete reindexing of all files on an unclustered demo currently takes ~3.5 hours on ~5K of files (2018-03-01).
+The **region indexer DEPRECATED** is a followup indexer used to load genomic regions from files into an elasticsearch index.  This indexer receives a list of uuids staged by the primary indexer and will usually filter that down to "regionable datasets" which may contain files of interest to be added to the index.  The embedded dataset objects are retrieved from elasticsearch and each dataset's files are reduced to those that are candidates for the region index.  Since the content of files will not change, once a file is in the region index it will not be reindexed.  Therefore, after the initial index, it is quite common for a complete primary reindex to result in 0 files reindexed by the region indexer.  It should be noted that the region index is in most cases a separate instance of elasticsearch and may be located on a separate machine.  Additionally, the region index may contain regions from other systems, not just encoded.  The regions in the index are retrieved by region search queries.  A complete reindexing of all files on an unclustered demo currently takes ~3.5 hours on ~5K of files (2018-03-01).
 
 ---------------------------
 _indexer values (listeners)
@@ -60,7 +60,7 @@ In addition to using path /_indexer, a more complete image of an indexer can be 
 
 These views will return the following values with some slight variation between the 3 indexers:
 
-  :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer'.
+  :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer' (deprecated).
   :status: The indexer is either 'waiting' between cycles or 'indexing' during a cycle.  It might also be 'uninitialized' when the system is first coming up.
   :docs_in_index: (primary only) The count of all documents currently in the elasticsearch index.
   :vis_blobs_in_index: (vis only) The count of all vis objects currently in the elasticsearch index.
@@ -80,7 +80,7 @@ These views will return the following values with some slight variation between 
   :notify_requested: If notify was requested, this will include who will be notified and in which circumstances.
   :state: The contents of the indexer's state object held in elasticsearch...
 
-    :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer'
+    :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer' (deprecated)
     :status: The indexer is either 'done' with a cycle or 'indexing' during a cycle.
     :cycles: Count of indexer cycles that actually indexed something. This number should reflect all cycles since the system was initialized or since a full reindexing was requested.
     :cycle_count: When indexing, the number of uuids in the current cycle.
@@ -116,9 +116,7 @@ A note about reindexing the region indexer.  Since files are not expected to cha
    | ``.../_indexer_state?reindex=4871cc67-c9c7-4f11-8628-8e9653ddb2a4&notify=hitz&bot_token=<bot_token_not_shown_here>&which=all``
 2. | Request reindexing all uuids by the vis_indexer only. Notify Ben when done. *NOTE: bot_token once set for this machine (previous request) is never needed again.*
    | ``.../_visindexer_state?reindex=all&notify=hitz``
-3. | Request reindexing 2 dataset uuids by the region_indexer only. This will force reindexing of the dataset's files. Note: no one will be notified when this is done.
-   | ``.../_regionindexer_state?reindex=e44c59cc-f14a-4722-a9c5-2fe63c2b9533,b9a35d16-2a5d-432c-92fb-93c0a8c572b4``
-4. | Request reindexing 1 uuid and notify Ben when the primary indexer is done (even though the follow-up indexers have yet to do their work.
+3.   Request reindexing 1 uuid and notify Ben when the primary indexer is done (even though the follow-up indexers have yet to do their work.
    | .../_indexer_state?reindex=e44c59cc-f14a-4722-a9c5-2fe63c2b9533&notify=hitz
 5. | Request up to 100 uuids currently being indexed, starting at the beginning:
    | ``.../_indexer_state?uuids=0``

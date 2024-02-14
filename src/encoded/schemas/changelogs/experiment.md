@@ -1,11 +1,80 @@
 ## Changelog for experiment.json
 
+### Schema version 37
+
+* Upgraded *internal_tags* as follows:
+    * *ENCYCLOPEDIAv3* is now *ENCYCLOPEDIAv0.3*
+    * *ENCYCLOPEDIAv4* is now *ENCYCLOPEDIAv1*
+    * *ENCYCLOPEDIAv5* is now *ENCYCLOPEDIAv2*
+    * *ENCYCLOPEDIAv6* is now *ENCYCLOPEDIAv3*
+
+### Minor changes since schema version 36
+* Added *bio_replicate_count* and *tech_replicate_count* for the respective counts of the embedded replicates as a calculated property
+* Added *biological_replicates* with a formatted text version of biological replicates as a calculated property
+* Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
+* Added *Deeply Profiled* to the *internal_tags* enum
+* Added *related_annotations* calculated property
+* Added *seqFISH* to *assay_term_name* enum
+* Added *Degron* to *internal_tags* enums list.
+* Added *RegulomeDB_2_2*, *RegulomeDB_2_3*, *RegulomeDB_3_0* and *RegulomeDB_3_1* to the *internal_tags* enum list.
+
+### Schema version 36
+* Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
+
+### Schema version 35
+* Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*
+* Added *RegulomeDB_2_0* and *RegulomeDB_2_1* to the *internal_tags* enum list.
+
+### Minor changes since schema version 34
+* Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
+* Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+
+### Schema version 34
+* Changed the *analysis_objects* property to be *analyses*
+
+### Schema version 33
+* Removed *single-cell ATAC-seq* from *assay_term_name* enum and remapped to *single-nucleus ATAC-seq*
+
+### Schema version 32
+
+* Added *GRO-cap*, *GRO-seq*, and *long read single-cell RNA-seq* to *assay_term_name* enum;  *single-nucleus RNA-seq* and *genotyping by high throughput sequencing assay* were removed and remapped to *single-cell RNA sequencing assay* and *whole genome sequencing assay* respectively
+
+### Minor changes since schema version 31
+* Added *Capture Hi-C* and *single-nucleus RNA-seq* to *assay_term_name* enum
+* Added *LRGASP* to the *internal_tags* enum
+* Added *doi* property
+
+### Schema version 31
+
+* Removed the *analyses* property.
+
+### Minor changes since schema version 30
+* Added *analysis_objects* property.
+* Added *SPRITE-IP* to *assay_term_name* enum
+* Added *life_stage_age* calculated property that summarizes the life stage and age of the biosamples used in the experiment.
+* Small RNA-seq experiments (with libraries of fragments <200 nucleotides long) may be submitted with *assay_term_name* enum: *small RNA-seq*.
+* Added *CUT&Tag* to *assay_term_name* enum
+* *SCREEN-GRCh38* and *SCREEN-mm10* can now be linked to an experiment under external resources (dbxrefs).
+
+### Schema version 30
+
+* *assay_term_name* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
+
+### Minor changes since schema version 29
+* Added *wild type* enum to *control_type*
+
+### Schema version 29
+
+* The *internal_status* enum was adjusted to remove *requires lab review* and *unrunnable*; *pre-pipeline review* and *post-pipeline review* were added.
+
 ### Minor changes since schema version 28
 
 * Removed FCC *assay_term_name* enums *STARR-seq*, *MPRA*, *CRISPR screen*, and *pooled clone sequencing* from Experiment schema. They are to be used only in FunctionalCharacterizationExperiment objects
 * Removed *month_released* calculated property.
 * Added *analyses* property.
 * Added *protein_tags* calculated property that specifies the protein tags introduced through genetic modification of the biosamples investigated in the experiment.
+* *FactorBook* can now be linked to an experiment under external resources (dbxrefs).
+* Added *analyses.assemblies*, *analyses.genome_annotations* and *analyses.pipelines* calculated property.
 
 ### Schema version 28
 

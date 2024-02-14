@@ -6,6 +6,8 @@
 * *experiment* property list was expanded to include FunctionalCharacterizationExperiment.json 
 * *biological_replicate_number* and *technical_replicate_number* were set to have a minimum of 1.
 * *rbns_protein_concentration* was set to have a minimum of 0.
+* Calculated property *libraries* is removed.
+* *experiment* property list now includes SingleCellUnit.json
 
 ### Schema version 9
 

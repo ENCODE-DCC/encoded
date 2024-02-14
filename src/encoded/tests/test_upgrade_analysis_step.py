@@ -1,89 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def base_analysis_step(testapp, software_version):
-    item = {
-        'name': 'lrna-pe-star-alignment-step-v-2-0',
-        'title': 'Long RNA-seq STAR paired-ended alignment step v2.0',
-        'analysis_step_types': ['alignments'],
-        'input_file_types': ['reads'],
-        'software_versions': [
-            software_version['@id'],
-        ]
-    }
-    return item
-
-
-@pytest.fixture
-def analysis_step_1(base_analysis_step):
-
-    item = base_analysis_step.copy()
-    item.update({
-        'schema_version': '2',
-        'output_file_types': ['signal of multi-mapped reads']
-    })
-    return item
-
-
-@pytest.fixture
-def analysis_step_3(base_analysis_step):
-    item = base_analysis_step.copy()
-    item.update({
-        'schema_version': '3',
-        'analysis_step_types': ['alignment', 'alignment'],
-        'input_file_types': ['reads', 'reads'],
-        'output_file_types': ['transcriptome alignments', 'transcriptome alignments']
-    })
-    return item
-
-
-@pytest.fixture
-def analysis_step_5(base_analysis_step):
-    item = base_analysis_step.copy()
-    item.update({
-        'schema_version': '5',
-        'aliases': ["dnanexus:align-star-se-v-2"],
-        'uuid': '8eda9dfa-b9f1-4d58-9e80-535a5e4aaab1',
-        'status': 'in progress',
-        'analysis_step_types': ['pooling', 'signal generation', 'file format conversion', 'quantification'],
-        'input_file_types': ['alignments'],
-        'output_file_types': ['methylation state at CHG', 'methylation state at CHH', 'raw signal', 'methylation state at CpG']
-    })
-    return item
-
-
-@pytest.fixture
-def analysis_step_6(base_analysis_step):
-    item = base_analysis_step.copy()
-    item.update({
-        'schema_version': '6',
-        'input_file_types': ['alignments', 'candidate regulatory elements'],
-        'output_file_types': ['raw signal', 'candidate regulatory elements']
-    })
-    return item
-
-
-@pytest.fixture
-def analysis_step_7(base_analysis_step):
-    item = base_analysis_step.copy()
-    item.update({
-        'input_file_types': [
-            'peaks',
-            'optimal idr thresholded peaks',
-            'conservative idr thresholded peaks',
-            'pseudoreplicated idr thresholded peaks'
-        ],
-        'output_file_types': [
-            'peaks',
-            'optimal idr thresholded peaks',
-            'conservative idr thresholded peaks',
-            'pseudoreplicated idr thresholded peaks'
-        ],
-    })
-    return item
-
-
 def test_analysis_step_2_3(registry, upgrader, analysis_step_1, threadlocals):
     value = upgrader.upgrade('analysis_step', analysis_step_1, current_version='2', target_version='3', registry=registry)
     assert 'signal of all reads' in value['output_file_types']
@@ -132,3 +49,90 @@ def test_analysis_step_7_8(upgrader, analysis_step_7):
     assert value['schema_version'] == '8'
     assert sorted(value['input_file_types']) == expectation
     assert sorted(value['output_file_types']) == expectation
+
+
+def test_analysis_step_8_9(upgrader, analysis_step_8):
+    value = upgrader.upgrade('analysis_step', analysis_step_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert 'representative dnase hypersensitivity sites' not in value['input_file_types']
+    assert 'representative dnase hypersensitivity sites' not in value['output_file_types']
+    assert 'representative DNase hypersensitivity sites (rDHSs)' in value['input_file_types']
+    assert 'representative DNase hypersensitivity sites (rDHSs)' in value['output_file_types']
+
+
+def test_analysis_step_9_10(upgrader, analysis_step_9):
+    value = upgrader.upgrade('analysis_step', analysis_step_9, current_version='9', target_version='10')
+    assert value['schema_version'] == '10'
+    assert 'spike-in sequence' not in value['input_file_types']
+    assert 'spike-in sequence' not in value['output_file_types']
+    assert 'spike-ins' in value['input_file_types']
+    assert 'spike-ins' in value['output_file_types']
+
+
+def test_analysis_step_10_11(upgrader, analysis_step_11):
+    value = upgrader.upgrade(
+        'analysis_step',
+        analysis_step_11,
+        current_version='11',
+        target_version='12'
+    )
+    assert value['schema_version'] == '12'
+    assert 'smoothed methylation state at CpG' in value['input_file_types']
+    assert 'smoothed methylation state at CpG' in value['output_file_types']
+
+
+def test_analysis_step_12_13(upgrader, analysis_step_12):
+    value = upgrader.upgrade('analysis_step', analysis_step_12, current_version='12', target_version='13')
+    assert value['schema_version'] == '13'
+    assert 'consensus DNase hypersensitivity sites (cDHSs)' not in value['input_file_types']
+    assert 'representative DNase hypersensitivity sites (rDHSs)' not in value['output_file_types']
+    assert 'consensus DNase hypersensitivity sites' in value['input_file_types']
+    assert 'representative DNase hypersensitivity sites' in value['output_file_types']
+
+
+def test_analysis_step_13_14(upgrader, analysis_step_13):
+    value = upgrader.upgrade('analysis_step', analysis_step_13, current_version='13', target_version='14')
+    assert value['schema_version'] == '14'
+    assert 'pseudo-replicated peaks' not in value['input_file_types']
+    assert 'pseudo-replicated peaks' not in value['output_file_types']
+    assert 'pseudoreplicated peaks' in value['input_file_types']
+    assert 'pseudoreplicated peaks' in value['output_file_types']
+
+
+def test_analysis_step_14_15(upgrader, analysis_step_14):
+    value = upgrader.upgrade('analysis_step', analysis_step_14, current_version='14', target_version='15')
+    assert value['schema_version'] == '15'
+    assert 'blacklisted regions' not in value['input_file_types']
+    assert 'mitochondria blacklisted regions' not in value['output_file_types']
+    assert 'exclusion list regions' in value['input_file_types']
+    assert 'mitochondrial exclusion list regions' in value['output_file_types']
+
+
+def test_analysis_step_15_to_16(upgrader, analysis_step_15):
+    value = upgrader.upgrade(
+        'analysis_step', analysis_step_15, current_version='15', target_version='16'
+    )
+    assert value['schema_version'] == '16'
+    assert 'topologically associated domains' not in value['input_file_types']
+    assert 'chromatin interactions' not in value['input_file_types']
+    assert 'DNA accessibility raw signal' not in value['input_file_types']
+    assert 'long range chromatin interactions' not in value['input_file_types']
+    assert 'nested topologically associated domains' not in value['output_file_types']
+    assert 'allele-specific chromatin interactions' not in value['output_file_types']
+    assert 'variants chromatin interactions' not in value['output_file_types']
+    assert 'haplotype-specific chromatin interactions' not in value['output_file_types']
+    assert 'haplotype-specific DNA accessibility raw signal' not in value['output_file_types']
+    assert 'haplotype-specific DNA accessibility corrected signal' not in value['output_file_types']
+    assert 'topologically associated domain identification' not in value['analysis_step_types']
+
+
+def test_analysis_step_16_to_17(upgrader, analysis_step_16):
+    value = upgrader.upgrade(
+        'analysis_step', analysis_step_16, current_version='16', target_version='17'
+    )
+    assert value['schema_version'] == '17'
+    for prop in ['input_file_types', 'output_file_types']:
+        for old_output_type in ['predicted profile', 'bias model']:
+            assert old_output_type not in value[prop]
+        for new_output_type in ['predicted signal profile', 'bias models']:
+            assert new_output_type in value[prop]

@@ -1,9 +1,15 @@
 import pytest
 
-from encoded.tests.features.conftest import app_settings, app, workbook
+from encoded.tests.features.conftest import app_settings, app, index_workbook
 
 
-def test_search_views_search_view_with_filters(workbook, testapp):
+pytestmark = [
+    pytest.mark.indexing,
+    pytest.mark.usefixtures('index_workbook'),
+]
+
+
+def test_search_views_search_view_with_filters(index_workbook, testapp):
     r = testapp.get(
         '/search/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
     )
@@ -26,7 +32,7 @@ def test_search_views_search_view_with_filters(workbook, testapp):
     assert 'sort' in r.json
 
 
-def test_search_views_search_view_with_limit(workbook, testapp):
+def test_search_views_search_view_with_limit(index_workbook, testapp):
     r = testapp.get(
         '/search/?type=Experiment&limit=5'
     )
@@ -53,7 +59,28 @@ def test_search_views_search_view_with_limit(workbook, testapp):
     assert 'all' not in r.json
 
 
-def test_search_views_search_view_with_limit_zero(workbook, testapp):
+def test_series_search_view(index_workbook, testapp):
+    r = testapp.get(
+        '/series-search/?type=OrganismDevelopmentSeries'
+    )
+    assert r.json['title'] == 'Series search'
+    assert len(r.json['@graph']) == 3
+    assert r.json['@graph'][0]['accession'] == 'ENCSR302DEV'
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'OrganismDevelopmentSeries' in r.json['@graph'][0]['@type']
+    assert r.json['@id'] == '/series-search/?type=OrganismDevelopmentSeries'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['SeriesSearch']
+    assert r.json['total'] == 3
+    assert r.json['notification'] == 'Success'
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/series-search/?type=OrganismDevelopmentSeries'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert 'sort' in r.json
+
+
+def test_search_views_search_view_with_limit_zero(index_workbook, testapp):
     r = testapp.get(
         '/search/?type=Experiment&limit=0'
     )
@@ -62,7 +89,7 @@ def test_search_views_search_view_with_limit_zero(workbook, testapp):
     assert r.json['total'] >= 48
 
 
-def test_search_views_search_view_values(workbook, testapp):
+def test_search_views_search_view_values(index_workbook, testapp):
     r = testapp.get(
         '/search/?status=released'
     )
@@ -72,7 +99,7 @@ def test_search_views_search_view_values(workbook, testapp):
     assert r.json['clear_filters'] == '/search/'
 
 
-def test_search_views_search_view_values_no_results(workbook, testapp):
+def test_search_views_search_view_values_no_results(index_workbook, testapp):
     r = testapp.get(
         '/search/?status=current&type=Experiment',
         status=404
@@ -80,7 +107,7 @@ def test_search_views_search_view_values_no_results(workbook, testapp):
     assert r.json['notification'] == 'No results found'
 
 
-def test_search_views_search_view_values_malformed_query_string(workbook, testapp):
+def test_search_views_search_view_values_malformed_query_string(index_workbook, testapp):
     r = testapp.get(
         '/search/?status=current&type=Experiment&status=&format=json',
         status=404
@@ -88,7 +115,7 @@ def test_search_views_search_view_values_malformed_query_string(workbook, testap
     assert r.json['notification'] == 'No results found'
 
 
-def test_search_views_search_view_values_bad_type(workbook, testapp):
+def test_search_views_search_view_values_bad_type(index_workbook, testapp):
     r = testapp.get(
         '/search/?status=released&type=Exp',
         status=400
@@ -101,7 +128,7 @@ def test_search_views_search_view_values_bad_type(workbook, testapp):
     assert r.json['description'] == "Invalid types: ['Exp', 'Per']"
 
 
-def test_search_views_search_view_values_item_wildcard(workbook, testapp):
+def test_search_views_search_view_values_item_wildcard(index_workbook, testapp):
     r = testapp.get(
         '/search/?type=*',
     )
@@ -109,14 +136,14 @@ def test_search_views_search_view_values_item_wildcard(workbook, testapp):
     assert r.json['total'] >= 795
 
 
-def test_search_views_search_view_values_invalid_search_term(workbook, testapp):
+def test_search_views_search_view_values_invalid_search_term(index_workbook, testapp):
     r = testapp.get(
         '/search/?searchTerm=[',
         status=404
     )
 
 
-def test_search_views_search_view_values_invalid_advanced_query(workbook, testapp):
+def test_search_views_search_view_values_invalid_advanced_query(index_workbook, testapp):
     r = testapp.get(
         '/search/?advancedQuery=[',
         status=400
@@ -124,14 +151,14 @@ def test_search_views_search_view_values_invalid_advanced_query(workbook, testap
     assert r.json['description'] == 'Invalid query: ([)'
 
 
-def test_search_views_search_view_embedded_frame(workbook, testapp):
+def test_search_views_search_view_embedded_frame(index_workbook, testapp):
     r = testapp.get(
         '/search/?type=Experiment&frame=embedded'
     )
     assert r.json['@graph'][0]['lab']['name']
 
 
-def test_search_views_search_view_object_frame(workbook, testapp):
+def test_search_views_search_view_object_frame(index_workbook, testapp):
     r = testapp.get(
         '/search/?type=Experiment&frame=object'
     )
@@ -143,7 +170,7 @@ def test_search_views_search_view_object_frame(workbook, testapp):
         ]
     )
 
-def test_search_views_search_view_debug_query(workbook, testapp):
+def test_search_views_search_view_debug_query(index_workbook, testapp):
     r = testapp.get(
         '/search/?type=Experiment&debug=true'
     )
@@ -151,19 +178,125 @@ def test_search_views_search_view_debug_query(workbook, testapp):
     assert 'post_filter' in r.json['debug']['raw_query']
 
 
-def test_search_views_search_view_no_type(workbook, testapp):
+def test_search_views_search_view_no_type(index_workbook, testapp):
     r = testapp.get('/search/')
     assert 'total' in r.json
     assert 'filters' in r.json
     assert len(r.json['filters']) == 0
 
 
-def test_search_views_search_view_no_type_debug(workbook, testapp):
+def test_search_views_search_view_no_type_debug(index_workbook, testapp):
     r = testapp.get('/search/?debug=true')
     assert not r.json['debug']['raw_query']['post_filter']['bool']
 
 
-def test_search_views_search_raw_view_raw_response(workbook, testapp):
+def test_search_views_search_view_facets_from_configs(index_workbook, testapp, dummy_request):
+    from snosearch.configs import SearchConfig
+    from snosearch.interfaces import SEARCH_CONFIG
+    search_registry = dummy_request.registry[SEARCH_CONFIG]
+    config1 = SearchConfig(
+        'config1',
+        {
+            'facets': {
+                "status": {
+                    "title": "Dataset status"
+                },
+                "files.file_type": {
+                    "title": "Available data"
+                }
+            },
+            'columns': {
+                '@id': {
+                    'title': 'ID'
+                },
+                'count': {
+                    'title': 'Count'
+                }
+            }
+        }
+    )
+    config2 = SearchConfig(
+        'config2',
+        {
+            'facets': {
+                "date_released": {
+                    "title": "Date released"
+                },
+                "lab.title": {
+                    "title": "Lab"
+                }
+            },
+            'columns': {
+                'value': {
+                    'title': 'Value'
+                }
+            },
+        }
+    )
+    search_registry.add(config1)
+    search_registry.add(config2)
+    r = testapp.get('/search/?type=Experiment')
+    assert 30 < len(r.json['facets']) < 50
+    r = testapp.get('/search/?type=Experiment&config=Dataset')
+    assert 8 < len(r.json['facets']) < 18
+    r = testapp.get('/search/?type=Experiment&config=config1')
+    assert len(r.json['facets']) == 6
+    assert r.json['facets'][1]['field'] == 'status'
+    assert r.json['facets'][2]['field'] == 'files.file_type'
+    r = testapp.get('/search/?type=Experiment&config=config1&config=config2')
+    assert len(r.json['facets']) == 8
+    assert r.json['facets'][3]['field'] == 'date_released'
+    assert r.json['facets'][4]['field'] == 'lab.title'
+    r = testapp.get('/search/?type=Experiment&type=Dataset&config=config2')
+    assert len(r.json['facets']) == 6
+
+
+def test_search_views_search_view_columns_from_configs(index_workbook, testapp, dummy_request):
+    from snosearch.configs import SearchConfig
+    from snosearch.interfaces import SEARCH_CONFIG
+    search_registry = dummy_request.registry[SEARCH_CONFIG]
+    config1 = SearchConfig(
+        'config1',
+        {
+            'columns': {
+                '@id': {
+                    'title': 'ID'
+                },
+                'count': {
+                    'title': 'Count'
+                }
+            }
+        }
+    )
+    config2 = SearchConfig(
+        'config2',
+        {
+            'columns': {
+                'value': {
+                    'title': 'Value'
+                }
+            },
+        }
+    )
+    search_registry.add(config1)
+    search_registry.add(config2)
+    r = testapp.get('/search/?type=Experiment')
+    assert 30 < len(r.json['columns']) <= 40
+    r = testapp.get('/search/?type=Experiment&config=config1')
+    assert len(r.json['columns']) == 2
+    r = testapp.get('/search/?type=Experiment&config=config1&config=config2')
+    assert len(r.json['columns']) == 3
+    r = testapp.get('/search/?type=Experiment&type=Dataset&config=config1&config=config2')
+    assert len(r.json['columns']) == 3
+    r = testapp.get('/search/?type=Experiment&type=Dataset')
+    assert len(r.json['columns']) > 80
+    r = testapp.get('/search/?type=Donor')
+    assert 15 < len(r.json['columns']) < 25
+    r = testapp.get('/search/?type=Item')
+    assert len(r.json['columns']) > 240
+
+
+def test_search_views_search_raw_view_raw_response(index_workbook, testapp):
     r = testapp.get('/searchv2_raw/?type=Experiment')
     assert 'hits' in r.json
     assert 'aggregations' in r.json
@@ -172,13 +305,13 @@ def test_search_views_search_raw_view_raw_response(workbook, testapp):
     assert 'took' in r.json
 
 
-def test_search_views_search_raw_view_raw_response_limit_all(workbook, testapp):
+def test_search_views_search_raw_view_raw_response_limit_all(index_workbook, testapp):
     r = testapp.get('/searchv2_raw/?type=*&limit=all')
     assert 'hits' in r.json
     assert len(r.json['hits']['hits']) > 170
 
 
-def test_search_views_search_quick_view_limit_all(workbook, testapp):
+def test_search_views_search_quick_view_limit_all(index_workbook, testapp):
     r = testapp.get('/searchv2_quick/?type=*&limit=all')
     assert '@graph' in r.json
     assert len(r.json['@graph']) > 170
@@ -186,29 +319,25 @@ def test_search_views_search_quick_view_limit_all(workbook, testapp):
     assert len(r.json.keys()) == 1
 
 
-def test_search_views_search_quick_view_one_item(workbook, testapp):
+def test_search_views_search_quick_view_one_item(index_workbook, testapp):
     r = testapp.get(
         '/searchv2_quick/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
     )
     assert len(r.json['@graph']) == 1
 
 
-def test_search_views_search_quick_view_specify_field(workbook, testapp):
+def test_search_views_search_quick_view_specify_field(index_workbook, testapp):
     r = testapp.get('/searchv2_quick/?type=Experiment&field=@id')
     assert '@id' in r.json['@graph'][0]
     assert '@type' in r.json['@graph'][0]
     assert len(r.json['@graph'][0].keys()) == 2
 
 
-def test_search_generator(workbook, threadlocals, dummy_request):
-    from snovault.elasticsearch.searches.parsers import ParamsParser
-    from snovault.elasticsearch import ELASTIC_SEARCH
-    from elasticsearch import Elasticsearch
+def test_search_views_search_generator(index_workbook, dummy_request, threadlocals):
     from types import GeneratorType
     dummy_request.environ['QUERY_STRING'] = (
         'type=*&limit=all'
     )
-    dummy_request.registry[ELASTIC_SEARCH] = Elasticsearch(port=9201)
     from encoded.search_views import search_generator
     r = search_generator(dummy_request)
     assert '@graph' in r
@@ -219,15 +348,11 @@ def test_search_generator(workbook, threadlocals, dummy_request):
     assert '@id' in hits[0]
 
 
-def test_search_generator_field_specified(workbook, threadlocals, dummy_request):
-    from snovault.elasticsearch.searches.parsers import ParamsParser
-    from snovault.elasticsearch import ELASTIC_SEARCH
-    from elasticsearch import Elasticsearch
+def test_search_views_search_generator_field_specified(index_workbook, dummy_request, threadlocals):
     from types import GeneratorType
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&field=@id&limit=5'
     )
-    dummy_request.registry[ELASTIC_SEARCH] = Elasticsearch(port=9201)
     from encoded.search_views import search_generator
     r = search_generator(dummy_request)
     assert '@graph' in r
@@ -239,7 +364,37 @@ def test_search_generator_field_specified(workbook, threadlocals, dummy_request)
     assert len(hits[0].keys()) == 2
 
 
-def test_search_views_report_view(workbook, testapp):
+def test_search_views_cart_search_generator(index_workbook, dummy_request, threadlocals):
+    from types import GeneratorType
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=*&limit=all'
+    )
+    from encoded.search_views import cart_search_generator
+    r = cart_search_generator(dummy_request)
+    assert '@graph' in r
+    assert len(r.keys()) == 1
+    assert isinstance(r['@graph'], GeneratorType)
+    hits = [dict(h) for h in r['@graph']]
+    assert len(hits) > 800
+    assert '@id' in hits[0]
+
+
+def test_search_views_cart_search_generator_cart_specified(index_workbook, dummy_request, threadlocals):
+    from types import GeneratorType
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&field=@id'
+    )
+    from encoded.search_views import cart_search_generator
+    r = cart_search_generator(dummy_request)
+    assert '@graph' in r
+    assert len(r.keys()) == 1
+    assert isinstance(r['@graph'], GeneratorType)
+    hits = [h for h in r['@graph']]
+    assert '@id' in hits[0]
+    assert len(hits) >= 3
+
+
+def test_search_views_report_view(index_workbook, testapp):
     r = testapp.get(
         '/report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
     )
@@ -259,17 +414,47 @@ def test_search_views_report_view(workbook, testapp):
     assert r.json['clear_filters'] == '/report/?type=Experiment'
     assert 'debug' not in r.json
     assert 'columns' in r.json
+    assert len(r.json['columns']) > 10
     assert 'non_sortable' in r.json
     assert 'sort' in r.json
 
 
-def test_search_views_report_response_with_search_term_type_only_clear_filters(workbook, testapp):
+def test_search_views_report_view_custom_columns(index_workbook, testapp):
+    r = testapp.get(
+        '/report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/'
+        '&accession=ENCSR000ADI&status=released&config=custom-columns'
+    )
+    assert r.json['title'] == 'Report'
+    assert len(r.json['@graph']) == 1
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == (
+        '/report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/'
+        '&accession=ENCSR000ADI&status=released'
+        '&config=custom-columns'
+    )
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Report']
+    assert r.json['total'] == 1
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 4
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/report/?type=Experiment'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert len(r.json['columns']) == 6
+    assert 'non_sortable' in r.json
+    assert 'sort' in r.json
+
+
+def test_search_views_report_response_with_search_term_type_only_clear_filters(index_workbook, testapp):
     r = testapp.get('/report/?type=File&searchTerm=bam')
     assert 'clear_filters' in r.json
     assert r.json['clear_filters'] == '/report/?type=File'
 
 
-def test_search_views_report_view_with_limit(workbook, testapp):
+def test_search_views_report_view_with_limit(index_workbook, testapp):
     r = testapp.get(
         '/report/?type=Experiment&limit=5'
     )
@@ -295,7 +480,7 @@ def test_search_views_report_view_with_limit(workbook, testapp):
     assert len(r.json['@graph']) >= 48
 
 
-def test_search_views_report_view_with_limit_zero(workbook, testapp):
+def test_search_views_report_view_with_limit_zero(index_workbook, testapp):
     r = testapp.get(
         '/report/?type=Experiment&limit=0'
     )
@@ -304,7 +489,7 @@ def test_search_views_report_view_with_limit_zero(workbook, testapp):
     assert r.json['total'] >= 48
 
 
-def test_search_views_report_view_with_limit_zero_from_zero(workbook, testapp):
+def test_search_views_report_view_with_limit_zero_from_zero(index_workbook, testapp):
     r = testapp.get(
         '/report/?type=Experiment&limit=0&from=0'
     )
@@ -313,7 +498,7 @@ def test_search_views_report_view_with_limit_zero_from_zero(workbook, testapp):
     assert r.json['total'] >= 48
 
 
-def test_search_views_report_view_values_bad_type(workbook, testapp):
+def test_search_views_report_view_values_bad_type(index_workbook, testapp):
     r = testapp.get(
         '/report/?status=released&type=Exp',
         status=400
@@ -326,7 +511,7 @@ def test_search_views_report_view_values_bad_type(workbook, testapp):
     assert r.json['description'] == "Report view requires specifying a single type: [('type', 'Exp'), ('type', 'Per')]"
 
 
-def test_search_views_report_view_values_single_subtype(workbook, testapp):
+def test_search_views_report_view_values_single_subtype(index_workbook, testapp):
     r = testapp.get(
         '/report/?status=released&type=Item',
         status=400
@@ -334,7 +519,7 @@ def test_search_views_report_view_values_single_subtype(workbook, testapp):
     assert 'Report view requires a type with no child types:' in r.json['description']
 
 
-def test_search_views_report_view_values_no_type(workbook, testapp):
+def test_search_views_report_view_values_no_type(index_workbook, testapp):
     r = testapp.get(
         '/report/?status=released',
         status=400
@@ -342,7 +527,7 @@ def test_search_views_report_view_values_no_type(workbook, testapp):
     assert r.json['description'] == 'Report view requires specifying a single type: []'
 
 
-def test_search_views_matrix_raw_view_raw_response(workbook, testapp):
+def test_search_views_matrix_raw_view_raw_response(index_workbook, testapp):
     r = testapp.get('/matrixv2_raw/?type=Experiment')
     assert 'hits' in r.json
     assert r.json['hits']['total'] >= 22
@@ -357,7 +542,7 @@ def test_search_views_matrix_raw_view_raw_response(workbook, testapp):
     assert 'took' in r.json
 
 
-def test_search_views_matrix_raw_view_no_matrix_defined(workbook, testapp):
+def test_search_views_matrix_raw_view_no_matrix_defined(index_workbook, testapp):
     r = testapp.get(
         '/matrixv2_raw/?type=Biosample',
         status=400
@@ -365,7 +550,7 @@ def test_search_views_matrix_raw_view_no_matrix_defined(workbook, testapp):
     assert r.json['description'] == 'Item type does not have requested view defined: {}'
 
 
-def test_search_views_matrix_raw_view_invalid_type(workbook, testapp):
+def test_search_views_matrix_raw_view_invalid_type(index_workbook, testapp):
     r = testapp.get(
         '/matrixv2_raw/?type=Exp',
         status=400
@@ -373,7 +558,7 @@ def test_search_views_matrix_raw_view_invalid_type(workbook, testapp):
     assert r.json['description'] == "Invalid types: ['Exp']"
 
 
-def test_search_views_matrix_raw_view_mutiple_types(workbook, testapp):
+def test_search_views_matrix_raw_view_mutiple_types(index_workbook, testapp):
     r = testapp.get(
         '/matrixv2_raw/?type=Experiment&type=Experiment',
         status=400
@@ -381,7 +566,7 @@ def test_search_views_matrix_raw_view_mutiple_types(workbook, testapp):
     assert 'Matrix view requires specifying a single type' in r.json['description']
 
 
-def test_search_views_matrix_raw_view_no_types(workbook, testapp):
+def test_search_views_matrix_raw_view_no_types(index_workbook, testapp):
     r = testapp.get(
         '/matrixv2_raw/',
         status=400
@@ -389,7 +574,7 @@ def test_search_views_matrix_raw_view_no_types(workbook, testapp):
     assert r.json['description'] == 'Matrix view requires specifying a single type: []'
 
 
-def test_search_views_matrix_response(workbook, testapp):
+def test_search_views_matrix_response(index_workbook, testapp):
     r = testapp.get('/matrix/?type=Experiment')
     assert 'aggregations' not in r.json
     assert 'facets' in r.json
@@ -417,18 +602,42 @@ def test_search_views_matrix_response(workbook, testapp):
     assert r.json['search_base'] == '/search/?type=Experiment'
 
 
-def test_search_views_matrix_response_with_search_term_type_only_clear_filters(workbook, testapp):
+def test_search_views_matrix_from_config_response(index_workbook, testapp):
+    r = testapp.get('/matrix/?type=Experiment&config=custom-matrix')
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Matrix'
+    assert r.json['@type'] == ['Matrix']
+    assert r.json['clear_filters'] == '/matrix/?type=Experiment'
+    assert r.json['filters'] == [{'field': 'type', 'term': 'Experiment', 'remove': '/matrix/?config=custom-matrix'}]
+    assert r.json['@id'] == '/matrix/?type=Experiment&config=custom-matrix'
+    assert r.json['total'] >= 22
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Matrix'
+    assert 'facets' in r.json
+    assert r.json['@context'] == '/terms/'
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == 'assay_title'
+    assert r.json['matrix']['y']['group_by'] == [
+        'award.rfa',
+        'lab.title',
+    ]
+    assert r.json['search_base'] == '/search/?type=Experiment&config=custom-matrix'
+
+
+def test_search_views_matrix_response_with_search_term_type_only_clear_filters(index_workbook, testapp):
     r = testapp.get('/matrix/?type=Experiment&searchTerm=A549')
     assert 'clear_filters' in r.json
     assert r.json['clear_filters'] == '/matrix/?type=Experiment'
 
 
-def test_search_views_matrix_response_debug(workbook, testapp):
+def test_search_views_matrix_response_debug(index_workbook, testapp):
     r = testapp.get('/matrix/?type=Experiment&debug=true')
     assert 'debug' in r.json
 
 
-def test_search_views_matrix_response_no_results(workbook, testapp):
+def test_search_views_matrix_response_no_results(index_workbook, testapp):
     r = testapp.get(
         '/matrix/?type=Experiment&status=no_status',
         status=404
@@ -436,7 +645,33 @@ def test_search_views_matrix_response_no_results(workbook, testapp):
     assert r.json['notification'] == 'No results found'
 
 
-def test_chip_seq_matrix_view(workbook, testapp):
+def test_sescc_stem_cell_matrix(index_workbook, testapp):
+    res = testapp.get('/stem-cell-matrix/?type=Experiment').json
+    assert res['@type'] == ['SESCCStemCellMatrix']
+    assert res['@id'] == '/stem-cell-matrix/?type=Experiment'
+    assert res['@context'] == '/terms/'
+    assert res['notification'] == 'Success'
+    assert res['title'] == 'Stem cell differentiation'
+    assert res['total'] > 0
+    assert 'filters' in res
+    assert 'matrix' in res
+    assert res['matrix']['x']['group_by'] == [
+        'assay_title', 
+        'target.label',
+    ]
+    assert res['matrix']['x']['label'] == 'Assay'
+    assert res['matrix']['y']['group_by'] == [
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name',
+    ]
+    assert res['matrix']['y']['label'] == 'Biosample'
+    assert len(res['matrix']['y']['biosample_ontology.classification']['buckets']) > 0
+    assert len(
+        res['matrix']['y']['biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']
+)       > 0
+
+
+def test_chip_seq_matrix_view(index_workbook, testapp):
     res = testapp.get('/chip-seq-matrix/?type=Experiment').json
     assert res['@type'] == ['ChipSeqMatrix']
     assert res['@id'] == '/chip-seq-matrix/?type=Experiment'
@@ -448,7 +683,8 @@ def test_chip_seq_matrix_view(workbook, testapp):
     assert 'matrix' in res
     assert res['matrix']['x']['group_by'] == [
         'biosample_ontology.classification',
-        'biosample_ontology.term_name'
+        'biosample_ontology.term_name',
+        ["protein_tags.name", "no_protein_tags"]
     ]
     assert res['matrix']['x']['label'] == 'Term Name'
     assert res['matrix']['y']['group_by'] == [
@@ -462,7 +698,7 @@ def test_chip_seq_matrix_view(workbook, testapp):
 )       > 0
 
 
-def test_search_views_summary_response(workbook, testapp):
+def test_search_views_summary_response(index_workbook, testapp):
     r = testapp.get('/summary/?type=Experiment')
     assert 'aggregations' not in r.json
     assert 'total' in r.json
@@ -486,7 +722,7 @@ def test_search_views_summary_response(workbook, testapp):
     assert r.json['search_base'] == '/search/?type=Experiment'
 
 
-def test_search_views_collection_listing_es_view(workbook, testapp):
+def test_search_views_collection_listing_es_view(index_workbook, testapp):
     r = testapp.get(
         '/experiments/'
     )
@@ -502,7 +738,7 @@ def test_search_views_collection_listing_es_view(workbook, testapp):
     assert r.json['@context'] == '/terms/'
 
 
-def test_search_views_collection_listing_es_view_item(workbook, testapp):
+def test_search_views_collection_listing_es_view_item(index_workbook, testapp):
     r = testapp.get(
         '/Experiment'
     )
@@ -515,7 +751,7 @@ def test_search_views_collection_listing_es_view_item(workbook, testapp):
     assert r.json['@context'] == '/terms/'
 
 
-def test_search_views_collection_listing_db_view(workbook, testapp):
+def test_search_views_collection_listing_db_view(index_workbook, testapp):
     r = testapp.get(
         '/experiments/?datastore=database'
     )
@@ -528,7 +764,7 @@ def test_search_views_collection_listing_db_view(workbook, testapp):
     assert r.json['description'] == 'Listing of Experiments'
 
 
-def test_search_views_audit_response(workbook, testapp):
+def test_search_views_audit_response(index_workbook, testapp):
     r = testapp.get('/audit/?type=File')
     assert 'aggregations' not in r.json
     assert 'total' in r.json
@@ -551,18 +787,18 @@ def test_search_views_audit_response(workbook, testapp):
     assert r.json['search_base'] == '/search/?type=File'
 
 
-def test_search_views_audit_response_with_search_term_type_only_clear_filters(workbook, testapp):
+def test_search_views_audit_response_with_search_term_type_only_clear_filters(index_workbook, testapp):
     r = testapp.get('/audit/?type=File&searchTerm=bam')
     assert 'clear_filters' in r.json
     assert r.json['clear_filters'] == '/audit/?type=File'
 
 
-def test_search_views_audit_response_debug(workbook, testapp):
+def test_search_views_audit_response_debug(index_workbook, testapp):
     r = testapp.get('/audit/?type=File&debug=true')
     assert 'debug' in r.json
 
 
-def test_search_views_audit_response_no_results(workbook, testapp):
+def test_search_views_audit_response_no_results(index_workbook, testapp):
     r = testapp.get(
         '/audit/?type=File&status=no_status',
         status=404
@@ -570,7 +806,7 @@ def test_search_views_audit_response_no_results(workbook, testapp):
     assert r.json['notification'] == 'No results found'
 
 
-def test_search_views_audit_view_no_matrix_defined(workbook, testapp):
+def test_search_views_audit_view_no_matrix_defined(index_workbook, testapp):
     r = testapp.get(
         '/audit/?type=Biosample',
         status=400
@@ -578,7 +814,7 @@ def test_search_views_audit_view_no_matrix_defined(workbook, testapp):
     assert r.json['description'] == 'Item type does not have requested view defined: {}'
 
 
-def test_search_views_reference_epigenome_matrix_response(workbook, testapp):
+def test_search_views_reference_epigenome_matrix_response(index_workbook, testapp):
     r = testapp.get(
         '/reference-epigenome-matrix/'
         '?type=Experiment&related_series.@type=ReferenceEpigenome'
@@ -614,7 +850,7 @@ def test_search_views_reference_epigenome_matrix_response(workbook, testapp):
     ) > 0
 
 
-def test_search_views_entex_matrix_response(workbook, testapp):
+def test_search_views_entex_matrix_response(index_workbook, testapp):
     r = testapp.get(
         '/entex-matrix/'
         '?type=Experiment&status=released&internal_tags=ENTEx'
@@ -622,7 +858,7 @@ def test_search_views_entex_matrix_response(workbook, testapp):
     assert 'aggregations' not in r.json
     assert 'facets' in r.json
     assert 'total' in r.json
-    assert r.json['title'] == 'ENTEx Matrix'
+    assert r.json['title'] == 'Epigenomes from four individuals (ENTEx)'
     assert r.json['@type'] == ['EntexMatrix']
     assert r.json['@id'] == (
         '/entex-matrix/'
@@ -630,7 +866,7 @@ def test_search_views_entex_matrix_response(workbook, testapp):
     )
     assert r.json['@context'] == '/terms/'
     assert r.json['notification'] == 'Success'
-    assert r.json['title'] == 'ENTEx Matrix'
+    assert r.json['title'] == 'Epigenomes from four individuals (ENTEx)'
     assert r.json['total'] >= 4
     assert 'filters' in r.json
     assert 'matrix' in r.json
@@ -652,3 +888,349 @@ def test_search_views_entex_matrix_response(workbook, testapp):
     assert len(
         r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']
     ) > 0
+
+
+def test_search_views_brain_matrix_response(index_workbook, testapp):
+    r = testapp.get(
+        '/brain-matrix/'
+        '?type=Experiment&status=released&internal_tags=RushAD'
+    )
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Rush Alzheimer’s Disease Study'
+    assert r.json['@type'] == ['BrainMatrix']
+    assert r.json['@id'] == (
+        '/brain-matrix/'
+        '?type=Experiment&status=released&internal_tags=RushAD'
+    )
+    assert r.json['@context'] == '/terms/'
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Rush Alzheimer’s Disease Study'
+    assert r.json['total'] >= 1
+    assert 'filters' in r.json
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == ["assay_title", [ "target.label", "no_target" ], "replicates.library.biosample.donor.age", "replicates.library.biosample.donor.sex", "replicates.library.biosample.biosample_ontology.term_name", "replicates.library.biosample.disease_term_name"]
+    assert r.json['matrix']['x']['label'] == 'Assay'
+    assert r.json['matrix']['y']['group_by'] == [
+        'replicates.library.biosample.donor.accession',
+    ]
+    assert r.json['matrix']['y']['label'] == 'Donor'
+    assert 'buckets' in r.json['matrix']['y']['replicates.library.biosample.donor.accession']
+    assert 'key' in r.json['matrix']['y']['replicates.library.biosample.donor.accession']['buckets'][0]
+    assert 'assay_title' in r.json['matrix']['y']['replicates.library.biosample.donor.accession']['buckets'][0]
+    assert 'search_base' in r.json
+    assert r.json['search_base'] == '/search/?type=Experiment&status=released&internal_tags=RushAD'
+    assert len(
+        r.json['matrix']['y']['replicates.library.biosample.donor.accession']['buckets']
+    ) > 0
+
+
+def test_search_views_degron_matrix_response(index_workbook, testapp):
+    r = testapp.get(
+        '/degron-matrix/'
+        '?type=Experiment&replicates.library.biosample.genetic_modifications.modified_site_by_target_id.name=*'
+    )
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Protein knockdown using the auxin-inducible degron'
+    assert r.json['@type'] == ['DegronMatrix']
+    assert r.json['@id'] == (
+        '/degron-matrix/'
+        '?type=Experiment&replicates.library.biosample.genetic_modifications.modified_site_by_target_id.name=*'
+    )
+    assert r.json['@context'] == '/terms/'
+    assert r.json['notification'] == 'Success'
+    assert r.json['total'] >= 3
+    assert 'filters' in r.json
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == ['assay_title', ['target.label', 'no_target']]
+    assert r.json['matrix']['x']['label'] == 'Assay'
+    assert r.json['matrix']['y']['group_by'] == [
+        'replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label',
+    ]
+    assert r.json['matrix']['y']['label'] == 'Degron target'
+    assert 'buckets' in r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']
+    assert 'key' in r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']['buckets'][0]
+    assert 'assay_title' in r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']['buckets'][0]
+    assert 'search_base' in r.json
+    assert r.json['search_base'] == '/search/?type=Experiment&replicates.library.biosample.genetic_modifications.modified_site_by_target_id.name=*'
+    assert len(
+        r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']['buckets']
+    ) > 0
+    assert len(
+        r.json['matrix']['y']['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label']['buckets'][0]['assay_title']['buckets']
+    ) > 0
+
+
+def test_search_views_cart_search_view_filters(index_workbook, testapp):
+    r = testapp.get(
+        '/cart-search/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
+    )
+    assert r.json['title'] == 'Cart search'
+    assert len(r.json['@graph']) == 1
+    assert r.json['@graph'][0]['accession'] == 'ENCSR000ADI'
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == '/cart-search/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Search']
+    assert r.json['total'] == 1
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 4
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/cart-search/?type=Experiment'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert 'sort' in r.json
+
+
+
+def test_search_views_cart_report_view(index_workbook, testapp):
+    r = testapp.get(
+        '/cart-report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
+    )
+    assert r.json['title'] == 'Cart report'
+    assert len(r.json['@graph']) == 1
+    assert r.json['@graph'][0]['accession'] == 'ENCSR000ADI'
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == '/cart-report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Report']
+    assert r.json['total'] == 1
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 4
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/cart-report/?type=Experiment'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert 'non_sortable' in r.json
+    assert 'sort' in r.json
+
+
+def test_search_views_cart_matrix_response(index_workbook, testapp):
+    r = testapp.get('/cart-matrix/?type=Experiment')
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Cart matrix'
+    assert r.json['@type'] == ['Matrix']
+    assert r.json['clear_filters'] == '/cart-matrix/?type=Experiment'
+    assert len(r.json['filters']) == 1
+    assert r.json['@id'] == '/cart-matrix/?type=Experiment'
+    assert r.json['total'] >= 22
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Cart matrix'
+    assert 'facets' in r.json
+    assert r.json['@context'] == '/terms/'
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == 'assay_title'
+    assert r.json['matrix']['y']['group_by'] == [
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name'
+    ]
+    assert 'buckets' in r.json['matrix']['y']['biosample_ontology.classification']
+    assert 'key' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'biosample_ontology.term_name' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'search_base' in r.json
+    assert r.json['search_base'] == '/cart-search/?type=Experiment'
+
+
+def test_search_views_cart_search_view_with_cart_filter(index_workbook, testapp):
+    r = testapp.get(
+        '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true'
+    )
+    assert r.json['title'] == 'Cart search'
+    assert len(r.json['@graph']) == 5
+    actual_at_ids = {
+        x.get('@id')
+        for x in r.json['@graph']
+    }
+    expected_at_ids = set(
+         [
+             "/experiments/ENCSR000AER/",
+             "/experiments/ENCSR000AEM/",
+             "/experiments/ENCSR000ADH/",
+             "/experiments/ENCSR002CON/",
+             "/experiments/ENCSR706IDL/",
+         ]
+    )
+    assert actual_at_ids == expected_at_ids
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Search']
+    assert r.json['total'] == 5
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 2
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303'
+    assert 'debug' in r.json
+    assert 'post_filter' in r.json['debug']['raw_query']
+    at_id_filters = r.json.get(
+        'debug', {}
+    ).get(
+        'raw_query', {}
+    ).get(
+        'post_filter', {}
+    ).get(
+        'bool', {}
+    ).get(
+        'must'
+    )[1].get(
+        'terms', {}
+    ).get('embedded.@id')
+    assert at_id_filters == sorted([
+        '/experiments/ENCSR000AER/',
+        '/experiments/ENCSR000AEM/',
+        '/experiments/ENCSR000ADH/',
+        '/experiments/ENCSR002CON/',
+        '/experiments/ENCSR706IDL/',
+    ])
+    assert 'columns' in r.json
+    assert 'sort' in r.json
+    testapp.get(
+        '/cart-search/?type=Experiment&cart=abc123',
+        status=400
+    )
+    testapp.patch_json('/carts/d8850d88-946b-43e0-9199-efee2c8f5303/', {'elements': []})
+    r = testapp.get(
+        '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303',
+        status=400
+    )
+
+
+def test_search_views_cart_report_view_with_cart_filter(index_workbook, testapp):
+    r = testapp.get(
+        '/cart-report/?type=Experiment&cart=/carts/d8850d88-946b-43e0-9199-efee2c8f5303/&debug=true'
+    )
+    assert r.json['title'] == 'Cart report'
+    assert len(r.json['@graph']) == 5
+    actual_at_ids = {
+        x.get('@id')
+        for x in r.json['@graph']
+    }
+    expected_at_ids = set(
+         [
+             "/experiments/ENCSR000AER/",
+             "/experiments/ENCSR000AEM/",
+             "/experiments/ENCSR000ADH/",
+             "/experiments/ENCSR002CON/",
+             "/experiments/ENCSR706IDL/",
+         ]
+    )
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == '/cart-report/?type=Experiment&cart=/carts/d8850d88-946b-43e0-9199-efee2c8f5303/&debug=true'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Report']
+    assert r.json['total'] == 5
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 2
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/cart-report/?type=Experiment&cart=%2Fcarts%2Fd8850d88-946b-43e0-9199-efee2c8f5303%2F'
+    assert 'debug' in r.json
+    assert 'columns' in r.json
+    assert 'non_sortable' in r.json
+    assert 'sort' in r.json
+    testapp.get(
+        '/cart-report/?type=Experiment&cart=abc123',
+        status=400
+    )
+    testapp.patch_json('/carts/d8850d88-946b-43e0-9199-efee2c8f5303/', {'elements': []})
+    testapp.get(
+        '/cart-report/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303',
+        status=400
+    )
+
+
+def test_search_views_cart_matrix_response_with_cart_filter(index_workbook, testapp):
+    r = testapp.get('/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true')
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Cart matrix'
+    assert r.json['@type'] == ['Matrix']
+    assert r.json['clear_filters'] == '/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303'
+    assert len(r.json['filters']) == 2
+    assert r.json['@id'] == '/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true'
+    assert r.json['total'] >= 5
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Cart matrix'
+    assert 'facets' in r.json
+    assert r.json['@context'] == '/terms/'
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == 'assay_title'
+    assert r.json['matrix']['y']['group_by'] == [
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name'
+    ]
+    assert 'buckets' in r.json['matrix']['y']['biosample_ontology.classification']
+    assert 'key' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'biosample_ontology.term_name' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'search_base' in r.json
+    assert 'debug' in r.json
+    assert r.json['search_base'] == '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true'
+    testapp.get('/cart-matrix/?type=Experiment&cart=abc123', status=400)
+    testapp.patch_json('/carts/d8850d88-946b-43e0-9199-efee2c8f5303/', {'elements': []})
+    testapp.get(
+        '/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true',
+        status=400
+    )
+
+
+def test_search_views_top_hits_raw_view(index_workbook, testapp):
+    r = testapp.get(
+        '/top-hits-raw/?searchTerm=a549&field=@id'
+    )
+    assert 'aggregations' in r.json
+
+
+def test_search_views_top_hits_view(index_workbook, testapp):
+    r = testapp.get(
+        '/top-hits/'
+    )
+    assert r.json['@type'] == ['TopHitsSearch']
+
+
+def test_search_views_search_config_registry(index_workbook, testapp):
+    r = testapp.get(
+        '/search-config-registry/'
+    )
+    assert len(r.json) > 300
+    assert 'Experiment' in r.json
+    assert 'ExperimentFacets' in r.json
+    assert 'ExperimentColumns' in r.json
+    assert 'ExperimentFacetGroups' in r.json
+
+
+def test_search_views_homepage_search_view(index_workbook, testapp):
+    r = testapp.get(
+        '/homepage-search/?searchTerm=b&limit=0'
+    )
+    assert len(r.json['@graph']) == 0
+    assert len(r.json['facets']) == 1
+    assert len(r.json['facets'][0]['terms']) > 20
+    type_keys = [
+        f['key']
+        for f in r.json['facets'][0]['terms']
+    ]
+    assert 'Experiment' in type_keys
+    assert 'File' in type_keys
+    assert 'Dataset' not in type_keys
+    assert 'Donor' not in type_keys
+    assert 'Series' not in type_keys
+    assert r.json['total'] > 500
+    assert r.json['title'] == 'Search'
+    assert r.json['@id'] == '/homepage-search/?searchTerm=b&limit=0'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['HomePageSearch']
+    assert r.json['notification'] == 'Success'
+    assert r.status_code == 200
+    assert 'debug' not in r.json
+    assert 'columns' not in r.json

@@ -51,14 +51,19 @@
                 "general protocol",
                 "growth protocol",
                 "high resolution pathology slide image",
+                "high resolution slide image",
                 "iPS reprogramming protocol",
                 "other",
                 "pipeline protocol",
+                "plasmid map",
+                "position weight matrix",
                 "spike-in concentrations",
+                "sequence logo",
                 "standards document",
                 "strain generation protocol",
                 "transfection protocol",
-                "treatment protocol"
+                "treatment protocol",
+                "workflow metadata"
            ]
         },
         "description": {
@@ -131,6 +136,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "description": 1.0,
         "document_type": 1.0,
         "award.title": 1.0,

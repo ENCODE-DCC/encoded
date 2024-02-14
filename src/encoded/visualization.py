@@ -49,6 +49,7 @@ ASSEMBLY_FAMILIES = {
     "hg38":             ["GRCh38", "GRCh38-minimal"],
     "GRCh37":           ["hg19", "GRCh37"],  # Is GRCh37 ever in encoded?
     "hg19":             ["hg19", "GRCh37"],
+    "GRCm39":           ["mm39", "GRCm39"],
     "GRCm38":           ["mm10", "mm10-minimal", "GRCm38"],  # Is GRCm38 ever in encoded?
     "mm10":             ["mm10", "mm10-minimal", "GRCm38"],
     "mm10-minimal":     ["mm10", "mm10-minimal", "GRCm38"],
@@ -386,16 +387,16 @@ class VisDataset(object):
         # Find vis_dataset?
         if not must_build:
             self.vis_dataset = self.vis_cache.get(self.vis_id)
-            if self.vis_dataset is not None:
+            if self.vis_dataset:
                 self.found = True
                 return self.vis_dataset
 
         # Find dataset in order to build vis_dataset?
-        if self.dataset is None:
+        if not self.dataset:
             self.dataset = self.request.embed("/datasets/" + self.accession + '/', as_user=True)
 
         # Build vis_dataset?
-        if self.dataset is not None:
+        if self.dataset:
             assert(self.accession == self.dataset['accession'])
 
             self.vis_dataset = self.build(hide)
@@ -658,6 +659,8 @@ class VisDataset(object):
                     view["type"] = "bigNarrowPeak"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
+                elif format_type == 'bed3+':
+                    view["type"] = "bigBed 3 +"
             #log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
             for a_file in self.dataset.get("files", []):
                 if a_file['status'] not in self.vis_defines.visible_file_statuses():
@@ -755,6 +758,8 @@ class VisDataset(object):
                     view["type"] = "bigNarrowPeak"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
+                elif format_type == 'bed3+':
+                    view["type"] = "bigBed 3 +"
                 track["type"] = view["type"]
                 track["bigDataUrl"] = a_file.get("cloud_metadata", {}).get(
                     "url", "%s?proxy=true" % a_file["href"]
@@ -1265,6 +1270,8 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     if 'region' in param_list:
         view = 'region-search'
     path = '/%s/?%s' % (view, urlencode(params, True))
+    path = path.replace('bed3+','bed3%252B')
+    path = path.replace('bed6+','bed6%252B')
     results = request.embed(path, as_user=True)['@graph']
     # Note: better memory usage to get accession array from non-embedded results,
     # since acc_composites should be in cache
@@ -1422,8 +1429,10 @@ def generate_batch_hubs(context, request):
         return '\n'.join(get_hub(label, request.url))
     elif page == 'genomes' and suffix == 'txt':
         search_params = request.matchdict['search_params']
+        if search_params.find('bed3+') > -1:
+            search_params = search_params.replace('bed3+','bed3%252B')
         if search_params.find('bed6+') > -1:
-            search_params = search_params.replace('bed6+,,','bed6%2B,,')
+            search_params = search_params.replace('bed6+','bed6%252B')
         log.debug('search_params: %s' % (search_params))
         #param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
         param_list = parse_qs(search_params.replace(',,', '&'))

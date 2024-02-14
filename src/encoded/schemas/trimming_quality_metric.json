@@ -31,6 +31,16 @@
             "type": "number",
             "description": "Total number read-pairs trimmed"
         },
+        "read_1_with_adapter":{
+            "title": "Read 1 with adapter",
+            "type": "number",
+            "description": "Number of read1 with adapter"
+        },
+        "read_2_with_adapter":{
+            "title": "Read 2 with adapter",
+            "type": "number",
+            "description": "Number of read2 with adapter"
+        },
         "SE reads processed": {
             "title": "SE reads processed",
             "type": "number",
@@ -40,6 +50,11 @@
             "title": "SE reads trimmed",
             "type": "number",
             "description": "Total number (single-end) reads trimmed"
+        },
+        "total_read_pairs_processed":{
+            "title": "Total read pairs processed",
+            "type": "number",
+            "description": "Total number read-pairs processed"
         }
     },
     "facets": {

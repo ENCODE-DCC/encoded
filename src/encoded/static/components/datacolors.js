@@ -6,21 +6,36 @@ import _ from 'underscore';
 //
 // Creating a new mapping of data keys to colors, passing in an array of data keys. The order of
 // keys in the given array determines their color assignment.
-// var biosampleTypeColors = new DataColors(biosampleTypes);
+// const biosampleTypeColors = new DataColors(biosampleTypes);
 //
 // With an array of data keys, return a corresponding array of colors, each one lightened by 50%:
-// var colorList = biosampleTypeColors.colorList(data, {lighten: 50});
+// const colorList = biosampleTypeColors.colorList(data, {lighten: 50});
 
 
 // List of colors. Those wishing to modify the colors used by this module need to modify this list.
 const rootColorList = [
     '#2f62cf',
     '#de3700',
-    '#ff9a00',
+    '#FF9000',
     '#009802',
     '#9b009b',
     '#0098c8',
     '#df4076',
+    '#124E78',
+    '#FFC300',
+    '#82ae4e',
+    '#661026',
+    '#2e0929',
+    '#72145b',
+    '#2e0e6b',
+    '#9d99cd',
+    '#303d4a',
+    '#016879',
+    '#133827',
+    '#af7864',
+    '#859280',
+    '#6db4cf',
+    '#2b07f8',
 ];
 
 
@@ -199,7 +214,7 @@ export const isLight = (color) => {
 
     // YIQ equation from http://24ways.org/2010/calculating-color-contrast
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-    return yiq > 128;
+    return yiq > 180;
 };
 
 
@@ -249,7 +264,7 @@ class DataColors {
             // No keys provided, just provide the list of colors for the caller to use as needed,
             // optionally modified by a tint value.
             colors = (options && options.tint && options.tint !== 0) ?
-                rootColorList.map(color => tintColor(color, options.tint))
+                rootColorList.map((color) => tintColor(color, options.tint))
             : rootColorList;
         }
         return colors;

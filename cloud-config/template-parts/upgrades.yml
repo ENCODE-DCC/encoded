@@ -1,0 +1,10 @@
+- path: /etc/apt/apt.conf.d/20auto-upgrades
+  content: |
+    APT::Periodic::Update-Package-Lists "1";
+    APT::Periodic::Unattended-Upgrade "1";
+- path: /etc/apt/apt.conf.d/50unattended-upgrades
+  content: |
+    Unattended-Upgrade::Allowed-Origins {
+        "${distro_id} ${distro_codename}-security";
+    };
+    Unattended-Upgrade::Automatic-Reboot "false";

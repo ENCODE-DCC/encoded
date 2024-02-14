@@ -10,7 +10,6 @@ bad_items = [
     {'name': 'bad', 'alias': 'TEST1'},
 ]
 
-
 @pytest.fixture
 def content(testapp):
     url = '/testing-keys/'

@@ -10,13 +10,20 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views": {
             "tag": "view",
-            "group_order": [ "Long range interactions", "Peaks", "Signal of unique reads", "Signal of all reads" ],
+            "group_order": [ "Contact matrix", "Loops", "Peaks", "Signal of unique reads", "Signal of all reads" ],
             "groups": {
-                "Long range interactions": {
+                "Contact matrix": {
+                    "tag": "CHRINTR",
+                    "type": "bigInteract",
+                    "visibility": "full",
+                    "interactUp": true,
+                    "output_type": [ "contact matrix", "loops" ]
+                },
+                "Loops": {
                     "tag": "LRCI",
                     "type": "bigBed",
                     "visibility": "dense",
-                    "output_type": [ "long range chromatin interactions" ]
+                    "output_type": [ "loops" ]
                 },
                 "Peaks": {
                     "tag": "PEAKS",

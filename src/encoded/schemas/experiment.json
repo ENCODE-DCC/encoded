@@ -70,7 +70,7 @@
                                 "required": ["pipeline_error_detail"],
                                 "properties": {
                                     "internal_status": {
-                                        "enum": ["unreviewed", "no available pipeline", "unrunnable", "pipeline ready", "processing", "pipeline completed", "requires lab review", "release ready"]
+                                        "enum": ["unreviewed", "no available pipeline", "pre-pipeline review", "pipeline ready", "processing", "pipeline completed", "post-pipeline review", "release ready"]
                                     }
                                 }
                             },
@@ -89,7 +89,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "28"
+            "default": "37"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -118,7 +118,7 @@
                 "title": "External identifier",
                 "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*|4DN:4DNES[A-Z0-9]+)$"
+                "pattern": "^(SCREEN-GRCh38:[\\w\\d_$.+!*,()/'-]+|SCREEN-mm10:[\\w\\d_$.+!*,()/'-]+|FactorBook:ENCSR\\d{3}[A-Z]{3}|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*|4DN:4DNES[A-Z0-9]+)$"
             }
         },
         "documents": {
@@ -166,20 +166,20 @@
         "internal_status": {
             "type": "string",
             "description": "The status of an experiment in the DCC process.",
-            "comment":"unreviewed:wrangler has not evaluated, unrunnable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_message",
+            "comment":"unreviewed:wrangler has not evaluated, pre-pipeline review:experiment being evaluated before pipeline run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through to completion, post-pipeline review:pipeline run is ready for wrangler and lab review, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_detail",
             "default": "unreviewed",
             "permission": "import_items",
             "title": "Internal status",
             "enum": [
                 "unreviewed",
+                "pre-pipeline review",
                 "pipeline ready",
                 "processing",
                 "pipeline completed",
+                "post-pipeline review",
                 "release ready",
-                "requires lab review",
                 "no available pipeline",
-                "pipeline error",
-                "unrunnable"
+                "pipeline error"
             ]
         },
         "pipeline_error_detail": {
@@ -199,60 +199,99 @@
                 "input library",
                 "mock input",
                 "no protein target",
-                "non-specific target"
+                "non-specific target",
+                "wild type"
             ]
-        },
-        "analyses": {
-            "title": "Analyses",
-            "description": "A list of analyses.",
-            "type": "array",
-            "minItems": 1,
-            "uniqueItems": true,
-            "permission": "import_items",
-            "items": {
-                "title": "Analysis",
-                "description": "One group of files which form a coherent analysis.",
-                "type": "object",
-                "required": ["files"],
-                "additionalProperties": false,
-                "properties": {
-                    "files": {
-                        "title": "Analysis files",
-                        "description": "A list of processed files belonging to this analsis",
-                        "type": "array",
-                        "minItems": 1,
-                        "uniqueItems": true,
-                        "permission": "import_items",
-                        "items": {
-                            "title": "Analysis file",
-                            "comment": "See file.json for available identifiers.",
-                            "type": "string",
-                            "linkTo": "File"
-                        }
-                    }
-                }
-            }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_slims",
+                "assay_title",
+                "target.investigated_as",
+                "target.label",
+                "control_type"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "replicates.library.biosample.donor.organism.scientific_name",
+                "biosample_ontology.classification",
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "biosample_ontology.system_slims",
+                "replicates.library.biosample.sex",
+                "replicates.library.biosample.life_stage",
+                "replicates.library.biosample.disease_term_name",
+                "replicates.library.biosample.treatments.treatment_term_name",
+                "replicates.library.biosample.subcellular_fraction_term_name",
+                "perturbed"
+            ]
+        },
+        {
+            "title": "Library",
+            "facet_fields": [
+                "files.platform.term_name",
+                "files.run_type",
+                "replicates.library.size_range",
+                "replicates.library.nucleic_acid_term_name",
+                "replicates.library.depleted_in_term_name",
+                "replicates.library.construction_platform.term_name",
+                "replicates.library.construction_method"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "assembly",
+                "files.file_type",
+                "files.read_length",
+                "files.mapped_read_length"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title",
+                "award.project",
+                "award.rfa",
+                "date_released",
+                "date_submitted"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "internal_status",
+                "replication_type",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_slims": {
             "title": "Assay type"
         },
         "assay_title": {
             "title": "Assay title",
-            "type": "typeahead"
+            "type": "typeahead",
+            "open_on_load": true
         },
         "status": {
-            "title": "Status"
+            "title": "Status",
+            "open_on_load": true
         },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "assembly": {
-            "title": "Genome assembly"
+        "perturbed": {
+            "title": "Perturbation",
+            "open_on_load": true
         },
         "target.investigated_as": {
             "title": "Target category"
@@ -260,18 +299,21 @@
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
         },
         "biosample_ontology.term_name" : {
-            "title": "Biosample term name",
+            "title": "Biosample",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
@@ -281,11 +323,33 @@
             "title": "Cell",
             "type": "typeahead"
         },
+        "biosample_ontology.system_slims": {
+            "title": "Systems"
+        },
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"
         },
+        "replicates.library.biosample.sex": {
+            "title": "Sex"
+        },
+        "control_type": {
+            "type": "exists",
+            "title": "Hide control experiments"
+        },
+        "replicates.library.biosample.disease_term_name": {
+            "title": "Disease"
+        },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -326,8 +390,16 @@
         },
         "replication_type": {
             "title": "Replication type"
+        },
+        "replicates.library.biosample.subcellular_fraction_term_name": {
+            "title": "Cellular component"
+        },
+        "replicates.library.construction_platform.term_name": {
+            "title": "Library construction platform"
+        },
+        "replicates.library.construction_method": {
+            "title": "Library construction method"
         }
-        
     },
     "columns": {
         "accession": {
@@ -338,6 +410,12 @@
         },
         "assay_title": {
             "title": "Assay title"
+        },
+        "biosample_ontology.classification": {
+            "title": "Biosample classification"
+        },
+        "target.@id": {
+            "title": "Target"
         },
         "target.label": {
             "title": "Target of assay"
@@ -350,6 +428,9 @@
         },
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
+        },
+        "dbxrefs": {
+            "title": "Dbxrefs"
         },
         "description": {
             "title": "Description"
@@ -396,11 +477,11 @@
         "replicates.library.biosample.treatments.treatment_term_id": {
             "title": "Biosample treatment ontology ID"
         },
-        "replicates.library.biosample.treatments.concentration": {
-            "title": "Biosample treatment concentration"
+        "replicates.library.biosample.treatments.amount": {
+            "title": "Biosample treatment amount"
         },
-        "replicates.library.biosample.treatments.concentration_units": {
-            "title": "Biosample treatment concentration units"
+        "replicates.library.biosample.treatments.amount_units": {
+            "title": "Biosample treatment amount units"
         },
         "replicates.library.biosample.treatments.duration": {
             "title": "Biosample treatment duration"
@@ -416,9 +497,27 @@
         },
         "replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units"
-        },       
+        },
+        "replicates.library.biosample.applied_modifications.modified_site_by_target_id.organism": {
+            "title": "Biosample modification site target organism"
+        },
+        "replicates.library.biosample.applied_modifications.introduced_gene.organism": {
+            "title": "Biosample modification site introduced gene organism"
+        },
         "replicates.@id": {
             "title": "Replicates"
+        },
+        "replicates.library.mixed_biosamples": {
+            "title": "Mixed biosamples"
+        },
+        "replicates.library.biosample.subcellular_fraction_term_name": {
+            "title": "Cellular component"
+        },
+        "replicates.library.construction_platform.term_name": {
+            "title": "Library construction platform"
+        },
+        "replicates.library.construction_method": {
+            "title": "Library construction method"
         }
     },
     "boost_values": {
@@ -497,7 +596,7 @@
         "target.aliases": 3.0,
         "target.genes.symbol": 10.0,
         "target.label": 10.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 5.0,
         "target.organism.scientific_name": 5.0,
         "references.title": 1.0,
@@ -505,7 +604,8 @@
         "internal_tags": 5.0,
         "biosample_summary": 12.0,
         "description": 8.0,
-        "replication_type": 1.0
+        "replication_type": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/experiment.md"
 }

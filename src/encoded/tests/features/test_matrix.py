@@ -5,13 +5,24 @@ from pytest_bdd import scenarios
 
 pytestmark = [
     pytest.mark.bdd,
-    pytest.mark.usefixtures('workbook'),
+    pytest.mark.usefixtures('index_workbook'),
 ]
 
 scenarios(
     'matrix_entex.feature',
+    'matrix_brain.feature',
     'matrix_experiment.feature',
     'matrix_reference_epigenome.feature',
     'matrix_chip_seq.feature',
+    'matrix_deeply_profiled.feature',
+    'matrix_deeply_profiled_uniform_batch.feature',
+    'matrix_mouse_development.feature',
+    'matrix_reference_epigenome_homo_sapien_all.feature',
+    'matrix_reference_epigenome_homo_sapien_nonroadmap.feature',
+    'matrix_reference_epigenome_mus_musculus.feature',
+    'matrix_sescc_stem_cell.feature',
+    'matrix_encore.feature',
+    'matrix_degron.feature',
+    'encyclopedia.feature',
     strict_gherkin=False,
 )

@@ -1,5 +1,15 @@
 ## Changelog for treatment.json
 
+### Minor changes since schema 13
+* Added *perturbation* and *selection* to the *purpose* of treatment
+* Added *control* and *labeling* to the enum list for *purpose*; added *treatment_type_details* property to further describe the type of treatment
+
+### Schema version 13
+* Modified regex pattern for *product_id* to disallow blank strings.
+
+### Schema version 12
+* Moved *stimulation* from *treatment_type* to *purpose*
+
 ### Minor changes since schema version 11
 * *product_id* and *source* properties were added using imports from mixins.json.
 * *stimulation* was added to the enum list for the *treatment_type* property in mixins.json.

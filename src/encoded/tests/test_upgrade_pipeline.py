@@ -2,50 +2,6 @@ import pytest
 from unittest import TestCase
 
 
-@pytest.fixture
-def pipeline_1():
-    return {
-        'schema_version': '1',
-        'status': 'active',
-        'title': 'Test pipeline',
-    }
-
-
-@pytest.fixture
-def pipeline_2(award, lab):
-    return {
-        'schema_version': '2',
-        'status': 'active',
-        'title': 'Test pipeline',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-
-
-@pytest.fixture
-def pipeline_7(award, lab):
-    return {
-        'assay_term_name': 'MNase-seq',
-        'schema_version': '7',
-        'status': 'active',
-        'title': 'Test pipeline',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-
-
-@pytest.fixture
-def pipeline_8(award, lab):
-    return {
-        'assay_term_names': ['MNase-seq'],
-        'schema_version': '8',
-        'status': 'active',
-        'title': 'Test pipeline',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-
-
 def test_pipeline_upgrade_1_2(upgrader, pipeline_1):
     value = upgrader.upgrade('pipeline', pipeline_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -72,6 +28,7 @@ def test_pipeline_upgrade_8_9(upgrader, pipeline_8):
     assert value['schema_version'] == '9'
     assert value.get('status') == 'released'
 
+
 def test_pipeline_upgrade_9_10(upgrader, pipeline_8):
     pipeline_8['schema_version'] = '9'
     pipeline_8['assay_term_names'] = ['single-nuclei ATAC-seq', 'HiC']
@@ -80,4 +37,60 @@ def test_pipeline_upgrade_9_10(upgrader, pipeline_8):
     TestCase().assertListEqual(
         sorted(value['assay_term_names']),
         sorted(['single-nucleus ATAC-seq', 'HiC'])
+    )
+
+
+def test_pipeline_upgrade_10_11(upgrader, pipeline_8):
+    pipeline_8['schema_version'] = '10'
+    pipeline_8['assay_term_names'] = ['single cell isolation followed by RNA-seq', 'RNA-seq']
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='11')
+    assert value['schema_version'] == '11'
+    TestCase().assertListEqual(
+        sorted(value['assay_term_names']),
+        sorted(['single-cell RNA sequencing assay', 'RNA-seq'])
+    )
+
+
+def test_pipeline_upgrade_11_12(upgrader, pipeline_8):
+    pipeline_8['schema_version'] = '11'
+    pipeline_8['notes'] = 'Notes'
+    pipeline_8['assay_term_names'] = ['single-nucleus RNA-seq',
+                                      'genotyping by high throughput sequencing assay']
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='12')
+    assert value['schema_version'] == '12'
+    TestCase().assertListEqual(
+        sorted(value['assay_term_names']),
+        sorted(['single-cell RNA sequencing assay',
+                'whole genome sequencing assay'])
+    )
+    assert 'This pipeline is now compatible with scRNA-seq, upgraded from snRNA-seq.' in value['notes']
+
+    pipeline_8['assay_term_names'] = ['single-cell RNA sequencing assay']
+    pipeline_8['schema_version'] = '11'
+    value.pop('notes')
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='12')
+    assert 'notes' not in value
+
+
+def test_pipeline_upgrade_12_13(upgrader, pipeline_8):
+    pipeline_8['schema_version'] = '12'
+    pipeline_8['notes'] = 'Notes'
+    pipeline_8['assay_term_names'] = ['single-cell ATAC-seq', 'ATAC-seq']
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='13')
+    assert value['schema_version'] == '13'
+    TestCase().assertListEqual(
+        sorted(value['assay_term_names']),
+        sorted(['single-nucleus ATAC-seq', 'ATAC-seq'])
+    )
+    assert 'This pipeline is now compatible with snATAC-seq, upgraded from scATAC-seq.' in value['notes']
+
+
+def test_pipeline_upgrade_13_14(upgrader, pipeline_8):
+    pipeline_8['schema_version'] = '13'
+    pipeline_8['assay_term_names'] = ['Capture Hi-C', 'HiC']
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='14')
+    assert value['schema_version'] == '14'
+    TestCase().assertListEqual(
+        sorted(value['assay_term_names']),
+        sorted(['capture Hi-C', 'HiC'])
     )

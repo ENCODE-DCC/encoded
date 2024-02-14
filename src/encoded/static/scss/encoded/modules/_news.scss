@@ -3,7 +3,7 @@
 
     @at-root #{&}__item {
         padding: 10px;
-        border-top: 1px solid rgba(15,70,100,.12);
+        border-top: 1px solid rgba(15, 70, 100, 0.12);
 
         h3 {
             margin: 0 0 5px;
@@ -33,7 +33,7 @@
     @at-root #{&}__readmore {
         margin-top: 5px;
 
-        .btn{
+        .btn {
             display: inline-block;
         }
     }
@@ -99,6 +99,7 @@
         font-style: italic;
         color: #808080;
     }
+
     padding-bottom: 40px;
 
     .news-keyword {
@@ -110,12 +111,13 @@
 
 %share-button {
     @extend .icon;
+
     display: inline-block;
     margin-right: 5px;
     font-size: 1.8rem;
     text-decoration: none;
 
-    &:after {
+    &::after {
         content: "" !important;
     }
 
@@ -127,6 +129,7 @@
 .share-twitter {
     @extend %share-button;
     @extend .icon-twitter-square;
+
     color: #1da1f2;
 
     &:hover, &:active, &:focus {
@@ -137,6 +140,7 @@
 .share-facebook {
     @extend %share-button;
     @extend .icon-facebook-square;
+
     color: #3b5998;
 
     &:hover, &:active, &:focus {
@@ -166,7 +170,7 @@
 
     @at-root #{&}__previews-title {
         border-bottom: 1px solid #a0a0a0;
-        padding: 0px 10px;
+        padding: 0 10px;
 
         h1 {
             margin-top: 0;
@@ -189,7 +193,6 @@
         }
     }
 }
-
 
 .news-facet__title {
     text-align: center;
@@ -243,7 +246,6 @@
     font-weight: normal;
     color: #808080;
 }
-
 
 .news-blank {
     text-align: center;

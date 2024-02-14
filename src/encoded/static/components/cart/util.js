@@ -1,37 +1,81 @@
 /**
  * Small, general components and functions needed by other cart modules.
  */
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 
-
-/** List of object @type allowed in the cart. */
-const allowedCartTypes = [
-    'Experiment',
-];
-
-/** Maximum number of elements allowed in cart while not logged in */
-export const CART_MAXIMUM_ELEMENTS_LOGGEDOUT = 4000;
+// node_modules
+import _ from 'underscore';
+import url from 'url';
+// local
+import { obligateSeriesTypes } from './constants';
 
 
 /**
- * Displays a modal to tell the logged-out user that there are too many datasets than can be added.
+ * Maximum number of items allowed in a cart.
  */
-export const MaximumElementsLoggedoutModal = ({ closeClickHandler }) => (
-    <Modal>
-        <ModalHeader title="Too many experiments selected" closeModal={closeClickHandler} />
-        <ModalBody>
-            <p>You can add a maximum of {CART_MAXIMUM_ELEMENTS_LOGGEDOUT} experiments to a cart if you have not logged in.</p>
-        </ModalBody>
-        <ModalFooter closeModal={closeClickHandler} />
-    </Modal>
+export const CART_MAX_ELEMENTS = 8000;
+
+/**
+ * Default title of file view.
+ */
+export const DEFAULT_FILE_VIEW_NAME = 'View';
+
+
+/**
+ * List of dataset types allowed in carts. Maps from collection names to corresponding data:
+ *     title: Displayable title for the type
+ *     type: Object @type, i.e. RHS of "type=<dataset type>" in a query string
+ */
+export const allowedDatasetTypes = {
+    experiments: { title: 'Experiments', type: 'Experiment' },
+    annotations: { title: 'Annotations', type: 'Annotation' },
+    'functional-characterization-experiments': { title: 'Functional characterizations', type: 'FunctionalCharacterizationExperiment' },
+    'single-cell-units': { title: 'Single-cell units', type: 'SingleCellUnit' },
+    'aggregate-series': { title: 'Aggregate series', type: 'AggregateSeries' },
+    'differentiation-series': { title: 'Differentiation series', type: 'DifferentiationSeries' },
+    'differential-accessibility-series': { title: 'Differential accessibility series', type: 'DifferentialAccessibilitySeries' },
+    'disease-series': { title: 'Disease series', type: 'DiseaseSeries' },
+    'functional-characterization-series': { title: 'Functional characterization series', type: 'FunctionalCharacterizationSeries' },
+    'gene-silencing-series': { title: 'Gene silencing series', type: 'GeneSilencingSeries' },
+    'matched-set': { title: 'Matched set', type: 'MatchedSet' },
+    'multiomics-series': { title: 'Multiomics series', type: 'MultiomicsSeries' },
+    'organism-development-series': { title: 'Organism development series', type: 'OrganismDevelopmentSeries' },
+    'pulse-chase-time-series': { title: 'Pulse-chase time series', type: 'PulseChaseTimeSeries' },
+    'reference-epigenomes': { title: 'Reference epigenomes', type: 'ReferenceEpigenome' },
+    'replication-timing-series': { title: 'Replication timing series', type: 'ReplicationTimingSeries' },
+    'single-cell-rna-series': { title: 'Single-cell RNA series', type: 'SingleCellRnaSeries' },
+    'treatment-concentration-series': { title: 'Treatment concentration series', type: 'TreatmentConcentrationSeries' },
+    'treatment-time-series': { title: 'Treatment time series', type: 'TreatmentTimeSeries' },
+    'collection-series': { title: 'Collection series', type: 'CollectionSeries' },
+    'transgenic-enhancer-experiments': { title: 'Transgenic enhancer experiments', type: 'TransgenicEnhancerExperiment' },
+};
+
+/**
+ * The default dataset type for All Datasets. The object matches the real dataset types in
+ * `allowedDatasetTypes` but without a type.
+ */
+export const defaultDatasetType = {
+    all: { title: 'All dataset types' },
+};
+
+
+/**
+ * Get a mutable array of dataset types allowed in carts, i.e. an array of types on the right-
+ * hand side of "type=<dataset type>" in a query string.
+ * @return {array} Copy of `allowedCartTypes` global
+ */
+export const cartGetAllowedTypes = () => (
+    Object.keys(allowedDatasetTypes).map((datasetType) => allowedDatasetTypes[datasetType].type)
 );
 
-MaximumElementsLoggedoutModal.propTypes = {
-    /** Callback when user closes the modal */
-    closeClickHandler: PropTypes.func.isRequired,
-};
+
+/**
+ * Get a mutable array of object path types allowed in carts, i.e. the part in an object path:
+ * /{object path type}/{accession}/ e.g. /experiments/ENCSR000AAA/
+ * @return {array} Copy of `allowedCartTypes` global
+ */
+export const cartGetAllowedObjectPathTypes = () => (
+    Object.keys(allowedDatasetTypes)
+);
 
 
 /**
@@ -44,10 +88,11 @@ MaximumElementsLoggedoutModal.propTypes = {
  */
 export const isAllowedElementsPossible = (resultFilters) => {
     let typeFilterExists = false;
+    const allowedTypes = cartGetAllowedTypes();
     const allowedFilters = resultFilters.filter((resultFilter) => {
         if (resultFilter.field === 'type') {
             typeFilterExists = true;
-            return allowedCartTypes.indexOf(resultFilter.term) >= 0;
+            return allowedTypes.indexOf(resultFilter.term) >= 0;
         }
         return false;
     });
@@ -56,17 +101,8 @@ export const isAllowedElementsPossible = (resultFilters) => {
 
 
 /**
- * Get a mutatable array of object types allowed in carts.
- * @return {array} Copy of `allowedCartTypes` global
- */
-export const getAllowedCartTypes = () => (
-    allowedCartTypes.slice(0)
-);
-
-
-/**
  * Return a new array containing the merged contents of two carts with no duplicates. Contains odd
- * ES6 syntax to merge, clone, and dedupe arrays in one operation.
+ * ES6 syntax to merge, clone, and de-dupe arrays in one operation.
  * https://stackoverflow.com/questions/1584370/how-to-merge-two-arrays-in-javascript-and-de-duplicate-items#answer-38940354
  * @param {array} cart0AtIds Array of @ids in one cart
  * @param {array} cart1AtIds Array of @ids to merge with `cart0AtIds`
@@ -74,3 +110,121 @@ export const getAllowedCartTypes = () => (
 export const mergeCarts = (cart0AtIds, cart1AtIds) => (
     [...new Set([...cart0AtIds, ...cart1AtIds])]
 );
+
+
+/**
+ * Determine whether the given search results is for a cart search or not.
+ * @param {object} context Search-results object
+ *
+ * @return {boolean} True if search results are for a cart search.
+ */
+const cartSearchPaths = ['/cart-search/', '/cart-matrix/', '/cart-report/'];
+export const getIsCartSearch = (context) => {
+    const pathName = url.parse(context['@id']).pathname;
+    return cartSearchPaths.includes(pathName);
+};
+
+/**
+ * Get array of @types of objects that exist in the given cart search results.
+ * @param {object} context /cart-search/ results
+ *
+ * @return {array} @types of all elements in the cart search results, de-duped.
+ */
+export const getCartSearchTypes = (context) => (
+    _.uniq(context['@graph'].map((result) => result['@type'][0]))
+);
+
+
+/**
+ * Extract the file @ids of the analyses selected by the given analysis titles.
+ * @param {array} availableAnalyses Compiled analysis objects.
+ * @param {array} analysisTitles Titles of analyses from which to extract file @ids.
+ *
+ * @return {array} Combined @ids of selected analysis files.
+ */
+export const getAnalysesFileIds = (availableAnalyses, analysisTitles = []) => {
+    const selectedFileIds = availableAnalyses.reduce((fileIds, analysis) => {
+        if (analysisTitles.length === 0 || analysisTitles.includes(analysis.title)) {
+            return fileIds.concat(analysis.files);
+        }
+        return fileIds;
+    }, []);
+    return _.uniq(selectedFileIds);
+};
+
+
+/**
+ * Extract the value of an object property based on a dotted-notation field,
+ * e.g. { a: 1, b: { c: 5 }} you could retrieve the 5 by passing 'b.c' in `field`.
+ * Based on https://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference#answer-6394168
+ * @param {object} object Object containing the value you want to extract.
+ * @param {string} field  Dotted notation for the property to extract.
+ *
+ * @return {value} Whatever value the dotted notation specifies, or undefined.
+ */
+export const getObjectFieldValue = (object, field) => {
+    const parts = field.split('.');
+    if (parts.length === 1) {
+        return object[field];
+    }
+    const value = parts.reduce((partObject, part) => partObject && partObject[part], object);
+    if (Array.isArray(value)) {
+        return value.length > 0 ? value : undefined;
+    }
+    return value;
+};
+
+
+/**
+ * Test whether the given series object is an obligate series object or not. With obligate series,
+ * you can remove any of its related datasets independently of removing the related series.
+ * Alternatively, with grouping series (non-obligate), you cannot remove any related dataset
+ * without removing the related series object.
+ * @param {object} series Series object to test
+ * @returns {boolean} True if given series is an obligate series type
+ */
+export const isObligateSeries = (series) => (
+    obligateSeriesTypes.includes(series['@type'][0])
+);
+
+
+/**
+ * Get the related datasets from the series that currently exist in the cart.
+ * @param {object} series Series object from which to get related datasets in cart.
+ */
+export const getSeriesDatasets = (series, allDatasetsInCart) => (
+    series.related_datasets.map((relatedDataset) => (
+        allDatasetsInCart.find((cartDataset) => cartDataset['@id'] === relatedDataset['@id'])
+    )).filter((matchingCartDatasets) => !!matchingCartDatasets)
+);
+
+
+/**
+ * Calculate the total number of pages needed to display all items in any of the tab panes
+ * (datasets, files, etc.).
+ * @param {number} itemCount Total number of items being displayed on pages
+ * @param {number} maxCount Maximum number of items per page
+ *
+ * @return {number} Number of pages to contain all items
+ */
+export const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCount) + (itemCount % maxCount !== 0 ? 1 : 0);
+
+
+/**
+ * Returns various aspects about the given cart that determines whether the cart can be modified
+ * by their submitters.
+ * @param {object} cart Cart from database or context
+ * @returns {object} shape: {
+ *     locked - cart is locked by the submitter to prevent unintended modifications
+ *     released - cart is released by DCC
+ *     any - any of the above reasons apply
+ */
+export const getReadOnlyState = (cart) => {
+    const readOnlyState = {};
+    if (cart) {
+        readOnlyState.locked = cart.locked;
+        readOnlyState.released = cart.status === 'released';
+    }
+    readOnlyState.any = Object.keys(readOnlyState).some((key) => readOnlyState[key]);
+    return readOnlyState;
+};

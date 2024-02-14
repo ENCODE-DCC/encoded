@@ -9,14 +9,13 @@ import { DocumentsPanel, DocumentsSubpanels } from './doc';
 import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
-import { Breadcrumbs } from './navigation';
-import { requestObjects, AlternateAccession, ItemAccessories, InternalTags } from './objectutils';
+import { requestObjects, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleTable, ExperimentTable } from './typeutils';
-import formatMeasurement from './../libs/formatMeasurement';
+import { ReplacementAccessions, BiosampleTable, ExperimentTable } from './typeutils';
+import formatMeasurement from '../libs/formatMeasurement';
 
 
 const HumanDonor = (props) => {
@@ -90,10 +89,10 @@ const HumanDonor = (props) => {
                             </div>
                         : null}
 
-                        {context.ethnicity ?
+                        {context.ethnicity && context.ethnicity.length > 0 ?
                             <div data-test="ethnicity">
                                 <dt>Ethnicity</dt>
-                                <dd className="sentence-case">{context.ethnicity}</dd>
+                                <dd className="sentence-case">{context.ethnicity.join(', ')}</dd>
                             </div>
                         : null}
 
@@ -150,7 +149,7 @@ globals.panelViews.register(HumanDonor, 'HumanDonor');
 const donorTableColumns = {
     accession: {
         title: 'Accession',
-        display: donor => <a href={donor['@id']}>{donor.accession}</a>,
+        display: (donor) => <a href={donor['@id']}>{donor.accession}</a>,
     },
     age_display: {
         title: 'Age',
@@ -170,7 +169,7 @@ const donorTableColumns = {
     sex: { title: 'Sex' },
     status: {
         title: 'Status',
-        display: donor => <Status item={donor} badgeSize="small" inline />,
+        display: (donor) => <Status item={donor} badgeSize="small" inline />,
     },
 };
 
@@ -454,6 +453,95 @@ globals.panelViews.register(FlyWormDonor, 'FlyDonor');
 globals.panelViews.register(FlyWormDonor, 'WormDonor');
 
 
+const ManateeDonor = (props) => {
+    const { context, biosample } = props;
+
+    return (
+        <div>
+            <Panel>
+                <PanelHeading>
+                    <h4>Donor information</h4>
+                </PanelHeading>
+                <PanelBody>
+                    <dl className="key-value">
+                        <div data-test="status">
+                            <dt>Status</dt>
+                            <dd><Status item={context} inline /></dd>
+                        </div>
+
+                        <div data-test="accession">
+                            <dt>Accession</dt>
+                            <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
+                        </div>
+
+                        {context.aliases.length > 0 ?
+                            <div data-test="aliases">
+                                <dt>Aliases</dt>
+                                <dd>{context.aliases.join(', ')}</dd>
+                            </div>
+                        : null}
+
+                        {context.external_ids && context.external_ids.length > 0 ?
+                            <div data-test="externalid">
+                                <dt>Donor external identifiers</dt>
+                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
+                            </div>
+                        : null}
+
+                        {context.organism.scientific_name ?
+                            <div data-test="species">
+                                <dt>Species</dt>
+                                <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                            </div>
+                        : null}
+
+                        {context.age ?
+                            <div data-test="age">
+                                <dt>Age</dt>
+                                <dd className="sentence-case">{formatMeasurement(context.age, context.age_units)}</dd>
+                            </div>
+                        : null}
+
+                        {context.sex ?
+                            <div data-test="sex">
+                                <dt>Sex</dt>
+                                <dd className="sentence-case">{context.sex}</dd>
+                            </div>
+                        : null}
+
+                        {context.dbxrefs && context.dbxrefs.length > 0 ?
+                            <div data-test="external-resources">
+                                <dt>External resources</dt>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                            </div>
+                        : null}
+
+
+                        {context.submitter_comment ?
+                            <div data-test="submittercomment">
+                                <dt>Submitter comment</dt>
+                                <dd>{context.submitter_comment}</dd>
+                            </div>
+                        : null}
+                    </dl>
+                </PanelBody>
+            </Panel>
+        </div>
+    );
+};
+
+ManateeDonor.propTypes = {
+    context: PropTypes.object.isRequired, // Manatee donor object being rendered
+    biosample: PropTypes.object, // Biosample object this donor belongs to
+};
+
+ManateeDonor.defaultProps = {
+    biosample: null,
+};
+
+globals.panelViews.register(ManateeDonor, 'ManateeDonor');
+
+
 // This component activates for any donors that aren't any of the above registered types.
 class DonorComponent extends React.Component {
     constructor() {
@@ -479,7 +567,8 @@ class DonorComponent extends React.Component {
         }
     }
 
-    componentWillReceiveProps() {
+    /* eslint-disable camelcase */
+    UNSAFE_componentWillReceiveProps() {
         // Humans need to do a couple requests to get the parents and children of the donor.
         if (this.props.context['@type'][0] === 'HumanDonor') {
             // If the logged-in state has changed since the last time we rendered, request files again
@@ -491,6 +580,7 @@ class DonorComponent extends React.Component {
             }
         }
     }
+    /* eslint-enable camelcase */
 
     requestRelations() {
         // donor.parents and donor.children aren't embedded in the human donor object -- they're
@@ -562,16 +652,12 @@ class DonorComponent extends React.Component {
             { id: <i>{context.organism.scientific_name}</i> },
         ];
 
-        const crumbsReleased = (context.status === 'released');
-
         return (
             <div className={itemClass}>
                 <header>
-                    <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.accession}</h2>
-                    <div className="replacement-accessions">
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                    </div>
+                    <TopAccessories context={context} crumbs={crumbs} />
+                    <h1>{context.accession}</h1>
+                    <ReplacementAccessions context={context} />
                     <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'experiment-audit', except: context['@id'] }} />
                     {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
                 </header>
@@ -597,8 +683,14 @@ class DonorComponent extends React.Component {
                 : null}
 
                 <RelatedItems
-                    title={`Experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    title={`Functional genomics experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
                     url={`/search/?type=Experiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title={`Functional characterization experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    url={`/search/?type=FunctionalCharacterizationExperiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
 
@@ -642,7 +734,7 @@ const DonorListingComponent = (props, reactContext) => {
     ].filter(Boolean);
 
     return (
-        <li className={resultItemClass(result)}>
+        <div className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
@@ -652,10 +744,10 @@ const DonorListingComponent = (props, reactContext) => {
                     <div className="result-item__data-row">
                         {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                         {result.external_ids && result.external_ids.length ?
-                            <React.Fragment>
+                            <>
                                 <strong>External resources: </strong>
                                 <DbxrefList context={result} dbxrefs={result.external_ids} />
-                            </React.Fragment>
+                            </>
                         : null}
                     </div>
                 </div>
@@ -668,7 +760,7 @@ const DonorListingComponent = (props, reactContext) => {
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
-        </li>
+        </div>
     );
 };
 
@@ -687,23 +779,28 @@ DonorListingComponent.contextTypes = {
 const DonorListing = auditDecor(DonorListingComponent);
 
 
-const HumanListing = props => (
+const HumanListing = (props) => (
     <DonorListing {...props} organismTitle="Human donor" />
 );
 
-const MouseListing = props => (
+const MouseListing = (props) => (
     <DonorListing {...props} organismTitle="Mouse donor" />
 );
 
-const WormListing = props => (
+const WormListing = (props) => (
     <DonorListing {...props} organismTitle="Worm donor" />
 );
 
-const FlyListing = props => (
+const FlyListing = (props) => (
     <DonorListing {...props} organismTitle="Fly donor" />
+);
+
+const ManateeListing = (props) => (
+    <DonorListing {...props} organismTitle="Manatee donor" />
 );
 
 globals.listingViews.register(HumanListing, 'HumanDonor');
 globals.listingViews.register(MouseListing, 'MouseDonor');
 globals.listingViews.register(WormListing, 'WormDonor');
 globals.listingViews.register(FlyListing, 'FlyDonor');
+globals.listingViews.register(ManateeListing, 'ManateeDonor');

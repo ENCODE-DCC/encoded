@@ -1,0 +1,297 @@
+{
+    "title": "Bru library quality metric",
+    "description": "Schema for reporting Bru assay library quality metric",
+    "id": "/profiles/bru_library_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "award", "lab", "quality_metric_of"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "nMap": {
+            "title": "Mapped read count",
+            "description": "Reads or read pairs mapped to the standard chromosomes in the genome bam file",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMapUniq": {
+            "title": "Uniquely mapped read count",
+            "description": "Reads or read pairs uniquely mapped to the standard chromosomes in the genome bam file (MAPQ >= 255)",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nLibOnce": {
+            "title": "Uniquely mapped reads appearing once",
+            "description": "Unduplicated reads or read pairs uniquely mapped to the standard chromosomes in the genome bam file (MAPQ >= 255)",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nLibMulti": {
+            "title": "Uniquely mapped reads duplicated one or more times",
+            "description": "Duplicated reads or read pairs uniquely mapped to the standard chromosomes in the genome bam file (MAPQ >= 255)",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nPos": {
+            "title": "Number of genomic positions where reads are mapped",
+            "description": "Genomic positions (one per read or read pair) in the standard chromosomes where any number of reads are mapped uniquely",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nPosOnce": {
+            "title": "Number of genomic positions with exactly one mapped read",
+            "description": "Genomic positions (one per read or read pair) in the standard chromosomes where exactly one read is mapped uniquely",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nPosMulti": {
+            "title": "Number of genomic positions with more than one mapped read",
+            "description": "Genomic positions (one per read or read pair) in the standard chromosomes where any number of reads are mapped uniquely (nPos - nPosOnce)",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nRRNA": {
+            "title": "Ribosomal RNA read counts",
+            "description": "Reads or read pairs mapped to the ribosomal RNA in the premap bam file",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nChrM": {
+            "title": "Mitochondrial RNA read counts",
+            "description": "Reads or read pairs mapped to the mitochondrial genome in the premap bam file",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nEBV": {
+            "title": "EBV read counts",
+            "description": "Reads or read pairs mapped to the Epstein-Barr viral genome in the premap bam file",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMapLabeledAll": {
+            "title": "Total labeled spike-in read count",
+            "description": "Reads or read pairs mapped to all Bru-labeled spike-in references in both genome and premap bam files",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMapUnlabeledAll": {
+            "title": "Total unlabeled spike-in read count",
+            "description": "Reads or read pairs mapped to all unlabeled spike-in references in both genome and premap bam files",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMap_IVT_AGP23": {
+            "title": "AT AGP23 labeled spike-in read count",
+            "description": "Reads or read pairs mapped to A. thaliana AGP23, a Bru-labeled, in vitro transcribed spike-in, from the genome bam file",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMap_IVT_OBF5": {
+            "title": "AT OBF5 labeled spike-in read count",
+            "description": "Reads or read pairs mapped to A. thaliana OBF5, a Bru-labeled, in vitro transcribed spike-in, from the genome bam file",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMap_IVT_PDF1": {
+            "title": "AT PDF1 unlabeled spike-in read count",
+            "description": "Reads or read pairs mapped to A. thaliana PDF1, an unlabeled, in vitro transcribed spike-in, from the genome bam file",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMap_IVT_AP2": {
+            "title": "AT AP2 unlabeled spike-in read count",
+            "description": "Reads or read pairs mapped to A. thaliana AP2, an unlabeled, in vitro transcribed spike-in, from the genome bam file",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMap_chrEC": {
+            "title": "EC unlabeled spike-in read count",
+            "description": "Reads or read pairs mapped to the E. coli genome from the genome bam file. E. coli RNA is an unlabeled spike-in.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nMapUniq_chrEC": {
+            "title": "EC unlabeled spike-in uniquely mapped read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to the E. coli genome from the genome bam file. EC RNA is an unlabeled spike-in.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "dm6_nMap": {
+            "title": "DM labeled spike-in genome read count",
+            "description": "Reads or read pairs mapped to the D. melanogaster genome (dm6) from the genome bam file. DM RNA is a Bru-labeled spike-in.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "dm6_nMap_premap": {
+            "title": "DM labeled spike-in premap read count",
+            "description": "Reads or read pairs mapped to the D. melanogaster from the premap bam file. DM RNA is a Bru-labeled spike-in.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "dm6_nMapAll": {
+            "title": "DM labeled spike-in read count",
+            "description": "Reads or read pairs mapped to the D. melanogaster genome (dm6), including mitochondrial and rRNA references (dm6_nMap + dm6_nMap_premap). DM RNA is a Bru-labeled spike-in.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "dm6_nMapUniq": {
+            "title": "DM labeled spike-in genome uniquely mapped read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to the D. melanogaster genome (dm6) from the genome bam file. DM RNA is a Bru-labeled spike-in.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "dm6_nMapUniq_premap": {
+            "title": "DM labeled spike-in premap uniquely mapped read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to the D. melanogaster mitochondrial and rRNA references from the premap bam file. DM RNA is a Bru-labeled spike-in.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "dm6_nMapUniqAll": {
+            "title": "DM labeled spike-in uniquely mapped read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to the D. melanogaster genome (dm6), including mitochondrial and rRNA references (dm6_nMapUniq + dm6_nMapUniq_premap). DM RNA is a Bru-labeled spike-in.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "nSplc": {
+            "title": "Spliced read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to the standard chromosomes that contain at least one N in the CIGAR string",
+            "type": "integer",
+            "minimum": 0
+        },
+        "n_exon_antisense": {
+            "title": "Exonic antisense read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to exons on the antisense strand in the standard chromosomes",
+            "type": "integer",
+            "minimum": 0
+        },
+        "n_exon_sense": {
+            "title": "Exonic sense read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to exons on the sense strand in the standard chromosomes",
+            "type": "integer",
+            "minimum": 0
+        },
+        "n_intergenic": {
+            "title": "Intergenic read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to the standard chromosomes, but not overlapping exons or introns",
+            "type": "integer",
+            "minimum": 0
+        },
+        "n_intron_antisense": {
+            "title": "Intronic antisense read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to introns on the antisense strand in the standard chromosomes",
+            "type": "integer",
+            "minimum": 0
+        },
+        "n_intron_sense": {
+            "title": "Intronic sense read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to introns on the sense strand in the standard chromosomes",
+            "type": "integer",
+            "minimum": 0
+        },
+        "n_ambiguous": {
+            "title": "Ambiguous read count",
+            "description": "Reads or read pairs mapped uniquely (MAPQ>=255) to more than one gene in the standard chromosomes",
+            "type": "integer",
+            "minimum": 0
+        },
+        "fracRRNA": {
+            "title": "Fraction of ribosomal RNA reads in library",
+            "description": "Fraction of reads or read pairs mapped to rRNA in the library (nRRNA / nReads)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "fracChrM": {
+            "title": "Fraction of mitochondrial RNA reads in library",
+            "description": "Fraction of reads or read pairs mapped to the mitochondrial genome in the library (nChrM / nReads)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "frac_intron_sense": {
+            "title": "Fraction of intron sense reads",
+            "description": "Fraction of reads or read pairs mapped uniquely (MAPQ>=255) to introns on the sense strand relative to all uniquely mapped reads or pairs in the standard chromosomes (n_intron_sense / nMapUniq)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "frac_exon_sense": {
+            "title": "Fraction of exon sense reads",
+            "description": "fraction of reads or read pairs mapped uniquely (MAPQ>=255) to exons on the sense strand relative to all uniquely mapped reads or pairs in the standard chromosomes (n_exon_sense / nMapUniq)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "frac_intergenic": {
+            "title": "Fraction of intergenic reads",
+            "description": "Fraction of reads or read pairs mapped uniquely (MAPQ>=255) to intergenic space relative to all uniquely mapped reads or pairs in the standard chromosomes (n_intergenic / nMapUniq)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "fracSplc": {
+            "title": "Fraction of spliced reads",
+            "description": "Fraction of spliced reads or read pairs mapped uniquely (MAPQ>=255) in reads mapped uniquely to the standard chromosomes (nSplc / nMapUniq).",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "fracLibOnce": {
+            "title": "Fraction of unduplicated reads",
+            "description": "Fraction of unduplicated reads or read pairs mapped uniquely (MAPQ>=255) in reads mapped uniquely to the standard chromosomes (nLibOnce / nMapUniq).",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "fracPosOnce": {
+            "title": "Fraction of genomic positions with exactly one mapped read",
+            "description": "Fraction of genomic positions (one per read or read pair) in the standard chromosomes where exactly one read is mapped uniquely relative to all genomic position hits (nPosOnce / nPos)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "fracPosHit": {
+            "title": "Fraction of genomic positions where reads are mapped",
+            "description": "Fraction of genomic positions (one per read or read pair) in the standard chromosomes where at least one read is mapped uniquely relative to the genome size (nPos / genome size)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "fracBru": {
+            "title": "Fraction of reads from labeled spike-ins",
+            "description": "Fraction of reads or read pairs mapped to all Bru-labeled spike-ins relative to all mapped reads or read pairs (nMapLabeledAll / nMapAll)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "fracBruUniq": {
+            "title": "Fraction of uniquely mapped reads from labeled spike-ins",
+            "description": "Fraction of reads or read pairs mapped uniquely (MAPQ>=255) to all Bru-labeled spike-ins relative to all uniquely mapped reads or read pairs (nMapUniqLabeledAll / nMapUniqAll)",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/bru_library_quality_metric.md"
+}

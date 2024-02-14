@@ -1,7 +1,6 @@
 $panel-heading-inset: 10px; // Number of pixels padding inside panel heading
 $panel-body-inset:    10px; // Number of pixels padding inside panel body
 
-
 /* Panels */
 .panel {
     background-color: #fff;
@@ -29,6 +28,29 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     }
 }
 
+.antibody-statuses {
+    .panel {
+        border: 0;
+    }
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.Page, .Search, .Matrix, .ChipSeqMatrix, .Summary, .EntexMatrix, .EncoreMatrix, .SESCCStemCellMatrix, .ReferenceEpigenomeMatrix, .MouseDevelopmentMatrix {
+    .panel {
+        border: 0;
+    }
+}
+
+.view-item {
+    /* stylelint-disable-next-line selector-class-pattern */
+    &.type-Experiment {
+        .panel {
+            border: 1px solid #a0a0a0;
+            border-radius: $border-radius-base;
+        }
+    }
+}
+
 .panel-heading {
     position: relative;
     padding: $panel-heading-inset;
@@ -49,6 +71,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
 
 .panel-full {
     @extend .panel;
+
     padding: 0;
 }
 
@@ -60,7 +83,6 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     background-color: #4284d8;
     border: 1px solid #3276ca;
     border-radius: $border-radius-base;
-    box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
     margin: 10px 0 20px;
     padding: 15px 30px;
     overflow: hidden;
@@ -72,7 +94,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     overflow: hidden;
 }
 
-.panel h3, .panel h4 {color: #0A253D;}
+.panel h3, .panel h4 { color: #0a253d; }
 
 .view-detail {
     overflow: hidden;
@@ -89,7 +111,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
 }
 
 /* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
-.panel a[href^="http"]:after, td a[href^="http"]:after      {
+.panel a[href^="http"]::after, td a[href^="http"]::after {
     content: " \f08e";
     font-family: FontAwesome;
     font-weight: normal;
@@ -105,18 +127,18 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     background-position: 0% 0%;
     background-repeat: repeat;
 }
-/* remove external-link icon if there is no text in link <a></a>
-Note does not work in =<IE8, oh well */
-a[href^="http"]:empty:after {
+
+// remove external-link icon if there is no text in link <a></a>
+a[href^="http"]:empty::after {
     content: none;
 }
 
 /* do not use external link icon in these cases... */
+
 /* downloads */
-a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
+a[href^="http://encodedcc.sdsc.edu/warehouse/"]::after {
     content: none !important;
 }
-
 
 .panel__split {
     display: block;
@@ -154,16 +176,14 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 }
 
-
 // <PanelBody> class for below split panel area.
 .panel__below-split {
     border-top: 1px solid #c0c0c0;
 
     h4 {
-        margin: 0px 0px 10px;
+        margin: 0 0 10px;
     }
 }
-
 
 // Antibody Status Panels
 .type-antibody-status {
@@ -280,6 +300,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 3px 6px;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .type-QualityMetric.view-detail {
     margin: 0;
 }
@@ -287,6 +308,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 // Holds documents, but as a panel within a panel
 .panel-body-doc-interior {
     @extend .panel-body-doc;
+
     padding-left: 0;
     margin-right: -10px;
 }
@@ -299,6 +321,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 .file-gallery-controls {
     justify-content: flex-end;
     border-bottom: 1px solid #c0c0c0;
+
     select {
         border: 2px solid #4f689e !important;
         color: #4f689e !important;
@@ -307,116 +330,146 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 }
 
+.file-gallery-facets {
+    position: relative;
+    -webkit-transition: flex-basis 0.1s ease-in-out;
+    -moz-transition: flex-basis 0.1s ease-in-out;
+    -o-transition: flex-basis 0.1s ease-in-out;
+    transition: flex-basis 0.1s ease-in-out;
+
+    .show-hide-facets {
+        position: absolute;
+        padding: 5px 7px;
+        top: 10px;
+        cursor: pointer;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        -webkit-transition: right 0.1s ease-in-out;
+        -moz-transition: right 0.1s ease-in-out;
+        -o-transition: right 0.1s ease-in-out;
+        transition: right 0.1s ease-in-out;
+        background: white;
+        z-index: 10;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-md-min) {
+            display: none;
+        }
+    }
+
+    &.collapsed {
+        flex: 0 1 30px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 100%;
+        }
+
+        padding: 0;
+
+        .show-hide-facets {
+            right: -26px;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            background: white;
+            border-top: 2px solid #d2d2d2;
+            border-bottom: 2px solid #d2d2d2;
+            border-right: 2px solid #d2d2d2;
+            border-left: 0;
+        }
+
+        .facet {
+            display: none;
+        }
+
+        h4, .clear-file-facets, .facet {
+            display: none;
+        }
+    }
+
+    &.expanded {
+        flex: 0 1 20%;
+        padding: 20px;
+        padding-top: 40px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 100%;
+            padding-top: 20px;
+        }
+
+        .show-hide-facets {
+            right: -2px;
+            border-top: 2px solid #d2d2d2;
+            border-bottom: 2px solid #d2d2d2;
+            border-left: 2px solid #d2d2d2;
+            border-right: 2px solid white;
+        }
+    }
+
+    border-right: 2px solid #d2d2d2;
+
+    .facet-term {
+        margin-bottom: 2px;
+        cursor: pointer;
+        z-index: 0;
+
+        .facet-term__bar {
+            z-index: -1;
+        }
+
+        &.selected {
+            .facet-term__bar {
+                visibility: hidden;
+            }
+        }
+    }
+}
+
 .file-gallery-container {
     display: flex;
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-md-min) {
         flex-wrap: wrap;
     }
+
     .disabled-checkbox {
-        color: #6D6D6D;
+        color: #6d6d6d;
     }
+
     .clear-file-facets {
         background: white;
         border: 0;
         padding: 0;
         color: #e50400;
+
         &:hover {
             text-decoration: underline;
         }
     }
+
     .facet {
         padding-bottom: 10px;
     }
-    .file-gallery-facets {
-        position: relative;
-        -webkit-transition: flex-basis .1s ease-in-out;
-        -moz-transition: flex-basis .1s ease-in-out;
-        -o-transition: flex-basis .1s ease-in-out;
-        transition: flex-basis .1s ease-in-out;
-        .show-hide-facets {
-            position: absolute;
-            padding: 5px 7px;
-            top: 10px;
-            cursor: pointer;
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-            -webkit-transition: right .1s ease-in-out;
-            -moz-transition: right .1s ease-in-out;
-            -o-transition: right .1s ease-in-out;
-            transition: right .1s ease-in-out;
-            background: white;
-            @media screen and (max-width: $screen-md-min) {
-                display: none;
-            }
-        }
-        
-        &.collapsed {
-            flex: 0 1 30px;
-            @media screen and (max-width: $screen-md-min) {
-                flex: 0 1 100%;
-            }
-            padding: 0;
-            .show-hide-facets {
-                right: -26px;
-                border-top-right-radius: 5px;
-                border-bottom-right-radius: 5px;
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-                background: white;
-                z-index: 1000;
-                border-top: 2px solid #d2d2d2;
-                border-bottom: 2px solid #d2d2d2;
-                border-right: 2px solid #d2d2d2;
-                border-left: 0;
-            }
-            .facet {
-                display: none;
-            }
-            h4, .clear-file-facets, .facet {
-                display: none;
-            }
-        }
-        &.expanded {
-            flex: 0 1 20%;
-            padding: 20px;
-            padding-top: 40px;
-            @media screen and (max-width: $screen-md-min) {
-                flex: 0 1 100%;
-                padding-top: 20px;
-            }
-            .show-hide-facets {
-                right: -2px;
-                border-top: 2px solid #d2d2d2;
-                border-bottom: 2px solid #d2d2d2;
-                border-left: 2px solid #d2d2d2;
-                border-right: 2px solid white;
-            }
-        }
-        border-right: 2px solid #d2d2d2;
-        .facet-term {
-            margin-bottom: 2px;
-            cursor: pointer;
-            z-index: 0;
-            .facet-term__bar {
-                z-index: -1;
-            }
-            &.selected {
-                .facet-term__bar {
-                    visibility: hidden;
-                }
-            }
-        }
-    }
+
     .file-gallery-tab-bar {
         flex: 0 1 80%;
         overflow: hidden;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
         @media screen and (max-width: $screen-md-min) {
             flex: 0 1 100%;
         }
+
         &.expanded {
             flex: 0 1 calc(100% - 30px);
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
             @media screen and (max-width: $screen-md-min) {
                 flex: 0 1 100%;
             }
@@ -441,15 +494,17 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 0 5px;
 }
 
-$file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-controls
+$file-gallery-controls-height: 34px; // Height of controls inside file-gallery-controls
 
 .file-gallery-controls {
     display: flex;
     align-items: center;
     padding: 5px;
-    
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
     @media screen and (max-width: $screen-sm-min) {
         display: block;
+
         select {
             margin-bottom: 3px;
         }
@@ -460,14 +515,17 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
         margin-right: 5px;
 
         select {
-            height: $file-gallery-controls-height + 2;
+            height: $file-gallery-controls-height;
         }
     }
 
     @at-root #{&}__visualization-selector {
+        display: flex;
+        margin-bottom: 2px;
+
         select {
-            display: inline-block;
-            height: $file-gallery-controls-height + 2;
+            display: block;
+            height: $file-gallery-controls-height;
             width: auto;
             margin-right: 5px;
         }
@@ -475,6 +533,25 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
         button {
             height: $file-gallery-controls-height;
             vertical-align: top;
+        }
+    }
+
+    @at-root #{&}__download {
+        height: $file-gallery-controls-height;
+        vertical-align: top;
+
+        @media screen and (min-width: $screen-sm-min) {
+            margin-left: 5px;
+        }
+    }
+
+    @at-root #{&}__divider {
+        display: none;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: inline;
+            margin-left: 5px;
+            font-weight: 500;
         }
     }
 }
@@ -498,7 +575,7 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
         -moz-appearance: none;
     }
 
-    &.file-gallery-control-select:after {
+    &.file-gallery-control-select::after {
         content: '\f0dc';
         font-family: FontAwesome;
         padding: 8px;
@@ -533,14 +610,13 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
     text-align: center;
 }
 
-
 // File gallery title bars that collapse
 .collapsing-title-icon {
     position: relative;
     top: 0;
 }
 
-.file-gallery-counts {
+.table-counts {
     padding: 2px 10px;
     text-align: center;
     font-size: 0.9rem;
@@ -580,15 +656,16 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
 
 // Collapsing title bar
 .collapsing-title {
-    position: relative;
-    display: block;
-    padding: 10px;
-    height: 100%;
+    display: flex;
+    align-items: center;
     border: none;
     background-color: transparent;
 
     h4 {
-        margin: 0 0 0 40px;
+        display: flex;
+        align-items: center;
+        margin: 0 10px 0 0;
+        padding-left: 10px;
         text-align: left;
     }
 
@@ -599,7 +676,44 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
     &:focus, &:active {
         text-decoration: none;
         outline: 0;
-        box-shadow: 0 0 3px #0000ff inset;
+        box-shadow: 0 0 3px #00f inset;
+    }
+
+    &__file-download-container {
+        display: inline-block;
+    }
+
+    &__file-download {
+        padding: 0;
+        border: none;
+        background-color: transparent;
+        color: #428bca;
+        font-size: 1.3rem;
+
+        &--no-download-shade {
+            opacity: 0.3;
+        }
+    }
+
+    // Audit trigger button inside collapsing title
+    .audit-indicators {
+        margin-right: 10px;
+    }
+
+    // Status badge in collapsing title
+    @at-root #{&}__status {
+        margin-right: 10px;
+    }
+
+    // Audit details drop-down panel displayed just below collapsing title
+    @at-root #{&}__audit-details {
+        background-color: #b5bbc2;
+
+        .audit-detail {
+            margin: 0 0 0 40px;
+            border-right: none;
+            border-radius: 0;
+        }
     }
 }
 
@@ -629,12 +743,14 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
 }
 
 .collapsing-title-trigger {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 41px;
-    padding: 10px;
+    display: flex;
+    flex: 0 0 40px;
+    min-height: 40px;
+    width: 40px;
+    padding: 0;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
     border-top: none;
     border-right: 1px solid #fff;
     border-bottom: none;
@@ -644,6 +760,31 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
     &:hover {
         background-color: darken(#d8e0e8, 10%);
         text-decoration: none;
+    }
+}
+
+.collapsing-title-file-count {
+    font-size: 0.9rem;
+    color: #606060;
+}
+
+.title-main-content {
+    .title-main-content__identifier {
+        margin-right: 10px;
+
+        .title-main-content__analysis-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+
+            &.title-main-content__analysis-title--file-info {
+                font-size: 1.1rem;
+            }
+        }
+
+        .title-main-content__file-info {
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
     }
 }
 
@@ -672,86 +813,31 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
     }
 }
 
-// Tab Panel Styles
-$nav-tab-border-color: #a0a0a0;
-$nav-tab-border-style: 1px solid $nav-tab-border-color;
-$nav-tab-border-radius: 4px;
-
-.tab-nav {
-    position: relative;
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #a0a0a0;
-    @media screen and (max-width: $screen-md-min) {
-        overflow: scroll;
-    }
-}
-
-.nav-tabs {
-    display: flex;
-    margin: 0;
-    padding: 5px 5px 0;
-    align-items: flex-end;
-    position: relative;
-    list-style: none;
-    z-index: 1;
-    top: 1px;
-    border: none;
-    @media screen and (max-width: $screen-md-min) {
-        padding: 5px 5px 0;
-    }
-
-    > li {
-        display: block;
-        flex: 0 1 auto;
-
-        a, a:focus {
-            display: block;
-            text-decoration: none;
-            margin: 0;
-            padding: 5px 20px;
-            border-top: 3px solid transparent;
-            border-right: 1px solid transparent;
-            border-left: 1px solid transparent;
-            border-bottom: 1px solid transparent;
-            border-radius: 0;
-            color: #606060;
-
-            &:hover {
-                color: #000;
-            }
-        }
-
-        &.active {
-            a {
-                border-top: 3px solid #00cc00;
-                border-right: $nav-tab-border-style;
-                border-left: $nav-tab-border-style;
-                border-bottom: 1px solid #fff;
-                pointer-events: none;
-                background-color: #fff;
-                color: #000;
-            }
-        }
-    }
-}
-
-.tab-flange {
-    position: relative;
-    height: 5px;
-    background-color: #fff;
-    z-index: 0;
-    border-top: $nav-tab-border-style;
-    border-right: $nav-tab-border-style;
-    border-bottom: 0;
-    border-left: $nav-tab-border-style;
-}
-
+/* stylelint-disable-next-line selector-class-pattern */
 .BETA {
-    background-color: #B24342;
+    background-color: #b24342;
     padding: 2px 7px;
     color: white;
     font-weight: 500;
     margin-left: 7px;
     border-radius: 5px;
     font-size: 0.8rem;
+}
+
+.table-paged {
+    @at-root #{&}__count {
+        @extend .table-counts;
+
+        border-top: 1px solid #a0a0a0;
+    }
+}
+
+.series-wrapper {
+    .panel-body {
+        padding: 0;
+    }
+
+    .panel {
+        border: 0;
+    }
 }

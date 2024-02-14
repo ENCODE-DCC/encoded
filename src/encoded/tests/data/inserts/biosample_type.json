@@ -96,7 +96,7 @@
     "term_id": "CL:0002322",
     "status": "released"
 }, {
-    "classification": "single cell",
+    "classification": "in vitro differentiated cells",
     "uuid": "70a81e48-20c3-4de9-a5aa-ef92ff9b6e27",
     "term_name": "embryonic stem cell",
     "term_id": "CL:0002322",
@@ -133,10 +133,10 @@
     "status": "released"
 }, {
     "_test": "BiosampleType audit inconsistent ontology term",
-    "classification": "single cell",
+    "classification": "cell line",
     "uuid": "9996c871-33ca-44ef-ba3b-38359170f1ca",
     "term_name": "heart",
-    "term_id": "EFO:0002067",
+    "term_id": "EFO:0003045",
     "status": "released"
 }, {
     "classification": "cell-free sample",
@@ -186,4 +186,59 @@
     "term_name": "WTC-11",
     "term_id": "EFO:0009747",
     "status": "released"
-}]
+}, {
+    "classification": "cloning host",
+    "uuid": "09e6c39a-92af-41fc-a535-7a86d5e9590a",
+    "term_name": "DNA cloning sample",
+    "term_id": "NTR:0000545",
+    "status": "released"
+}, {
+    "classification": "tissue",
+    "status": "released",
+    "term_id": "UBERON:0002168",
+    "term_name": "left lung",
+    "uuid": "cc030551-fce6-4800-a1a9-c2406d07a166"
+}, {
+    "classification": "cell line",
+    "uuid": "ee29b248-ce7d-4435-86d2-1f46353bf873",
+    "term_name": "K1",
+    "term_id": "CLO:0007052",
+    "status": "released"
+}, {
+    "classification": "tissue",
+    "uuid": "29d35c02-b3ba-468d-9c8c-4deb6789e9f3",
+    "term_name": "skin epidermis",
+    "term_id": "UBERON:0001003",
+    "status": "released"
+}, {
+    "classification": "technical sample",
+    "uuid": "f6ade16f-4367-452c-882a-57f8f3c08a59",
+    "term_name": "technical sample",
+    "term_id": "NTR:0000637",
+    "status": "released"
+}, {
+    "classification": "primary cell",
+    "uuid": "4f5b1bfa-c1b4-4d3b-8a42-88f1456632c5",
+    "term_name": "regulatory T cell",
+    "term_id": "CL:0000815",
+    "status": "released"
+}, {
+    "classification": "primary cell",
+    "uuid": "062fc599-856b-4b00-b086-f7cee26cfd30",
+    "term_name": "CD4-positive, alpha-beta memory T cell",
+    "term_id": "CL:0000897",
+    "status": "released"
+}, {
+    "aliases": [
+        "encode:HCT116"
+    ],
+    "classification": "cell line",
+    "dbxrefs": [
+        "Cellosaurus:CVCL_0291"
+    ],
+    "term_name": "HCT116",
+    "term_id": "EFO:0002824",
+    "status": "released",
+    "uuid": "04f84deb-cd39-43fe-82c2-4ef28461b950"
+}
+]

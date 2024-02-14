@@ -6,7 +6,7 @@ import { parseAndLogError } from '../globals';
 
 /**
  * Update the current user's cart object in the DB. You must provide `cartAtId` because `cart`
- * cannot have non-writeable properties in it, and @id is one of several non-writeable properites.
+ * cannot have non-writeable properties in it, and @id is one of several non-writeable properties.
  * Pass false in `expectUpdatedObj` if permissions could limit you from viewing the updated object,
  * such as when you delete a cart.
  * @param {object} cart Cart object to update; must be writeable version
@@ -29,7 +29,7 @@ const updateCartObject = (cart, cartAtId, fetch, expectUpdatedObj = true) => (
             return Promise.resolve(response.json());
         }
         return Promise.reject(response.status);
-    }).then(result => (
+    }).then((result) => (
         result['@graph'][0]
     ))
 );
@@ -63,16 +63,20 @@ const getWriteableCartObject = (cartAtId, fetch) => (
  * Save the in-memory cart to the database. The user object has the @id of the user's cart, but not
  * the cart object itself which must be provided in `savedCartObj`.
  * @param {array} elements Array of @ids contained in the in-memory cart to be saved
+ * @param {array} fileViews Array of file views to save; falsy to not save
  * @param {object} savedCartObj User's saved cart object
  * @param {func} fetch System-wide fetch operation
  * @return {object} Promise with new or updated cart object
  */
-const cartSave = (elements, savedCartObj, fetch) => {
+const cartSave = (elements, fileViews, savedCartObj, fetch) => {
     const cartAtId = savedCartObj && savedCartObj['@id'];
     if (cartAtId) {
         return getWriteableCartObject(cartAtId, fetch).then((writeableCart) => {
             // Copy the in-memory cart to the writeable cart object and then update it in the DB.
             writeableCart.elements = elements;
+            if (fileViews) {
+                writeableCart.file_views = fileViews;
+            }
             return updateCartObject(writeableCart, cartAtId, fetch);
         });
     }
@@ -85,13 +89,17 @@ export default cartSave;
 /**
  * Create a new cart in the DB for the current user.
  * @param {string} {name Name for the new cart
- * @param {string} {identifer Identifier for the new cart (optional)
+ * @param {string} {identifier Identifier for the new cart (optional)
  * @param {string} {status} Status for the new cart (optional)
  * @param {func} fetch System-wide fetch operation
  * @return {Promise} Resolves to newly created cart object, or reject with error code.
  */
 export const cartCreate = ({ name, identifier, status }, fetch) => {
-    const body = { name };
+    const body = {
+        name,
+        locked: false,
+        file_views: [],
+    };
     if (identifier) {
         body.identifier = identifier;
     }
@@ -110,7 +118,7 @@ export const cartCreate = ({ name, identifier, status }, fetch) => {
             return Promise.resolve(response.json());
         }
         return Promise.reject(response.status);
-    }).then(result => (
+    }).then((result) => (
         result['@graph'][0]
     ));
 };
@@ -121,7 +129,7 @@ export const cartCreate = ({ name, identifier, status }, fetch) => {
  * @param {func} fetch System-wide fetch function
  * @return {Promise} Resolves to newly created cart object, or reject with error code.
  */
-export const cartCreateAutosave = fetch => (
+export const cartCreateAutosave = (fetch) => (
     cartCreate({ name: 'Auto Save', status: 'disabled' }, fetch)
 );
 
@@ -152,7 +160,7 @@ export const cartRetrieve = (cartUri, fetch) => (
  * @param {string} cartAtId @id of the cart object to update
  * @param {object} properties Object containing the properties within the cart object to set
  * @param {array} propertiesForRemoval Names of properties to remove from the object
- * @param {func} fetch Sytem fetch function
+ * @param {func} fetch System fetch function
  * @param {bool} expectUpdatedObject True to expect updated object in promise; false to ignore.
  *                                   Set to false when setting status to "deleted" to avoid
  *                                   permission error (submitter can't get updated object that
@@ -169,7 +177,7 @@ export const cartUpdate = (cartAtId, properties, propertiesForRemoval, fetch, ex
         }
 
         // Copy the in-memory cart to the writeable cart object and then update it in the DB.
-        const updatedCart = Object.assign({}, writeableCart, properties);
+        const updatedCart = { ...writeableCart, ...properties };
         return updateCartObject(updatedCart, cartAtId, fetch, expectUpdatedObject);
     })
 );

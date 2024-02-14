@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
+import { Panel, PanelHeading } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
@@ -36,7 +36,7 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 export const DocumentsPanel = (props) => {
     // Filter documentSpecs to just those that have actual documents in them.
-    const documentSpecsMapped = props.documentSpecs.length > 0 && _.compact(props.documentSpecs.map(documentSpecs => (
+    const documentSpecsMapped = props.documentSpecs.length > 0 && _.compact(props.documentSpecs.map((documentSpecs) => (
         documentSpecs.documents.length > 0 ? documentSpecs : null
     )));
 
@@ -86,17 +86,19 @@ DocumentsPanel.defaultProps = {
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
     if (documents && documents.length > 0) {
-        return <DocumentsPanel documentSpecs={[{ documents }]} />;
+        return <DocumentsPanel documentSpecs={[{ documents }]} title={props.title} />;
     }
     return null;
 };
 
 DocumentsPanelRenderer.propTypes = {
     documentSearch: PropTypes.object, // Search result object; this uses its @graph to get the documents,
+    title: PropTypes.string, // Title of document panel
 };
 
 DocumentsPanelRenderer.defaultProps = {
     documentSearch: null,
+    title: '',
 };
 
 
@@ -108,8 +110,8 @@ export const DocumentsPanelReq = (props) => {
     if (documents && documents.length > 0) {
         return (
             <FetchedData>
-                <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
-                <DocumentsPanelRenderer />
+                <Param name="documentSearch" url={`/search/?type=Item&${documents.map((docAtId) => `@id=${docAtId}`).join('&')}`} />
+                <DocumentsPanelRenderer title={props.title} />
             </FetchedData>
         );
     }
@@ -118,11 +120,15 @@ export const DocumentsPanelReq = (props) => {
 
 DocumentsPanelReq.propTypes = {
     documents: PropTypes.array.isRequired, // Array of document @ids to request and render
+    title: PropTypes.string, // Title of document panel
 };
 
+DocumentsPanelReq.defaultProps = {
+    title: '',
+};
 
 export const DocumentsSubpanels = (props) => {
-    const documentSpec = props.documentSpec;
+    const { documentSpec } = props;
 
     return (
         <div className="document-list">
@@ -159,13 +165,13 @@ export class Document extends React.Component {
 
         // Tell parent (App component) about new popover state
         // Pass it this component's React unique node ID
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             panelOpen: !prevState.panelOpen,
         }));
     }
 
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
 
         // Set up rendering components
         const DocumentHeaderView = globals.documentViews.header.lookup(context);
@@ -221,7 +227,7 @@ DocumentHeader.defaultProps = {
 
 // Document caption component -- default
 export const DocumentCaption = (props) => {
-    const doc = props.doc;
+    const { doc } = props;
     const caption = doc.description;
     let excerpt;
 
@@ -247,7 +253,7 @@ DocumentCaption.propTypes = {
 
 
 // Document preview component -- default
-export const DocumentPreview = props => (
+export const DocumentPreview = (props) => (
     <figure className="document__preview">
         <Attachment context={props.doc} attachment={props.doc.attachment} className="characterization" />
     </figure>
@@ -275,7 +281,7 @@ export const DocumentFile = (props) => {
                     </a>
                 </div>
                 {detailSwitch ?
-                    <button data-trigger onClick={detailSwitch} className="document__file-detail-switch">
+                    <button type="button" data-trigger onClick={detailSwitch} className="document__file-detail-switch">
                         {collapseIcon(!detailOpen)}
                     </button>
                 : null}
@@ -299,7 +305,7 @@ DocumentFile.propTypes = {
 
 // Document detail component -- default
 const DocumentDetail = (props) => {
-    const doc = props.doc;
+    const { doc } = props;
     const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
     const excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
@@ -367,7 +373,7 @@ globals.documentViews.file.register(DocumentFile, 'Document');
 globals.documentViews.detail.register(DocumentDetail, 'Document');
 
 
-const QCAttachmentCaption = props => (
+const QCAttachmentCaption = (props) => (
     <div className="document__caption">
         <div data-test="caption">
             <strong>Attachment: </strong>
@@ -399,7 +405,7 @@ QCAttachmentPreview.propTypes = {
 
 // Display a panel for attachments that aren't a part of an associated document
 export const AttachmentPanel = (props) => {
-    const { context, attachment, title, modal } = props;
+    const { context, attachment, title } = props;
 
     // Set up rendering components.
     const DocumentCaptionView = globals.documentViews.caption.lookup(context);
@@ -423,12 +429,10 @@ AttachmentPanel.propTypes = {
     context: PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
     attachment: PropTypes.object.isRequired, // Attachment being rendered
     title: PropTypes.string, // Title to display in the caption area
-    modal: PropTypes.bool, // `true` if attachments are displayed in a modal
 };
 
 AttachmentPanel.defaultProps = {
     title: '',
-    modal: false,
 };
 
 
@@ -441,7 +445,7 @@ globals.documentViews.preview.register(QCAttachmentPreview, 'QualityMetric');
 
 // Display a list of document links within a characterization.
 export const CharacterizationDocuments = (props) => {
-    const docs = props.docs.filter(doc => !!doc);
+    const docs = props.docs.filter((doc) => !!doc);
     return (
         <dd>
             {docs.map((doc) => {

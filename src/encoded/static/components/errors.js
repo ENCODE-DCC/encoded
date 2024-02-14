@@ -4,7 +4,7 @@ import * as globals from './globals';
 
 
 const Error = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'panel-gray');
     return (
         <div className={itemClass}>
@@ -22,7 +22,7 @@ globals.contentViews.register(Error, 'Error');
 
 
 const HTTPNotFound = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'panel-gray');
     return (
         <div className={itemClass}>
@@ -42,7 +42,7 @@ globals.contentViews.register(HTTPNotFound, 'HTTPNotFound');
 /* eslint-disable react/prefer-stateless-function */
 class HTTPForbidden extends React.Component {
     render() {
-        const context = this.props.context;
+        const { context } = this.props;
         const itemClass = globals.itemClass(context, 'panel-gray');
         const loggedIn = this.context.session && this.context.session['auth.userid'];
         return (
@@ -69,7 +69,7 @@ globals.contentViews.register(HTTPForbidden, 'HTTPForbidden');
 
 
 const LoginDenied = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'panel-gray');
     return (
         <div className={itemClass}>
@@ -97,7 +97,7 @@ globals.contentViews.register(LoginDenied, 'LoginDenied');
 
 
 const RenderingError = (props) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'panel-gray');
     return (
         <div className={itemClass}>

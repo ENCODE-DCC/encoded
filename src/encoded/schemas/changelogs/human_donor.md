@@ -1,5 +1,46 @@
 ## Changelog for human_donor.json
 
+### Minor changes since schema version 13
+
+* *supersedes* list property was added along with the calculated list property *superseded_by*
+* *fetal* added to *life_stage* enum.
+
+### Schema version 13
+
+* *ethnicity* enum *Caucasian* was changed to *European*
+
+### Minor update since Schema version 12
+* *RushAD* added to *internal_tags* enum.
+
+### Schema version 12
+
+* *ethnicity* property was changed to be an array using the HANCESTRO ontology as a guide for the following enum:
+
+        "enum": [
+            "African American",
+            "Arab",
+            "Asian",
+            "Black",
+            "Black African",
+            "Caucasian",
+            "Chinese",
+            "Esan",
+            "Eskimo",
+            "Gambian",
+            "Han Chinese",
+            "Hispanic",
+            "Indian",
+            "Japanese",
+            "Luhya",
+            "Maasai",
+            "Mende",
+            "Native Hawaiian",
+            "Yoruba"
+        ]
+
+### Minor update since Schema version 11
+* AllCells added to *external_ids* namespace.
+
 ### Schema version 11
 
 * *genetic_modifications* was removed, it was accidentally added in the previous release.

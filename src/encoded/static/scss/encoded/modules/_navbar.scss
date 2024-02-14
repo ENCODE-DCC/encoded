@@ -10,7 +10,6 @@ $navbar-trigger-icon-width:  20px;
 $navbar-trigger-icon-height: 20px;
 $navbar-bg-color:            #0a253d;
 
-
 // Wrapper and base class
 //
 // Provide a static navbar from which we expand to create full-width, fixed, and
@@ -25,15 +24,13 @@ $navbar-bg-color:            #0a253d;
     }
 }
 
-
-
 /**
  * Main navigation area.
  */
 .navbar {
     width: 100%;
     background-color: $navbar-bg-color;
-    box-shadow: 0px 6px 12px 0px rgba(0,0,0,0.19);
+    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.19);
 
     // Contains the entire navigation system.
     @at-root #{&}__container {
@@ -113,20 +110,32 @@ $navbar-bg-color:            #0a253d;
             }
         }
     }
+
+    // Prevent last dropvdown from getting cut off on mid-size browser screens by
+    // shifting menu to right.
+    &__container {
+        .navbar__nav:last-child {
+            .dropdown {
+                .dropdown__menu {
+                    right: 2px;
+                }
+            }
+        }
+    }
 }
 
 @mixin nav-title {
     display: block;
     width: 100%;
     height: 100%;
-    padding: 12px 15px;
+    padding: 13px 15px 11px;
     font-size: 1rem;
     text-align: left;
     color: #fff;
     border: none;
     background-color: transparent;
+    line-height: 1;
 }
-
 
 /**
  * One nav area within a navbar.
@@ -134,6 +143,7 @@ $navbar-bg-color:            #0a253d;
 .navbar__nav {
     margin: 0;
     padding: 0;
+    height: 100%;
     list-style: none;
 
     @media screen and (min-width: $screen-md-min) {
@@ -151,6 +161,7 @@ $navbar-bg-color:            #0a253d;
 
     .dropdown {
         position: relative;
+        height: 100%;
 
         .dropdown__toggle {
             @include nav-title;
@@ -174,8 +185,16 @@ $navbar-bg-color:            #0a253d;
             }
         }
     }
-}
 
+    #user-actions-footer {
+        .dropdown__toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 15px;
+        }
+    }
+}
 
 // Search box in main navigation
 .navbar__search {
@@ -184,13 +203,12 @@ $navbar-bg-color:            #0a253d;
     padding: 0;
     border-radius: 14px;
     background-color: #fff;
-    transition: width 0.1s ease-out;
-	border: none;
-	box-shadow: none;
-	-ms-transition: width 0.3s ease-out;
-	-moz-transition: width 0.3s ease-out;
-	-webkit-transition: width 0.3s ease-out;
-	transition: width 0.3s ease-out;
+    border: none;
+    box-shadow: none;
+    -ms-transition: width 0.3s ease-out;
+    -moz-transition: width 0.3s ease-out;
+    -webkit-transition: width 0.3s ease-out;
+    transition: width 0.3s ease-out;
 
     > input {
         flex: 1 1 auto;
@@ -216,35 +234,30 @@ $navbar-bg-color:            #0a253d;
     }
 }
 
-
 .dropdown__menu {
     padding: 0;
     background-color: transparent;
-    overflow: hidden;
     list-style: none;
 
     @media screen and (min-width: $screen-md-min) {
         background-color: #fff;
         border: 1px solid #e0e0e0;
-        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     }
 
     & > li {
-        &>a, &>button, &>span {
+        position: relative;
+
+        & > a, & > button, & > span {
             display: block;
             padding: 5px 15px 5px 25px;
             color: white;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 300;
             letter-spacing: 1px;
-            line-height: 20px;
             background-color: transparent;
             border: none;
             text-decoration: none;
-
-            @media screen and (min-width: $screen-md-min) {
-                font-size: 1.1rem;
-            }
         }
     }
 
@@ -252,42 +265,99 @@ $navbar-bg-color:            #0a253d;
         padding-left: 40px;
     }
 
-    .disabled-menu-item {
-        pointer-events: none;
-        font-weight: 400;
+    .icon-container {
+        position: relative;
+        display: inline-block;
+        pointer-events: all;
     }
 
-     @media screen and (min-width: $screen-md-min) {
+    .tooltip-container__trigger {
+        cursor: pointer;
+        pointer-events: all;
+    }
+
+    .icon-question-circle {
+        color: #b3b3b3;
+        pointer-events: all;
+        cursor: pointer;
+        padding: 2px 2px 1px;
+        margin-left: 4px;
+        font-size: 1.1rem;
+    }
+
+    a {
+        color: #696969;
+        font-weight: 400;
+        font-size: 1em;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-md-min) {
+            color: #fff;
+        }
+    }
+
+    .disabled-menu-item {
+        display: flex;
+        pointer-events: none;
+        font-weight: 400;
+        position: relative;
+        padding: 0 30px 0 20px;
+        letter-spacing: 1px;
+        font-size: 1rem;
+
+        @media screen and (min-width: $screen-md-min) {
+            font-size: 1rem;
+            color: #696969;
+            font-weight: 400;
+        }
+    }
+
+    @media screen and (min-width: $screen-md-min) {
         position: absolute;
         top: 100%;
         padding: 10px 0;
         z-index: 100;
         border: 1px solid #e0e0e0;
         border-bottom-right-radius: 3px;
-        border-bottom-left-radius:  3px;
+        border-bottom-left-radius: 3px;
 
-        &>li {
-            &>a, &>button, &>span {
+        & > li {
+            & > a, & > button, & > span, & > div {
                 display: block;
                 width: 100%;
                 margin: 0;
-                padding: 2px 30px 2px 20px;
-                color: #444;
+                padding: 0 30px 0 20px;
+                color: #000;
                 background-color: #fff;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
                 border-left: none;
                 border-right: none;
                 text-align: left;
-                font-weight: 300;
+                font-weight: 400;
                 white-space: nowrap;
                 max-width: 400px;
+                position: relative;
 
-                &:hover,&:active {
-                    border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    background-color: $navbar-inverse-link-active-bg;
-                    color: #fff;
+                &:not(.disabled-menu-item) {
+                    &:hover,&:active {
+                        border-top: 1px solid darken($navbar-inverse-link-active-bg, 20%);
+                        border-bottom: 1px solid darken($navbar-inverse-link-active-bg, 20%);
+                        background-color: $navbar-inverse-link-active-bg;
+                        color: #fff;
+                    }
+                }
+
+                // Dropdown menu separator item
+                &.dropdown-sep {
+                    pointer-events: none;
+                    margin: 5px 0 0;
+                    border-top: 1px solid #c0c0c0;
+                    border-bottom: 1px solid #fff;
                 }
             }
         }
@@ -298,13 +368,44 @@ $navbar-bg-color:            #0a253d;
     }
 }
 
-// Dropdown menu separator item
-.dropdown-sep {
-    margin: 5px 0;
-    border-top: 1px solid #c0c0c0;
-    border-bottom: 1px solid #fff;
+.disabled-menu-item {
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-md-min) {
+        font-size: 1rem;
+    }
 }
 
+.hoverable {
+    font-weight: 300;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    padding: 0 30px 0 20px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+    @media screen and (min-width: $screen-md-min) {
+        &:hover,&:active {
+            a {
+                color: #fff;
+            }
+
+            border-top: 1px solid darken($navbar-inverse-link-active-bg, 20%);
+            border-bottom: 1px solid darken($navbar-inverse-link-active-bg, 20%);
+            background-color: $navbar-inverse-link-active-bg;
+        }
+    }
+
+    /* stylelint-disable-next-line media-feature-name-disallowed-list */
+    @media screen and (max-width: $screen-md-min) {
+        &.sub-menu {
+            font-size: 1rem;
+        }
+
+        a {
+            color: #fff;
+        }
+    }
+}
 
 // Wrapper for <GlobalSections> and <CartStatus>
 .navbar__global-cart {
@@ -330,7 +431,6 @@ $navbar-bg-color:            #0a253d;
         background-color: lighten($navbar-bg-color, 20%);
     }
 }
-
 
 .test-warning {
     position: relative;
@@ -386,7 +486,6 @@ $navbar-bg-color:            #0a253d;
 
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 auto;
-            margbin-right: 0;
         }
 
         > .icon {
@@ -408,5 +507,21 @@ $navbar-bg-color:            #0a253d;
         @media screen and (min-width: $screen-md-min) {
             padding-bottom: 0;
         }
+    }
+}
+
+a[data-trigger="login"] {
+    .svg-icon-user {
+        width: 16px;
+    }
+}
+
+.navbar-twitter {
+    display: flex;
+    align-items: center;
+
+    .svg-icon-twitter {
+        width: 16px;
+        fill: #1d9cf0;
     }
 }

@@ -1,5 +1,7 @@
 import pytest
+from functools import wraps
 from selenium.webdriver.chrome.options import Options
+
 
 pytest_plugins = [
     'encoded.tests.features.browsersteps',
@@ -13,9 +15,9 @@ def external_tx():
 
 
 @pytest.fixture(scope='session')
-def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server):
     from encoded.tests.test_indexing import _app_settings
-    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
+    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server)
 
 
 @pytest.yield_fixture(scope='session')
@@ -27,9 +29,21 @@ def app(app_settings):
         yield app
 
 
-@pytest.mark.fixture_cost(500)
+def load_once_or_yield(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not wrapper.loaded:
+            wrapper.loaded = True
+            yield from func(*args, **kwargs)
+        else:
+            yield
+    wrapper.loaded = False
+    return wrapper
+
+
 @pytest.yield_fixture(scope='session')
-def workbook(request, app):
+@load_once_or_yield
+def index_workbook(request, app):
     from snovault import DBSESSION
     connection = app.registry[DBSESSION].bind.pool.unique_connection()
     connection.detach()
@@ -97,7 +111,7 @@ def splinter_window_size():
 
 # Depend on workbook fixture here to avoid remote browser timeouts.
 @pytest.fixture(scope='session')
-def browser(workbook, session_browser):
+def browser(index_workbook, session_browser):
     return session_browser
 
 
@@ -112,7 +126,7 @@ def admin_user(browser, base_url):
 @pytest.yield_fixture(scope='session')
 def submitter_user(browser, base_url, admin_user):
     browser.visit(base_url + '/#!impersonate-user')
-    browser.find_by_css('.item-picker input[type="text"]').first.fill('860c4750-8d3c-40f5-8f2c-90c5e5d19e88')
+    browser.find_by_css('.item-picker input[type="text"]').first.fill('J. Michael Cherry')
     browser.find_by_css('.btn-primary').first.click()  # First click opens on blur, then closes
     browser.find_by_css('.btn-primary').first.click()
     browser.find_by_text('Select').first.click()

@@ -8,7 +8,9 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.attachment import InternalRedirect
 from snovault.schema_utils import schema_validator
+from snovault.util import Path
 from snovault.validation import ValidationFailure
 from .base import (
     Item,
@@ -19,7 +21,6 @@ from pyramid.httpexceptions import (
     HTTPTemporaryRedirect,
     HTTPNotFound,
 )
-from pyramid.response import Response
 from pyramid.settings import asbool
 from pyramid.traversal import traverse
 from pyramid.view import view_config
@@ -54,6 +55,21 @@ def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=Non
     return True
 
 
+def show_azure_uri(s3_uri, status):
+    if s3_uri and status in File.public_s3_statuses:
+        return True
+    return False
+
+
+def get_key_from_s3_uri(s3_uri):
+    return s3_uri.split('/', 3)[3]
+
+
+def convert_s3_uri_to_azure_uri(s3_uri):
+    key = get_key_from_s3_uri(s3_uri)
+    return f'{AZURE_URI_PREFIX}/{key}{AZURE_PUBLIC_TOKEN}'
+
+
 def property_closure(request, propname, root_uuid):
     # Must avoid cycles
     conn = request.registry[CONNECTION]
@@ -71,6 +87,30 @@ def property_closure(request, propname, root_uuid):
 
 ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'
 RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']
+
+
+# We use a common set of fields to take advantage of a
+# cached dataset object in all of the calculated_properties.
+EMBEDDED_DATASET_FIELDS = [
+    '@id',
+    '@type',
+    'uuid',
+    'status',
+    'assay_title',
+    'assay_term_name',
+    'annotation_type',
+    'annotation_subtype',
+    'biochemical_inputs',
+    'biosample_ontology',
+    'simple_biosample_summary',
+    'target',
+    'targets',
+    'encyclopedia_version'
+]
+
+
+AZURE_URI_PREFIX = 'https://datasetencode.blob.core.windows.net/dataset'
+AZURE_PUBLIC_TOKEN = '?sv=2019-10-10&si=prod&sr=c&sig=9qSQZo4ggrCNpybBExU8SypuUZV33igI11xw0P7rB3c%3D'
 
 
 def file_is_md5sum_constrained(properties):
@@ -94,6 +134,7 @@ class File(Item):
     name_key = 'accession'
 
     rev = {
+        'analyses': ('Analysis', 'files'),
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
         'superseded_by': ('File', 'supersedes'),
@@ -109,7 +150,6 @@ class File(Item):
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'replicate.library',
-        'library',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
@@ -119,21 +159,36 @@ class File(Item):
         'quality_metrics',
         'step_run',
         'biosample_ontology',
-        'target'
+        'target',
+        'targets'
+    ]
+    embedded_with_frame = [
+        Path(
+            'analyses',
+            include=[
+                '@id',
+                '@type',
+                'uuid',
+                'status',
+                'pipeline_award_rfas',
+                'pipeline_version',
+                'title',
+            ],
+        )
     ]
     audit_inherit = [
         'replicate',
         'replicate.experiment',
         'replicate.experiment.target',
         'replicate.library',
-        'library',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
         'analysis_step_version.analysis_step.versions',
         'analysis_step_version.software_versions',
-        'analysis_step_version.software_versions.software'
+        'analysis_step_version.software_versions.software',
+        'analyses'
     ]
     set_status_up = [
         'quality_metrics',
@@ -250,7 +305,7 @@ class File(Item):
         if read_length is not None or mapped_read_length is not None:
             return "nt"
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Biological replicates",
         "description": "The biological replicate numbers associated with this file.",
         "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
@@ -318,37 +373,165 @@ class File(Item):
         return sorted(techreps)
 
     @calculated_property(schema={
-        "title": "Related libraries",
-        "description": "Libraries the file belong to or derived from",
-        "comment": "More useful for files without library property, like raw data files.",
-        "type": "array",
-        "items": {
-            "title": "Library",
-            "description": "The nucleic acid library sequenced.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
-        }
+        "title": "Formatted biological replicates",
+        "description": "The biological replicate numbers associated with this file as formatted text.",
+        "comment": "Do not submit. This field is calculated through the biological_replicates property.",
+        "type": "string"
     })
-    def replicate_libraries(self, request, dataset, library=None):
-        if library is not None:
-            return [library]
-        # self.uuid can be skipped. It should be skipped here to avoid infinite
-        # embedding/calculating loop
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
-        obj_props = (request.embed(uuid, '@@object')
-                     for uuid in derived_from_closure)
-        # dataset is a required property of file and should be @id which
-        # matches props['dataset']
-        libraries = {
-            props['library']
-            for props in obj_props
-            if props['dataset'] == dataset and 'library' in props
+    def biological_replicates_formatted(self, biological_replicates):
+        return ', '.join(["Rep {}".format(v) for v in biological_replicates])
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Encyclopedia version",
+            "type": "string",
+            "notSubmittable": True
         }
-        return sorted(libraries)
+    )
+    def encyclopedia_version(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('encyclopedia_version')
 
     @calculated_property(schema={
-        "title": "Analysis step version",
+        "title": "Donor",
+        "description": "The donor(s) associated with this file.",
+        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
+        "type": "array",
+        "items": {
+            "title": "Donor",
+            "description": "Accession of donor object",
+            "type": "string"
+        }
+    })
+    def donors(self, request, registry, dataset, root, replicate=None):
+        calculated_donors = []
+        # If the file has a replicate just get the donor property from it.
+        if replicate is not None:
+            properties = {'replicate': replicate}
+            path = Path(
+                'replicate.library.biosample',
+                include=[
+                    '@id',
+                    '@type',
+                    'library',
+                    'biosample',
+                    'donor'
+                ]
+            )
+            path.expand(request, properties)
+            donor = properties.get(
+                'replicate', {}
+            ).get(
+                'library', {}
+            ).get(
+                'biosample', {}
+            ).get(
+                'donor'
+            )
+            if donor:
+                calculated_donors.append(donor)
+        else:
+            # If the file doesn't have a replicate then traceback to the files it
+            # derived_from.
+            derived_from_file_at_ids = (
+                request.resource_path(root[uuid])
+                for uuid in property_closure(request, 'derived_from', self.uuid)
+            )
+            # Just get the properties from those files needed for filtering.
+            properties = {
+                'files': list(derived_from_file_at_ids)
+            }
+            path = Path('files', include=['@id', '@type', 'dataset', 'replicate'])
+            path.expand(request, properties)
+            # Filter on files that have replicates and belong to the same dataset.
+            filtered_derived_from_file_at_ids = (
+                file_['@id']
+                for file_ in properties['files']
+                if 'replicate' in file_ and file_['dataset'] == dataset
+            )
+            # Now just pull the calculated donor property from those files with replicates.
+            properties = {
+                'files': list(filtered_derived_from_file_at_ids)
+            }
+            path = Path('files', include=['@id', '@type', 'donors'])
+            path.expand(request, properties)
+            # Add the donors from those files.
+            for file_ in properties['files']:
+                calculated_donors.extend(file_.get('donors', []))
+        # Return a unique list.
+        return list(set(calculated_donors))
+
+    @calculated_property(
+        condition='dataset',
+        schema={
+        "title": "Origin batches",
+        "description": "The origin batch biosample(s) associated with this file.",
+        "comment": "Do not submit. This field is calculated through the derived_from relationship back to the raw data.",
+        "type": "array",
+        "items": {
+            "title": "Origin batch",
+            "description": "@id of the origin batch biosample",
+            "type": "string"
+        },
+        "notSubmittable": True
+    })
+    def origin_batches(self, request, dataset, root, replicate=None):
+        calculated_origin_batches = []
+        if replicate is not None:
+            properties = {'replicate': replicate}
+            path = Path(
+                'replicate.library.biosample',
+                include=[
+                    '@id',
+                    '@type',
+                    'library',
+                    'biosample',
+                    'origin_batch'
+                ]
+            )
+            path.expand(request, properties)
+            origin_batch = properties.get(
+                'replicate', {}
+            ).get(
+                'library', {}
+            ).get(
+                'biosample', {}
+            ).get(
+                'origin_batch'
+            )
+            if origin_batch:
+                calculated_origin_batches.append(origin_batch)
+        else:
+            derived_from_file_at_ids = (
+                request.resource_path(root[uuid])
+                for uuid in property_closure(request, 'derived_from', self.uuid)
+            )
+            properties = {
+                'files': list(derived_from_file_at_ids)
+            }
+            path = Path('files', include=['@id', '@type', 'dataset', 'replicate'])
+            path.expand(request, properties)
+            filtered_derived_from_file_at_ids = (
+                file_['@id']
+                for file_ in properties['files']
+                if 'replicate' in file_ and file_['dataset'] == dataset
+            )
+            properties = {
+                'files': list(filtered_derived_from_file_at_ids)
+            }
+            path = Path('files', include=['@id', '@type', 'origin_batches'])
+            path.expand(request, properties)
+            for file_ in properties['files']:
+                calculated_origin_batches.extend(file_.get('origin_batches', []))
+        if calculated_origin_batches:
+            return list(set(calculated_origin_batches))
+
+    @calculated_property(schema={
+        "title": "Analysis Step Version",
         "description": "The step version of the pipeline from which this file is an output.",
         "comment": "Do not submit.  This field is calculated from step_run.",
         "type": "string",
@@ -459,7 +642,8 @@ class File(Item):
             "comment": "Do not submit. Value is calculated from file metadata.",
             "type": "string",
             "notSubmittable": True,
-        }
+        },
+        define=True,
     )
     def s3_uri(self):
         try:
@@ -469,80 +653,205 @@ class File(Item):
         return 's3://{bucket}/{key}'.format(**external)
 
     @calculated_property(
-         condition='replicate',
-         define=True,
-         schema={
-            "title": "Library",
-            "description": "The nucleic acid library sequenced to produce this file.",
-            "comment": "See library.json for available identifiers.",
+        schema={
+            "title": "Azure URI",
+            "description": "The Azure URI of public file object.",
+            "comment": "Do not submit. Value is calculated from file metadata.",
             "type": "string",
-            "linkTo": "Library"
-         }
-     )
-    def library(self, request, replicate):
-        return request.embed(replicate, '@@object?skip_calculated=true').get('library')
+            "notSubmittable": True,
+        }
+    )
+    def azure_uri(self, s3_uri=None, status=None):
+        if show_azure_uri(s3_uri, status):
+            return convert_s3_uri_to_azure_uri(s3_uri)
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Assay title",
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+            "notSubmittable": True
+        }
+    )
+    def assay_title(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('assay_title')
 
     @calculated_property(
         condition='dataset',
         define=True,
         schema={
             "title": "Assay term name",
-            "type": "string",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
             "notSubmittable": True
         }
     )
     def assay_term_name(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'assay_term_name',
-                    dataset
-                )
-            )
-        )
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('assay_term_name')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Annotation type",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "notSubmittable": True
+        }
+    )
+    def annotation_type(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('annotation_type')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Annotation subtype",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "notSubmittable": True
+        }
+    )
+    def annotation_subtype(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('annotation_subtype')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Biochemical activity",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "notSubmittable": True
+        }
+    )
+    def biochemical_inputs(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        if properties.get('dataset', {}).get('biochemical_inputs'):
+            return properties.get('dataset', {}).get('biochemical_inputs')
 
     @calculated_property(
         condition='dataset',
         define=True,
         schema={
             "title": "Biosample ontology",
-            "type": "string",
-            "linkTo": "BiosampleType",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "BiosampleType"
+            },
             "notSubmittable": True
         }
     )
     def biosample_ontology(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'biosample_ontology',
-                    dataset
-                )
-            )
-        )
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('biosample_ontology')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Simple biosample summary",
+            "type": "string",
+            "notSubmittable": True
+        }
+    )
+    def simple_biosample_summary(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('simple_biosample_summary')
 
     @calculated_property(
         condition='dataset',
         define=True,
         schema={
             "title": "Target",
-            "type": "string",
-            "linkTo": "Target",
-            "notSubmittable": True,
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "Target"
+            },
+            "notSubmittable": True
         }
     )
     def target(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'target',
-                    dataset
-                )
-            )
-        )
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('target')
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Targets",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "Target"
+            },
+            "notSubmittable": True
+        }
+    )
+    def targets(self, request, dataset):
+        properties = {'dataset': dataset}
+        path = Path('dataset', include=EMBEDDED_DATASET_FIELDS)
+        path.expand(request, properties)
+        return properties.get('dataset', {}).get('targets')
+
+    @calculated_property(schema={
+        "title": "Analyses",
+        "description": "The analyses which the file belongs to.",
+        "comment": "Do not submit. Values in the list are reverse links of Analysis with this file in files field.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Analysis.files",
+        },
+        "notSubmittable": True,
+    })
+    def analyses(self, request, analyses):
+        return paths_filtered_by_status(request, analyses)
+
+    @calculated_property(schema={
+        "title": "Processed",
+        "description": "True for processed file",
+        "comment": "Do not submit. Value is calculated.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def processed(self, output_type):
+        output_category = self.schema['output_type_output_category'].get(output_type)
+        return output_category != 'raw data'
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
@@ -630,7 +939,7 @@ class File(Item):
             except ClientError as e:
                 # Demo trying to set ACL on production object?
                 if e.response['Error']['Code'] == 'AccessDenied':
-                    logging.warn(e)
+                    logging.warning(e)
                 else:
                     raise e
         return True
@@ -785,8 +1094,9 @@ def download(context, request):
             'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
     proxy = asbool(request.params.get('proxy'))
-    if proxy:
-        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
+    accel_redirect_header = request.registry.settings.get('accel_redirect_header')
+    if proxy and accel_redirect_header:
+        return InternalRedirect(headers={accel_redirect_header: '/_proxy/' + str(location)})
     raise HTTPTemporaryRedirect(location=location)
 
 

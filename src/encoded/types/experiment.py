@@ -4,6 +4,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     ALLOW_SUBMITTER_ADD,
     Item,
@@ -16,13 +17,15 @@ from .shared_calculated_properties import (
     CalculatedAssayTermID,
     CalculatedVisualize,
     CalculatedBiosampleSummary,
+    CalculatedSimpleSummary,
     CalculatedReplicates,
     CalculatedAssaySlims,
     CalculatedAssayTitle,
     CalculatedCategorySlims,
     CalculatedTypeSlims,
     CalculatedObjectiveSlims,
-    CalculatedReplicationType
+    CalculatedReplicationType,
+    CalculatedReplicationCounts,
 )
 
 from .assay_data import assay_terms
@@ -39,13 +42,15 @@ class Experiment(Dataset,
                  CalculatedAssayTermID,
                  CalculatedVisualize,
                  CalculatedBiosampleSummary,
+                 CalculatedSimpleSummary,
                  CalculatedReplicates,
                  CalculatedAssaySlims,
                  CalculatedAssayTitle,
                  CalculatedCategorySlims,
                  CalculatedTypeSlims,
                  CalculatedObjectiveSlims,
-                 CalculatedReplicationType):
+                 CalculatedReplicationType,
+                 CalculatedReplicationCounts):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
@@ -55,37 +60,31 @@ class Experiment(Dataset,
         'files.analysis_step_version.analysis_step.pipelines',
         'files.quality_metrics',
         'related_series',
+        'related_annotations',
         'replicates.antibody',
         'replicates.library',
         'replicates.library.biosample.biosample_ontology',
         'replicates.library.biosample.submitted_by',
         'replicates.library.biosample.source',
         'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.applied_modifications.introduced_gene.organism',
+        'replicates.library.biosample.applied_modifications.modified_site_by_target_id.organism',
         'replicates.library.biosample.organism',
         'replicates.library.biosample.donor',
         'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.genetic_modifications.modified_site_by_target_id',
         'replicates.library.biosample.part_of',
         'replicates.library.biosample.part_of.donor',
         'replicates.library.biosample.part_of.treatments',
         'replicates.library.biosample.treatments',
+        'replicates.library.biosample.originated_from.biosample_ontology',
+        'replicates.library.biosample.expressed_genes',
+        'replicates.library.biosample.expressed_genes.gene',
         'replicates.library.construction_platform',
         'replicates.library.treatments',
-        'replicates.libraries',
-        'replicates.libraries.biosample.submitted_by',
-        'replicates.libraries.biosample.source',
-        'replicates.libraries.biosample.applied_modifications',
-        'replicates.libraries.biosample.organism',
-        'replicates.libraries.biosample.donor',
-        'replicates.libraries.biosample.donor.organism',
-        'replicates.libraries.biosample.part_of',
-        'replicates.libraries.biosample.part_of.donor',
-        'replicates.libraries.biosample.part_of.treatments',
-        'replicates.libraries.biosample.treatments',
-        'replicates.libraries.treatments',
         'possible_controls',
         'target.genes',
-        'target.organism',
-        'references',
+        'target.organism'
     ]
     audit_inherit = [
         'original_files',
@@ -98,9 +97,9 @@ class Experiment(Dataset,
         'submitted_by',
         'lab',
         'award',
+        'default_analysis',
         'documents',
         'replicates.antibody.characterizations.biosample_ontology',
-        'replicates.antibody.characterizations.characterization_reviews.biosample_ontology',
         'replicates.antibody.characterizations',
         'replicates.antibody.targets',
         'replicates.library',
@@ -121,19 +120,6 @@ class Experiment(Dataset,
         'replicates.library.biosample.pooled_from.biosample_ontology',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.libraries.documents',
-        'replicates.libraries.biosample',
-        'replicates.libraries.biosample.organism',
-        'replicates.libraries.biosample.treatments',
-        'replicates.libraries.biosample.applied_modifications',
-        'replicates.libraries.biosample.donor.organism',
-        'replicates.libraries.biosample.donor',
-        'replicates.libraries.biosample.treatments',
-        'replicates.libraries.biosample.originated_from',
-        'replicates.libraries.biosample.part_of',
-        'replicates.libraries.biosample.pooled_from',
-        'replicates.libraries.spikeins_used',
-        'replicates.libraries.treatments',
         'target.organism',
     ]
     set_status_up = [
@@ -141,16 +127,19 @@ class Experiment(Dataset,
         'replicates',
         'documents',
         'target',
+        'analyses',
     ]
     set_status_down = [
         'original_files',
         'replicates',
+        'analyses',
     ]
     rev = Dataset.rev.copy()
     rev.update({
         'replicates': ('Replicate', 'experiment'),
         'related_series': ('Series', 'related_datasets'),
-        'superseded_by': ('Experiment', 'supersedes')
+        'superseded_by': ('Experiment', 'supersedes'),
+        'related_annotations': ('Annotation', 'experimental_input')
     })
 
     @calculated_property(schema={
@@ -176,6 +165,18 @@ class Experiment(Dataset,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Related annotations",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Annotation.experimental_input",
+        },
+        "notSubmittable": True,
+    })
+    def related_annotations(self, request, related_annotations):
+        return paths_filtered_by_status(request, related_annotations)
 
     @calculated_property(schema={
         "title": "Protein tags",
@@ -262,6 +263,67 @@ class Experiment(Dataset,
         if len(protein_tags) > 0:
             return protein_tags
 
+    @calculated_property(schema={
+        "title": "Life stage and age summary",
+        "description": "Life stage and age display summary to be used for the mouse development matrix.",
+        "type": "string",
+        "notSubmittable": True,
+    })
+    def life_stage_age(self, request, replicates=None):
+        biosample_accessions = set()
+        all_life_stage = set()
+        all_age_display = set()
+        life_stage_age = ''
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+                if replicateObject['status'] in ('deleted', 'revoked'):
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                    if libraryObject['status'] in ('deleted', 'revoked'):
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] in ('deleted', 'revoked'):
+                            continue
+                        if biosampleObject['accession'] not in biosample_accessions:
+                            biosample_accessions.add(biosampleObject['accession'])
+                            life_stage = biosampleObject.get('life_stage')
+                            if life_stage:
+                                all_life_stage.add(life_stage)
+                            age_display = biosampleObject.get('age_display')
+                            if age_display:
+                                all_age_display.add(age_display)
+        # Only return life_stage_age if all biosamples have the same life_stage and age_display
+        if len(all_life_stage) == 1 and len(all_age_display) == 1:
+            life_stage_age = ''.join(all_life_stage) + ' ' + ''.join(all_age_display)
+            return life_stage_age
+
+    @calculated_property(schema={
+        "title": "Perturbed",
+        "description": "A flag to indicate whether any biosamples have been perturbed with treatments or genetic modifications.",
+        "type": "boolean",
+    })
+    def perturbed(self, request, replicates=None):
+        if replicates is not None:
+            bio_perturbed = set()
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+                if replicateObject['status'] in ('deleted', 'revoked'):
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                    if libraryObject['status'] in ('deleted', 'revoked'):
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] in ('deleted', 'revoked'):
+                            continue
+                        bio_perturbed.add(biosampleObject['perturbed'])
+            return any(bio_perturbed)
+        return False
+
     matrix = {
         'y': {
             'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
@@ -269,6 +331,42 @@ class Experiment(Dataset,
         },
         'x': {
             'group_by': 'assay_title',
+            'label': 'Assay',
+        },
+    }
+    
+    human_donor_matrix = {
+        'y': {    
+            'group_by': ['replicates.library.biosample.donor.accession'],
+            'label': 'Donor',
+         },
+        'x': {
+            'group_by': [
+                ('assay_title', 'n/a'),
+                'replicates.library.biosample.disease_term_name',     
+            ],
+            'label': 'Assay',
+         },
+    }
+
+    sescc_stem_cell_matrix = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
+            'label': 'Assay',
+        },
+    }
+
+    immune_cells = {
+        'y': {
+            'group_by': ['biosample_ontology.cell_slims', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
             'label': 'Assay',
         },
     }
@@ -282,12 +380,34 @@ class Experiment(Dataset,
             'label': 'Target',
         },
         'x': {
-            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name', ('protein_tags.name', 'no_protein_tags')],
             'label': 'Term Name',
         },
     }
 
-    summary = {
+    deeply_profiled_uniform_batch_matrix = {
+        'y': {
+            'group_by': ['replicates.library.biosample.biosample_ontology.term_name', 'replicates.library.biosample.origin_batch'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'replicates.library.biosample.biosample_ontology.term_name', '@id'],
+            'label': 'Assay',
+        },
+    }
+
+    deeply_profiled_matrix = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': 'assay_title',
+            'label': 'Assay',
+        },
+    }
+
+    summary_matrix = {
         'x': {
             'group_by': 'status'
         },
@@ -314,6 +434,70 @@ class Experiment(Dataset,
         },
         'x': {
             'group_by': ['assay_title', ('target.label', 'no_target'), 'replicates.library.biosample.donor.sex', 'replicates.library.biosample.donor.accession'],
+            'label': 'Assay',
+        },
+    }
+
+    brain_matrix = {
+        'y': {
+            'group_by': [
+                'replicates.library.biosample.donor.accession',
+            ],
+            'label': 'Donor',
+        },
+        'x': {
+            'group_by': [
+                ('assay_title'),
+                ('target.label', 'no_target'),
+                'replicates.library.biosample.donor.age',
+                'replicates.library.biosample.donor.sex',
+                'replicates.library.biosample.biosample_ontology.term_name',
+                'replicates.library.biosample.disease_term_name',
+            ],
+            'label': 'Assay',
+        }
+    }
+
+    mouse_development = {
+        'y': {
+            'group_by': ['biosample_ontology.term_name', 'life_stage_age'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
+            'label': 'Assay',
+        },
+    }
+
+    encore_matrix = {
+        'y': {
+            'group_by': ['target.label'],
+            'label': 'Target',
+        },
+        'x': {
+            'group_by': ['assay_title', 'biosample_ontology.term_name'],
+            'label': 'Assay',
+        },
+    }
+
+    encore_rna_seq_matrix = {
+        'y': {
+            'group_by': [('replicates.library.biosample.subcellular_fraction_term_name', 'no_term_name')],
+            'label': 'Subcellular localization',
+        },
+        'x': {
+            'group_by': ['assay_title', 'biosample_ontology.term_name'],
+            'label': 'Assay',
+        },
+    }
+
+    degron_matrix = {
+        'y': {
+            'group_by': ['replicates.library.biosample.genetic_modifications.modified_site_by_target_id.label'],
+            'label': 'Degron target',
+        },
+        'x': {
+            'group_by': ['assay_title', ('target.label', 'no_target')],
             'label': 'Assay',
         },
     }
@@ -358,10 +542,6 @@ class Replicate(Item):
         'library.biosample',
         'library.biosample.donor',
         'library.biosample.donor.organism',
-        'libraries',
-        'libraries.biosample',
-        'libraries.biosample.donor',
-        'libraries.biosample.donor.organism',
     ]
     set_status_up = [
         'library',
@@ -381,45 +561,3 @@ class Replicate(Item):
         root = find_root(self)
         experiment = root.get_by_uuid(properties['experiment'])
         return experiment.__ac_local_roles__()
-
-    @calculated_property(schema={
-        "title": "Libraries",
-        "description": "The nucleic acid libraries used in this replicate.",
-        "type": "array",
-        "uniqueItems": True,
-        "items": {
-            "title": "Library",
-            "description": "The nucleic acid library used in this replicate.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
-        }
-    })
-    def libraries(self, status, biological_replicate_number,
-                  technical_replicate_number):
-        if status == 'deleted':
-            return []
-        # Use root.get_by_uuid instead of embed to get reverse link
-        # specifically. This helps avoid infinite loop since calculated
-        # properties of experiment need to embed replicate.
-        properties = self.upgrade_properties()
-        root = find_root(self)
-        experiment = root.get_by_uuid(properties['experiment'])
-        libraries = set()
-        for rep_uuid in experiment.get_rev_links('replicates'):
-            rep_props = root.get_by_uuid(rep_uuid).upgrade_properties()
-            # Only care (check and add to the list) about non-deleted technical
-            # replicates of this replicate, meaning belonging to the same
-            # biological replicate.
-            if (rep_props['biological_replicate_number'] != biological_replicate_number
-                or rep_props['status'] == 'deleted'):
-                continue
-            if rep_props['technical_replicate_number'] < technical_replicate_number:
-                # Found smaller technical replicate, libraries will be
-                # calculated there rather than here.
-                return []
-            if 'library' in rep_props:
-                libraries.add(rep_props['library'])
-        # This is the "first" techinical replicate within the isogenic
-        # replciate. Therefore, libraries should be calculated.
-        return list(libraries)

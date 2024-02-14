@@ -55,6 +55,26 @@ def click_element(browser, css):
     elements.first.click()
 
 
+@when(parse('I click all elements with the css selector "{css}"'))
+def click_element(browser, css):
+    elements = browser.find_by_css(css)
+
+    if len(elements) == 0:
+        return
+
+    # Scroll element to middle of window so webdriver does not scroll the
+    # element underneath the floating header.
+    browser.execute_script("window.scrollTo(0, 0);")
+    location = elements.first._element.location  # webdriver element
+    size = browser.driver.get_window_size()
+    x = location['x'] - (size['width'] / 2)
+    y = location['y'] - (size['height'] / 2)
+    browser.execute_script("window.scrollTo(%d, %d);" % (x, y))
+
+    for element in elements:
+        element.click()
+
+
 @when('I wait for the table to fully load')
 def wait_for_table(browser):
     for attempts in range(10):

@@ -16,6 +16,7 @@ $file-restricted-bg: #ffdcda; // Background color of restricted files
 
 .table-panel {
     @extend .panel;
+
     margin-top: 0;
     margin-bottom: 15px;
     padding: 0;
@@ -53,6 +54,7 @@ $file-restricted-bg: #ffdcda; // Background color of restricted files
                 border-top: none;
             }
         }
+
         > tr:nth-child(even) {
             > td {
                 background-color: #f9f9f9;
@@ -82,15 +84,34 @@ form.table-filter {
 }
 
 .spinner-warning {
-    background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
+    background: #f89406 url("../img/spinner-orange-bg.gif") no-repeat;
     background-position: 7px 9px;
 }
 
 .table-actions {
     margin-left: 1em;
+
     button {
         float: none;
     }
+}
+
+%tcenter {
+    display: flex;
+    justify-content: center;
+}
+
+.tcell-thumbnail {
+    @extend %tcenter;
+
+    img {
+        height: 100px;
+        width: 120px;
+    }
+}
+
+.tcell-center {
+    @extend %tcenter;
 }
 
 /* initial state is hidden (see template; class=hide) */
@@ -132,6 +153,7 @@ form.table-filter {
                 vertical-align: middle;
                 border-left: 1px solid #e0e0e0;
                 text-align: left;
+                font-weight: 600;
 
                 &:first-child {
                     border-left: none;
@@ -164,7 +186,6 @@ form.table-filter {
     }
 }
 
-
 .table-section {
     font-size: 1.3rem;
     font-weight: bold;
@@ -173,6 +194,7 @@ form.table-filter {
     th {
         padding: 0 !important;
         height: auto !important;
+        font-weight: 600;
     }
 }
 
@@ -192,6 +214,7 @@ form.table-filter {
 
 %tcell-template {
     @extend .icon;
+
     display: block;
     padding: 0 0 0 5px;
     flex: 0 0 10px;
@@ -216,7 +239,7 @@ form.table-filter {
     td {
         background-color: #606060 !important;
         color: #fff;
-        font-weight: bold;
+        font-weight: 400;
 
         a {
             color: #fff !important;
@@ -275,19 +298,17 @@ form.table-filter {
     margin: -10px;
 }
 
-
 /**
  * Styles for specific tables.
  */
 
- // Experiment series tables; might need to expand name if needed for similar object tables.
+// Experiment series tables; might need to expand name if needed for similar object tables.
 .table-experiment-series {
     > tfoot > tr > td {
         padding: 3px 5px;
         text-align: right;
     }
 }
-
 
 // Raw file tables.
 .table-raw {
@@ -315,6 +336,12 @@ form.table-filter {
                 &.pair-bottom {
                     border-bottom: 2px solid #606060;
                 }
+
+                &.index-reads {
+                    padding-top: 2px;
+                    padding-bottom: 2px;
+                    background-color: #f0f0f0;
+                }
             }
         }
     }
@@ -322,4 +349,30 @@ form.table-filter {
 
 .table-raw-separator td {
     border-top: 2px solid #606060;
+}
+
+// Header for a SortTable including a pager.
+.header-paged-sorttable {
+    display: flex;
+    justify-content: space-between;
+
+    @at-root #{&}__controls {
+        display: flex;
+        margin-top: -3px;
+        margin-right: -3px;
+        margin-bottom: -3px;
+
+        .pager {
+            margin-left: 5px;
+        }
+    }
+}
+
+.table-item-count {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #606060;
+    border: 1px solid #a0a0a0;
 }

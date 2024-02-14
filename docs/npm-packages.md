@@ -1,10 +1,10 @@
 # Managing ENCODE npm packages
 
-Our Javascript front end code requires several third-party packages which get installed during the ENCODE buildout process, and which you can install manually when rare circumstances call for it. This process has changed since npm version 5, and this document describes how to update and maintain the files npm 5 and beyond uses to retrieve the versions of packages ENCODE needs. When you modify package.json and package-lock.json, make sure to commit them to your branch that requires these changes so that others building the front end also get your branch’s updates.
+Our Javascript front end code requires several third-party packages which get installed during the ENCODE make process, and which you can install manually when rare circumstances call for it. This process has changed since npm version 5, and this document describes how to update and maintain the files npm 5 and beyond uses to retrieve the versions of packages ENCODE needs. When you modify package.json and package-lock.json, make sure to commit them to your branch that requires these changes so that others building the front end also get your branch’s updates.
 
 ## Manual install
 
-Because the buildout script installs the required npm packages, you rarely need to install them manually. But if you do, use this rather than the older `npm install` command:
+Because `make install` installs the required npm packages, you rarely need to install them manually. But if you do, use this rather than the older `npm install` command:
 
     npm ci
 

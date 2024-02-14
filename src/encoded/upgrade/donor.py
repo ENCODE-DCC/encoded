@@ -43,7 +43,7 @@ def human_donor_2_3(value, system):
     # http://encode.stanford.edu/issues/1596
     if 'age' in value:
         age = value['age']
-        if re.match('\d+.0(-\d+.0)?', age):
+        if re.match(r'\d+.0(-\d+.0)?', age):
             new_age = age.replace('.0', '')
             value['age'] = new_age
 
@@ -243,3 +243,36 @@ def fly_donor_9_10(value, system):
                 value['dbxrefs'].remove(dbxref)
             else:
                 continue
+
+
+@upgrade_step('human_donor', '11', '12')
+def human_donor_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5586
+    old_to_new = {
+        'Arab Indian': ['Arab', 'Indian'],
+        'Asian Hawaiian Eskimo': ['Asian', 'Native Hawaiian', 'Eskimo'],
+        'Hawaiian': ['Native Hawaiian'],
+        'Caucasian Hispanic': ['Caucasian', 'Hispanic']
+    }
+    if 'ethnicity' in value:
+        old_ethn = value.get('ethnicity')
+        if old_ethn in old_to_new:
+            value['ethnicity'] = old_to_new[old_ethn]
+        else:
+            value['ethnicity'] = [value['ethnicity']]
+
+@upgrade_step('human_donor', '12', '13')
+def human_donor_12_13(value, system):
+    #https://encodedcc.atlassian.net/browse/ENCD-6131
+    new_ethnicity = []
+    notes = value.get('notes', '')
+    if 'ethnicity' in value:
+        old_ethnicity = value.get('ethnicity')
+        if 'Caucasian' in old_ethnicity:
+            new_ethnicity.append('European')
+            for ethnicity in old_ethnicity:
+                if ethnicity != 'Caucasian':
+                    new_ethnicity.append(ethnicity)
+    if len(new_ethnicity) >= 1:
+        value['ethnicity'] = new_ethnicity
+        value['notes'] = (notes + ' The ethnicity of this donor has been updated to European as the term Caucasian is deprecated.').strip()

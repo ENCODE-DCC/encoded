@@ -16,69 +16,6 @@ def remote_user_testapp(app, remote_user):
 
 
 @pytest.fixture
-def disabled_user(testapp, lab, award):
-    item = {
-        'first_name': 'ENCODE',
-        'last_name': 'Submitter',
-        'email': 'no_login_submitter@example.org',
-        'submits_for': [lab['@id']],
-        'status': 'disabled',
-    }
-    # User @@object view has keys omitted.
-    res = testapp.post_json('/user', item)
-    return testapp.get(res.location).json
-
-
-@pytest.fixture
-def other_lab(testapp):
-    item = {
-        'title': 'Other lab',
-        'name': 'other-lab',
-    }
-    return testapp.post_json('/lab', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def step_run(testapp, lab, award):
-    software = {
-        'name': 'do-thing',
-        'description': 'It does the thing',
-        'title': 'THING_DOER',
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    sw = testapp.post_json('/software', software, status=201).json['@graph'][0]
-
-    software_version = {
-        'version': '0.1',
-        'software': sw['@id']
-    }
-    swv = testapp.post_json('/software-versions', software_version, status=201).json['@graph'][0]
-
-    analysis_step = {
-        'step_label': 'do-thing-step',
-        'major_version': 1,
-        'title': 'Do The Thing Step By Step',
-        'analysis_step_types': ["QA calculation"],
-        'input_file_types':  ['raw data']
-    }
-    astep = testapp.post_json('/analysis-steps', analysis_step, status=201).json['@graph'][0]
-
-    as_version = {
-        'software_versions': [swv['@id']],
-        'analysis_step':  astep['@id'],
-        'minor_version': 1
-    }
-    asv = testapp.post_json('/analysis-step-versions', as_version, status=201).json['@graph'][0]
-
-    step_run = {
-        'analysis_step_version': asv['@id'],
-        'status': "released"
-    }
-    return testapp.post_json('/analysis-step-runs', step_run, status=201).json['@graph'][0]
-
-
-@pytest.fixture
 def wrangler_testapp(wrangler, app, external_tx, zsa_savepoints):
     return _remote_user_testapp(app, wrangler['uuid'])
 
@@ -182,13 +119,13 @@ def test_reviewer_patch_other_lab_characterization(submitter_testapp, testapp, s
         {'review': {'lab': other_lab['@id'], 'lane': 2, 'reviewed_by': submitter['@id'], 'status': 'compliant'}}, status=200)
 
 
-def test_not_submitted_for_review_antibody_characterizations_view_basic_anon(antibody_characterization, testapp, anontestapp):
-    testapp.patch_json(antibody_characterization['@id'], {"status": "not submitted for review by lab"})
-    anontestapp.get(antibody_characterization['@id'], status=200)
+def test_not_submitted_for_review_antibody_characterizations_view_basic_anon(antibody_characterization_url, testapp, anontestapp):
+    testapp.patch_json(antibody_characterization_url['@id'], {"status": "not submitted for review by lab"})
+    anontestapp.get(antibody_characterization_url['@id'], status=200)
 
 
-def test_in_progress_antibody_characterizations_view_basic_anon(antibody_characterization, testapp, anontestapp):
-    anontestapp.get(antibody_characterization['@id'], status=403)
+def test_in_progress_antibody_characterizations_view_basic_anon(antibody_characterization_url, testapp, anontestapp):
+    anontestapp.get(antibody_characterization_url['@id'], status=403)
 
 
 def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award, cell_free):
@@ -199,14 +136,14 @@ def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award, cell_free):
     wrangler_testapp.post_json('/experiment', experiment, status=201)
 
 
-def test_user_view_details_admin(submitter, access_key, testapp):
+def test_user_view_details_admin(submitter, access_key_2, testapp):
     res = testapp.get(submitter['@id'])
     assert 'email' in res.json
     assert 'access_keys' in res.json
     assert 'access_key_id' in res.json['access_keys'][0]
 
 
-def test_users_view_details_self(submitter, access_key, submitter_testapp):
+def test_users_view_details_self(submitter, access_key_2, submitter_testapp):
     res = submitter_testapp.get(submitter['@id'])
     assert 'email' in res.json
     assert 'access_keys' in res.json
@@ -359,3 +296,23 @@ def test_wronggroup_post_qc_metric(remc_member_testapp, step_run, file, remc_lab
 
 def test_experiment_submitter_no_edit_status(submitter_testapp, lab, award, experiment):
     submitter_testapp.patch_json(experiment['@id'], {'status': 'submitted'}, status=422)
+
+
+def test_submitter_post_analysis_step(submitter_testapp, analysis_step_run_with_no_status):
+    submitter_testapp.post_json('/analysis-step-runs', analysis_step_run_with_no_status, status=201)
+
+
+def test_submitter_post_analysis_no_lab(submitter_testapp, analysis_no_lab):
+    submitter_testapp.post_json('/analyses', analysis_no_lab, status=403)
+
+
+def test_submitter_post_analysis_with_lab(submitter_testapp, analysis_with_lab):
+    submitter_testapp.post_json('/analyses', analysis_with_lab, status=201)
+
+
+def test_wrangler_post_analysis_no_lab(wrangler_testapp, analysis_no_lab):
+    wrangler_testapp.post_json('/analyses', analysis_no_lab, status=201)
+
+
+def test_experiment_submitter_edit_bam_tun_type(submitter_testapp, lab, award, file_with_replicate):
+    submitter_testapp.patch_json(file_with_replicate['@id'], {'mapped_run_type': 'single-ended'}, status=200)

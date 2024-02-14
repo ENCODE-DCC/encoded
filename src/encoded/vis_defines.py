@@ -28,7 +28,9 @@ IHEC_LIB_STRATEGY = {
     'MeDIP-seq': 'MeDIP-Seq',
     'microRNA-seq': 'miRNA-Seq',
     'microRNA counts': 'miRNA-Seq',
+    'small RNA-seq': 'RNA-Seq',
     'MRE-seq': 'MRE-Seq',
+    'polyA plus RNA-seq': 'RNA-Seq',
     'RNA-seq': 'RNA-Seq',
     'RRBS': 'Bisulfite-Seq',
     'whole-genome shotgun bisulfite sequencing': 'Bisulfite-Seq'
@@ -55,6 +57,13 @@ ASSEMBLY_DETAILS = {
                         'quickview':        True,
                         'hic':              True,
                         'comment':          'Ensembl DOES NOT WORK'
+    },
+    'GRCm39': {         'species':          'Mus musculus',     'assembly_reference': 'GRCm39',
+                        'common_name':      'mouse',
+                        'ucsc_assembly':    'mm39',
+                        'ensembl_host':     'www.ensembl.org',
+                        'quickview':        True,
+                        'comment':          'Ensembl should work'
     },
     'mm10': {           'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
                         'common_name':      'mouse',
@@ -116,7 +125,7 @@ ASSEMBLY_DETAILS = {
 }
 
 BROWSER_FILE_TYPES = {
-    'ucsc': {'bigWig', 'bigBed'},
+    'ucsc': {'bigWig', 'bigBed', 'bigInteract'},
     'ensembl': {'bigWig', 'bigBed'},
     'quickview': {'bigWig', 'bigBed'},
     'hic': {'hic'},
@@ -127,6 +136,7 @@ ASSEMBLY_TO_UCSC_ID = {
     'GRCh38-minimal': 'hg38',
     'GRCh38': 'hg38',
     'GRCh37': 'hg19',
+    'GRCm39': 'mm39',
     'mm10-minimal': 'mm10',
     'GRCm38': 'mm10',
     'NCBI37': 'mm9',
@@ -143,9 +153,10 @@ VISIBLE_FILE_STATUSES = ["released"]
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 HIC_FILE_TYPES = ['hic']
-VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES + HIC_FILE_TYPES
-VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
-VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
+BIGINTERACT_FILE_TYPES = ['bigInteract']
+VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES + HIC_FILE_TYPES + BIGINTERACT_FILE_TYPES
+VISIBLE_DATASET_TYPES = ["Experiment", "Annotation", "FunctionalCharacterizationExperiment"]
+VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation", "functional_characterization_experiment"]
 
 
 # Supported tokens are the only tokens the code currently knows how to look up.
@@ -252,7 +263,8 @@ SUPPORTED_TRACK_SETTINGS = [
     "scoreFilter", "spectrum", "minGrayLevel", "itemRgb", "viewLimits",
     "autoScale", "negateValues", "maxHeightPixels", "windowingFunction", "transformFunc",
     "signalFilter", "signalFilterLimits", "pValueFilter", "pValueFilterLimits",
-    "qValueFilter", "qValueFilterLimits" ]
+    "qValueFilter", "qValueFilterLimits", "interactUp", "logo",
+]
 VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
 
 # UCSC trackDb settings that are supported
@@ -313,9 +325,9 @@ OUTPUT_TYPE_8CHARS = {
     "filtered SNPs":                        "f SNPs",
     "filtered indels":                      "f indel",
     "hotspots":                             "hotspt",
-    "long range chromatin interactions":    "lrci",
-    "chromatin interactions":               "ch int",
-    "topologically associated domains":     "tads",
+    "loops":                                "lrci",
+    "contact matrix":                       "ch int",
+    "contact domains":                      "tads",
     "genome compartments":                  "compart",
     "open chromatin regions":               "open ch",
     "filtered peaks":                       "filt pk",
@@ -352,8 +364,10 @@ OUTPUT_TYPE_8CHARS = {
     "optimal IDR thresholded peaks":        "oIDR pk",
     "conservative IDR thresholded peaks":   "cIDR pk",
     "enhancer validation":                  "enh val",
-    "semi-automated genome annotation":     "saga"
-    }
+    "semi-automated genome annotation":     "saga",
+    "counts sequence contribution scores":  "cnts seq",
+    "profile sequence contribution scores": "prof seq",
+}
 
 # Track coloring is defined by biosample
 BIOSAMPLE_COLOR = {
@@ -538,41 +552,49 @@ class VisDefines(object):
                      "shRNA knockdown followed by RNA-seq", \
                      "CRISPR genome editing followed by RNA-seq", \
                      "CRISPRi followed by RNA-seq", \
-                     "single cell isolation followed by RNA-seq", \
-                     "siRNA knockdown followed by RNA-seq"]:
+                     "single-cell RNA sequencing assay", \
+                     "siRNA knockdown followed by RNA-seq",
+                     "small RNA-seq"]:
             reps = self.dataset.get("replicates", [])  # NOTE: overly cautious
             if len(reps) < 1:
                 log.debug("Could not distinguish between long and short RNA for %s because there are "
                         "no replicates.  Defaulting to short." % (self.dataset.get("accession")))
                 vis_type = "SRNA"  # this will be more noticed if there is a mistake
             else:
-                size_range = reps[0].get("library", {}).get("size_range", "")
-                if size_range.startswith('>'):
-                    try:
-                        min_size = int(size_range[1:])
-                        max_size = min_size
-                    except:
-                        log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
-                        vis_type = "SRNA"  # this will be more noticed if there is a mistake
-                elif size_range.startswith('<'):
-                    try:
-                        max_size = int(size_range[1:]) - 1
-                        min_size = 0
-                    except:
-                        log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
-                        self.vis_type = "SRNA"  # this will be more noticed if there is a mistake
-                        return self.vis_type
+                average_fragment_size = reps[0].get("library", {}).get("average_fragment_size",)
+                if average_fragment_size is not None:
+                    if average_fragment_size <= 200:
+                        vis_type = "SRNA"
+                    elif average_fragment_size > 200:
+                        vis_type = "LRNA"
                 else:
-                    try:
-                        sizes = size_range.split('-')
-                        min_size = int(sizes[0])
-                        max_size = int(sizes[1])
-                    except:
-                        log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
-                        vis_type = "SRNA"  # this will be more noticed if there is a mistake
+                    size_range = reps[0].get("library", {}).get("size_range", "")
+                    if size_range.startswith('>'):
+                        try:
+                            min_size = int(size_range[1:])
+                            max_size = min_size
+                        except:
+                            log.debug("Could not distinguish between long and short RNA for %s.  "
+                                    "Defaulting to short." % (self.dataset.get("accession")))
+                            vis_type = "SRNA"  # this will be more noticed if there is a mistake
+                    elif size_range.startswith('<'):
+                        try:
+                            max_size = int(size_range[1:]) - 1
+                            min_size = 0
+                        except:
+                            log.debug("Could not distinguish between long and short RNA for %s.  "
+                                    "Defaulting to short." % (self.dataset.get("accession")))
+                            self.vis_type = "SRNA"  # this will be more noticed if there is a mistake
+                            return self.vis_type
+                    else:
+                        try:
+                            sizes = size_range.split('-')
+                            min_size = int(sizes[0])
+                            max_size = int(sizes[1])
+                        except:
+                            log.debug("Could not distinguish between long and short RNA for %s.  "
+                                    "Defaulting to short." % (self.dataset.get("accession")))
+                            vis_type = "SRNA"  # this will be more noticed if there is a mistake
 
                 if vis_type is None:
                     if min_size == 120 and max_size == 200: # Another ugly exception!
@@ -740,8 +762,16 @@ class VisDefines(object):
             log.warn("Attempting to look up unexpected token: '%s'" % token)
             return "unknown token"
 
+        # BPNet annotation has very different properties than experiments
+        if dataset.get("annotation_type") in ["BPNet-model", "ChromBPNet-model"]:
+            if token == "{replicates.library.biosample.summary}":
+                token = "{biosample_term_name}"
+
         if token in SIMPLE_DATASET_TOKENS:
             term = dataset.get(token[1:-1])
+            if term is None:
+                if token == "{assay_title}":
+                    term = dataset.get("assay_term_name")
             if term is None:
                 return "Unknown " + token[1:-1].split('_')[0].capitalize()
             elif isinstance(term,list) and len(term) > 3:
@@ -759,12 +789,21 @@ class VisDefines(object):
                 if isinstance(term, list) and len(term) > 0:
                     return term[0]
                 return term
+            if term is None:
+                targets = self.lookup_embedded_token('{targets}', dataset)
+                if targets is not None:
+                    if isinstance(targets, list) and len(targets) > 0:
+                        target = targets[0]
+                        if isinstance(target, dict):
+                            return target.get('label')
+                        elif isinstance(target, str):
+                            return target.split("/")[2]
             return "Unknown Target"
         elif token in ["{replicates.library.biosample.summary}",
                     "{replicates.library.biosample.summary|multiple}"]:
             term = self.lookup_embedded_token('{replicates.library.biosample.summary}', dataset)
             if term is None:
-                term = dataset.get("{biosample_term_name}")
+                term = dataset.get("biosample_term_name")
             if term is not None:
                 return term
             if token.endswith("|multiple}"):
@@ -1130,12 +1169,14 @@ class IhecDefines(object):
         assay = dataset['assay_term_name']
         if assay == 'microRNA-seq':
             return 'smRNA-Seq'
+        if assay == 'small RNA-seq':
+            return 'RNA-Seq'
+        if assay == 'polyA plus RNA-seq':
+            return 'mRNA-Seq'
         if assay == 'RNA-seq':
             assay_title = dataset.get('assay_title')
             if assay_title == 'total RNA-seq':
                 return 'total-RNA-Seq'
-            if assay_title == 'polyA plus RNA-seq':
-                return 'mRNA-Seq'
             return 'RNA-Seq'
 
         #if vis_type == "ChIA":
@@ -1158,12 +1199,12 @@ class IhecDefines(object):
         experiment_type = vis_dataset.get('ihec_exp_type')
         if experiment_type is None:
             return {}
-        attributes["experiment_type"] = experiment_type
-        attributes["experiment_ontology_uri"] = 'http://purl.obolibrary.org/obo/' + assay_id.replace(':','_')
+        attributes["experiment_type"] = [experiment_type]
+        attributes["experiment_ontology_uri"] = ['http://purl.obolibrary.org/obo/' + assay_id.replace(':','_')]
         assay_name = vis_dataset.get('assay_term_name')
         if assay_name:
             attributes["assay_type"] = assay_name
-        attributes['library_strategy'] = IHEC_LIB_STRATEGY[assay_name]
+        attributes['library_strategy'] = [IHEC_LIB_STRATEGY[assay_name]]
         query = (
             '/search/?type=ReferenceEpigenome&related_datasets.accession={}'
             '&status=released&field=dbxrefs&limit=all'
@@ -1171,7 +1212,7 @@ class IhecDefines(object):
         for ref_epi in self._request.embed(query)['@graph']:
             for dbxref in ref_epi.get('dbxrefs', []):
                 if dbxref.startswith('IHEC:IHECRE'):
-                    attributes['reference_registry_id'] = dbxref[5:].split('.')[0]
+                    attributes['reference_registry_id'] = [dbxref[5:].split('.')[0]]
                     break
         return attributes
 
@@ -1223,51 +1264,64 @@ class IhecDefines(object):
         if sample_id in self.samples:
             return self.samples[sample_id]
 
-        molecule = self.molecule(dataset)
-        if molecule is None:
-            return {}
-        sample['molecule'] = molecule
-        sample['lineage'] = self.lineage(biosample, 'unknown')
-        sample['differentiation_stage'] = self.differentiation(biosample, 'unknown')
         term_id = biosample.get('biosample_ontology', {}).get('term_id')
         if term_id:
-            sample["sample_ontology_uri"] = term_id
+            sample["sample_ontology_uri"] = [term_id]
 
-        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification')) # ["Cell Line","Primary Cell", ...
-        sample["line"] = biosample.get('biosample_ontology', {}).get('term_name', 'none')
-        sample["medium"] = "unknown"                                                    # We don't have
-        sample["disease"] = biosample.get('health_status',"Healthy").capitalize()  #  assume all samples are healthy - hitz
-        if sample["disease"] == "Healthy":
-            sample["disease_ontology_uri"] = "http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"
+        sample["biomaterial_type"] = [self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification'))] # ["Cell Line","Primary Cell", ...
+        source = biosample.get('source')
+        sample["biomaterial_provider"] = [source['title']]
+        sample["line"] = [biosample.get('biosample_ontology', {}).get('term_name', 'none')]
+        sample["disease"] = [biosample.get('health_status',"Healthy").capitalize()]  #  assume all samples are healthy - hitz
+        if "Healthy" in sample["disease"]:
+            sample["disease_ontology_uri"] = ["http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"]
         else:
             # Note only term for disease ontology is healthy=C115935.  No search url syntax known
-            sample["disease_ontology_uri"] = "https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"
-        sample["sex"] = biosample.get('sex','unknown').capitalize()
+            sample["disease_ontology_uri"] = ["https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"]
+        sample["sex"] = [biosample.get('sex','unknown').capitalize()]
 
-        if sample["biomaterial_type"] in ["Primary Tissue", "Primary Cell Culture"]:
+        if "Cell Line" in sample["biomaterial_type"]:
+            sample["differentiation_method"] = ["NA"]
+            sample["batch"] = ["NA"]
+            sample["medium"] = ["unknown"] # We don't have this information
+            sample['lineage'] = [self.lineage(biosample, 'unknown')]
+            sample['differentiation_stage'] = [self.differentiation(biosample, 'unknown')]
+            sample['passage'] = [str(biosample.get('passage_number', 'NA'))]
+
+        if "Primary Tissue" in sample["biomaterial_type"] or "Primary Cell Culture" in sample["biomaterial_type"]:
             sample["donor_sex"] = sample["sex"]
             donor = biosample.get('donor')
             if donor is not None:
-                sample["donor_id"] = donor['accession']
+                sample["donor_id"] = [donor['accession']]
                 if donor.get('age', 'NA').isdigit():
-                    sample["donor_age"] = int(donor['age'])
+                    sample["donor_age"] = [int(donor['age'])]
                 elif donor.get('age', 'NA') == 'unknown':
-                    sample["donor_age"] = 'NA'
+                    sample["donor_age"] = ['NA']
                 else:
-                    sample["donor_age"] = donor.get('age', 'NA')
-                sample["donor_age_unit"] = donor.get('age_units','year')  # unknwn is not supported
-                sample["donor_life_stage"] = donor.get('life_stage','unknown')
+                    sample["donor_age"] = [donor.get('age', 'NA')]
+                sample["donor_age_unit"] = [donor.get('age_units','year')]  # unknown is not supported
+                sample["donor_life_stage"] = [donor.get('life_stage','unknown')]
                 sample["donor_health_status"] = sample["disease"]
+                sample["donor_health_status_ontology_uri"] = sample["disease_ontology_uri"]
                 if donor.get('organism',{}).get('name','unknown') == 'human':
-                    sample["donor_ethnicity"] = donor.get('ethnicity','unknown')
+                    ethnicity = donor.get('ethnicity')
+                    if ethnicity is not None:
+                        sample["donor_ethnicity"] = ethnicity
+                    else:
+                        sample["donor_ethnicity"] = ['unknown']
                 else:
-                    sample["donor_ethnicity"] = 'NA'
-            if sample["biomaterial_type"] == "Primary Tissue":
+                    sample["donor_ethnicity"] = ['NA']
+            if "Primary Tissue" in sample["biomaterial_type"]:
                 sample["tissue_type"] = sample["line"]
-                sample["tissue_depot"] = biosample.get('source',{}).get('description','unknown')
-            elif sample["biomaterial_type"] == "Primary Cell Culture":
+                sample["tissue_depot"] = [biosample.get('source',{}).get('description','unknown')]
+                sample["collection_method"] = ["unknown"] # we don't have this information
+            elif "Primary Cell Culture" in sample["biomaterial_type"]:
                 sample["cell_type"] = sample["line"]
-                sample["culture_conditions"] = "unknwon" # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
+                sample["culture_conditions"] = ["unknown"] # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
+                sample["markers"] = ["unknown"] # not collected by us
+                sample["passage_if_expanded"] = [str(biosample.get('passage_number', 'NA'))]
+                sample["origin_sample"] = ["unknown"]
+                sample["origin_sample_ontology_uri"] = sample["sample_ontology_uri"]
         self.samples[sample_id] = sample
         return sample
 
@@ -1631,6 +1685,33 @@ def visualizable_assemblies(
             break  # Try not to go through the whole file list!
     return list(file_assemblies)
 
+def is_file_visualizable(file):
+    '''Determines whether a file can be visualized in a genome browser.
+    Needs to be kept in sync with isFileVisualizable in objectutils.js.
+
+    Keyword arguments:
+    file -- file object including props to test for visualizability
+    '''
+    conditions = [
+        file.get('file_format') in [
+            'bigWig',
+            'bigBed',
+        ],
+        file.get('file_format_type') not in [
+            'bedMethyl',
+            'bedLogR',
+            'idr_peak',
+            'tss_peak',
+            'pepMap',
+            'modPepMap',
+        ],
+        file.get('status') in [
+            'released',
+            'in progress',
+            'archived',
+        ],
+    ]
+    return all(conditions)
 
 def _file_to_format(process_file):
     '''Used with map to convert list of files to their types'''
@@ -1669,6 +1750,8 @@ def browsers_available(
         # Make a set of all file types in all dataset files
         file_types = set(map(_file_to_format, files))
     for assembly in assemblies:
+        if file_types is None:
+            continue
         mapped_assembly = ASSEMBLY_DETAILS.get(assembly)
         if not mapped_assembly:
             continue
@@ -1678,10 +1761,7 @@ def browsers_available(
                 and status in VISIBLE_FILE_STATUSES):
             # use of find_or_make_acc_composite() will recurse!
             vis_blob = vis_cache.get(accession=accession, assembly=assembly)
-        if not vis_blob and file_assemblies is None and files is not None:
-            file_assemblies = visualizable_assemblies(assemblies, files)
-        if file_types is None:
-            continue
+        file_assemblies = visualizable_assemblies(assemblies, files)
         if ('ucsc' not in browsers
                 and 'ucsc_assembly' in mapped_assembly.keys()
                 and not BROWSER_FILE_TYPES['ucsc'].isdisjoint(file_types)):

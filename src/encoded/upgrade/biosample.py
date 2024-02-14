@@ -140,7 +140,7 @@ def biosample_8_9(value, system):
 
     if 'model_organism_age' in value:
         age = value['model_organism_age']
-        if re.match('\d+.0(-\d+.0)?', age):
+        if re.match(r'\d+.0(-\d+.0)?', age):
             new_age = age.replace('.0', '')
             value['model_organism_age'] = new_age
 
@@ -369,3 +369,19 @@ def biosample_23_24(value, system):
     value.pop('biosample_type', None)
     value.pop('biosample_term_id', None)
     value.pop('biosample_term_name', None)
+
+
+@upgrade_step('biosample', '24', '25')
+def biosample_24_25(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5466
+    if 'disease_term_id' in value:
+        value['disease_term_id'] = [value['disease_term_id']]
+
+
+@upgrade_step('biosample', '25', '26')
+def biosample_25_26(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6102
+    if 'lot_id' in value and value['lot_id'] == '':
+        value.pop('lot_id')
+    if 'product_id' in value and value['product_id'] == '':
+        value.pop('product_id')

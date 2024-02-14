@@ -87,7 +87,8 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_8hr"]
+        "aliases": ["robert-waterston:100mM_dex_8hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -99,7 +100,8 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_10hr"]
+        "aliases": ["robert-waterston:100mM_dex_10hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -111,7 +113,8 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_12hr"]
+        "aliases": ["robert-waterston:100mM_dex_12hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -123,7 +126,8 @@
         "duration_units": "hour",
         "amount": 80,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:80mM_dex_8hr"]
+        "aliases": ["robert-waterston:80mM_dex_8hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -135,7 +139,8 @@
         "duration_units": "hour",
         "amount": 60,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:60mM_dex_8hr"]
+        "aliases": ["robert-waterston:60mM_dex_8hr"],
+        "treatment_type_details": "agonist"
     },
     {
         "uuid": "a7ab9449-73ea-4693-be2d-a726a9e82056",
@@ -168,6 +173,74 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "treatment_term_id": "CL:0000815",
         "treatment_term_name": "regulatory T cell",
-        "treatment_type": "injection"
+        "treatment_type": "injection",
+        "purpose": "labeling"
+    },
+    {
+        "amount": 100,
+        "amount_units": "ng/mL",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "UniProtKB:Q9T221",
+        "treatment_term_name": "Integrase",
+        "treatment_type": "protein",
+        "purpose": "stimulation",
+        "uuid": "1d2a0ab4-412c-4646-87f9-858dfaaa7c06"
+    },
+    {
+        "aliases": [
+            "michael-snyder:Interleukin-2"
+        ],
+        "amount": 50,
+        "amount_units": "μg/mL",
+        "duration": 48,
+        "duration_units": "hour",
+        "purpose": "activation",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "UniProtKB:P60568",
+        "treatment_term_name": "Interleukin-2",
+        "treatment_type": "protein",
+        "uuid": "373bf377-6f76-4dd9-a956-b4c1ded4b2c0"
+    },
+    {
+        "aliases": [
+            "michael-snyder:selection-treatment"
+        ],
+        "amount": 350,
+        "amount_units": "μg/mL",
+        "duration": 8,
+        "duration_units": "hour",
+        "purpose": "selection",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "UniProtKB:P60568",
+        "treatment_term_name": "G418",
+        "treatment_type": "protein",
+        "uuid": "371bf378-6f76-5dd9-a956-b4c1ded4b1c0"
+    },
+    {
+        "aliases": [
+            "michael-snyder:perturbation-treatment"
+        ],
+        "amount": 520,
+        "amount_units": "μg/mL",
+        "duration": 148,
+        "duration_units": "hour",
+        "purpose": "perturbation",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "UniProtKB:P60568",
+        "treatment_term_name": "Puromycin",
+        "treatment_type": "protein",
+        "uuid": "313bf347-6f73-4dd9-a952-b4c1ded4b2c0"
+    },
+    {
+        "amount": 100,
+        "amount_units": "nM",
+        "duration": 4,
+        "duration_units": "hour",
+        "purpose": "perturbation",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "CHEBI:28264",
+        "treatment_term_name": "DMSO",
+        "treatment_type": "chemical",
+        "uuid": "627fdc6b-71c0-427c-8975-27cc2fcb9941"
     }
 ]

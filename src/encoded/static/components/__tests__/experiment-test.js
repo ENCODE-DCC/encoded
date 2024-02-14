@@ -1,5 +1,5 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import _ from 'underscore';
@@ -8,12 +8,39 @@ import _ from 'underscore';
 import Experiment from '../experiment';
 import context from '../testdata/experiment';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
+
 // Create the Redux mock store.
 const initialCart = { elements: [], name: 'Untitled' };
 const mockStore = configureStore();
 
 
 describe('Experiment Page', () => {
+    beforeAll(() => {
+        // Mock the node fetch() call within App.fetch().
+        global.fetch = jest.fn().mockImplementation(() => (
+            new Promise((resolve) => {
+                resolve({
+                    ok: true,
+                    headers: {
+                        get: () => null,
+                    },
+                    json: () => (
+                        ({
+                            '@type': [
+                                'JSONSchemas',
+                            ],
+                            AntibodyLot: 'Antibody lot',
+                            CpgCorrelationQualityMetric: 'CpG correlation quality metric',
+                            PublicationData: 'Publication data',
+                        })
+                    ),
+                });
+            })
+        ));
+    });
+
     describe('Minimal Experiment', () => {
         let experiment;
         let summarySections;
@@ -71,13 +98,59 @@ describe('Experiment Page', () => {
         test('has proper strand specificity', () => {
             const item = summarySections.find('[data-test="strandspecificity"]');
             const desc = item.find('dd');
-            expect(desc.text()).toEqual('Strand-specific');
+            expect(desc.text()).toEqual('Strand-specific (mixed)');
         });
 
         test('has proper spikeins', () => {
             const item = summarySections.find('[data-test="spikeins"]');
             const desc = item.find('dd');
             expect(desc.text()).toEqual('ENCSR000AJW');
+        });
+    });
+
+    describe('Replicate Panels, test Strand-specific', () => {
+        let experiment;
+        let summarySections;
+
+        beforeAll(() => {
+            const contextRep = _.clone(context);
+            contextRep.replicates = [require('../testdata/replicate/mouse')];
+            contextRep.replicates[0].library = require('../testdata/library/sid38807');
+            contextRep.files = [require('../testdata/file/fastq')[0]];
+            const store = mockStore(initialCart);
+            experiment = mount(
+                <Provider store={store}><Experiment context={contextRep} /></Provider>
+            );
+            summarySections = experiment.find('.panel__split-element');
+        });
+
+        test('has proper strand specificity', () => {
+            const item = summarySections.find('[data-test="strandspecificity"]');
+            const desc = item.find('dd');
+            expect(desc.text()).toEqual('Strand-specific');
+        });
+    });
+
+    describe('Replicate Panels, test Strand-specific with parenthesis', () => {
+        let experiment;
+        let summarySections;
+
+        beforeAll(() => {
+            const contextRep = _.clone(context);
+            contextRep.replicates = [require('../testdata/replicate/human')];
+            contextRep.replicates[0].library = require('../testdata/library/sid38806');
+            contextRep.files = [require('../testdata/file/fastq')[0]];
+            const store = mockStore(initialCart);
+            experiment = mount(
+                <Provider store={store}><Experiment context={contextRep} /></Provider>
+            );
+            summarySections = experiment.find('.panel__split-element');
+        });
+
+        test('has proper strand specificity', () => {
+            const item = summarySections.find('[data-test="strandspecificity"]');
+            const desc = item.find('dd');
+            expect(desc.text()).toEqual('Strand-specific (true)');
         });
     });
 

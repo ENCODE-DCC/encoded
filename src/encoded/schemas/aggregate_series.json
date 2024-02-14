@@ -46,9 +46,81 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
+        },
+        "related_series": {
+            "title": "Additional aggregate series",
+            "description": "List of aggregate series to be associated with this dataset.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Aggregate Series",
+                "comment": "See aggregate_series.json for available identifiers.",
+                "type": "string",
+                "linkTo": ["AggregateSeries"]
+            }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_term_name",
+                "target.investigated_as",
+                "target.label"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "organism.scientific_name",
+                "biosample_ontology.classification",
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "related_datasets.replicates.library.biosample.life_stage",
+                "related_datasets.replicates.library.biosample.treatments.treatment_term_name"
+            ]
+        },
+        {
+            "title": "Library",
+            "facet_fields": [
+                "related_datsets.files.run_type",
+                "related_datasets.replicates.library.size_range",
+                "related_datasets.replicates.library.nucleic_acid_term_name",
+                "related_datasets.replicates.library.depleted_in_term_name",
+                "related_datasets.replicates.library.treatments.treatment_term_name"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "assembly",
+                "related_datasets.files.file_type",
+                "related_datasets.files.read_length",
+                "related_datasets.files.mapped_read_length"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title",
+                "award.project",
+                "award.rfa"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_term_name": {
             "title": "Assay name"
@@ -147,8 +219,16 @@
             "title": "Status",
             "type": "string"
         },
+        "target.@id": {
+            "title": "Targets",
+            "type": "string"
+        },
         "target.label": {
             "title": "Target",
+            "type": "string"
+        },
+        "related_datasets.@id": {
+            "title": "Additional datasets",
             "type": "string"
         },
         "related_datasets.replicates.antibody.accession": {
@@ -171,12 +251,12 @@
             "title": "Biosample treatment ontology ID",
             "type": "string"
         },
-        "related_datasets.replicates.library.biosample.treatments.concentration": {
-            "title": "Biosample treatment concentration",
+        "related_datasets.replicates.library.biosample.treatments.amount": {
+            "title": "Biosample treatment amount",
             "type": "number"
         },
-        "related_datasets.replicates.library.biosample.treatments.concentration_units": {
-            "title": "Biosample treatment concentration units",
+        "related_datasets.replicates.library.biosample.treatments.amount_units": {
+            "title": "Biosample treatment amount units",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.duration": {
@@ -198,9 +278,14 @@
         "related_datasets.replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units",
             "type": "string"
+        },
+        "related_series.@id": {
+            "title": "Additional datasets",
+            "type": "string"
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "related_datasets.assay_term_name": 1.0,
@@ -263,11 +348,12 @@
         "target.aliases": 1.0,
         "target.genes.symbol": 1.0,
         "target.label": 1.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/aggregate_series.md"
 }

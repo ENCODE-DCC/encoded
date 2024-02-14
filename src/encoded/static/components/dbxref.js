@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 
@@ -106,6 +105,22 @@ export const dbxrefPrefixMap = {
     },
     Cellosaurus: {
         pattern: 'https://web.expasy.org/cellosaurus/{0}',
+    },
+    FactorBook: {
+        pattern: 'https://factorbook.org/experiment/{0}',
+        preprocessor: (context, dbxref) => {
+            // For dbxrefs in targets use an alternate URL for human targets.
+            const value = dbxref.split(':');
+            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Homo sapiens') {
+                return { altUrlPattern: 'https://factorbook.org/tf/human/{0}/function' };
+            }
+            // For dbxrefs in targets use an alternate URL and alternate value for mouse targets.
+            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Mus musculus') {
+                return { altValue: value[1].charAt(0) + value[1].slice(1).toLowerCase(),
+                    altUrlPattern: 'https://factorbook.org/tf/mouse/{0}/function' };
+            }
+            return {};
+        },
     },
     FlyBase: {
         pattern: 'http://flybase.org/search/symbol/{0}',
@@ -224,49 +239,49 @@ export const dbxrefPrefixMap = {
     },
     DepMap: {
         pattern: 'https://depmap.org/portal/cell_line/{0}',
-    }
+    },
+    GeneCards: {
+        pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
+    },
+    VISTA: {
+        pattern: 'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id={0}&organism_id=1',
+        preprocessor: (context, dbxref) => {
+            const value = dbxref.split(':');
+            // Check to see if the first two characters of the VISTA value is "hs"
+            if (value[1] && value[1].substr(0, 2) === 'hs') {
+                return { altValue: value[1].substr(2) };
+            }
+            // If the first two characters of the VISTA value is "mm" then we need to use a
+            // different URL pattern.
+            if (value[1] && value[1].substr(0, 2) === 'mm') {
+                return { altUrlPattern: 'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id={0}&organism_id=2', altValue: value[1].substr(2) };
+            }
+            return {};
+        },
+    },
+    'SCREEN-GRCh38': {
+        pattern: 'https://screen.encodeproject.org/search?q={0}&assembly=GRCh38',
+    },
+    'SCREEN-mm10': {
+        pattern: 'https://screen.encodeproject.org/search?q={0}&assembly=mm10',
+    },
 };
 
 
 /**
- * Convert a dbxref prefix and value to a URL using the same URL patterns as the <DbxrefList>
- * component below. This function does no pre- nor post-processing, so the given prefix and value
- * have to map to a real URL by themselves.
+ * Convert a dbxref identifier to a URL. Consider the context optional if you know your particular
+ * dbxref doesn't require it.
+ * @param {string} dbxref Dbxref identifier including the prefix
+ * @param {string} context Object containing the dbxref. Optional in some cases
  *
- * @param {string} prefix - dbxref prefix string, like 'HGNC'
- * @param {string} value - String value you'd normally see after the colon in a dbxref
- * @return {string} - URL that the given prefix and value map to, or null if the mapping table doesn't include the given prefix.
+ * @return {string} URL that the given identifier maps to; empty string if identifier not supported
  */
-export function dbxrefHref(prefix, value) {
-    const urlProcessor = dbxrefPrefixMap[prefix];
-    if (urlProcessor) {
-        return urlProcessor.pattern.replace(/\{0\}/g, encodeURIComponent(value));
-    }
-    return null;
-}
-
-
-/**
- * Internal component to display one dbxref as a string. It handles calling the pre- and post-
- * processor from `dbxrefPrefixMap` above, and looking up the URL for the given dbxref. It
- * generates either a link with the generated URL for the given dbxref and the dbxref itself as the
- * link text, o just the dbxref in a <span> if we don't have that dbxref in `dbxrefPrefixMap`.
- *
- * @prop {string} dbxref - String containing one dbxref string.
- * @prop {object} context - Object (Experiment, HumanDonor, etc.) containing the dbxref being
- *     displayed.
- */
-const DbxrefUrl = (props) => {
-    const { dbxref, context } = props;
-
-    // Standard dbxref pattern: {prefix}:{value}. If the dbxref has more than one colon, only the
-    // first colon splits the dbxref into `prefix` and `value`. The other colons get included as
-    // part of the value. If the dbxref has no colons at all, prefix gets the whole dbxref string
-    // and `value` gets the empty string.
+export function dbxrefHref(dbxref, context) {
+    let url = '';
     const prefix = dbxref.split(':', 1)[0];
     let value = dbxref.slice(prefix.length + 1);
 
-    // Using the prefix, find the corresponding URL pattern, if any.
+    // Using the dbxref prefix, find the corresponding URL pattern, if any.
     const urlProcessor = dbxrefPrefixMap[prefix];
     if (urlProcessor) {
         // Get the urlPattern for the dbxref prefix. This pattern can be replaced by the preprocessor
@@ -283,26 +298,43 @@ const DbxrefUrl = (props) => {
 
         // Now replace the {0} in the URL pattern with the value we extracted to form the final URL,
         // then display that as a link.
-        let url = urlPattern.replace(/\{0\}/g, encodeURIComponent(value));
+        url = urlPattern.replace(/\{0\}/g, encodeURIComponent(value));
 
-        // If, after replacing the {0} withx the value, the URL needs further modification, call the
+        // If, after replacing the {0} with the value, the URL needs further modification, call the
         // caller-provided post-processor with the given dbxref and the generated URL.
         if (urlProcessor.postprocessor) {
             url = urlProcessor.postprocessor(context, dbxref, url);
         }
-
-        // Return the final dbxref as a link.
-        return <a href={url}>{dbxref}</a>;
     }
+    return url;
+}
 
-    // The dbxref prefix didn't map to anything we know about, so just display the dbxref as
-    // unlinked text.
-    return <span>{dbxref}</span>;
+
+/**
+ * Display one dbxref, generating either a link with the URL for the given dbxref and the dbxref
+ * itself as the link text, or just the dbxref in
+ * a <span> if we don't have that dbxref in `dbxrefPrefixMap`.
+ */
+export const DbxrefItem = ({ dbxref, context, title }) => {
+    const displayTitle = title || dbxref;
+
+    const url = dbxrefHref(dbxref, context);
+    return url
+        ? <a href={url}>{displayTitle}</a>
+        : <span>{dbxref}</span>;
 };
 
-DbxrefUrl.propTypes = {
-    dbxref: PropTypes.string.isRequired, // dbxref string
-    context: PropTypes.object.isRequired, // Object that contains the dbxref
+DbxrefItem.propTypes = {
+    /** dbxref identifier */
+    dbxref: PropTypes.string.isRequired,
+    /** Object that contains the dbxref */
+    context: PropTypes.object.isRequired,
+    /** title string displayed instead of dbxref string */
+    title: PropTypes.string,
+};
+
+DbxrefItem.defaultProps = {
+    title: '',
 };
 
 
@@ -317,15 +349,16 @@ DbxrefUrl.propTypes = {
  *     this property is always required though probably rarely used.
  * @prop {string} addClasses - String with space-separated classes that gets added to the <ul> that
  *     contains the displayed list of dbxrefs. Optional.
+ * @prop {title} title - String that is displayed instead of Dbxref string. Optional.
  */
 export const DbxrefList = (props) => {
-    const { dbxrefs, context, addClasses } = props;
+    const { dbxrefs, context, addClasses, title } = props;
 
     return (
         <ul className={addClasses}>
-            {dbxrefs.map((dbxref, i) =>
-                <li key={i}><DbxrefUrl dbxref={dbxref} context={context} /></li>
-            )}
+            {dbxrefs.map((dbxref, i) => (
+                <li key={i}><DbxrefItem dbxref={dbxref} context={context} title={title} /></li>
+            ))}
         </ul>
     );
 };
@@ -334,8 +367,10 @@ DbxrefList.propTypes = {
     dbxrefs: PropTypes.array.isRequired, // Array of dbxref values to display
     context: PropTypes.object.isRequired, // Object containing the dbxref
     addClasses: PropTypes.string, // CSS class to apply to dbxref list
+    title: PropTypes.string, // title string displayed instead of dbxref string
 };
 
 DbxrefList.defaultProps = {
     addClasses: '',
+    title: '',
 };

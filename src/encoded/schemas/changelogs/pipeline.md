@@ -1,5 +1,34 @@
 ## Changelog for pipeline.json
 
+### Minor changes since schema version 14
+* Added *proliferation CRISPR screen*, *FACS CRISPR screen*, and *FlowFISH CRISPR screen* to *assay_term_names* enum
+* Added *seqFISH* to *assay_term_names* enum
+
+### Schema version 14
+
+* Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_names* enum. *assay_term_names* enum *Capture Hi-C* was changed to *capture Hi-C*
+
+### Schema version 13
+
+* Added *perturbation followed by scRNA-seq* and *perturbation followed by snATAC-seq* to *assay_term_names* enum; *single-cell ATAC-seq* was removed from the *assay_term_names* enum and remapped to *single-nucleus ATAC-seq*
+
+### Schema version 12
+
+* Added *GRO-cap*, *GRO-seq*, and *long read single-cell RNA-seq* to *assay_term_name* enum;  *single-nucleus RNA-seq* and *genotyping by high throughput sequencing assay* were removed and remapped to *single-cell RNA sequencing assay* and *whole genome sequencing assay* respectively
+
+### Minor changes since schema version 11
+* Added *CUT&RUN* to *assay_term_names* enum
+* Added *SPRITE-IP* to *assay_term_names* enum
+* Added *CUT&Tag* to *assay_term_name* enum
+* Added *Capture Hi-C* and *single-nucleus RNA-seq* to *assay_term_names* enum
+
+### Schema version 11
+
+* *assay_term_names* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
+
+### Minor changes since schema version 10
+* *reference_filesets* property was added to link related reference file sets to each pipeline
+
 ### Schema version 10
 
 * *assay_term_names* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*

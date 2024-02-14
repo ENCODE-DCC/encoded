@@ -1,5 +1,6 @@
 // All status indicator colors. As statuses change in the schemas, should see if corresponding
 // changes are needed here.
+/* stylelint-disable-next-line value-list-max-empty-lines */
 $status-colors: (
     // External
     released: $brand-success,
@@ -11,14 +12,16 @@ $status-colors: (
     exempt-from-standards: #fff712,
     archived: #a0a0a0,
     revoked: $brand-danger,
+    listed: #63326e,
+    unlisted: $brand-info,
 
     // Consortium
     in-progress: $brand-info,
     pending-dcc-review: $brand-info,
     submitted: $brand-info,
     uploading: $brand-info,
-    upload-failed: $brand-danger,
-    content-error: $brand-danger,
+    upload-failed: #63326e,
+    content-error: #63326e,
 
     // Admin
     deleted: $brand-warning,
@@ -45,15 +48,13 @@ $status-colors: (
     not-pursued: #a0a0a0,
 );
 
-
 // Sets the sizes of the font and icons within statuses.
 $large-size: 16px;
 $large-font-size: 1.2rem;
 $standard-size: 12px;
 $standard-font-size: 1rem;
 $small-size: 10px;
-$small-font-size: 0.8rem;
-
+$small-font-size: 0.9rem;
 
 .status {
     padding: 4px;
@@ -89,11 +90,16 @@ $small-font-size: 0.8rem;
         .status__icon {
             width: $small-size;
             height: $small-size;
+
+            svg {
+                margin-top: 0;
+            }
         }
 
         .status__label {
             font-size: $small-font-size;
             line-height: $small-size;
+            padding: 0;
         }
     }
 
@@ -104,6 +110,10 @@ $small-font-size: 0.8rem;
     @at-root #{&}__icon {
         display: inline-block;
 
+        svg {
+            margin-top: 1px;
+        }
+
         @at-root #{&}--spacer {
             margin-right: 5px;
         }
@@ -112,7 +122,9 @@ $small-font-size: 0.8rem;
     @at-root #{&}__label {
         display: inline-block;
         vertical-align: top;
-        font-weight: bold;
+        font-weight: 500;
+        line-height: 1;
+        padding: 2px 2px 0;
     }
 
     @at-root #{&}__table-cell {
@@ -120,16 +132,16 @@ $small-font-size: 0.8rem;
     }
 }
 
-
 // Calculate the label color based on the lightness of the given color, for contrast.
 @function label-color($color) {
     @if (brightness($color) > 50) {
         @return #404040; // Lighter background, return dark color
-    } @else {
+    }
+
+    @else {
         @return #ffffff; // Darker background, return light color
     }
 }
-
 
 // Defines colors for each type of status.
 @each $status, $color in $status-colors {
@@ -144,6 +156,11 @@ $small-font-size: 0.8rem;
     g.pipeline-node-file.graph-node--#{$status} {
         fill: $color;
 
+        // Darken for selected nodes.
+        &.active {
+            fill: desaturate(darken($color, 10%), 20%);
+        }
+
         & g.label {
             fill: label-color($color);
         }
@@ -155,7 +172,6 @@ $small-font-size: 0.8rem;
     margin-right: 5px;
 }
 
-
 // Antibody Status Panels
 .antibody-status {
     padding-top: 5px;
@@ -164,6 +180,11 @@ $small-font-size: 0.8rem;
 
     &:first-child {
         border-top: none;
+        margin-top: -10px;
+    }
+
+    &:last-child {
+        margin-bottom: -10px;
     }
 
     @at-root #{&}__group {

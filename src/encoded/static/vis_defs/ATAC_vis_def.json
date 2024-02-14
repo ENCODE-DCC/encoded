@@ -18,9 +18,10 @@
                 "Peaks",
                 "Replicated Peaks",
                 "Filtered Peaks",
-                "Stable Peaks",
+                "Pseudoreplicated peaks",
                 "Fold change over control",
-                "Signal p-value", "Signal"
+                "Signal p-value", "Signal",
+                "Sequence contribution scores"
             ],
             "groups": {
                 "Optimal IDR thresholded peaks": {
@@ -97,15 +98,15 @@
                     "qValueFilter": "0",
                     "output_type": [ "filtered peaks" ]
                 },
-                "Stable Peaks": {
-                    "tag": "hSPKS",
+                "Pseudoreplicated peaks": {
+                    "tag": "hPRPKS",
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
                     "signalFilter": "0",
                     "pValueFilter": "0",
                     "qValueFilter": "0",
-                    "output_type": [ "stable peaks" ]
+                    "output_type": [ "pseudoreplicated peaks" ]
                 },
                 "Fold change over control": {
                     "tag": "iFCOC",
@@ -136,6 +137,16 @@
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "signal","signal of unique reads" ]
+                },
+                "Sequence contribution scores": {
+                    "tag": "seqCS",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "logo": "on",
+                    "autoScale": "on",
+                    "maxHeightPixels": "64:36:12",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "counts sequence contribution scores", "profile sequence contribution scores" ]
                 }
             }
         },

@@ -39,7 +39,7 @@ from .vis_defines import (
 from .visualization import vis_cache_add
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('snovault.elasticsearch.es_index_listener')
 
 
 def includeme(config):
@@ -266,7 +266,7 @@ class VisIndexer(Indexer):
             if error is not None:
                 errors.append(error)
             if (i + 1) % 1000 == 0:
-                log.info('Indexing %d', i + 1)
+                log.info('Vis Indexing %d', i + 1)
         return errors
 
     def update_object(self, request, uuid, xmin, restart=False):

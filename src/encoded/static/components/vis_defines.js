@@ -25,7 +25,7 @@ const MAX_HIC_FILES_SELECTED = 8;
  * If you modify ASSEMBLY_DETAILS in vis_defines.py, this object might need corresponding
  * modifications.
  */
-const ASSEMBLY_DETAILS = {
+export const ASSEMBLY_DETAILS = {
     GRCh38: {
         species: 'Homo sapiens',
         ucsc_assembly: 'hg38',
@@ -40,6 +40,11 @@ const ASSEMBLY_DETAILS = {
         species: 'Homo sapiens',
         ucsc_assembly: 'hg19',
         ensembl_host: 'grch37.ensembl.org',
+    },
+    GRCm39: {
+        species: 'Mus musculus',
+        ucsc_assembly: 'mm39',
+        ensembl_host: 'www.ensembl.org',
     },
     mm10: {
         species: 'Mus musculus',
@@ -145,12 +150,12 @@ export const visFilterBrowserFiles = (files, browser, limits = false) => {
     // Filter the given files to ones qualified for the given browser, and only those files with
     // "released" status.
     const qualifiedFileTypes = browserFileTypes[browser];
-    let qualifiedFiles = files.filter(file => qualifiedFileTypes.indexOf(file.file_format) !== -1 && file.status === 'released');
+    let qualifiedFiles = files.filter((file) => qualifiedFileTypes.indexOf(file.file_format) !== -1 && file.status === 'released');
 
-    // For the hic browser, sort to prioritize "mapping quality thresholded chromatin interactions"
+    // For the hic browser, sort to prioritize "mapping quality thresholded contact matrix"
     // output_types.
     if (browser === 'hic') {
-        qualifiedFiles = qualifiedFiles.sort(file => (file.output_type === 'mapping quality thresholded chromatin interactions' ? -1 : 0));
+        qualifiedFiles = qualifiedFiles.sort((file) => (file.output_type === 'mapping quality thresholded contact matrix' ? -1 : 0));
         if (limits) {
             qualifiedFiles = qualifiedFiles.slice(0, MAX_HIC_FILES_SELECTED);
         }
@@ -200,8 +205,8 @@ const browserOrder = [
  * @param {array} browsers Array of browsers to sort
  * @return {array} Same contents as `browsers` but sorted according to `browserOrder`
  */
-export const visSortBrowsers = browsers => (
-    _.sortBy(browsers, browser => browserOrder.indexOf(browser))
+export const visSortBrowsers = (browsers) => (
+    _.sortBy(browsers, (browser) => browserOrder.indexOf(browser))
 );
 
 
@@ -219,7 +224,7 @@ const browserNameMap = {
  * Map a browser to its display name.
  * @param {string} browser Browser whose display name is desired
  */
-export const visMapBrowserName = browser => browserNameMap[browser];
+export const visMapBrowserName = (browser) => browserNameMap[browser];
 
 
 /**
@@ -235,8 +240,8 @@ export const visMapBrowserName = browser => browserNameMap[browser];
  *
  * @return {string} hub URL used in visualization URLs
  */
-const generateBatchHubUrl = (results, hostName) => {
-    const parsedUrl = url.parse(results['@id']).search;
+const generateBatchHubUrl = (resultsId, hostName) => {
+    const parsedUrl = url.parse(resultsId).search;
     if (parsedUrl) {
         return `${hostName}/batch_hub/${encodeURIComponent(parsedUrl.substr(1).replace('&', ',,'))}/hub.txt`;
     }
@@ -255,13 +260,13 @@ const generateBatchHubUrl = (results, hostName) => {
  */
 const getRelevantAssemblies = (results) => {
     let relevantAssemblies = [];
-    const assemblyFacet = results.facets.find(facet => facet.field === 'assembly');
+    const assemblyFacet = results.facets.find((facet) => facet.field === 'assembly');
     if (assemblyFacet) {
         // Get array of assemblies specified in the search query; empty array if none.
-        const specifiedAssemblies = results.filters.filter(filter => filter.field === 'assembly').map(filter => filter.term);
-        relevantAssemblies = assemblyFacet.terms.filter(term => term.doc_count > 0 && (specifiedAssemblies.length === 0 || specifiedAssemblies.includes(term.key)));
+        const specifiedAssemblies = results.filters.filter((filter) => filter.field === 'assembly').map((filter) => filter.term);
+        relevantAssemblies = assemblyFacet.terms.filter((term) => term.doc_count > 0 && (specifiedAssemblies.length === 0 || specifiedAssemblies.includes(term.key)));
     }
-    return relevantAssemblies.map(assembly => assembly.key).sort((a, b) => globals.assemblyPriority.indexOf(a) - globals.assemblyPriority.indexOf(b));
+    return relevantAssemblies.map((assembly) => assembly.key).sort((a, b) => globals.assemblyPriority.indexOf(a) - globals.assemblyPriority.indexOf(b));
 };
 
 
@@ -273,6 +278,7 @@ const ucscAssemblyDetails = {
     GRCh38: { mappedAssembly: 'hg38' },
     'GRCh38-minimal': { mappedAssembly: 'hg38' },
     hg19: { mappedAssembly: 'hg19' },
+    GRCm39: { mappedAssembly: 'mm39' },
     mm10: { mappedAssembly: 'mm10' },
     'mm10-minimal': { mappedAssembly: 'mm10' },
     mm9: { mappedAssembly: 'mm9' },
@@ -309,6 +315,7 @@ const ucscUrlGenerator = (assembly, batchHubUrl, position) => {
 const ensembleAssemblyDetails = {
     GRCh38: { species: 'Homo_sapiens' },
     'GRCh38-minimal': { species: 'Homo_sapiens' },
+    GRCm39: { species: 'Mus_musculus' },
     mm10: { species: 'Mus_musculus' },
     'mm10-minimal': { species: 'Mus_musculus' },
 };
@@ -353,28 +360,28 @@ export class BrowserSelector extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    // Called to open the browser-selection modal.
-    openModal() {
-        this.setState({ selectorOpen: true });
-    }
-
-    // Called to close the browser-seletino modal.
-    closeModal() {
-        this.setState({ selectorOpen: false });
-    }
-
     // When the link to open a browser gets clicked, this gets called to close the modal in
     // addition to going to the link.
     handleClick() {
         this.closeModal();
     }
 
+    // Called to open the browser-selection modal.
+    openModal() {
+        this.setState({ selectorOpen: true });
+    }
+
+    // Called to close the browser-selection modal.
+    closeModal() {
+        this.setState({ selectorOpen: false });
+    }
+
     render() {
-        const { results, disabledTitle } = this.props;
+        const { results, disabledTitle, additionalFilters } = this.props;
 
         // Only consider Visualize button if exactly one type= of Experiment or Annotation exists
         // in query string.
-        const docTypes = results.filters.filter(filter => filter.field === 'type').map(filter => filter.term);
+        const docTypes = results.filters.filter((filter) => filter.field === 'type').map((filter) => filter.term);
         if (docTypes.length > 1 || (docTypes.length === 1 && docTypes[0] !== 'Experiment' && docTypes[0] !== 'Annotation')) {
             return null;
         }
@@ -382,7 +389,10 @@ export class BrowserSelector extends React.Component {
         // Generate the batch hub URL used in batch visualization query strings.
         const parsedLocationHref = url.parse(this.context.location_href);
         const hostName = `${parsedLocationHref.protocol}//${parsedLocationHref.host}`;
-        const batchHubUrl = generateBatchHubUrl(results, hostName);
+
+        // Generate the query string, including elements from any given filters outside of search result filters.
+        const resultsId = results['@id'].concat(additionalFilters.reduce((accQuery, filter) => `${accQuery}&${filter.field}=${encoding.encodedURIComponent(filter.term)}`, ''));
+        const batchHubUrl = generateBatchHubUrl(resultsId, hostName);
         if (!batchHubUrl) {
             return null;
         }
@@ -413,8 +423,8 @@ export class BrowserSelector extends React.Component {
 
         if (relevantAssemblies.length > 0) {
             return (
-                <React.Fragment>
-                    <button onClick={this.openModal} className="btn btn-info btn-sm" data-test="visualize" id="visualize-control">
+                <>
+                    <button type="button" onClick={this.openModal} className="btn btn-info btn-sm" data-test="visualize" id="visualize-control">
                         Visualize
                     </button>
                     {this.state.selectorOpen ?
@@ -437,7 +447,7 @@ export class BrowserSelector extends React.Component {
                                             <hr />
                                             {relevantAssemblies.map((assembly) => {
                                                 const assemblyBrowsers = visualizeCfg[assembly];
-                                                const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
+                                                const browserList = _(Object.keys(assemblyBrowsers)).sortBy((browser) => _(globals.browserPriority).indexOf(browser));
 
                                                 return (
                                                     <div key={assembly} className="browser-selector__assembly-option">
@@ -445,13 +455,13 @@ export class BrowserSelector extends React.Component {
                                                             {assembly}:
                                                         </div>
                                                         <div className="browser-selector__browsers">
-                                                            {browserList.map(browser =>
+                                                            {browserList.map((browser) => (
                                                                 <div key={browser} className="browser-selector__browser">
                                                                     <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
                                                                         {browser}
                                                                     </a>
                                                                 </div>
-                                                            )}
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 );
@@ -460,10 +470,10 @@ export class BrowserSelector extends React.Component {
                                     </div>
                                 }
                             </ModalBody>
-                            <ModalFooter closeModal={<button id="visualize-limit-close" className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                            <ModalFooter closeModal={<button type="button" id="visualize-limit-close" className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                         </Modal>
                     : null}
-                </React.Fragment>
+                </>
             );
         }
         return null;
@@ -475,10 +485,13 @@ BrowserSelector.propTypes = {
     results: PropTypes.object.isRequired,
     /** Title of accessible text for disabled title; also flag for disabling */
     disabledTitle: PropTypes.string,
+    /** Filters not included in results.filters */
+    additionalFilters: PropTypes.array,
 };
 
 BrowserSelector.defaultProps = {
     disabledTitle: '',
+    additionalFilters: [],
 };
 
 BrowserSelector.contextTypes = {

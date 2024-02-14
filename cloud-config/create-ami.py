@@ -70,9 +70,10 @@ def _find_similar_amis(ec2_client, ami_name):
                 'description': res_img['Description'],
                 'state': res_img['State'],
             }
-            for tag in res_img['Tags']:
-                ami_obj[tag['Key']] = tag['Value']
-            ami_objs.append(ami_obj)
+            if 'Tags' in res_img:
+                for tag in res_img['Tags']:
+                    ami_obj[tag['Key']] = tag['Value']
+                ami_objs.append(ami_obj)
     return ami_objs
 
 
@@ -152,7 +153,7 @@ def main():
             key_name += '-prod'
         print('\nAdd below to ami map in deploy script')
         print("# {} build on {}: {}".format(fuzzy_ami_name, date_now, ami_name))
-        print("'{}': '{}',".format(main_args.deployment_type, ami_id))
+        print("'{}': '{}',".format(key_name, ami_id))
 
 def _parse_args():
     # pylint: disable=too-many-branches, too-many-statements
@@ -160,7 +161,7 @@ def _parse_args():
     parser.add_argument('created_by', help='Your name')
     parser.add_argument('deployment_type', help='deployment type')
     parser.add_argument('instance_id', help='instance id')
-    parser.add_argument('--profile-name', default='default', help="AWS creds profile")
+    parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     args = parser.parse_args()
     return args
 

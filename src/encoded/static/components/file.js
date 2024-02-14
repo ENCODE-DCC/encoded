@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import _ from 'underscore';
-import Pager from '../libs/ui/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
@@ -15,10 +14,10 @@ import { QualityMetricsPanel } from './quality_metric';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { ReplacementAccessions } from './typeutils';
+import { ReplacementAccessions, FileTablePaged } from './typeutils';
 
 
-dayjs.extend(utc)
+dayjs.extend(utc);
 
 /**
  * Display list of file.matching_md5sum accessions as links to their respective files. This assumes
@@ -26,7 +25,7 @@ dayjs.extend(utc)
  */
 const MatchingMD5Sum = ({ file }) => {
     if (file.matching_md5sum && file.matching_md5sum.length > 0) {
-        const matchingMD5Accessions = file.matching_md5sum.map(fileAtId => (
+        const matchingMD5Accessions = file.matching_md5sum.map((fileAtId) => (
             <a key={fileAtId} href={fileAtId}>{globals.atIdToAccession(fileAtId)}</a>
         ));
         return (
@@ -48,7 +47,7 @@ MatchingMD5Sum.propTypes = {
 const derivingCols = {
     accession: {
         title: 'Accession',
-        display: file => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
+        display: (file) => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
     },
     dataset: {
         title: 'Dataset',
@@ -61,12 +60,12 @@ const derivingCols = {
     output_type: { title: 'Output type' },
     title: {
         title: 'Lab',
-        getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+        getValue: (file) => (file.lab && file.lab.title ? file.lab.title : ''),
     },
     assembly: { title: 'Mapping assembly' },
     status: {
         title: 'File status',
-        display: item => <Status item={item} badgeSize="small" inline />,
+        display: (item) => <Status item={item} badgeSize="small" inline />,
     },
 };
 
@@ -84,7 +83,7 @@ const derivingCols = {
 function sortProcessedPagedFiles(files) {
     // Split the list into two groups for basic sorting first by those with accessions,
     // then those with external_accessions.
-    const accessionList = _(files).groupBy(file => (file.accession ? 'accession' : 'external'));
+    const accessionList = _(files).groupBy((file) => (file.accession ? 'accession' : 'external'));
 
     // Start by sorting the accessioned files.
     let sortedAccession = [];
@@ -101,145 +100,33 @@ function sortProcessedPagedFiles(files) {
 }
 
 
-// Display a table of files that derive from this one as a paged component. It works by first
-// doing a GET request an array of minimal file objects with barely enough information to know what
-// files satisfy the search criteria for files that derive from the file passed in the `file` prop.
-// We then sort his list of files, and that becomes the master list of all files deriving from this
-// one. Finally, we do the first GET request with a search for the complete file objects, but only
-// enough to fit the current page (initially page 0, or 1 on the display) based on the
-// `PagedFileTableMax` constant below.
-//
-// When the user clicks on the Pager component, we change our current page (stored in the
-// `currentPage` state variable) and do another GET request for the complete file objects for that
-// page.
-const PagedFileTableMax = 50; // Maximnum number of files per page
-const PagedFileCacheMax = 10; // Maximum number of pages to cache
+/**
+ * Display a table of files that derive from this one as a paged component. It first needs to find
+ * these files with a search for qualifying files that have a `derived_from` of this file. To save
+ * time and bandwidth we only request the @id of these files. The resulting list of @ids then gets
+ * sent to FileTablePage to fetch the actual file objects and render them.
+ */
+const DerivedFiles = ({ file }) => {
+    const [fileIds, setFileIds] = React.useState([]);
 
-class DerivedFiles extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            currentPage: 0, // Current page of a multi-page table
-            pageFiles: [], // Array of file objects displayed for the current page
-            totalPages: 0, // Total number of pages; never gets updated after initialized
-        };
-        this.currentPageFiles = this.currentPageFiles.bind(this);
-        this.updateCurrentPage = this.updateCurrentPage.bind(this);
-    }
-
-    componentDidMount() {
-        this.allFileIds = [];
-        this.pageCache = {};
-        const { file } = this.props;
-
-        // Search for all files that derive from the given one, but because we could get tens of
-        // thousands of results, we do a search only on the @ids of the matching results to vastly
-        // reduce the JSON size. We can then get take just a page of those to retrieve their
-        // details for display in the table.
-        requestSearch(`type=File&limit=all&field=@id&status!=deleted&status!=revoked&status!=replaced&field=accession&field=title&field=accession&derived_from=${file['@id']}`).then((result) => {
-            // The server has returned search results. See if we got matching files to display
-            // in the table.
+    React.useEffect(() => {
+        requestSearch(`type=File&limit=all&field=@id&status!=deleted&status!=revoked&status!=replaced&derived_from=${file['@id']}`).then((result) => {
+            // The server has returned file search results. Generate an array of file @ids.
             if (Object.keys(result).length > 0 && result['@graph'] && result['@graph'].length > 0) {
                 // Sort the files. We still get an array of search results from the server, just
                 // sorted by accessioned files, followed by external_accession files.
                 const sortedFiles = sortProcessedPagedFiles(result['@graph']);
-
-                // Make a list of file @ids of all files for the current page and retrieve them
-                // with a GET request. Also, now that we know how many total results we have, save
-                // the total number of pages of results we'll show.
-                this.allFileIds = sortedFiles.map(sortedFile => sortedFile['@id']);
-                this.setState({ totalPages: parseInt(this.allFileIds.length / PagedFileTableMax, 10) + (this.allFileIds.length % PagedFileTableMax ? 1 : 0) });
-                return requestFiles(this.currentPageFiles());
+                setFileIds(sortedFiles.map((sortedFile) => sortedFile['@id']));
             }
-
-            // No results. Just resolve with null.
-            return Promise.resolve(null);
-        }).then((files) => {
-            this.setState({ pageFiles: files || [] });
         });
-    }
+    }, [file]);
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.currentPage !== this.state.currentPage) {
-            // The currently displayed page of files has changed. First keep a reference to the
-            // current page of files to keep it from getting GC'd, if it's not already referenced.
-            if (!this.pageCache[prevState.currentPage]) {
-                this.pageCache[prevState.currentPage] = prevState.pageFiles;
-
-                // To save memory, see if we can lose a reference to a page so that it gets GC'd.
-                const cachedPageNos = Object.keys(this.pageCache);
-                if (cachedPageNos.length > PagedFileCacheMax) {
-                    // Our cache with an arbitrarily determined size has filled. Find the entry
-                    // with a page farthest from the current and kick it out.
-                    let maxDiff = 0;
-                    let maxDiffKey;
-                    cachedPageNos.forEach((pageNo) => {
-                        const diff = Math.abs(this.state.currentPage - parseInt(pageNo, 10));
-                        if (diff > maxDiff) {
-                            maxDiff = diff;
-                            maxDiffKey = parseInt(pageNo, 10);
-                        }
-                    });
-                    delete this.pageCache[maxDiffKey];
-                }
-            }
-
-            // Get the requested page of files, either from the cache if it's there, or by
-            // requesting them from the serer.
-            if (this.pageCache[this.state.currentPage]) {
-                // Page is in the cache; just get the cached reference.
-                this.setState({ pageFiles: this.pageCache[this.state.currentPage] });
-            } else {
-                // Send a request for the file objects for that page, and update the state with
-                // those files once the request completes so that the table redraws with the new
-                // set of files.
-                requestFiles(this.currentPageFiles()).then((files) => {
-                    this.setState({ pageFiles: files || [] });
-                });
-            }
-        }
-    }
-
-    // Get an array of file IDs for the current page. Requires this.allFileIds to hold all the file
-    // @id of files that derive from the one being displayed, and this.state.currentPage to hold
-    // the currently displayed page of files in the table.
-    currentPageFiles() {
-        if (this.allFileIds && this.allFileIds.length > 0) {
-            const start = this.state.currentPage * PagedFileTableMax;
-            return this.allFileIds.slice(start, start + PagedFileTableMax);
-        }
-        return [];
-    }
-
-    updateCurrentPage(newCurrent) {
-        this.setState({ currentPage: newCurrent });
-    }
-
-    render() {
-        const { file } = this.props;
-
-        if (this.state.pageFiles.length > 0) {
-            // If we have more than one page of files to display, render a pager component in the
-            // footer.
-            const pager = this.state.totalPages > 1 ? <Pager total={this.state.totalPages} current={this.state.currentPage} updateCurrentPage={this.updateCurrentPage} /> : null;
-
-            return (
-                <SortTablePanel header={<h4>{`Files deriving from ${file.title}`}</h4>}>
-                    <SortTable
-                        list={this.state.pageFiles}
-                        columns={derivingCols}
-                        sortColumn="accession"
-                        footer={pager}
-                    />
-                </SortTablePanel>
-            );
-        }
-        return null;
-    }
-}
+    return <FileTablePaged fileIds={fileIds} title={`Files deriving from ${file.title}`} />;
+};
 
 DerivedFiles.propTypes = {
-    file: PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
+    /** Query string fragment for the search that ultimately generates the table of files */
+    file: PropTypes.object.isRequired,
 };
 
 
@@ -346,7 +233,8 @@ class FileComponent extends React.Component {
         this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
     }
 
-    componentWillReceiveProps() {
+    /* eslint-disable camelcase */
+    UNSAFE_componentWillReceiveProps() {
         // If the logged-in state has changed since the last time we rendered, request files again
         // in case logging in changes the list of dependent files.
         const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
@@ -355,6 +243,7 @@ class FileComponent extends React.Component {
             this.loggedIn = currLoggedIn;
         }
     }
+    /* eslint-enable camelcase */
 
     requestFileDependencies() {
         // Perform GET requests of files that derive from this one, as well as file format
@@ -392,14 +281,14 @@ class FileComponent extends React.Component {
         // Collect up relevant pipelines and quality metrics.
         let pipelines = [];
         if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length > 0) {
-            pipelines = context.analysis_step_version.analysis_step.pipelines;
+            ({ pipelines } = context.analysis_step_version.analysis_step);
         }
-        const qualityMetrics = context.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
+        const qualityMetrics = context.quality_metrics.filter((qc) => loggedIn || qc.status === 'released');
 
         return (
             <div className={itemClass}>
                 <header>
-                    <h2>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h2>
+                    <h1>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h1>
                     <ReplacementAccessions context={context} />
                     <MatchingMD5Sum file={context} />
                     {context.restricted ?
@@ -454,16 +343,23 @@ class FileComponent extends React.Component {
                                     <dd>{`[${context.technical_replicates && context.technical_replicates.length > 0 ? context.technical_replicates.join(', ') : '-'}]`}</dd>
                                 </div>
 
+                                {context.mapped_run_type ?
+                                    <div data-test="mappruntype">
+                                        <dt>Mapped run type</dt>
+                                        <dd>{context.mapped_run_type}</dd>
+                                    </div>
+                                : null}
+
                                 {pipelines.length > 0 ?
                                     <div data-test="pipelines">
                                         <dt>Pipelines</dt>
                                         <dd>
-                                            {pipelines.map((pipeline, i) =>
+                                            {pipelines.map((pipeline, i) => (
                                                 <span key={pipeline['@id']}>
-                                                    {i > 0 ? <span>{','}<br /></span> : null}
+                                                    {i > 0 ? <span>,<br /></span> : null}
                                                     <a href={pipeline['@id']} title="View page for this pipeline">{pipeline.title}</a>
                                                 </span>
-                                            )}
+                                            ))}
                                         </dd>
                                     </div>
                                 : null}
@@ -508,6 +404,13 @@ class FileComponent extends React.Component {
                                     </div>
                                 : null}
 
+                                {context.pseudo_haplotype ?
+                                    <div data-test="pseudohaplotype">
+                                        <dt>Pseudo haplotype</dt>
+                                        <dd>{context.pseudo_haplotype}</dd>
+                                    </div>
+                                : null}
+
                                 <div className="file-download-section">
                                     <RestrictedDownloadButton file={context} adminUser={adminUser} downloadComponent={<FileDownloadButton />} />
                                 </div>
@@ -543,7 +446,18 @@ class FileComponent extends React.Component {
                                         <dd>{context.award.project}</dd>
                                     </div>
                                 : null}
-
+                                {context.assembly ?
+                                    <div data-test="assembly">
+                                        <dt>Assembly</dt>
+                                        <dd>{context.assembly}</dd>
+                                    </div>
+                                : null}
+                                {context.genome_annotation ?
+                                    <div data-test="genomeannotation">
+                                        <dt>Genome annotation</dt>
+                                        <dd>{context.genome_annotation}</dd>
+                                    </div>
+                                : null}
                                 {context.date_created ?
                                     <div data-test="datecreated">
                                         <dt>Date added</dt>
@@ -692,6 +606,19 @@ class SequenceFileInfo extends React.Component {
                             </div>
                         : null}
 
+                        {file.index_of ?
+                            <div data-test="outputtype">
+                                <dt>Index of</dt>
+                                <dd>
+                                    {file.index_of.reduce((fUrls, href) => {
+                                        const fileId = href.replace(/\/files\/|\//g, '');
+                                        const fUrl = <a key={fileId} href={href} title={fileId}>{fileId}</a>;
+                                        return !fUrls ? [fUrl] : [fUrl, ', ', fUrls];
+                                    }, '')}
+                                </dd>
+                            </div>
+                        : null}
+
                         {file.controlled_by && file.controlled_by.length > 0 ?
                             <div data-test="controlledby">
                                 <dt>Controlled by</dt>
@@ -728,7 +655,7 @@ class ListingComponent extends React.Component {
         const result = this.props.context;
 
         return (
-            <li className={resultItemClass(result)}>
+            <div className={resultItemClass(result)}>
                 <div className="result-item">
                     <div className="result-item__data">
                         <a href={result['@id']} className="result-item__link">
@@ -748,7 +675,7 @@ class ListingComponent extends React.Component {
                     <PickerActions context={result} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
-            </li>
+            </div>
         );
     }
 }

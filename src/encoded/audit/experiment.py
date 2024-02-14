@@ -11,6 +11,7 @@ from .standards_data import pipelines_with_read_depth, minimal_read_depth_requir
 
 
 targetBasedAssayList = [
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'ChIA-PET',
@@ -24,16 +25,19 @@ targetBasedAssayList = [
     'CRISPR genome editing followed by RNA-seq',
     'CRISPRi followed by RNA-seq',
     'PLAC-seq',
+    'CUT&RUN',
+    'CUT&Tag',
 ]
 
 controlRequiredAssayList = [
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'RIP-seq',
     'RAMPAGE',
     'CAGE',
     'eCLIP',
-    'single cell isolation followed by RNA-seq',
+    'single-cell RNA sequencing assay',
     'shRNA knockdown followed by RNA-seq',
     'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
@@ -42,6 +46,9 @@ controlRequiredAssayList = [
 
 seq_assays = [
     'RNA-seq',
+    'polyA plus RNA-seq',
+    'polyA minus RNA-seq',
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'MeDIP-seq',
@@ -54,6 +61,15 @@ seq_assays = [
     'PLAC-seq',
     'microRNA-seq',
     'long read RNA-seq',
+    'small RNA-seq',
+    'ATAC-seq',
+    'CUT&RUN',
+    'CUT&Tag',
+    'capture Hi-C',
+    'GRO-cap',
+    'GRO-seq',
+    'long read single-cell RNA-seq',
+    'Ribo-seq'
 ]
 
 
@@ -110,12 +126,12 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
                     sorted(list(fragmentation_methods_for_experiment))
                 )
             )
-            yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')       
+            yield AuditFailure('inconsistent fragmentation method', detail, level='WARNING')       
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
-    # relevant only for ChIP-seq
-    if value.get('assay_term_id') != 'OBI:0000716':
+    # relevant only for ChIP-seq and MINT
+    if value.get('assay_term_id') not in ['OBI:0000716', 'OBI:0002160']:
         return
 
     if value.get('target') and 'name' in value.get('target'):
@@ -155,9 +171,15 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 len(peaks_file.get('biological_replicates')) == 1)
         )
 
-        pipelines_to_check = ['ChIP-seq read mapping', 'Pool and subsample alignments']
+        pipelines_to_check = ['ChIP-seq read mapping', 
+                                'Pool and subsample alignments', 
+                                'Histone ChIP-seq 2',
+                                'Histone ChIP-seq 2 (unreplicated)',
+                                'Transcription factor ChIP-seq 2',
+                                'Transcription factor ChIP-seq 2 (unreplicated)']
         analysis_steps_to_check = ['Alignment pooling and subsampling step',
-                                   'Control alignment subsampling step']
+                                   'Control alignment subsampling step',
+                                   'ChIP seq alignment step']
         for peaks_file in peaks_file_gen:
             derived_from_files = get_derived_from_files_set([peaks_file],
                                                             files_structure,
@@ -220,6 +242,8 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
     control = control_objects.get(control_id)
     if not control:
         return
+    if not control.get('@type')[0] == 'Experiment':
+        return
     target_failures = []
     if not control.get('control_type'):
         detail = 'Control {} file {} has no control_type specified.'.format(
@@ -233,10 +257,13 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
                 level='WARNING'
             )
         )
-    elif 'input library' not in control['control_type']:
+    elif (
+        ('input library' not in control['control_type'])
+        and ('wild type' not in control['control_type'])
+    ):
         detail = (
             'Control {} file {} has a wrong control type {} '
-            'which is not "input library".'
+            'which is not "input library" or "wild type".'
         ).format(
             bam_type,
             audit_link(path_to_text(bam_id), bam_id),
@@ -448,59 +475,45 @@ def audit_experiment_pipeline_assay_details(value, system, files_structure):
 
 
 def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
-    if value.get('assay_term_id') != 'OBI:0000716':  # not a ChIP-seq
+    if value.get('assay_term_id') not in ['OBI:0000716', 'OBI:0002160']:  # not a ChIP-seq
         return
 
     # if there are no bam files - we don't know what pipeline, exit
     if len(files_structure.get('alignments').values()) == 0:
         return
-
-    if 'ChIP-seq read mapping' in get_pipeline_titles(
-            get_pipeline_objects(files_structure.get('alignments').values())):
-        for filtered_file in files_structure.get('alignments').values():
-            if has_only_raw_files_in_derived_from(filtered_file, files_structure) and \
-               filtered_file.get('lab') == '/labs/encode-processing-pipeline/' and \
-               has_no_unfiltered(filtered_file,
-                                 files_structure.get('unfiltered_alignments').values()):
-                detail = ('Experiment {} contains biological replicate '
-                    '{} with a filtered {} file {}, mapped to '
-                    'a {} assembly, but has no unfiltered '
-                    '{} file.'.format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        filtered_file['biological_replicates'],
-                        filtered_file['output_type'],
-                        audit_link(path_to_text(filtered_file['@id']), filtered_file['@id']),
-                        filtered_file['assembly'],
-                        filtered_file['output_type']
-                    )
-                )
-                yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
-    return
-
-
-def audit_experiment_with_uploading_files(value, system, files_structure):
-    if files_structure.get('original_files'):
-        for file_object in files_structure.get('original_files').values():
-            category = None
-            if file_object['status'] in ['upload failed', 'content error']:
-                category = 'file validation error'
-            elif file_object['status'] == 'uploading':
-                category = 'file in uploading state'
-            if category:
-                detail = ('Experiment {} contains a file {} '
-                    'with the status {}.'.format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        audit_link(path_to_text(file_object['@id']), file_object['@id']),
-                        file_object['status']
-                    )
-                )
-                yield AuditFailure(category, detail, level='ERROR')
+    pipeline_title = ['ChIP-seq read mapping',
+                        'Histone ChIP-seq 2',
+                        'Histone ChIP-seq 2 (unreplicated)',
+                        'Transcription factor ChIP-seq 2',
+                        'Transcription factor ChIP-seq 2 (unreplicated)']                    
+    for pipeline in pipeline_title:
+        if pipeline in get_pipeline_titles(
+                get_pipeline_objects(files_structure.get('alignments').values())):
+            for filtered_file in files_structure.get('alignments').values():
+                if has_only_raw_files_in_derived_from(filtered_file, files_structure) and \
+                   filtered_file.get('lab') == '/labs/encode-processing-pipeline/' and \
+                   has_no_unfiltered(filtered_file,
+                                     files_structure.get('unfiltered_alignments').values()):
+                    detail = ('Experiment {} contains biological replicate '
+                        '{} with a filtered {} file {}, mapped to '
+                        'a {} assembly, but has no unfiltered '
+                        '{} file.'.format(
+                            audit_link(path_to_text(value['@id']), value['@id']),
+                            filtered_file['biological_replicates'],
+                            filtered_file['output_type'],
+                            audit_link(path_to_text(filtered_file['@id']), filtered_file['@id']),
+                            filtered_file['assembly'],
+                            filtered_file['output_type']
+                        )
+                    ) 
+                    yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
     return
 
 
 def audit_experiment_out_of_date_analysis(value, system, files_structure):
     valid_assay_term_names = [
         'ChIP-seq',
+        'Mint-ChIP-seq',
         'DNase-seq',
         'genetic modification followed by DNase-seq',
     ]
@@ -517,11 +530,13 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                   'transcriptome_alignments']
     for file_type in file_types:
         for bam_file in files_structure.get(file_type).values():
-            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'):  
-                if is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'): 
+                encode4_dnase_pipeline = scanFilesForPipelineTitle_not_chipseq(
+                    [bam_file],['GRCh38', 'mm10'],['DNase-seq pipeline'])
+                if is_outdated_bams_replicate(bam_file, files_structure, assay_name, encode4_dnase_pipeline):
                     assembly_detail = ' '
                     if bam_file.get('assembly'):
-                        assembly_detail = ' for {} assembly '.format(
+                        assembly_detail = ' {} assembly '.format(
                             bam_file['assembly'])
                     detail = ('Experiment {} '
                         '{} file {} mapped to {}'
@@ -550,16 +565,29 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     '''
     if value.get('status') in ['revoked', 'deleted', 'replaced']:
         return
-    if value.get('assay_term_name') not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
-                                            'shRNA knockdown followed by RNA-seq',
-                                            'siRNA knockdown followed by RNA-seq',
-                                            'CRISPRi followed by RNA-seq',
-                                            'CRISPR genome editing followed by RNA-seq',
-                                            'single cell isolation followed by RNA-seq',
-                                            'whole-genome shotgun bisulfite sequencing',
-                                            'genetic modification followed by DNase-seq',
-                                            'microRNA-seq',
-                                            'long read RNA-seq', 'icSHAPE']:
+    if value.get('assay_term_name') not in [
+        'DNase-seq',
+        'RAMPAGE',
+        'RNA-seq',
+        'polyA plus RNA-seq',
+        'polyA minus RNA-seq',
+        'ChIP-seq',
+        'Mint-ChIP-seq',
+        'CAGE',
+        'shRNA knockdown followed by RNA-seq',
+        'siRNA knockdown followed by RNA-seq',
+        'CRISPRi followed by RNA-seq',
+        'CRISPR genome editing followed by RNA-seq',
+        'single-cell RNA sequencing assay',
+        'whole-genome shotgun bisulfite sequencing',
+        'genetic modification followed by DNase-seq',
+        'microRNA-seq',
+        'long read RNA-seq',
+        'small RNA-seq',
+        'icSHAPE',
+        'ATAC-seq',
+        'ChIA-PET'
+    ]:
         return
     if not value.get('original_files'):
         return
@@ -597,13 +625,13 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             '/data-standards/dnase-seq/')
         return
 
-    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
+    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'polyA minus RNA-seq', 'polyA plus RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
                                     'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
-                                    'single cell isolation followed by RNA-seq',
-                                    'microRNA-seq',
+                                    'single-cell RNA sequencing assay',
+                                    'microRNA-seq', 'small RNA-seq',
                                     'icSHAPE', 'long read RNA-seq']:
         yield from check_experiment_rna_seq_standards(
             value,
@@ -613,16 +641,14 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             standards_version)
         return
 
-    if value['assay_term_name'] == 'ChIP-seq':
+    if value['assay_term_name'] in ['ChIP-seq', 'Mint-ChIP-seq']:
         yield from check_experiment_chip_seq_standards(
             value,
             files_structure,
             standards_version)
 
-    if standards_version == 'ENC3' and \
-            value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-
-        yield from check_experiment_wgbs_encode3_standards(
+    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+        yield from check_experiment_wgbs_standards(
             value,
             files_structure,
             organism_name,
@@ -661,14 +687,13 @@ def check_experiment_dnase_seq_standards(experiment,
                                          link_to_standards):
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
-    signal_files = files_structure.get('signal_files').values()
-    assay_term_name = experiment['assay_term_name']
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         alignment_files,
         ['GRCh38', 'mm10'],
         ['DNase-HS pipeline single-end - Version 2',
-         'DNase-HS pipeline paired-end - Version 2'])
+         'DNase-HS pipeline paired-end - Version 2',
+         'DNase-seq pipeline'])
     if pipeline_title is False:
         return
     for f in fastq_files:
@@ -676,168 +701,6 @@ def check_experiment_dnase_seq_standards(experiment,
             f, 36,
             pipeline_title,
             link_to_standards)
-
-    pipelines = get_pipeline_objects(alignment_files)
-
-    if pipelines is not None and len(pipelines) > 0:
-        samtools_flagstat_metrics = get_metrics(alignment_files,
-                                                'SamtoolsFlagstatsQualityMetric',
-                                                desired_assembly)
-
-        if samtools_flagstat_metrics is not None and \
-                len(samtools_flagstat_metrics) > 0:
-            for metric in samtools_flagstat_metrics:
-                if 'mapped' in metric and 'quality_metric_of' in metric:
-                    alignment_file = files_structure.get(
-                        'alignments')[metric['quality_metric_of'][0]]
-                    suffix = ('According to ENCODE standards, conventional '
-                        'DNase-seq profile requires a minimum of 20 million uniquely mapped '
-                        'reads to generate a reliable '
-                        'SPOT (Signal Portion of Tags) score. '
-                        'The recommended value is > 50 million. For deep, foot-printing depth '
-                        'DNase-seq 150-200 million uniquely mapped reads are '
-                        'recommended. (See {} )'.format(
-                            audit_link('ENCODE DNase-seq data standards', link_to_standards)
-                        )
-                    )
-                    if 'assembly' in alignment_file:
-                        detail = ('Alignment file {} produced by {} ( {} ) '
-                            'for {} assembly has {} mapped reads. {}'.format(
-                                audit_link(path_to_text(alignment_file['@id']), alignment_file['@id']),
-                                pipelines[0]['title'],
-                                audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
-                                alignment_file['assembly'],
-                                metric['mapped'],
-                                suffix
-                            )
-                        )
-                    else:
-                        detail = ('Alignment file {} produced by {} ( {} ) '
-                            'has {} mapped reads. {}'.format(
-                                audit_link(path_to_text(alignment_file['@id']), alignment_file['@id']),
-                                pipelines[0]['title'],
-                                audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
-                                metric['mapped'],
-                                suffix
-                            )
-                        )
-                    if 20000000 <= metric['mapped'] < 50000000:
-                        yield AuditFailure('low read depth', detail, level='WARNING')
-                    elif metric['mapped'] < 20000000:
-                        yield AuditFailure('extremely low read depth', detail, level='ERROR')
-        elif alignment_files is not None and len(alignment_files) > 0 and \
-                (samtools_flagstat_metrics is None or
-                 len(samtools_flagstat_metrics) == 0):
-            file_list = []
-            for f in alignment_files:
-                file_list.append(f['@id'])
-            file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-            detail = ('Alignment files ( {} ) produced by {} '
-                '( {} ) lack read depth information.'.format(
-                    ', '.join(file_names_links),
-                    pipelines[0]['title'],
-                    audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id'])
-                )
-            )
-            yield AuditFailure('missing read depth', detail, level='WARNING')
-
-        alignments_assemblies = {}
-        for alignment_file in alignment_files:
-            if 'assembly' in alignment_file:
-                alignments_assemblies[alignment_file['accession']
-                                      ] = alignment_file['assembly']
-
-        # duplication rate audit was removed from v54
-
-        signal_assemblies = {}
-        for signal_file in signal_files:
-            if 'assembly' in signal_file:
-                signal_assemblies[signal_file['accession']
-                                  ] = signal_file['assembly']
-
-        hotspot_quality_metrics = get_metrics(alignment_files,
-                                              'HotspotQualityMetric',
-                                              desired_assembly)
-        if hotspot_quality_metrics is not None and \
-           len(hotspot_quality_metrics) > 0:
-            for metric in hotspot_quality_metrics:
-                if "SPOT1 score" in metric:
-                    file_names = []
-                    file_list = []
-                    for f in metric['quality_metric_of']:
-                        file_names.append(f.split('/')[2])
-                        file_list.append(f)
-                    file_names_string = str(file_names).replace('\'', ' ')
-                    file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ("Signal Portion of Tags (SPOT) is a measure of enrichment, "
-                        "analogous to the commonly used fraction of reads in peaks metric. "
-                        "ENCODE processed alignment files {} produced by {} "
-                        "( {} ) {}"
-                        " have a SPOT1 score of {:.2f}. "
-                        "According to ENCODE standards, "
-                        "SPOT1 score of 0.4 or higher is considered a product of high quality "
-                        "data. "
-                        "Any sample with a SPOT1 score <0.3 should be targeted for replacement "
-                        "with a higher quality sample, and a "
-                        "SPOT1 score of 0.25 is considered minimally acceptable "
-                        "SPOT1 score of 0.25 is considered minimally acceptable "
-                        "for rare and hard to find primary tissues. (See {} )".format(
-                            ', '.join(file_names_links),
-                            pipelines[0]['title'],
-                            audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
-                            assemblies_detail(extract_assemblies(alignments_assemblies, file_names)),
-                            metric["SPOT1 score"],
-                            audit_link('ENCODE DNase-seq data standards', link_to_standards)
-                        )
-                    )
-
-                    if 0.25 <= metric["SPOT1 score"] < 0.4:
-                        yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif metric["SPOT1 score"] < 0.25:
-                        yield AuditFailure('extremely low spot score', detail, level='ERROR')
-
-        if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-            return
-
-        signal_quality_metrics = get_metrics(signal_files,
-                                             'CorrelationQualityMetric',
-                                             desired_assembly)
-        if signal_quality_metrics is not None and \
-           len(signal_quality_metrics) > 0:
-            threshold = 0.9
-            if experiment['replication_type'] == 'anisogenic':
-                threshold = 0.85
-            for metric in signal_quality_metrics:
-                if 'Pearson correlation' in metric:
-                    file_names = []
-                    file_list = []
-                    for f in metric['quality_metric_of']:
-                        file_names.append(f.split('/')[2])
-                        file_list.append(f)
-                    file_names_string = str(file_names).replace('\'', ' ')
-                    file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ('Replicate concordance in DNase-seq expriments is measured by '
-                        'calculating the Pearson correlation between signal quantification '
-                        'of the replicates. '
-                        'ENCODE processed signal files {} produced by {} ( {} ) {} '
-                        'have a Pearson correlation of {:.2f}. '
-                        'According to ENCODE standards, in an {} '
-                        'assay a Pearson correlation value > {} '
-                        'is recommended. (See {} )'.format(
-                            ', '.join(file_names_links),
-                            pipelines[0]['title'],
-                            audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
-                            assemblies_detail(extract_assemblies(signal_assemblies, file_names)),
-                            metric['Pearson correlation'],
-                            experiment['replication_type'],
-                            threshold,
-                            audit_link('ENCODE DNase-seq data standards', link_to_standards)
-                        )
-                    )
-
-                    if metric['Pearson correlation'] < threshold:
-                        yield AuditFailure('insufficient replicate concordance',
-                                           detail, level='NOT_COMPLIANT')
     return
 
 
@@ -853,9 +716,6 @@ def check_experiment_rna_seq_standards(value,
     merged_files_list = list(alignment_files) + list(unfiltered_alignment_files)
     gene_quantifications = files_structure.get(
         'gene_quantifications_files').values()
-    transcript_quantifications = files_structure.get(
-        'transcript_quantifications_files').values()
-    assay_term_name = value['assay_term_name']
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         merged_files_list,
@@ -865,7 +725,8 @@ def check_experiment_rna_seq_standards(value,
          'Small RNA-seq single-end pipeline',
          'RAMPAGE (paired-end, stranded)',
          'microRNA-seq pipeline',
-         'Long read RNA-seq pipeline'])
+         'Long read RNA-seq pipeline',
+         'Bulk RNA-seq'])
     if pipeline_title is False:
         return
 
@@ -875,7 +736,8 @@ def check_experiment_rna_seq_standards(value,
         'Small RNA-seq single-end pipeline': '/data-standards/rna-seq/small-rnas/',
         'RAMPAGE (paired-end, stranded)': '/data-standards/rampage/',
         'microRNA-seq pipeline': '/microrna/microrna-seq/',
-        'Long read RNA-seq pipeline': '/data-standards/long-read-rna-pipeline/'
+        'Long read RNA-seq pipeline': '/data-standards/long-read-rna-pipeline/',
+        'Bulk RNA-seq': '/data-standards/rna-seq/long-rnas/',
     }
 
     for f in fastq_files:
@@ -886,62 +748,8 @@ def check_experiment_rna_seq_standards(value,
         yield from check_file_platform(f, ['OBI:0002024', 'OBI:0000696'])
 
     if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
-                          'RNA-seq of long RNAs (single-end, unstranded)',
-                          'Small RNA-seq single-end pipeline',
-                          'RAMPAGE (paired-end, stranded)']:
-        star_metrics = get_metrics(alignment_files,
-                                   'StarQualityMetric',
-                                   desired_assembly)
-
-        if len(star_metrics) < 1:
-            detail = ('ENCODE experiment {} of {} assay'
-                ', processed by {} pipeline has no read depth'
-                ' containing quality metric associated with it.'.format(
-                    audit_link(path_to_text(value['@id']), value['@id']),
-                    assay_term_name,
-                    pipeline_title
-                )
-            )
-            yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
-
-    alignment_files = get_non_tophat_alignment_files(alignment_files)
-
-    if pipeline_title in ['RAMPAGE (paired-end, stranded)']:
-        upper_limit = 20000000
-        medium_limit = 10000000
-        lower_limit = 1000000
-        yield from check_experiment_cage_rampage_standards(
-            value,
-            fastq_files,
-            alignment_files,
-            pipeline_title,
-            gene_quantifications,
-            desired_assembly,
-            desired_annotation,
-            upper_limit,
-            medium_limit,
-            lower_limit,
-            standards_version,
-            standards_links[pipeline_title])
-    elif pipeline_title in ['Small RNA-seq single-end pipeline']:
-        upper_limit = 30000000
-        medium_limit = 20000000
-        lower_limit = 1000000
-        yield from check_experiment_small_rna_standards(
-            value,
-            fastq_files,
-            alignment_files,
-            pipeline_title,
-            gene_quantifications,
-            desired_assembly,
-            desired_annotation,
-            upper_limit,
-            medium_limit,
-            lower_limit,
-            standards_links[pipeline_title])
-
-    elif pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
-                            'RNA-seq of long RNAs (single-end, unstranded)']:
+                            'RNA-seq of long RNAs (single-end, unstranded)',
+                            'Bulk RNA-seq']:
         upper_limit = 30000000
         medium_limit = 20000000
         lower_limit = 1000000
@@ -957,89 +765,22 @@ def check_experiment_rna_seq_standards(value,
             medium_limit,
             lower_limit,
             standards_links[pipeline_title])
-    elif pipeline_title == 'microRNA-seq pipeline':
-        yield from check_experiment_micro_rna_standards(
-            value,
-            fastq_files,
-            alignment_files,
-            pipeline_title,
-            gene_quantifications,
-            desired_assembly,
-            desired_annotation,
-            standards_links[pipeline_title],
-            upper_limit_reads_mapped=5000000,
-            lower_limit_reads_mapped=3000000,
-            upper_limit_spearman=0.85,
-            lower_limit_spearman=0.8,
-            upper_limit_expressed_mirnas=300,
-            lower_limit_expressed_mirnas=200,
-        )
-    elif pipeline_title == 'Long read RNA-seq pipeline':
-        yield from check_experiment_long_read_rna_standards(
-            value,
-            unfiltered_alignment_files,
-            transcript_quantifications,
-            desired_assembly,
-            desired_annotation,
-            upper_limit_flnc=600000,
-            lower_limit_flnc=400000,
-            upper_limit_mapping_rate=0.9,
-            lower_limit_mapping_rate=0.6,
-            upper_limit_spearman=0.8,
-            lower_limit_spearman=0.6,
-            upper_limit_genes_detected=8000,
-            lower_limit_genes_detected=4000,
-        )
     return
 
-def check_experiment_wgbs_encode3_standards(experiment,
-                                            files_structure,
-                                            organism_name,
-                                            desired_assembly):
 
-    alignment_files = files_structure.get('alignments').values()
+def check_experiment_wgbs_standards(
+    experiment,
+    files_structure,
+    organism_name,
+    desired_assembly
+):
+    experiment_award = experiment.get('award')['rfa']
     fastq_files = files_structure.get('fastq_files').values()
-    cpg_quantifications = files_structure.get('cpg_quantifications').values()
 
     if fastq_files == []:
         return
 
     yield from check_wgbs_read_lengths(fastq_files, organism_name, 130, 100)
-
-    read_lengths = get_read_lengths_wgbs(fastq_files)
-
-    pipeline_title = scanFilesForPipelineTitle_not_chipseq(alignment_files,
-                                                           ['GRCh38', 'mm10'],
-                                                           ['WGBS single-end pipeline - version 2',
-                                                            'WGBS single-end pipeline',
-                                                            'WGBS paired-end pipeline'])
-
-    if pipeline_title is False:
-        return
-
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-        return
-
-    bismark_metrics = get_metrics(
-        cpg_quantifications, 'BismarkQualityMetric', desired_assembly)
-    cpg_metrics = get_metrics(
-        cpg_quantifications, 'CpgCorrelationQualityMetric', desired_assembly)
-
-    samtools_metrics = get_metrics(cpg_quantifications,
-                                   'SamtoolsFlagstatsQualityMetric',
-                                   desired_assembly)
-
-    yield from check_wgbs_coverage(
-        samtools_metrics,
-        pipeline_title,
-        min(read_lengths),
-        organism_name,
-        get_pipeline_objects(alignment_files))
-
-    yield from check_wgbs_pearson(cpg_metrics, 0.8, pipeline_title)
-
-    yield from check_wgbs_lambda(bismark_metrics, 1, pipeline_title)
-
     return
 
 
@@ -1083,8 +824,6 @@ def check_experiment_chip_seq_standards(
         standards_version):
 
     fastq_files = files_structure.get('fastq_files').values()
-    alignment_files = files_structure.get('alignments').values()
-    idr_peaks_files = files_structure.get('preferred_default_idr_peaks').values()
 
     upper_limit_read_length = 50
     medium_limit_read_length = 36
@@ -1095,40 +834,6 @@ def check_experiment_chip_seq_standards(
             upper_limit_read_length,
             medium_limit_read_length,
             lower_limit_read_length)
-
-    pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
-        alignment_files,
-        ['ChIP-seq read mapping',
-            'Transcription factor ChIP-seq pipeline (modERN)']
-    )
-    if pipeline_title is False:
-        return
-
-    organism_name = get_organism_name(
-        reps=experiment['replicates'],
-        excluded_types=[]
-    )  # human/mouse
-    for f in alignment_files:
-        target = get_target(experiment)
-        if target is False and not experiment.get('control_type'):
-            return
-
-        read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
-
-        yield from check_file_chip_seq_read_depth(
-            f,
-            experiment.get('control_type'),
-            organism_name,
-            target,
-            read_depth,
-            standards_version
-        )
-        yield from check_file_chip_seq_library_complexity(f)
-    if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
-        return
-
-    idr_metrics = get_metrics(idr_peaks_files, 'IDRQualityMetric')
-    yield from check_idr(idr_metrics, 2, 2)
     return
 
 
@@ -1145,62 +850,6 @@ def check_experiment_long_rna_standards(experiment,
                                         standards_link):
 
     yield from check_experiment_ERCC_spikeins(experiment, pipeline_title)
-
-    pipelines = get_pipeline_objects(alignment_files)
-    if pipelines is not None and len(pipelines) > 0:
-        for f in alignment_files:
-
-            if 'assembly' in f and f['assembly'] == desired_assembly:
-
-                read_depth = get_file_read_depth_from_alignment(f,
-                                                                get_target(
-                                                                    experiment),
-                                                                'long RNA')
-
-                if experiment['assay_term_name'] in ['shRNA knockdown followed by RNA-seq',
-                                                     'siRNA knockdown followed by RNA-seq',
-                                                     'CRISPRi followed by RNA-seq',
-                                                     'CRISPR genome editing followed by RNA-seq']:
-                    yield from check_file_read_depth(
-                        f, read_depth, 10000000, 10000000, 1000000,
-                        experiment['assay_term_name'],
-                        pipeline_title,
-                        pipelines[0],
-                        standards_link)
-                elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
-                    yield from check_file_read_depth(
-                        f, read_depth, 5000000, 5000000, 500000,
-                        experiment['assay_term_name'],
-                        pipeline_title,
-                        pipelines[0],
-                        standards_link)
-                else:
-                    yield from check_file_read_depth(
-                        f, read_depth,
-                        upper_limit_read_depth,
-                        medium_limit_read_depth,
-                        lower_limit_read_depth,
-                        experiment['assay_term_name'],
-                        pipeline_title,
-                        pipelines[0],
-                        standards_link)
-
-    if 'replication_type' not in experiment:
-        return
-
-    mad_metrics = get_metrics(gene_quantifications,
-                              'MadQualityMetric',
-                              desired_assembly,
-                              desired_annotation)
-
-    if experiment['assay_term_name'] != 'single cell isolation followed by RNA-seq':
-        yield from check_spearman(
-            mad_metrics, experiment['replication_type'],
-            0.9, 0.8, pipeline_title)
-    # for failure in check_mad(mad_metrics, experiment['replication_type'],
-    #                         0.2, pipeline_title):
-    #    yield failure
-
     return
 
 
@@ -1225,36 +874,6 @@ def check_experiment_small_rna_standards(experiment,
                 )
             )
             yield AuditFailure('non-standard run type', detail, level='WARNING')
-    pipelines = get_pipeline_objects(alignment_files)
-    if pipelines is not None and len(pipelines) > 0:
-        for f in alignment_files:
-            if 'assembly' in f and f['assembly'] == desired_assembly:
-                read_depth = get_file_read_depth_from_alignment(f,
-                                                                get_target(
-                                                                    experiment),
-                                                                'small RNA')
-
-                yield from check_file_read_depth(
-                    f, read_depth,
-                    upper_limit_read_depth,
-                    medium_limit_read_depth,
-                    lower_limit_read_depth,
-                    experiment['assay_term_name'],
-                    pipeline_title,
-                    pipelines[0],
-                    standards_link)
-
-    if 'replication_type' not in experiment:
-        return
-
-    mad_metrics = get_metrics(gene_quantifications,
-                              'MadQualityMetric',
-                              desired_assembly,
-                              desired_annotation)
-
-    yield from check_spearman(
-        mad_metrics, experiment['replication_type'],
-        0.9, 0.8, 'Small RNA-seq single-end pipeline')
     return
 
 
@@ -1283,36 +902,6 @@ def check_experiment_cage_rampage_standards(experiment,
                     )
                 )
                 yield AuditFailure('non-standard run type', detail, level='WARNING')
-    pipelines = get_pipeline_objects(alignment_files)
-    if pipelines is not None and len(pipelines) > 0:
-        for f in alignment_files:
-            if 'assembly' in f and f['assembly'] == desired_assembly:
-
-                read_depth = get_file_read_depth_from_alignment(f,
-                                                                get_target(
-                                                                    experiment),
-                                                                experiment['assay_term_name'])
-                yield from check_file_read_depth(
-                    f, read_depth,
-                    upper_limit_read_depth,
-                    middle_limit_read_depth,
-                    lower_limit_read_depth,
-                    experiment['assay_term_name'],
-                    pipeline_title,
-                    pipelines[0],
-                    standards_link)
-
-    if 'replication_type' not in experiment:
-        return
-
-    mad_metrics = get_metrics(gene_quantifications,
-                              'MadQualityMetric',
-                              desired_assembly,
-                              desired_annotation)
-
-    yield from check_spearman(
-        mad_metrics, experiment['replication_type'],
-        0.9, 0.8, 'RAMPAGE (paired-end, stranded)')
     return
 
 
@@ -1321,7 +910,7 @@ def check_experiment_micro_rna_standards(
     fastq_files,
     alignment_files,
     pipeline_title,
-    gene_quantifications,
+    microRNA_quantifications,
     desired_assembly,
     desired_annotation,
     standards_links,
@@ -1338,121 +927,6 @@ def check_experiment_micro_rna_standards(
         yield from check_file_read_length_rna(f, minimum_threshold,
                                                   pipeline_title,
                                                   standards_links)
-    # Gather metrics
-    quantification_metrics = get_metrics(
-        gene_quantifications,
-        'MicroRnaQuantificationQualityMetric',
-        desired_assembly,
-        desired_annotation,
-    )
-    # Desired annotation does not pertain to alignment files
-    alignment_metrics = get_metrics(
-        alignment_files,
-        'MicroRnaMappingQualityMetric',
-        desired_assembly,
-    )
-    correlation_metrics = get_metrics(
-        gene_quantifications,
-        'CorrelationQualityMetric',
-        desired_assembly,
-        desired_annotation,
-    )
-    # Audit Spearman correlations
-    yield from check_replicate_metric_dual_threshold(
-        correlation_metrics,
-        metric_name='Spearman correlation',
-        audit_name='replicate concordance',
-        upper_limit=upper_limit_spearman,
-        lower_limit=lower_limit_spearman,
-    )
-    # Audit flnc read counts
-    yield from check_replicate_metric_dual_threshold(
-        alignment_metrics,
-        metric_name='aligned_reads',
-        audit_name='number of aligned reads',
-        upper_limit=upper_limit_reads_mapped,
-        lower_limit=lower_limit_reads_mapped,
-    )
-    # Audit mapping rate
-    yield from check_replicate_metric_dual_threshold(
-        quantification_metrics,
-        metric_name='expressed_mirnas',
-        audit_name='microRNAs expressed',
-        upper_limit=upper_limit_expressed_mirnas,
-        lower_limit=lower_limit_expressed_mirnas,
-    )
-    return
-
-
-def check_experiment_long_read_rna_standards(
-    experiment,
-    unfiltered_alignment_files,
-    transcript_quantifications,
-    desired_assembly,
-    desired_annotation,
-    upper_limit_flnc,
-    lower_limit_flnc,
-    upper_limit_mapping_rate,
-    lower_limit_mapping_rate,
-    upper_limit_spearman,
-    lower_limit_spearman,
-    upper_limit_genes_detected,
-    lower_limit_genes_detected,
-):
-    # Gather metrics
-    quantification_metrics = get_metrics(
-        transcript_quantifications,
-        'LongReadRnaQuantificationQualityMetric',
-        desired_assembly,
-        desired_annotation,
-    )
-    # Desired annotation does not pertain to alignment files
-    unfiltered_alignment_metrics = get_metrics(
-        unfiltered_alignment_files,
-        'LongReadRnaMappingQualityMetric',
-        desired_assembly,
-    )
-    correlation_metrics = get_metrics(
-        transcript_quantifications,
-        'CorrelationQualityMetric',
-        desired_assembly,
-        desired_annotation,
-    )
-    # Audit Spearman correlations
-    yield from check_replicate_metric_dual_threshold(
-        correlation_metrics,
-        metric_name='Spearman correlation',
-        audit_name='replicate concordance',
-        upper_limit=upper_limit_spearman,
-        lower_limit=lower_limit_spearman,
-    )
-    # Audit flnc read counts
-    yield from check_replicate_metric_dual_threshold(
-        unfiltered_alignment_metrics,
-        metric_name='full_length_non_chimeric_read_count',
-        audit_name='sequencing depth',
-        upper_limit=upper_limit_flnc,
-        lower_limit=lower_limit_flnc,
-        metric_description='full-length non-chimeric (FLNC) read count',
-    )
-    # Audit mapping rate
-    yield from check_replicate_metric_dual_threshold(
-        unfiltered_alignment_metrics,
-        metric_name='mapping_rate',
-        audit_name='mapping rate',
-        upper_limit=upper_limit_mapping_rate,
-        lower_limit=lower_limit_mapping_rate,
-        metric_description='mapping rate',
-    )
-    # Audit gene quantifications
-    yield from check_replicate_metric_dual_threshold(
-        quantification_metrics,
-        metric_name='genes_detected',
-        audit_name='genes detected',
-        upper_limit=upper_limit_genes_detected,
-        lower_limit=lower_limit_genes_detected,
-        metric_description='GENCODE genes detected',
-    )
     return
 
 
@@ -1496,113 +970,6 @@ def check_replicate_metric_dual_threshold(
     return
 
 
-def check_idr(metrics, rescue, self_consistency):
-    for m in metrics:
-        if 'rescue_ratio' in m and 'self_consistency_ratio' in m:
-            rescue_r = m['rescue_ratio']
-            self_r = m['self_consistency_ratio']
-            if rescue_r > rescue and self_r > self_consistency:
-                file_list = []
-                for f in m['quality_metric_of']:
-                    file_list.append(f)
-                file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                detail = ('Replicate concordance in ChIP-seq expriments is measured by '
-                    'calculating IDR values (Irreproducible Discovery Rate). '
-                    'ENCODE processed IDR thresholded peaks files {} '
-                    'have a rescue ratio of {:.2f} and a '
-                    'self consistency ratio of {:.2f}. '
-                    'According to ENCODE standards, having both rescue ratio '
-                    'and self consistency ratio values < 2 is recommended, but '
-                    'having only one of the ratio values < 2 is acceptable.'.format(
-                        ', '.join(file_names_links),
-                        rescue_r,
-                        self_r
-                    )
-                )
-                yield AuditFailure('insufficient replicate concordance', detail,
-                                   level='NOT_COMPLIANT')
-            elif (rescue_r <= rescue and self_r > self_consistency) or \
-                 (rescue_r > rescue and self_r <= self_consistency):
-                file_list = []
-                for f in m['quality_metric_of']:
-                    file_list.append(f)
-                file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                detail = ('Replicate concordance in ChIP-seq expriments is measured by '
-                    'calculating IDR values (Irreproducible Discovery Rate). '
-                    'ENCODE processed IDR thresholded peaks files {} '
-                    'have a rescue ratio of {:.2f} and a '
-                    'self consistency ratio of {:.2f}. '
-                    'According to ENCODE standards, having both rescue ratio '
-                    'and self consistency ratio values < 2 is recommended, but '
-                    'having only one of the ratio values < 2 is acceptable.'.format(
-                        ', '.join(file_names_links),
-                        rescue_r,
-                        self_r
-                    )
-                )
-                yield AuditFailure('borderline replicate concordance', detail,
-                                   level='WARNING')
-    return
-
-
-def check_mad(metrics, replication_type, mad_threshold, pipeline):
-    if replication_type == 'anisogenic':
-        experiment_replication_type = 'anisogenic'
-    elif replication_type == 'isogenic':
-        experiment_replication_type = 'isogenic'
-    else:
-        return
-
-    mad_value = None
-    for m in metrics:
-        if 'MAD of log ratios' in m:
-            mad_value = m['MAD of log ratios']
-            if mad_value > 0.2:
-                file_list = []
-                for f in m['quality_metric_of']:
-                    file_list.append(f['@id'])
-                file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                detail = ('ENCODE processed gene quantification files {} '
-                    'has Median-Average-Deviation (MAD) '
-                    'of replicate log ratios from quantification '
-                    'value of {}.'
-                    ' For gene quantification files from an {}'
-                    ' assay in the {} '
-                    'pipeline, a value <0.2 is recommended, but a value between '
-                    '0.2 and 0.5 is acceptable.'.format(
-                        ', '.join(file_names_links),
-                        mad_value,
-                        experiment_replication_type,
-                        pipeline
-                    )
-                )
-                if experiment_replication_type == 'isogenic':
-                    if mad_value < 0.5:
-                        yield AuditFailure('low replicate concordance', detail,
-                                           level='WARNING')
-                    else:
-                        yield AuditFailure('insufficient replicate concordance', detail,
-                                           level='NOT_COMPLIANT')
-                elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
-                    file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ('ENCODE processed gene quantification files {} '
-                        'has Median-Average-Deviation (MAD) '
-                        'of replicate log ratios from quantification '
-                        'value of {}.'
-                        ' For gene quantification files from an {}'
-                        ' assay in the {} '
-                        'pipeline, a value <0.5 is recommended.'.format(
-                            ', '.join(file_names_links),
-                            mad_value,
-                            experiment_replication_type,
-                            pipeline
-                        )
-                    )
-                    yield AuditFailure('low replicate concordance', detail,
-                                       level='WARNING')
-    return
-
-
 def check_experiment_ERCC_spikeins(experiment, pipeline):
     '''
     The assumption in this functon is that the regular audit will catch anything without spikeins.
@@ -1613,9 +980,7 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
         lib = rep.get('library')
         if lib is None:
             continue
-
-        size_range = lib.get('size_range')
-        if size_range != '>200':
+        if check_library_for_long_fragments(lib) is False:
             continue
 
         ercc_flag = False
@@ -1631,7 +996,7 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                                 ('/files/ENCFF001RTP/' == f) or
                                 ('/files/ENCFF001RTO/' == f and
                                  experiment['assay_term_name'] ==
-                                 'single cell isolation followed by RNA-seq')):
+                                 'single-cell RNA sequencing assay')):
                             ercc_flag = True
 
         if ercc_flag is False:
@@ -1657,645 +1022,6 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                 )
                 yield AuditFailure('missing spikeins',
                                    detail, level='NOT_COMPLIANT')
-    return
-
-
-def check_spearman(metrics, replication_type, isogenic_threshold,
-                   anisogenic_threshold, pipeline):
-
-    if replication_type == 'anisogenic':
-        threshold = anisogenic_threshold
-    elif replication_type == 'isogenic':
-        threshold = isogenic_threshold
-    else:
-        return
-
-    for m in metrics:
-        if 'Spearman correlation' in m:
-            spearman_correlation = m['Spearman correlation']
-            if spearman_correlation < threshold:
-                file_names = []
-                for f in m['quality_metric_of']:
-                    file_names.append(f)
-                file_names_links = [audit_link(path_to_text(f), f) for f in file_names]
-                detail = ('Replicate concordance in RNA-seq expriments is measured by '
-                    'calculating the Spearman correlation between gene quantifications '
-                    'of the replicates. '
-                    'ENCODE processed gene quantification files {} '
-                    'have a Spearman correlation of {:.2f}. '
-                    'According to ENCODE standards, in an {} '
-                    'assay analyzed using the {} pipeline, '
-                    'a Spearman correlation value > {} '
-                    'is recommended.'.format(
-                        ', '.join(file_names_links),
-                        spearman_correlation,
-                        replication_type,
-                        pipeline,
-                        threshold
-                    )
-                )
-                yield AuditFailure('low replicate concordance', detail,
-                                   level='WARNING')
-    return
-
-
-def check_file_chip_seq_library_complexity(alignment_file):
-    '''
-    An alignment file from the ENCODE ChIP-seq processing pipeline
-    should have minimal library complexity in accordance with the criteria
-    '''
-    if alignment_file['output_type'] == 'transcriptome alignments':
-        return
-
-    if alignment_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
-        return
-
-    if ('quality_metrics' not in alignment_file) or (alignment_file.get('quality_metrics') == []):
-        return
-
-    nrf_detail = ('NRF (Non Redundant Fraction) is equal to the result of the '
-        'division of the number of reads after duplicates removal by '
-        'the total number of reads. '
-        'An NRF value in the range 0 - 0.5 is poor complexity, '
-        '0.5 - 0.8 is moderate complexity, '
-        'and > 0.8 high complexity. NRF value > 0.8 is recommended, '
-        'but > 0.5 is acceptable. ')
-
-    pbc1_detail = ('PBC1 (PCR Bottlenecking Coefficient 1, M1/M_distinct) '
-        'is the ratio of the number of genomic '
-        'locations where exactly one read maps uniquely (M1) to the number of '
-        'genomic locations where some reads map (M_distinct). '
-        'A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 '
-        'is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 '
-        'is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is '
-        'acceptable. ')
-
-    pbc2_detail = ('PBC2 (PCR Bottlenecking Coefficient 2, M1/M2) is the ratio of the number of '
-        'genomic locations where exactly one read maps uniquely (M1) to the number of genomic '
-        'locations where two reads map uniquely (M2). '
-        'A PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 '
-        'is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is '
-        'no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable. ')
-
-    quality_metrics = alignment_file.get('quality_metrics')
-    for metric in quality_metrics:
-
-        if 'NRF' in metric:
-            NRF_value = float(metric['NRF'])
-            detail = ('{} ENCODE processed {} file {} '
-                'was generated from a library with '
-                'NRF value of {:.2f}.'.format(
-                    nrf_detail,
-                    alignment_file['output_type'],
-                    audit_link(path_to_text(alignment_file['@id']), alignment_file['@id']),
-                    NRF_value
-                )
-            )
-            if NRF_value < 0.5:
-                yield AuditFailure('poor library complexity', detail,
-                                   level='NOT_COMPLIANT')
-            elif NRF_value >= 0.5 and NRF_value < 0.8:
-                yield AuditFailure('moderate library complexity', detail,
-                                   level='WARNING')
-        if 'PBC1' in metric:
-            PBC1_value = float(metric['PBC1'])
-            detail = ('{} ENCODE processed {} file {} '
-                'was generated from a library with PBC1 value of {:.2f}.'.format(
-                    pbc1_detail,
-                    alignment_file['output_type'],
-                    audit_link(path_to_text(alignment_file['@id']), alignment_file['@id']),
-                    PBC1_value
-                )
-            )
-            if PBC1_value < 0.5:
-                yield AuditFailure('severe bottlenecking', detail,
-                                   level='NOT_COMPLIANT')
-            elif PBC1_value >= 0.5 and PBC1_value < 0.9:
-                yield AuditFailure('mild to moderate bottlenecking', detail,
-                                   level='WARNING')
-        if 'PBC2' in metric:
-            PBC2_raw_value = metric['PBC2']
-            if PBC2_raw_value == 'Infinity':
-                PBC2_value = float('inf')
-            else:
-                PBC2_value = float(metric['PBC2'])
-            detail = ('{} ENCODE processed {} file {} '
-                'was generated from a library with PBC2 value of {:.2f}.'.format(
-                    pbc2_detail,
-                    alignment_file['output_type'],
-                    audit_link(path_to_text(alignment_file['@id']), alignment_file['@id']),
-                    PBC2_value
-                )
-            )
-            if PBC2_value < 1: 
-                yield AuditFailure('severe bottlenecking', detail,
-                                   level='NOT_COMPLIANT')
-            elif PBC2_value >= 1 and PBC2_value < 10:
-                yield AuditFailure('mild to moderate bottlenecking', detail,
-                                   level='WARNING')
-    return
-
-
-def check_wgbs_coverage(samtools_metrics,
-                        pipeline_title,
-                        read_length,
-                        organism,
-                        pipeline_objects):
-    for m in samtools_metrics:
-        if 'mapped' in m:
-            mapped_reads = m['mapped']
-            if organism == 'mouse':
-                coverage = float(mapped_reads * read_length) / 2800000000.0
-            elif organism == 'human':
-                coverage = float(mapped_reads * read_length) / 3300000000.0
-            detail = ('Replicate of experiment processed by {} ( {} ) '
-                'has a coverage of {}X. '
-                'The minimum ENCODE standard coverage for each replicate in '
-                'a WGBS assay is 25X and the recommended value '
-                'is > 30X (See {} )'.format(
-                    pipeline_title,
-                    audit_link(path_to_text(pipeline_objects[0]['@id']), pipeline_objects[0]['@id']),
-                    int(coverage),
-                    audit_link('ENCODE WGBS data standards', '/data-standards/wgbs/')
-                )
-            )
-            if coverage < 5:
-                yield AuditFailure('extremely low coverage',
-                                   detail,
-                                   level='ERROR')
-            elif coverage < 25:
-                yield AuditFailure('insufficient coverage',
-                                   detail,
-                                   level='NOT_COMPLIANT')
-            elif coverage < 30:
-                yield AuditFailure('low coverage',
-                                   detail,
-                                   level='WARNING')
-    return
-
-
-def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
-    for m in cpg_metrics:
-        if 'Pearson Correlation Coefficient' in m:
-            if m['Pearson Correlation Coefficient'] < threshold:
-                detail = ('ENCODE experiment processed by {} '
-                    'pipeline has CpG quantification Pearson Correlation Coefficient of '
-                    '{}, while a value >={} is required.'.format(
-                        pipeline_title,
-                        m['Pearson Correlation Coefficient'],
-                        threshold
-                    )
-                )
-                yield AuditFailure('insufficient replicate concordance',
-                                   detail,
-                                   level='NOT_COMPLIANT')
-    return
-
-
-def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
-    for metric in bismark_metrics:
-        cpg_string = metric.get('lambda C methylated in CpG context')
-        chg_string = metric.get('lambda C methylated in CHG context')
-        chh_string = metric.get('lambda C methylated in CHH context')
-        if (cpg_string and chg_string and chh_string):
-            lambdaCpG = float(cpg_string[:-1])
-            lambdaCHG = float(chg_string[:-1])
-            lambdaCHH = float(chh_string[:-1])
-            if (lambdaCpG > 1 and lambdaCHG > 1 and lambdaCHH > 1) or \
-            (((lambdaCpG * 0.25) + (lambdaCHG * 0.25) + (lambdaCHH * 0.5)) > 1):
-                detail = ('ENCODE experiment processed by {} '
-                    'pipeline has the following %C methylated in different contexts. '
-                    'lambda C methylated in CpG context was {}%, '
-                    'lambda C methylated in CHG context was {}%, '
-                    'lambda C methylated in CHH context was {}%. '
-                    'The %C methylated in all contexts should be < 1%.'.format(
-                        pipeline_title,
-                        lambdaCpG,
-                        lambdaCHG,
-                        lambdaCHH
-                    )
-                )
-                yield AuditFailure('high lambda C methylation ratio', detail,
-                                   level='WARNING')
-
-
-def check_file_chip_seq_read_depth(file_to_check,
-                                   control_type,
-                                   organism_name,
-                                   target,
-                                   read_depth,
-                                   standards_version):
-    # added individual file pipeline validation due to the fact that one experiment may
-    # have been mapped using 'Raw mapping' and also 'Histone ChIP-seq' - and there is no need to
-    # check read depth on Raw files, while it is required for Histone
-    pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
-        [file_to_check],
-        ['ChIP-seq read mapping',
-         'Transcription factor ChIP-seq pipeline (modERN)'])
-
-    if pipeline_title is False:
-        return
-    pipeline_objects = get_pipeline_objects([file_to_check])
-
-    marks = pipelines_with_read_depth['ChIP-seq read mapping']
-    modERN_cutoff = pipelines_with_read_depth[
-        'Transcription factor ChIP-seq pipeline (modERN)']
-    if read_depth is False:
-        detail = ('ENCODE processed {} file {} has no read depth information.'.format(
-            file_to_check['output_type'],
-            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])
-            )
-        )
-        yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
-        return
-
-    if target is not False and 'name' in target:
-        target_name = target['name']
-    elif control_type:
-        target_name = control_type
-    else:
-        return
-
-    if target is not False and 'investigated_as' in target:
-        target_investigated_as = target['investigated_as']
-    elif control_type:
-        target_investigated_as = [control_type]
-    else:
-        return
-
-    if control_type == 'input library' and organism_name in ['human', 'mouse']:
-        if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
-            if read_depth < modERN_cutoff:
-                detail = ('modERN processed alignment file {} has {} '
-                    'usable fragments. It cannot be used as a control '
-                    'in experiments studying transcription factors, which '
-                    'require {} usable fragments, according to '
-                    'the standards defined by the modERN project.'.format(
-                        audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                        read_depth,
-                        modERN_cutoff
-                    )
-                )
-                yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
-        else:
-            if read_depth >= marks['narrow']['recommended'] and read_depth < marks['broad']['recommended']:
-                if 'assembly' in file_to_check:
-                    detail = ('Control {} file {} mapped using {} assembly has {} '
-                        'usable fragments. '
-                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad '
-                        'histone marks '
-                        'is 20 million usable fragments, the recommended number of usable '
-                        'fragments is > 45 million. (See {} )'.format(
-                            file_to_check['output_type'],
-                            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                            file_to_check['assembly'],
-                            read_depth,
-                            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                        )
-                    )
-                else:
-                    detail = ('Control {} file {} has {} '
-                        'usable fragments. '
-                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad '
-                        'histone marks '
-                        'is 20 million usable fragments, the recommended number of usable '
-                        'fragments is > 45 million. (See {} )'.format(
-                            file_to_check['output_type'],
-                            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                            read_depth,
-                            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                        )
-                    )
-                yield AuditFailure('insufficient read depth for broad peaks control', detail, level='INTERNAL_ACTION')
-            if read_depth < marks['narrow']['recommended']:
-                if 'assembly' in file_to_check:
-                    detail = ('Control {} file {} mapped using {} assembly has {} '
-                        'usable fragments. '
-                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad '
-                        'histone marks '
-                        'is 20 million usable fragments, the recommended number of usable '
-                        'fragments is > 45 million. '
-                        'The minimum for a control of ChIP-seq assays targeting narrow '
-                        'histone marks or transcription factors '
-                        'is 10 million usable fragments, the recommended number of usable '
-                        'fragments is > 20 million. (See {} )'.format(
-                            file_to_check['output_type'],
-                            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                            file_to_check['assembly'],
-                            read_depth,
-                            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                        )
-                    )
-                else:
-                    detail = ('Control {} file {} has {} '
-                        'usable fragments. '
-                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad '
-                        'histone marks '
-                        'is 20 million usable fragments, the recommended number of usable '
-                        'fragments is > 45 million. '
-                        'The minimum for a control of ChIP-seq assays targeting narrow '
-                        'histone marks or transcription factors '
-                        'is 10 million usable fragments, the recommended number of usable '
-                        'fragments is > 20 million. (See {} )'.format(
-                            file_to_check['output_type'],
-                            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                            read_depth.
-                            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                        )
-                    )
-                if read_depth >= marks['narrow']['minimal']:
-                    yield AuditFailure('low read depth', detail, level='WARNING')
-                elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
-                    yield AuditFailure('insufficient read depth',
-                                       detail, level='NOT_COMPLIANT')
-                else:
-                    yield AuditFailure('extremely low read depth',
-                                       detail, level='ERROR')
-    elif 'broad histone mark' in target_investigated_as and \
-            standards_version != 'modERN':  # target_name in broad_peaks_targets:
-        pipeline_object = get_pipeline_by_name(
-            pipeline_objects, 'ChIP-seq read mapping')
-        if pipeline_object:
-            if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
-                if read_depth < marks['broad']['recommended']:
-                    if 'assembly' in file_to_check:
-                        detail = ('Processed {} file {} produced by {} '
-                            'pipeline ( {} ) using the {} assembly '
-                            'has {} mapped reads. '
-                            'The minimum ENCODE standard for each replicate in a ChIP-seq '
-                            'experiment targeting {} and investigated as '
-                            'a broad histone mark is 35 million mapped reads. '
-                            'The recommended value is > 45 million, but > 35 million is '
-                            'acceptable. (See {} )'.format(
-                                file_to_check['output_type'],
-                                audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                                pipeline_object['title'],
-                                audit_link(path_to_text(pipeline_object['@id']), pipeline_object['@id']),
-                                file_to_check['assembly'],
-                                read_depth,
-                                target_name,
-                                audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                            )
-                        )
-                    else:
-                        detail = ('Processed {} file {} produced by {} '
-                            'pipeline ( {} ) has {} mapped reads. '
-                            'The minimum ENCODE standard for each replicate in a ChIP-seq '
-                            'experiment targeting {} and investigated as '
-                            'a broad histone mark is 35 million mapped reads. '
-                            'The recommended value is > 45 million, but > 35 million is '
-                            'acceptable. (See {} )'.format(
-                                file_to_check['output_type'],
-                                audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                                pipeline_object['title'],
-                                audit_link(path_to_text(pipeline_object['@id']), pipeline_object['@id']),
-                                read_depth,
-                                target_name,
-                                audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                            )
-                        )
-                    if read_depth >= marks['broad']['minimal']:
-                        yield AuditFailure('low read depth',
-                                           detail, level='WARNING')
-                    elif read_depth >= 100 and read_depth < marks['broad']['minimal']:
-                        yield AuditFailure('insufficient read depth',
-                                           detail, level='NOT_COMPLIANT')
-                    elif read_depth < 100:
-                        yield AuditFailure('extremely low read depth',
-                                           detail, level='ERROR')
-            else:
-                if 'assembly' in file_to_check:
-                    detail = ('Processed {} file {} produced by {} '
-                        'pipeline ( {} ) using the {} assembly '
-                        'has {} usable fragments. '
-                        'The minimum ENCODE standard for each replicate in a ChIP-seq '
-                        'experiment targeting {} and investigated as '
-                        'a broad histone mark is 20 million usable fragments. '
-                        'The recommended value is > 45 million, but > 35 million is '
-                        'acceptable. (See {} )'.format(
-                            file_to_check['output_type'],
-                            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                            pipeline_object['title'],
-                            audit_link(path_to_text(pipeline_object['@id']), pipeline_object['@id']),
-                            file_to_check['assembly'],
-                            read_depth,
-                            target_name,
-                            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                        )
-                    )
-                else:
-                    detail = ('Processed {} file {} produced by {} '
-                        'pipeline ( {} ) has {} usable fragments. '
-                        'The minimum ENCODE standard for each replicate in a ChIP-seq '
-                        'experiment targeting {} and investigated as '
-                        'a broad histone mark is 20 million usable fragments. '
-                        'The recommended value is > 45 million, but > 35 million is '
-                        'acceptable. (See {} )'.format(
-                            file_to_check['output_type'],
-                            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                            pipeline_object['title'],
-                            audit_link(path_to_text(pipeline_object['@id']), pipeline_object['@id']),
-                            read_depth,
-                            target_name,
-                            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                        )
-                    )
-
-                if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
-                    yield AuditFailure('low read depth',
-                                       detail, level='WARNING')
-                elif read_depth < marks['broad']['minimal'] and read_depth >= marks['broad']['low']:
-                    yield AuditFailure('insufficient read depth',
-                                       detail, level='NOT_COMPLIANT')
-                elif read_depth < marks['broad']['low']:
-                    yield AuditFailure('extremely low read depth',
-                                       detail, level='ERROR')
-    elif 'narrow histone mark' in target_investigated_as and \
-            standards_version != 'modERN':
-        pipeline_object = get_pipeline_by_name(
-            pipeline_objects, 'ChIP-seq read mapping')
-        if pipeline_object:
-            if 'assembly' in file_to_check:
-                detail = ('Processed {} file {} produced by {} '
-                    'pipeline ( {} ) using the {} assembly '
-                    'has {} usable fragments. '
-                    'The minimum ENCODE standard for each replicate in a ChIP-seq '
-                    'experiment targeting {} and investigated as '
-                    'a narrow histone mark is 10 million usable fragments. '
-                    'The recommended value is > 20 million, but > 10 million is '
-                    'acceptable. (See {} )'.format(
-                        file_to_check['output_type'],
-                        audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                        pipeline_object['title'],
-                        audit_link(path_to_text(pipeline_object['@id']), pipeline_object['@id']),
-                        file_to_check['assembly'],
-                        read_depth,
-                        target_name,
-                        audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                    )
-                )
-            else:
-                detail = ('Processed {} file {} produced by {} '
-                    'pipeline ( {} ) has {} usable fragments. '
-                    'The minimum ENCODE standard for each replicate in a ChIP-seq '
-                    'experiment targeting {} and investigated as '
-                    'a narrow histone mark is 10 million usable fragments. '
-                    'The recommended value is > 20 million, but > 10 million is '
-                    'acceptable. (See {} )'.format(
-                        file_to_check['output_type'],
-                        audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                        pipeline_object['title'],
-                        audit_link(path_to_text(pipeline_object['@id']), pipeline_object['@id']),
-                        read_depth,
-                        target_name,
-                        audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                    )
-                )
-            if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
-                yield AuditFailure('low read depth', detail, level='WARNING')
-            elif read_depth < marks['narrow']['minimal'] and read_depth >= marks['narrow']['low']:
-                yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
-            elif read_depth < marks['narrow']['low']:
-                yield AuditFailure('extremely low read depth',
-                                   detail, level='ERROR')
-    else:
-        if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
-            if read_depth < modERN_cutoff:
-                detail = ('modERN processed alignment file {} has {} '
-                    'usable fragments. Replicates for ChIP-seq '
-                    'assays and target {} '
-                    'investigated as transcription factor require ' 
-                    '{} usable fragments, according to '
-                    'the standards defined by the modERN project.'.format(
-                        audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                        read_depth,
-                        target_name,
-                        modERN_cutoff
-                    )
-                )
-                yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
-        else:
-            pipeline_object = get_pipeline_by_name(pipeline_objects,
-                                                   'ChIP-seq read mapping')
-            if pipeline_object:
-                if 'assembly' in file_to_check:
-                    detail = ('Processed {} file {} produced by {} '
-                        'pipeline ( {} ) using the {} assembly has {} '
-                        'usable fragments. '
-                        'The minimum ENCODE standard for each replicate in a ChIP-seq '
-                        'experiment targeting {} and investigated as '
-                        'a transcription factor is 10 million usable fragments. '
-                        'The recommended value is > 20 million, but > 10 million is '
-                        'acceptable. (See {} )'.format(
-                            file_to_check['output_type'],
-                            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                            pipeline_object['title'],
-                            audit_link(path_to_text(pipeline_object['@id']), pipeline_object['@id']),
-                            file_to_check['assembly'],
-                            read_depth,
-                            target_name,
-                            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                        )
-                    )
-                else:
-                    detail = ('Processed {} file {} roduced by {} '
-                        'pipeline ( {} ) has {} usable fragments. '
-                        'The minimum ENCODE standard for each replicate in a ChIP-seq '
-                        'experiment targeting {} and investigated as '
-                        'a transcription factor is 10 million usable fragments. '
-                        'The recommended value is > 20 million, but > 10 million is '
-                        'acceptable. (See {} )'.format(
-                            file_to_check['output_type'],
-                            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                            pipeline_object['title'],
-                            audit_link(path_to_text(pipeline_object['@id']), pipeline_object['@id']),
-                            read_depth,
-                            target_name,
-                            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-                        )
-                    )
-                if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
-                    yield AuditFailure('low read depth', detail, level='WARNING')
-                elif read_depth < marks['TF']['minimal'] and read_depth >= marks['TF']['low']:
-                    yield AuditFailure('insufficient read depth',
-                                       detail, level='NOT_COMPLIANT')
-                elif read_depth < marks['TF']['low']:
-                    yield AuditFailure('extremely low read depth',
-                                       detail, level='ERROR')
-    return
-
-
-def check_file_read_depth(file_to_check,
-                          read_depth,
-                          upper_threshold,
-                          middle_threshold,
-                          lower_threshold,
-                          assay_term_name,
-                          pipeline_title,
-                          pipeline,
-                          standards_link):
-    if read_depth is False:
-        detail = ('Processed {} file {} has no read depth information.'.format(
-            file_to_check['output_type'],
-            audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])
-            )
-        )
-        yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
-        return
-
-    if read_depth is not False:
-        second_half_of_detail = ('The minimum ENCODE standard for each replicate in a '
-            '{} assay is {} aligned reads. '
-            'The recommended value is > {}. '
-            '(See {} )'.format(
-                assay_term_name,
-                middle_threshold,
-                upper_threshold,
-                audit_link(('ENCODE ' + assay_term_name + ' data standards'), standards_link)
-            )
-        )
-        if middle_threshold == upper_threshold:
-            second_half_of_detail = ('The minimum ENCODE standard for each replicate in a '
-                '{} assay is {} aligned reads. (See {} )'.format(
-                    assay_term_name,
-                    middle_threshold,
-                    audit_link(('ENCODE ' + assay_term_name + ' data standards'), standards_link)
-                )
-            )
-        if 'assembly' in file_to_check:
-            detail = ('Processed {} file {} produced by {} '
-                'pipeline ( {} ) using the {} assembly has {} aligned reads. {}'.format(
-                    file_to_check['output_type'],
-                    audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                    pipeline_title,
-                    audit_link(path_to_text(pipeline['@id']), pipeline['@id']),
-                    file_to_check['assembly'],
-                    read_depth,
-                    second_half_of_detail
-                )
-            )
-        else:
-            detail = ('Processed {} file {} produced by {} '
-                'pipeline ( {} ) has {} aligned reads. {}'.format(
-                    file_to_check['output_type'],
-                    audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                    pipeline_title,
-                    audit_link(path_to_text(pipeline['@id']), pipeline['@id']),
-                    read_depth,
-                    second_half_of_detail
-                )
-            )
-        if read_depth >= middle_threshold and read_depth < upper_threshold:
-            yield AuditFailure('low read depth', detail, level='WARNING')
-        elif read_depth >= lower_threshold and read_depth < middle_threshold:
-            yield AuditFailure('insufficient read depth', detail,
-                               level='NOT_COMPLIANT')
-        elif read_depth < lower_threshold:
-            yield AuditFailure('extremely low read depth', detail,
-                               level='ERROR')
     return
 
 
@@ -2541,7 +1267,8 @@ def audit_experiment_status(value, system, files_structure):
             if assay_term_name in [
                     'DNase-seq',
                     'genetic modification followed by DNase-seq',
-                    'ChIP-seq']:
+                    'ChIP-seq',
+                    'Mint-ChIP-seq']:
                 replicates_reads = bio_rep_reads
                 part_of_detail = 'biological replicate'
 
@@ -2571,12 +1298,6 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
 
     assay_term_name = value.get('assay_term_name')
 
-    if assay_term_name not in [
-            'ChIP-seq',
-            'DNase-seq',
-            'genetic modification followed by DNase-seq']:
-        return
-
     replicate_pairing_statuses = {}
     replicate_read_lengths = {}
 
@@ -2591,7 +1312,7 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                     file_object['read_length'])
 
             # run type consistency is relevant only for ChIP-seq
-            if assay_term_name == 'ChIP-seq' and 'run_type' in file_object:
+            if assay_term_name in ['Mint-ChIP-seq', 'ChIP-seq'] and 'run_type' in file_object:
                 if bio_rep_number not in replicate_pairing_statuses:
                     replicate_pairing_statuses[bio_rep_number] = set()
                 replicate_pairing_statuses[bio_rep_number].add(
@@ -2653,7 +1374,7 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                                        detail, level='WARNING')
 
     # run type consistency is relevant only for ChIP-seq
-    if assay_term_name == 'ChIP-seq':  
+    if assay_term_name in ['Mint-ChIP-seq', 'ChIP-seq']:
         for key in replicate_pairing_statuses:
             if len(replicate_pairing_statuses[key]) > 1:
                 detail = ('Biological replicate {} '
@@ -2776,18 +1497,14 @@ def audit_experiment_replicated(value, system, excluded_types):
     if value['status'] not in ['released', 'submitted']:
         return
     '''
-    Excluding single cell experiments
-    '''
-    if value['biosample_ontology']['classification'] == 'single cell':
-        return
-    '''
     Excluding single cell isolation experiments from the replication requirement
     Excluding RNA-bind-and-Seq from the replication requirment
     Excluding genetic modification followed by DNase-seq from the replication requirement
     '''
-    if value['assay_term_name'] in ['single cell isolation followed by RNA-seq',
+    if value['assay_term_name'] in ['single-cell RNA sequencing assay',
                                     'RNA Bind-n-Seq',
-                                    'genetic modification followed by DNase-seq']:
+                                    'genetic modification followed by DNase-seq',
+                                    'long read single-cell RNA-seq']:
         return
     '''
     Excluding GTEX experiments from the replication requirement
@@ -2802,12 +1519,45 @@ def audit_experiment_replicated(value, system, excluded_types):
     for rep in value['replicates']:
         num_bio_reps.add(rep['biological_replicate_number'])
 
-    if len(num_bio_reps) <= 1:
-        # different levels of severity for different rfas
+    if len(num_bio_reps) == 0:
         detail = ('This experiment is expected to be replicated, but '
-            'contains only one listed biological replicate.')
+            'currently does not have any replicates associated with it.')
         yield AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+
+    if len(num_bio_reps) == 1:
+        '''
+        Excluding single cell experiments
+        '''
+        if value['assay_term_name'] in ['single-cell RNA sequencing assay', 'single-nucleus ATAC-seq']:
+            return
+        # different levels of severity for different biosample classifications
+        else:
+            detail = ('This experiment is expected to be replicated, but '
+                'contains only one listed biological replicate.')
+            level='NOT_COMPLIANT'
+            if value['biosample_ontology']['classification'] in ['tissue', 'primary cell']:
+                level='INTERNAL_ACTION'
+            yield AuditFailure('unreplicated experiment', detail, level)
     return
+
+
+def audit_experiment_single_cell_libraries(value, system, excluded_types):
+    if value['assay_term_name'] not in ['single-cell RNA sequencing assay', 'single-nucleus ATAC-seq']:
+        if value['status'] in ['deleted', 'replaced', 'revoked']:
+            return
+        if len(value['replicates']) == 0:
+            return
+        for rep in value['replicates']:
+            library = rep.get('library', {})
+            barcode_details = library.get('barcode_details')
+            if barcode_details:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has '
+                    f'a library {audit_link(path_to_text(library["@id"]),library["@id"])} '
+                    f'that specifies barcode_details, which should only be specified on libraries '
+                    f'from single cell experiments.'
+                )
+                yield AuditFailure('inconsistent barcode details', detail, level='WARNING')
 
 
 def audit_experiment_replicates_with_no_libraries(value, system, excluded_types):
@@ -2830,6 +1580,11 @@ def audit_experiment_replicates_with_no_libraries(value, system, excluded_types)
 def audit_experiment_isogeneity(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+    if 'replicates' in value:
+        for rep in value['replicates']:
+            if 'library' in rep:
+                if 'mixed_biosamples' in rep['library']:
+                    return
     if value.get('replication_type') is None:
         detail = ('In experiment {} the replication_type'
             ' cannot be determined'.format(
@@ -2918,7 +1673,7 @@ def audit_experiment_technical_replicates_same_library(value, system, excluded_t
 
 
 def audit_experiment_tagging_genetic_modification(value, system, excluded_types):
-    if check_award_condition(value, ["ENCODE4"]):
+    if check_award_condition(value, ["ENCODE4"]) and value.get('assay_term_name') == 'ChIP-seq':
         level = 'ERROR'
     else:
         level = 'WARNING'
@@ -2942,8 +1697,7 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                 modification['purpose'] == 'tagging' and
                 not modification.get('characterizations')):
                     detail = ('Genetic modification {} performed for the '
-                        'purpose of {} is missing validating characterization '
-                        'that is required by ENCODE4 standards.'.format(
+                        'purpose of {} is missing validating characterization.'.format(
                             audit_link(path_to_text(modification['@id']), modification['@id']),
                             modification['purpose']
                         )
@@ -2951,7 +1705,8 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                     yield AuditFailure(
                         'missing genetic modification characterization',
                         detail,
-                        level)
+                        level
+                    )
 
 
 def is_tagging_genetic_modification(modification):
@@ -2961,49 +1716,204 @@ def is_tagging_genetic_modification(modification):
 
 
 def audit_experiment_biosample_characterization(value, system, excluded_types):
-    detail = ''
-    no_characterizations = False
-    if 'replicates' in value:
+    missing_characterizations = []
+    characterization_status = {}
+    needs_characterization_flags = []
+    ontology = ''
+    # First check and collect necessary biosample characterizations
+    for rep in value.get('replicates', []):
+        if rep['status'] in excluded_types:
+            continue
+        if 'library' not in rep or rep['library']['status'] in excluded_types:
+            continue
+        if (
+            'biosample' not in rep['library']
+            or rep['library']['biosample']['status'] in excluded_types
+        ):
+            continue
+        biosample = rep['library']['biosample']
+        ontology = biosample['biosample_ontology']['@id']
         needs_characterization_flag = False
-        for rep in value['replicates']:
-            if (rep['status'] not in excluded_types and
-                'library' in rep and
-                rep['library']['status'] not in excluded_types and
-                'biosample' in rep['library'] and
-                rep['library']['biosample']['status'] not in excluded_types):
-                
-                biosample = rep['library']['biosample']
-                modifications = biosample.get('applied_modifications')
-                biosample_characterizations = biosample.get('characterizations')
-                if (modifications and 
-                    biosample_characterizations):
-                    return
-                elif (modifications and 
-                    not biosample_characterizations):
-                    for mod in modifications:
-                        if is_tagging_genetic_modification(mod):
-                            needs_characterization_flag = True
-                    no_characterizations = True
-                    mods = []
-                    for mod in modifications:
-                        mods.append(mod['@id'])
-                    mods_link = [audit_link(path_to_text(mod), mod) for mod in mods]
-                    detail += ('Biosample {} which has been modified by genetic modification {} '
-                        'is missing characterization validating the modification, '.format(
-                            audit_link(path_to_text(biosample['@id']), biosample['@id']),
-                            ', '.join(mods_link)
-                        )
-                    )
-        if check_award_condition(value, ["ENCODE4"]) and needs_characterization_flag:
-            level = 'ERROR'
-        else:
-            level = 'WARNING'
-        if no_characterizations:
-            detail = 'B' + detail[1:-2] + '.'
+        modifications = biosample.get('applied_modifications')
+        if not modifications:
+            needs_characterization_flags.append(needs_characterization_flag)
+            continue
+        mods = []
+        for mod in modifications:
+            mods.append(mod['@id'])
+            if is_tagging_genetic_modification(mod):
+                needs_characterization_flag = True
+        needs_characterization_flags.append(needs_characterization_flag)
+        sample_characterization_status = {}
+        for characterization in biosample.get('characterizations', []):
+            status = characterization.get('review', {}).get('status')
+            sample_characterization_status.setdefault(status, [])
+            sample_characterization_status[status].append(biosample['@id'])
+        # Check immediate parent of biosample for characterizations, via part_of or originated_from
+        # The parent biosample must match the child ontology, treatments, and applied modifications
+        if not sample_characterization_status:
+            child_mods = sorted(mods)
+            child_treatments = sorted(biosample.get('treatments', []))
+            relationship = ''
+            part_of_biosample = biosample.get('part_of', [])
+            originated_from_biosample = biosample.get('originated_from', [])
+            if (
+                part_of_biosample
+                and part_of_biosample.get('characterizations')
+            ):
+                part_ontology = part_of_biosample.get('biosample_ontology')
+                part_mods = sorted(part_of_biosample.get('applied_modifications', []))
+                part_treatments = sorted(part_of_biosample.get('treatments', []))
+                if (
+                    part_ontology == ontology
+                    and part_mods == child_mods
+                    and part_treatments == child_treatments
+                ):
+                    relationship = 'part_of'
+            elif (
+                originated_from_biosample
+                and originated_from_biosample.get('characterizations')
+            ):
+                orig_ontology = originated_from_biosample.get('biosample_ontology')
+                orig_mods = sorted(originated_from_biosample.get('applied_modifications', []))
+                orig_treatments = sorted(originated_from_biosample.get('treatments', []))
+                if (
+                    orig_ontology == ontology
+                    and orig_mods == child_mods
+                    and orig_treatments == child_treatments
+                ):
+                    relationship = 'originated_from'
+            if relationship != '':
+                parent_characterization_status = {
+                    c.get('review', {}).get('status')
+                    for c in biosample.get(relationship).get('characterizations')
+                }
+                if 'not compliant' in parent_characterization_status:
+                    sample_characterization_status['not compliant'] = [
+                        biosample['@id']
+                    ]
+                elif None in parent_characterization_status:
+                    sample_characterization_status[None] = [
+                        biosample['@id']
+                    ]
+                elif 'requires secondary opinion' in parent_characterization_status:
+                    sample_characterization_status['requires secondary opinion'] = [
+                        biosample['@id']
+                    ]
+                elif 'exempt from standards' in parent_characterization_status:
+                    sample_characterization_status['exempt from standards'] = [
+                        biosample['@id']
+                    ]
+                elif 'compliant' in parent_characterization_status:
+                    sample_characterization_status['compliant'] = [
+                        biosample['@id']
+                    ]
+        # Need to have all parents characterized if relying on pool parents
+        if (
+            not sample_characterization_status
+            and biosample.get('pooled_from')
+            and all(
+                parent.get('characterizations')
+                for parent in biosample['pooled_from']
+            )
+        ):
+            # Summarize pool parent characterization and give one status
+            parent_characterization_status = {
+                c.get('review', {}).get('status')
+                for parent in biosample.get('pooled_from', [])
+                for c in parent['characterizations']
+            }
+            if 'not compliant' in parent_characterization_status:
+                sample_characterization_status['not compliant'] = [
+                    biosample['@id']
+                ]
+            elif None in parent_characterization_status:
+                sample_characterization_status[None] = [
+                    biosample['@id']
+                ]
+            elif 'requires secondary opinion' in parent_characterization_status:
+                sample_characterization_status['requires secondary opinion'] = [
+                    biosample['@id']
+                ]
+            elif 'exempt from standards' in parent_characterization_status:
+                sample_characterization_status['exempt from standards'] = [
+                    biosample['@id']
+                ]
+            elif 'compliant' in parent_characterization_status:
+                sample_characterization_status['compliant'] = [
+                    biosample['@id']
+                ]
+        if sample_characterization_status:
+            for status in sample_characterization_status:
+                characterization_status.setdefault(status, [])
+                characterization_status[status].extend(
+                    sample_characterization_status[status]
+                )
+            continue
+        missing_characterizations.append((biosample['@id'], mods))
+
+    # Build audits
+    level = 'WARNING'
+    if (
+        value.get('assay_term_name') == 'ChIP-seq'
+        and any(needs_characterization_flags)
+        and check_award_condition(value, ["ENCODE4"])
+    ):
+        level = 'ERROR'
+    # There are no characterizations at all for the whole experiment
+    # Build missing characterizations audit if needed and return anyway
+    if not characterization_status:
+        for biosample_id, mods in missing_characterizations:
+            detail = (
+                'Biosample {} which has been modified by genetic modification '
+                '{} is missing characterization validating the '
+                'modification.'.format(
+                    audit_link(path_to_text(biosample_id), biosample_id),
+                    ', '.join(
+                        audit_link(path_to_text(mod), mod) for mod in mods
+                    ),
+                )
+            )
             yield AuditFailure(
-                'missing biosample characterization',
-                detail,
-                level
+                'missing biosample characterization', detail, level
+            )
+        return
+
+    # Has characterizations and check their review status
+    if 'not compliant' in characterization_status:
+        multi_characterizations = len(
+            characterization_status['not compliant']
+        ) > 1
+        detail = 'Biosample {} {} not compliant characterization'.format(
+            ', '.join(
+                audit_link(path_to_text(biosample_id), biosample_id)
+                for biosample_id in characterization_status['not compliant']
+            ),
+            'have' if multi_characterizations else 'has',
+        )
+        yield AuditFailure(
+            'not compliant biosample characterization', detail, level
+        )
+    if (
+        'compliant' not in characterization_status
+        and 'exempt from standards' not in characterization_status
+    ):
+        biosample_ids = set(
+            characterization_status.get(None, [])
+            + characterization_status.get('requires secondary opinion', [])
+        )
+        if biosample_ids:
+            detail = (
+                'Characterization for biosample {} has not finished '
+                'review'.format(
+                    ', '.join(
+                        audit_link(path_to_text(biosample_id), biosample_id)
+                        for biosample_id in biosample_ids
+                    )
+                )
+            )
+            yield AuditFailure(
+                'missing compliant biosample characterization', detail, level
             )
 
 
@@ -3038,7 +1948,7 @@ def audit_experiment_replicates_biosample(value, system, excluded_types):
 
             else:
                 if biosample['accession'] != biological_replicates_dict[bio_rep_num] and \
-                   assay_name != 'single cell isolation followed by RNA-seq':
+                   assay_name != 'single-cell RNA sequencing assay':
                     detail = ('Experiment {} has technical replicates '
                         'associated with the different biosamples'.format(
                             audit_link(path_to_text(value['@id']), value['@id'])
@@ -3126,7 +2036,7 @@ def audit_experiment_target(value, system, excluded_types):
                 audit_link(path_to_text(target['@id']), target['@id'])
             )
         )
-        yield AuditFailure('inconsistent experiment target', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('inconsistent experiment target', detail, level='WARNING')
 
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
@@ -3219,7 +2129,7 @@ def audit_experiment_control(value, system, excluded_types):
 
     # single cell RNA-seq in E4 do not require controls (ticket WOLD-6)
     # single cell RNA-seq in E3 also do not require controls (ENCD-4984, WOLD-52)
-    if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq' and \
+    if value.get('assay_term_name') == 'single-cell RNA sequencing assay' and \
             check_award_condition(value, [
                 "ENCODE4",
                 "ENCODE3",
@@ -3357,7 +2267,7 @@ def audit_experiment_ChIP_control(value, system, files_structure):
         return
 
     # Currently controls are only be required for ChIP-seq
-    if value.get('assay_term_name') != 'ChIP-seq':
+    if value.get('assay_term_name') not in ['Mint-ChIP-seq', 'ChIP-seq']:
         return
 
     # We do not want controls
@@ -3367,10 +2277,14 @@ def audit_experiment_ChIP_control(value, system, files_structure):
     if not value['possible_controls']:
         return
 
-    num_IgG_controls = 0
+    tagged = value.get('protein_tags')
+    has_input_control = False
+    has_wt_control = False
 
     for control_dataset in value['possible_controls']:
-        if not is_control_dataset(control_dataset):
+        control_type = control_dataset.get('control_type')
+        control_dataset_type = control_dataset.get('@type')[0]
+        if not control_type and control_dataset_type == 'Experiment':
             detail = (
                 'Experiment {} is ChIP-seq but its control {} does not '
                 'have a valid "control_type".'.format(
@@ -3381,28 +2295,48 @@ def audit_experiment_ChIP_control(value, system, files_structure):
             yield AuditFailure('invalid possible_control', detail, level='ERROR')
             return
 
-        if not control_dataset.get('replicates'):
-            continue
+        if control_type == 'input library':
+            has_input_control = True
 
-        if 'antibody' in control_dataset.get('replicates')[0]:
-            num_IgG_controls += 1
+        if control_type == 'wild type':
+            has_wt_control = True
 
-    # If all of the possible_control experiments are mock IP control experiments
-    if num_IgG_controls == len(value['possible_controls']):
-        if value.get('assay_term_name') == 'ChIP-seq':
-            # The binding group agreed that ChIP-seqs all should have an input control.
-            detail = ('Experiment {} is ChIP-seq and requires at least one input control,'
-                ' as agreed upon by the binding group. Experiment {} is not an input control'.format(
-                    audit_link(path_to_text(value['@id']), value['@id']),
-                    audit_link(path_to_text(control_dataset['@id']), control_dataset['@id'])
+        if has_input_control and has_wt_control:
+            break
+
+    if (not has_input_control) and (not tagged):
+        detail = (
+            'ChIP-seq experiment {} is required to specify at least one '
+            '"input library" control experiment. None of the experiments '
+            'listed as possible controls ({}) satisfied this '
+            'requirement.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ', '.join(
+                    audit_link(path_to_text(ctrl['@id']), ctrl['@id'])
+                    for ctrl in value['possible_controls']
                 )
             )
-            yield AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
-    return
+        )
+        yield AuditFailure(
+            'missing input control', detail, level='NOT_COMPLIANT'
+        )
 
-
-def is_control_dataset(dataset):
-    return bool(dataset.get('control_type'))
+    if tagged and (not has_wt_control) and (not has_input_control):
+        detail = (
+            'Epitope-tagged ChIP-seq experiment {} is required to specify '
+            'either "input library" or "wild-type" as a control experiment. '
+            'None of the experiments listed as possible controls ({}) '
+            'satisfied this requirement.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ', '.join(
+                    audit_link(path_to_text(ctrl['@id']), ctrl['@id'])
+                    for ctrl in value['possible_controls']
+                )
+            )
+        )
+        yield AuditFailure(
+            'missing input control', detail, level='NOT_COMPLIANT'
+        )
 
 
 def audit_experiment_spikeins(value, system, excluded_types):
@@ -3423,7 +2357,7 @@ def audit_experiment_spikeins(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('assay_term_name') != 'RNA-seq':
+    if value.get('assay_term_name') not in ['RNA-seq', 'polyA plus RNA-seq', 'polyA minus RNA-seq']:
         return
 
     for rep in value['replicates']:
@@ -3432,34 +2366,51 @@ def audit_experiment_spikeins(value, system, excluded_types):
         if lib is None:
             continue
 
-        size_range = lib.get('size_range')
-        if size_range != '>200':
+        if check_library_for_long_fragments(lib) is False:
             continue
-
         spikes = lib.get('spikeins_used')
         if (spikes is None) or (spikes == []):
             detail = ('Library {} is in '
-                'an RNA-seq experiment and has size_range >200. '
+                'an RNA-seq experiment and has an average fragment size or size_range >200. '
                 'It requires a value for spikeins_used'.format(
                     audit_link(path_to_text(lib['@id']), lib['@id'])
                 )
             )
             yield AuditFailure('missing spikeins', detail, level='NOT_COMPLIANT')
-            # Informattional if ENCODE2 and release error if ENCODE3
+            # Informational if ENCODE2 and release error if ENCODE3
     return
+
+
+def check_library_for_long_fragments(library):
+    if 'size_range' in library:
+        size_range = library.get('size_range')
+        if size_range != '>200':
+            return False
+        else:
+            return True
+    elif 'average_fragment_size' in library:
+        size_range = library.get('average_fragment_size')
+        if size_range <= 200:
+            return False
+        else:
+            return True
+    else:
+        return False
 
 
 def audit_experiment_biosample_term(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('biosample_ontology', {}).get('classification') == 'cell-free sample':
+    if value.get('biosample_ontology', {}).get('classification') in ('cell-free sample', 'cloning host'):
         return
 
     ontology = system['registry']['ontology']
     term_id = value.get('biosample_ontology', {}).get('term_id')
     term_type = value.get('biosample_ontology', {}).get('classification')
     term_name = value.get('biosample_ontology', {}).get('term_name')
+    biosample_count = 0
+    mixed_biosample_count = 0
 
     if 'biosample_ontology' not in value:
         detail = ('Biosample {} is missing biosample_ontology'.format(
@@ -3481,7 +2432,7 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 audit_link(path_to_text(value['@id']), value['@id']),
                 term_id)
             )
-            yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')
+            yield AuditFailure('term_id not in ontology', detail, level='INTERNAL_ACTION')
         else:
             ontology_name = ontology[term_id]['name']
             if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
@@ -3497,13 +2448,16 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 )
                 yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
 
+    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
+        return
+
     if 'replicates' in value:
         for rep in value['replicates']:
             if 'library' not in rep:
                 continue
 
             lib = rep['library']
-            if 'biosample' not in lib:
+            if 'biosample' not in lib and 'mixed_biosamples' not in lib:
                 detail = ('Library {} is missing biosample, expecting one of type {}'.format(
                     audit_link(path_to_text(lib['@id']), lib['@id']),
                     term_name)
@@ -3511,21 +2465,43 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 yield AuditFailure('missing biosample', detail, level='ERROR')
                 continue
 
-            biosample = lib['biosample']
-            bs_type = biosample.get('biosample_ontology', {}).get('@id')
-            bs_name = biosample.get('biosample_ontology', {}).get('name')
             experiment_bs_type = value.get('biosample_ontology', {}).get('@id')
             experiment_bs_name = value.get('biosample_ontology', {}).get('name')
-            if bs_type != experiment_bs_type:
-                detail = ("Experiment {} contains a library {} linked to biosample "
-                    "type '{}', while experiment's biosample type is '{}'.".format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        audit_link(path_to_text(lib['@id']), lib['@id']),
-                        audit_link(path_to_text(bs_type), bs_type),
-                        audit_link(path_to_text(experiment_bs_type), experiment_bs_type)
+            experiment_bs_uuid = value.get('biosample_ontology', {}).get('uuid')
+            technical_sample_uuid = 'f6ade16f-4367-452c-882a-57f8f3c08a59'
+            technical_sample_type = '/biosample-types/f6ade16f-4367-452c-882a-57f8f3c08a59/'
+            if 'biosample' in lib:
+                biosample_count += 1
+                biosample = lib['biosample']
+                bs_type = biosample.get('biosample_ontology', {}).get('@id')
+                bs_name = biosample.get('biosample_ontology', {}).get('name')
+                if bs_type != experiment_bs_type:
+                    detail = ("Experiment {} contains a library {} linked to biosample "
+                        "type '{}', while experiment's biosample type is '{}'.".format(
+                            audit_link(path_to_text(value['@id']), value['@id']),
+                            audit_link(path_to_text(lib['@id']), lib['@id']),
+                            audit_link(path_to_text(bs_type), bs_type),
+                            audit_link(path_to_text(experiment_bs_type), experiment_bs_type)
+                        )
                     )
+                    yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
+            elif 'mixed_biosamples' in lib:
+                mixed_biosample_count += 1
+                if experiment_bs_uuid != technical_sample_uuid:
+                    detail = (
+                        f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has the '
+                        f'biosample type {audit_link(path_to_text(experiment_bs_type),experiment_bs_type)}, '
+                        f'but contains a library {audit_link(path_to_text(lib["@id"]),lib["@id"])} '
+                        f'generated from mixed biosamples which requires the experiment biosample '
+                        f'type {audit_link(path_to_text(technical_sample_type), technical_sample_type)}.'
+                    )
+                    yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
+
+        if biosample_count > 0 and mixed_biosample_count > 0:
+            detail = (
+                f'This dataset contains libraries with both standard and mixed biosamples.'
                 )
-                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
+            yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
     return
 
 
@@ -3723,26 +2699,6 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
     return
 
 
-def audit_experiment_library_biosample(value, system, excluded_types):
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
-        return
-    for rep in value['replicates']:
-        if 'library' not in rep:
-            continue
-
-        lib = rep['library']
-        if 'biosample' not in lib:
-            detail = ('Library {} is missing biosample'.format(
-                audit_link(path_to_text(lib['@id']), lib['@id'])
-                )
-            )
-            yield AuditFailure('missing biosample', detail, level='ERROR')
-    return
-
-
 def audit_library_RNA_size_range(value, system, excluded_types):
     '''
     An RNA library should have a size_range specified.
@@ -3751,10 +2707,18 @@ def audit_library_RNA_size_range(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('assay_term_name') in ['transcription profiling by array assay',
-                                        'long read RNA-seq',
-                                        ]:
+    if value.get('assay_term_name') in [
+        'transcription profiling by array assay',
+        'long read RNA-seq',
+        'long read single-cell RNA-seq',
+        'seqFISH'
+    ]:
         return
+
+    if value.get('assay_term_name') in ['BruChase-seq', 'Bru-seq', 'BruUV-seq']:
+        audit_severity = 'WARNING'
+    else:
+        audit_severity = 'NOT_COMPLIANT'
 
     RNAs = ['RNA',
             'polyadenylated mRNA',
@@ -3764,13 +2728,14 @@ def audit_library_RNA_size_range(value, system, excluded_types):
         if 'library' not in rep:
             continue
         lib = rep['library']
-        if (lib['nucleic_acid_term_name'] in RNAs) and ('size_range' not in lib):
+        if ((lib['nucleic_acid_term_name'] in RNAs) and ('size_range' not in lib)) and \
+                ((lib['nucleic_acid_term_name'] in RNAs) and ('average_fragment_size' not in lib)):
             detail = ('Metadata of RNA library {} lacks information on '
-                'the size range of fragments used to construct the library.'.format(
+                'the size range or average size of fragments used to construct the library.'.format(
                     audit_link(path_to_text(rep['library']['@id']), rep['library']['@id'])
                 )
             )
-            yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing RNA fragment size', detail, level=audit_severity)
     return
 
 
@@ -3788,7 +2753,10 @@ def audit_RNA_library_RIN(value, system, excluded_types):
                  'OBI:0001864', # RAMPAGE
                  'OBI:0001463', # RNA microarray
                  'OBI:0001850', # RNA-PET
-                 'OBI:0001271', # RNA-seq (poly(A)-, poly(A)+, small, and total)
+                 'OBI:0001271', # RNA-seq (total)
+                 'OBI:0002112', # small RNA-seq
+                 'OBI:0002571', # polyA plus RNA-seq
+                 'OBI:0002572', # polyA minus RNA-seq
                  'NTR:0000762', # shRNA RNA-seq
                  'NTR:0000763'  # siRNA RNA-seq
                 ]
@@ -3864,7 +2832,7 @@ def audit_missing_modification(value, system, excluded_types):
 
 
 def audit_experiment_mapped_read_length(value, system, files_structure):
-    if value.get('assay_term_id') != 'OBI:0000716':  # not a ChIP-seq
+    if value.get('assay_term_id') not in ['OBI:0000716', 'OBI:0002160']:  # not a ChIP-seq
         return
     for peaks_file in files_structure.get('peaks_files').values():
         if peaks_file.get('lab') == '/labs/encode-processing-pipeline/':
@@ -3910,9 +2878,9 @@ def audit_experiment_nih_institutional_certification(value, system, excluded_typ
     '''
     Check if ENCODE4 experiment uses biosample without NIH institutional certification.
     '''
-    # Only check ENCODE4 experiments. 
+    # Only check ENCODE4 mapping experiments.
     award = value.get('award', {})
-    if award.get('rfa') != 'ENCODE4' or award.get('component') == 'functional characterization':
+    if award.get('rfa') != 'ENCODE4' or award.get('component') != 'mapping':
         return
     # Build up list of human biosamples missing NIC used in experiment. 
     human_biosamples_missing_hic = {
@@ -4004,18 +2972,212 @@ def audit_experiment_eclip_queried_RNP_size_range(value, system, excluded_types)
 
 
 def audit_experiment_no_processed_data(value, system, files_structure):
-    '''
-    ENCD-5057: flag experiments that do not have any processed data
-    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
     raw_data = files_structure.get('raw_data')
     processed_data = files_structure.get('processed_data')
 
-    if not raw_data:
+    if not raw_data and not processed_data:
+        detail = 'Experiment {} does not contain any raw or processed data.'.format(audit_link(path_to_text(value['@id']), value['@id']))
+        yield AuditFailure('lacking processed data', detail, level='WARNING')
         return
 
     if not processed_data:
-        detail = 'Experiment {} only has raw data and does not contain any processed data'.format(audit_link(path_to_text(value['@id']), value['@id']))
+        detail = 'Experiment {} only has raw data and does not contain any processed data.'.format(audit_link(path_to_text(value['@id']), value['@id']))
         yield AuditFailure('lacking processed data', detail, level='WARNING')
+
+
+def audit_experiment_inconsistent_analysis_files_mismatched_dataset(value, system, files_structure):
+    files_in_different_dataset = []
+    if 'analyses' not in value:
+        return
+
+    for analysis in value['analyses']:
+        if analysis['status'] == 'deleted':
+            continue
+        for file in analysis['files']:
+            if file['dataset'] != value['@id']:
+                files_in_different_dataset.append(file['@id'])
+        if len(files_in_different_dataset) > 0:
+            files_in_different_dataset_links = [
+                audit_link(path_to_text(file), file) for file in files_in_different_dataset
+            ]
+            detail = (
+                f"Analysis {audit_link(path_to_text(analysis['@id']), analysis['@id'])} "
+                f"contains file(s) {', '.join(files_in_different_dataset_links)} "
+                f'belonging to another dataset.'
+            )
+            yield AuditFailure('inconsistent analysis files', detail, level='INTERNAL_ACTION')
+
+
+def audit_experiment_inconsistent_analysis_files_mismatched_analysis(value, system, files_structure):
+    processed_data = files_structure.get('processed_data')
+    files_not_in_analysis = []
+    files_in_analysis_of_other_datasets = []
+    analysis_ids = []
+    if 'analyses' in value:
+        analysis_ids = [analysis['@id'] for analysis in value['analyses']]
+
+    if processed_data:
+        for file in processed_data:
+            if 'analyses' in processed_data[file] and len(processed_data[file]['analyses']) > 0:
+                for analysis in processed_data[file]['analyses']:
+                    if analysis not in analysis_ids:
+                        files_in_analysis_of_other_datasets.append(processed_data[file]['@id'])
+            else:
+                files_not_in_analysis.append(processed_data[file]['@id'])
+
+    if len(files_not_in_analysis) > 0:
+        files_not_in_analysis_links = [
+            audit_link(path_to_text(file), file) for file in files_not_in_analysis
+        ]
+        detail = (
+            f"Experiment {audit_link(path_to_text(value['@id']), value['@id'])} "
+            f"contains processed file(s) {', '.join(files_not_in_analysis_links)} "
+            f'not in an analysis.'
+        )
+        yield AuditFailure('inconsistent analysis files', detail, level='INTERNAL_ACTION')
+    if len(files_in_analysis_of_other_datasets) > 0:
+        files_in_analysis_of_other_datasets_links = [
+            audit_link(path_to_text(file), file) for file in files_in_analysis_of_other_datasets
+        ]
+        detail = (
+            f"Experiment {audit_link(path_to_text(value['@id']), value['@id'])} "
+            f"contains processed file(s) {', '.join(files_in_analysis_of_other_datasets_links)} "
+            f'belonging to an analysis associated with a different dataset.'
+        )
+        yield AuditFailure('inconsistent analysis files', detail, level='INTERNAL_ACTION')
+
+
+def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_types):
+    genetic_modifications = {'no genetic modifications': set()}
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if value['assay_term_name'] == 'pooled clone sequencing':
+        return
+
+    if value.get('replicates') is not None and len(value['replicates']) > 1:
+        for rep in value['replicates']:
+            if (rep['status'] not in excluded_types and 'library' in rep and rep['library']['status'] not in excluded_types and 'biosample' in rep['library'] and rep['library']['biosample']['status'] not in excluded_types):
+                biosampleObject = rep['library']['biosample']
+                modifications = biosampleObject.get('applied_modifications')
+                if not modifications:
+                    genetic_modifications['no genetic modifications'].add(biosampleObject['@id'])
+                else:
+                    gm_combined = tuple(sorted(gm['@id'] for gm in modifications))
+                    if gm_combined not in genetic_modifications:
+                        genetic_modifications[gm_combined] = set(biosampleObject['@id'])
+                    else:
+                        genetic_modifications[gm_combined].add(biosampleObject['@id'])
+
+    # Removed unused key from dict if necessary
+    if len(genetic_modifications['no genetic modifications']) == 0:
+        genetic_modifications.pop('no genetic modifications')
+
+    if len(genetic_modifications) > 1:
+        detail = 'Experiment {} contains biosamples with inconsistent genetic modifications'.format(audit_link(path_to_text(value['@id']), value['@id']))
+        yield AuditFailure('inconsistent genetic modifications', detail, level='INTERNAL_ACTION')
+
+
+def audit_biosample_perturbed_mixed(value, system, excluded_types):
+    '''Error for biosamples with mixed perturbed values'''
+    biosamples = get_biosamples(value)
+    bio_perturbed = set()
+    for biosample in biosamples:
+        bio_perturbed.add(biosample['perturbed'])
+    if len(bio_perturbed) > 1:
+        detail = 'Experiment {} contains both perturbed and non-perturbed biosamples'.format(audit_link(path_to_text(value['@id']), value['@id']))
+        yield AuditFailure('mixed biosample perturbations', detail, level='ERROR')
+
+
+def negative_coefficients(metric, coefficients, files_structure):
+    for coefficient in coefficients:
+        if coefficient in metric and metric[coefficient] < 0 and 'quality_metric_of' in metric:
+            alignment_file = files_structure.get(
+                'alignments')[metric['quality_metric_of'][0]]
+            detail = (
+                f'Alignment file {audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} '
+                f'has a negative {coefficient} value of {metric[coefficient]}. The {coefficient} value is expected to be a positive number.'
+            )
+            yield AuditFailure('negative ' + coefficient, detail, level='ERROR')
+
+
+def audit_experiment_mixed_strand_specific_libraries(value, system, excluded_types):
+    '''
+    Experiments should not have libraries with different strand specificities
+    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if 'replicates' not in value:
+        return
+
+    strand_specificities = set()
+
+    for rep in value['replicates']:
+        if rep.get('status') not in excluded_types and \
+           'library' in rep and rep['library'].get('status') not in excluded_types:
+            if 'strand_specificity' in rep['library']:
+                strand_specificities.add(rep['library']['strand_specificity'])
+            if 'strand_specificity' not in rep['library']:
+                strand_specificities.add('none')
+
+    if len(strand_specificities) > 1:
+        detail = (
+            f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} contains '
+            f'libraries with mixed strand specificities {strand_specificities}.'
+            )
+        yield AuditFailure('mixed strand specificities', detail, level='ERROR')
+    return
+
+
+def audit_experiment_inconsistent_analysis_status(value, system, excluded_types):
+    '''
+    Experiments that are released should have exactly 1 released analysis object.
+    Unreleased experiments should not have any released analysis object(s).
+    '''
+    if 'analyses' not in value:
+        if value['status'] == 'released':
+            detail = (
+                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
+                f'but lacks a released analysis.'
+            )
+            yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+    else:
+        analysis_statuses = set()
+        released_analyses = []
+        released_analyses_links = []
+        for analysis in value['analyses']:
+            analysis_statuses.add(analysis['status'])
+            if analysis.get('status') == 'released':
+                released_analyses.append(analysis['@id'])
+        released_analyses_links = ', '.join([audit_link(path_to_text(m), m) for m in released_analyses])
+        if len(released_analyses) > 1:
+            detail = (
+                f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} has multiple '
+                f'released analyses {released_analyses_links}.'
+            )
+            yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+        elif value['status'] in ['deleted', 'replaced',
+                                 'archived', 'in progress',
+                                 'submitted', 'revoked',
+                                 ]:
+            if 'released' in analysis_statuses:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is not '
+                    f'released, but has a released analysis {released_analyses_links}.'
+                )
+                yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
+        if value['status'] == 'released':
+            if released_analyses == []:
+                detail = (
+                    f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} is released '
+                    f'but lacks a released analysis.'
+                )
+                yield AuditFailure('inconsistent analysis status', detail, level='INTERNAL_ACTION')
 
 
 #######################
@@ -4177,72 +3339,6 @@ def scanFilesForPipeline(files_to_scan, pipeline_title_list):
     return False
 
 
-def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
-
-    if alignment_file.get('output_type') in ['transcriptome alignments',
-                                             'unfiltered alignments']:
-        return False
-
-    if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
-        return False
-
-    quality_metrics = alignment_file.get('quality_metrics')
-
-    if not quality_metrics:
-        return False
-
-    if assay_name in ['RAMPAGE', 'CAGE',
-                      'small RNA',
-                      'long RNA']:
-        for metric in quality_metrics:
-            if 'Uniquely mapped reads number' in metric and \
-               'Number of reads mapped to multiple loci' in metric:
-                unique = metric['Uniquely mapped reads number']
-                multi = metric['Number of reads mapped to multiple loci']
-                return unique + multi
-
-    elif assay_name in ['ChIP-seq']:
-        if target is not False and \
-           'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
-            # exception (mapped)
-            for metric in quality_metrics:
-                if 'processing_stage' in metric and \
-                    metric['processing_stage'] == 'unfiltered' and \
-                        'mapped' in metric:
-                    if "read1" in metric and "read2" in metric:
-                        return int(metric['mapped'] / 2)
-                    else:
-                        return int(metric['mapped'])
-        else:
-            # not exception (useful fragments)
-            for metric in quality_metrics:
-                if ('total' in metric) and \
-                   (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
-                        ('processing_stage' not in metric)):
-                    if "read1" in metric and "read2" in metric:
-                        return int(metric['total'] / 2)
-                    else:
-                        return int(metric['total'])
-    return False
-
-
-def get_non_tophat_alignment_files(files_list):
-    list_to_return = []
-    for f in files_list:
-        tophat_flag = False
-        if 'analysis_step_version' in f and \
-           'software_versions' in f['analysis_step_version']:
-            for soft_version in f['analysis_step_version']['software_versions']:
-                #  removing TopHat files
-                if 'software' in soft_version and \
-                   soft_version['software']['uuid'] == '7868f960-50ac-11e4-916c-0800200c9a66':
-                    tophat_flag = True
-        if tophat_flag is False and \
-           f['lab'] == '/labs/encode-processing-pipeline/':
-            list_to_return.append(f)
-    return list_to_return
-
-
 def get_read_lengths_wgbs(fastq_files):
     list_of_lengths = []
     for f in fastq_files:
@@ -4287,13 +3383,17 @@ def get_chip_seq_bam_read_depth(bam_file):
     read_depth = 0
 
     for metric in quality_metrics:
-        if ('total' in metric and
+        if 'total_reads' in metric:
+            totalReads = metric['total_reads']
+        elif 'total' in metric:
+            totalReads = metric['total']
+        if (('total' in metric or 'total_reads' in metric) and
                 (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
                  ('processing_stage' not in metric))):
             if "read1" in metric and "read2" in metric:
-                read_depth = int(metric['total'] / 2)
+                read_depth = int(totalReads / 2)
             else:
-                read_depth = metric['total']
+                read_depth = totalReads
             break
 
     if read_depth == 0:
@@ -4312,12 +3412,17 @@ def create_files_mapping(files_list, excluded):
                  'peaks_files': {},
                  'gene_quantifications_files': {},
                  'transcript_quantifications_files': {},
+                 'microRNA_quantifications_files': {},
                  'signal_files': {},
                  'preferred_default_idr_peaks': {},
+                 'idr_thresholded_peaks': {},
                  'cpg_quantifications': {},
                  'contributing_files': {},
+                 'chromatin_interaction_files': {},
                  'raw_data': {},
                  'processed_data': {},
+                 'pseudo_replicated_peaks_files': {},
+                 'overlap_and_idr_peaks': {},
                  'excluded_types': excluded}
     if files_list:
         for file_object in files_list:
@@ -4363,6 +3468,13 @@ def create_files_mapping(files_list, excluded):
                     to_return['transcript_quantifications_files'][file_object['@id']
                                                             ] = file_object
 
+                if file_output and file_output == 'microRNA quantifications':
+                    to_return['microRNA_quantifications_files'][file_object['@id']
+                                                            ] = file_object
+
+                if file_output and file_output in ['contact matrix', 'loops']:
+                    to_return['chromatin_interaction_files'][file_object['@id']] = file_object
+
                 if file_output and file_output == 'signal of unique reads':
                     to_return['signal_files'][file_object['@id']] = file_object
 
@@ -4377,11 +3489,29 @@ def create_files_mapping(files_list, excluded):
                     to_return['preferred_default_idr_peaks'][
                         file_object['@id']
                     ] = file_object
-
+                if file_output and file_output == 'IDR thresholded peaks':
+                    to_return['idr_thresholded_peaks'][
+                        file_object['@id']
+                    ] = file_object
                 if file_output and file_output == 'methylation state at CpG':
                     to_return['cpg_quantifications'][file_object['@id']
                                                      ] = file_object
+                if (
+                    file_format
+                    and file_format == 'bed'
+                    and file_output
+                    and file_output == 'pseudoreplicated peaks'
+                ):
+                    to_return['pseudo_replicated_peaks_files'][
+                        file_object['@id']
+                    ] = file_object
 
+                if file_format and file_format == 'bed' and file_output and \
+                        file_output in ['replicated peaks', 'pseudoreplicated peaks',
+                                        'conservative IDR thresholded peaks',
+                                        'IDR thresholded peaks']:
+                    to_return['overlap_and_idr_peaks'][file_object['@id']] = file_object
+                    
                 if file_output_category == 'raw data':
                     to_return['raw_data'][file_object['@id']] = file_object
                 else:
@@ -4443,7 +3573,7 @@ def get_file_accessions(list_of_files):
     return accessions_set
 
 
-def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+def is_outdated_bams_replicate(bam_file, files_structure, assay_name, encode4_dnase_pipeline):
     # if derived_from contains accessions that were not in
     # original_files and not in contributing files - it is outdated!    
     for file_id in bam_file.get('derived_from'):
@@ -4461,13 +3591,12 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
     # for ChIP-seq we should consider biological replicates
-    # for DNase we should consider technial replicates
-    if assay_name != 'ChIP-seq':
+    # for DNase (ENCODE3) we should consider technial replicates
+    if assay_name not in ['Mint-ChIP-seq', 'ChIP-seq'] and not encode4_dnase_pipeline:
         replicate_type = 'technical_replicates'
     else:
         replicate_type = 'biological_replicates'
     rep = bam_file.get(replicate_type)
-    
     # number of replicates BAM file should belong to have to be one
     # in cases where it is more than one, there probably was replicates 
     # reorganization, that invalidates the analysis    
@@ -4489,14 +3618,14 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     for file_object in rep_fastqs:
         file_acc = file_object.get('accession')
         # for ChIP even one file out of pair is considerd uptodate
-        if assay_name == 'ChIP-seq' and file_acc not in derived_from_fastq_accessions:
+        if assay_name in ['Mint-ChIP-seq', 'ChIP-seq'] and file_acc not in derived_from_fastq_accessions:
             paired_file_id = file_object.get('paired_with')
             if paired_file_id and paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
                 return True
             elif not paired_file_id:
                 return True
         # for DNase all the files from tech. rep should be in the list of the derived_from
-        elif assay_name != 'ChIP-seq' and file_acc not in derived_from_fastq_accessions:
+        elif assay_name not in ['Mint-ChIP-seq', 'ChIP-seq'] and file_acc not in derived_from_fastq_accessions:
             return True
 
     for f_accession in derived_from_fastq_accessions:
@@ -4611,7 +3740,6 @@ function_dispatcher_without_files = {
     'audit_documents': audit_experiment_documents,
     'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,
     'audit_experiment_biosample': audit_experiment_biosample_term,
-    'audit_library_biosample': audit_experiment_library_biosample,
     'audit_target': audit_experiment_target,
     'audit_mixed_libraries': audit_experiment_mixed_libraries,
     'audit_hic_restriction_enzyme_in_libaries': audit_hic_restriction_enzyme_in_libaries,
@@ -4626,14 +3754,18 @@ function_dispatcher_without_files = {
     'audit_spikeins': audit_experiment_spikeins,
     'audit_nih_consent': audit_experiment_nih_institutional_certification,
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
-    'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range
+    'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
+    'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
+    'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed,
+    'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries,
+    'audit_inconsistent_analysis_status': audit_experiment_inconsistent_analysis_status,
+    'audit_single_cell_libraries': audit_experiment_single_cell_libraries,
 }
 
 function_dispatcher_with_files = {
     'audit_consistent_sequencing_runs': audit_experiment_consistent_sequencing_runs,
     'audit_experiment_out_of_date': audit_experiment_out_of_date_analysis,
     'audit_platforms': audit_experiment_platforms_mismatches,
-    'audit_uploading_files': audit_experiment_with_uploading_files,
     'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
     'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams,
     'audit_modERN': audit_modERN_experiment_standards_dispatcher,
@@ -4642,13 +3774,17 @@ function_dispatcher_with_files = {
     'audit_read_depth_chip_control': audit_experiment_chipseq_control_read_depth,
     'audit_experiment_standards': audit_experiment_standards_dispatcher,
     'audit_submitted_status': audit_experiment_status,
-    'audit_no_processed_data': audit_experiment_no_processed_data
+    'audit_no_processed_data': audit_experiment_no_processed_data,
+    'audit_experiment_inconsistent_analysis_files_mismatched_analysis': audit_experiment_inconsistent_analysis_files_mismatched_analysis,
+    'audit_experiment_inconsistent_analysis_files_mismatched_dataset': audit_experiment_inconsistent_analysis_files_mismatched_dataset,
 }
 
 
 @audit_checker(
     'Experiment',
     frame=[
+        'analyses',
+        'analyses.files',
         'biosample_ontology',
         'award',
         'target',
@@ -4659,13 +3795,11 @@ function_dispatcher_with_files = {
         'replicates.library.biosample.biosample_ontology',
         'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
+        'replicates.library.biosample.characterizations',
+        'replicates.library.biosample.originated_from.characterizations',
+        'replicates.library.biosample.part_of.characterizations',
+        'replicates.library.biosample.pooled_from.characterizations',
         'replicates.library.biosample.donor',
-        'replicates.libraries',
-        'replicates.libraries.spikeins_used',
-        'replicates.libraries.biosample',
-        'replicates.libraries.biosample.applied_modifications',
-        'replicates.libraries.biosample.applied_modifications.modified_site_by_target_id',
-        'replicates.libraries.biosample.donor',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.antibody.lot_reviews',
@@ -4732,3 +3866,6 @@ def audit_experiment(value, system):
 
 # def audit_experiment_needs_pipeline(value, system): removed in release 56
 # http://redmine.encodedcc.org/issues/4990
+
+# def audit_experiment_with_uploading_files(value, system, files_structure): removed in release 98
+# https://encodedcc.atlassian.net/browse/ENCD-5109

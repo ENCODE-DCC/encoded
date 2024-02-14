@@ -41,23 +41,61 @@
                     }
                 }
             ]
+        },
+        "donor": {
+            "comment": "Genome references (such as those from the ENTEx project) may specify a donor.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["genome"]
+                    }
+            }
+        },
+        "examined_loci": {
+            "comment": "The loci whose expression or product is under investigation for the functional characterization experiment.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["functional elements"]
+                }
+            }
+        },
+        "elements_selection_method": {
+            "comment": "The methods or criteria used to select the elements specified in the reference.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["functional elements"]
+                }
+            }
+        },
+        "crispr_screen_tiling": {
+            "comment": "CRISPR screen guide RNA design modalities",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["functional elements"]
+                }
+            }
         }
     },
     "properties": {
         "schema_version": {
-            "default": "18"
+            "default": "22"
         },
         "reference_type": {
             "title": "Reference type",
             "description": "The category that best describes the reference set.",
             "type": "string",
             "enum": [
-                "index",
-                "genome",
-                "mappability",
-                "spike-in",
                 "functional elements",
-                "sequence adapters"
+                "genome",
+                "index",
+                "mappability",
+                "sequence adapters",
+                "sequence barcodes",
+                "spike-in",
+                "variants"
             ]
         },
         "organism": {
@@ -65,6 +103,13 @@
             "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
+        },
+        "donor": {
+            "title": "Donor",
+            "description": "The donor or strain the biosample was originated from.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Donor"
         },
         "software_used": {
             "title": "Software used",
@@ -76,6 +121,122 @@
                 "type": "string",
                 "comment": "See software_version.json for available identifiers.",
                 "linkTo": "SoftwareVersion"
+            }
+        },
+        "examined_loci": {
+            "title": "Examined loci",
+            "description": "The loci whose expression or product is under investigation for the functional characterization experiment.",
+            "comment": "See gene.json for available identifiers.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Gene",
+                "description": "The gene under investigation.",
+                "comment": "see gene.json for available identifiers",
+                "type": "string",
+                "linkTo": "Gene"
+            }
+        },
+        "examined_regions": {
+            "title": "Examined regions",
+            "description": "The chromosomal region(s) under investigation specified using 1-based, closed coordinates for a specific version of the reference genome assembly.",
+            "type": "array",
+            "uniqueItems": true,
+            "additionalProperties": false,
+            "items": {
+                "title": "Region",
+                "description": "Chromosomal location specified using 1-based, closed coordinates for a specific version of the reference genome assembly.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["assembly", "chromosome", "start", "end"],
+                "properties": {
+                    "assembly": {
+                        "title": "Mapping assembly",
+                        "description": "The genome assembly to which coordinates relate. e.g. GRCh38.",
+                        "type": "string",
+                        "enum": [
+                            "GRCh38",
+                            "hg19",
+                            "mm10"
+                        ]
+                    },
+                    "chromosome": {
+                        "title": "Chromosome",
+                        "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
+                        "type": "string",
+                        "pattern": "^(chr[0-9A-Za-z]+)$"
+                    },
+                    "start": {
+                        "title": "Start",
+                        "description": "The starting coordinate.",
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "end": {
+                        "title": "End",
+                        "description": "The ending coordinate.",
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            }
+        },
+        "related_pipelines": {
+            "title": "Related pipelines",
+            "description": "The pipelines this reference file set is used for",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Related pipeline",
+                "description": "A particular pipeline this reference file set is used for",
+                "type": "string",
+                "linkTo": "Pipeline"
+            }
+        },
+        "elements_selection_method": {
+            "title": "Elements selection method(s)",
+            "description": "The methods or criteria used to select the elements specified in the reference.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Elements selection method",
+                "description": "The method or criteria used to select the elements specified in the reference.",
+                "type": "string",
+                "enum": [
+                    "accessible genome regions",
+                    "candidate cis-regulatory elements",
+                    "chromatin states",
+                    "DNase hypersensitive sites",
+                    "essential genes",
+                    "histone modifications",
+                    "sequence variants",
+                    "synthetic elements",
+                    "transcription start sites",
+                    "TF binding sites"
+                ]
+            }
+        },
+        "crispr_screen_tiling": {
+            "title": "CRISPR screen tiling",
+            "description": "CRISPR screen guide RNA design modalities.",
+            "comment": "Peak tiling = all possible gRNA in a selection of peaks. Full tiling = all possible gRNA across an entire region, including regulatory elements and non regulatory elements. Sparse peaks = a small set of gRNA against a selection of peaks",
+            "type": "string",
+            "enum": [
+                "full tiling",
+                "peak tiling",
+                "sparse peak"
+            ]
+        },
+        "experimental_input": {
+            "title": "Experimental input" ,
+            "description": "The experiment(s) that this reference was derived from.",
+            "type": "array",
+            "uniqueItems": true,
+            "items":{
+                "comment": "See Experiment.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "Experiment"
             }
         }
     },
@@ -91,6 +252,12 @@
         },
         "organism.scientific_name": {
             "title": "Organism"
+        },
+        "elements_selection_method": {
+            "title": "Elements selection method"
+        },
+        "crispr_screen_tiling": {
+            "title": "CRISPR screen tiling"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -134,6 +301,22 @@
             "title": "Project",
             "type": "string"
         },
+        "elements_selection_method": {
+            "title": "Elements selection method",
+            "type": "array"
+        },
+        "examined_loci.symbol": {
+            "title": "Examined loci",
+            "type": "string"
+        },
+        "crispr_screen_tiling": {
+            "title": "CRISPR screen tiling",
+            "type": "string"
+        },
+        "donor": {
+            "title": "Donor",
+            "type": "string"
+        },
         "status": {
             "title": "Status",
             "type": "string"
@@ -144,10 +327,12 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
+        "donor.accession": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
         "award.name": 1.0,
@@ -162,7 +347,8 @@
         "software_used.software.name": 1.0,
         "reference_type": 1.0,
         "internal_tags": 1.0,
-        "description": 1.0
+        "description": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/reference.md"
 

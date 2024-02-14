@@ -3,6 +3,7 @@ from snovault import (
     calculated_property,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -33,20 +34,26 @@ class Pipeline(Item):
         'analysis_steps.pipelines',
         'analysis_steps.current_version.software_versions',
         'analysis_steps.current_version.software_versions.software',
-        'analysis_steps.current_version.software_versions.software.references',
         'analysis_steps.versions',
         'analysis_steps.versions.software_versions',
         'analysis_steps.versions.software_versions.software',
-        'analysis_steps.versions.software_versions.software.references',
         'lab',
         'award.pi.lab',
-        'standards_page'
+        'standards_page',
+        'reference_filesets'
+    ]
+    embedded_with_frame = [
+        Path('analysis_steps.current_version.software_versions.software.references', exclude=['datasets', 'publication_data']),
+        Path('analysis_steps.versions.software_versions.software.references', exclude=['datasets', 'publication_data']),
     ]
     set_status_up = [
         'analysis_steps',
         'documents',
     ]
     set_status_down = []
+    audit_inherit = [
+        'analysis_steps',
+    ]
 
 
 @collection(
@@ -140,6 +147,10 @@ class AnalysisStep(Item):
 class AnalysisStepVersion(Item):
     item_type = 'analysis_step_version'
     schema = load_schema('encoded:schemas/analysis_step_version.json')
+    set_status_up = [
+        'software_versions',
+    ]
+    set_status_down = []
 
     def unique_keys(self, properties):
         keys = super(AnalysisStepVersion, self).unique_keys(properties)
@@ -180,3 +191,7 @@ class AnalysisStepRun(Item):
     audit_inherit = ['*']
     # Avoid using reverse links on this object as invalidating a
     # step_run can cause thousands of objects to be reindexed.
+    set_status_up = [
+        'analysis_step_version',
+    ]
+    set_status_down = []

@@ -192,7 +192,8 @@ def audit_item_status(value, system):
             linked.update(simple_path_ids(value, schema_path))
 
     for path in linked:
-        linked_value = request.embed(path + '@@object')
+        # Avoid pulling the full @@object frame into request._embedded_uuids.
+        linked_value = request.embed(path + '@@filtered_object?include=@id&include=@type&include=uuid&include=status')
         if 'status' not in linked_value:
             continue
         if linked_value['status'] == 'disabled':

@@ -17,6 +17,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/url" },
+        { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/notes" }
 
@@ -31,7 +32,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "accession": {
             "accessionType": "AB"
@@ -51,12 +52,6 @@
                 "format": "accession",
                 "pattern": "^(ENCAB\\d{3}[A-Z]{3})$|^(TSTAB\\d{6})$"
             }
-        },
-        "lot_id": {
-            "title": "Lot ID",
-            "description": "The lot identifier provided by the originating lab or vendor.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "lot_id_alias": {
             "title": "Lot ID aliases",
@@ -195,10 +190,13 @@
    },
    "facets": {
         "lot_reviews.status": {
-            "title": "Eligibility status"
+            "title": "Eligibility status",
+            "length": "long",
+            "open_on_load": true
         },
         "targets.organism.scientific_name": {
-            "title": "Target organism"
+            "title": "Target organism",
+            "open_on_load": true
         },
         "targets.investigated_as": {
             "title": "Target category"
@@ -206,7 +204,8 @@
         "targets.label": {
             "title": "Target of antibody",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "characterizations.characterization_method": {
             "title": "Characterization method"
@@ -273,6 +272,7 @@
     },
     "boost_values": {
         "accession": 1.0,
+        "@type": 1.0,
         "alternate_accessions": 1.0,
         "lot_id": 1.0,
         "lot_id_alias": 1.0,
@@ -288,7 +288,7 @@
         "host_organism.taxon_id": 1.0,
         "targets.genes.symbol": 1.0,
         "targets.label": 1.0,
-        "targets.dbxref": 1.0,
+        "targets.genes.dbxrefs": 1.0,
         "targets.aliases": 1.0,
         "targets.organism.name": 1.0,
         "targets.organism.scientific_name": 1.0,
@@ -305,7 +305,7 @@
         "characterizations.lab.title": 1.0,
         "characterizations.target.genes.symbol": 1.0,
         "characterizations.target.label": 1.0,
-        "characterizations.target.dbxref": 1.0,
+        "characterizations.target.genes.dbxrefs": 1.0,
         "characterizations.target.aliases": 1.0,
         "characterizations.target.organism.name": 1.0,
         "characterizations.target.organism.scientific_name": 1.0,

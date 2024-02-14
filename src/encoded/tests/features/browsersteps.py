@@ -365,7 +365,7 @@ def click_link_with_text(browser, text):
 
 @when(parse('I click the link with text that contains "{text}"'))
 def click_link_with_text_that_contains(browser, text):
-    anchors = browser.find_link_by_partial_text(text)
+    anchors = browser.links.find_by_partial_text(text)
     assert anchors, 'Link not found'
     anchors[0].click()
 

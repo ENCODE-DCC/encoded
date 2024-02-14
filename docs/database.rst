@@ -62,7 +62,7 @@ It allows us to autogenerate code to update the Postgres database based on chang
                 nullable=False,
                 index=True)
 
-Then :code:`bin/alembic revision --autogenerate` (note that *bin/alembic* is a thin wrapper around the alembic CLI, allowing Alembic to interact with the Pyramid environment) will compare the model to the current state of the Postgres database and autogenerate a file in the *alembic/versions* directory that contains an upgrade and downgrade function for the detected changes::
+Then :code:`alembic revision --autogenerate` (note that *alembic* is a thin wrapper around the alembic CLI, allowing Alembic to interact with the Pyramid environment) will compare the model to the current state of the Postgres database and autogenerate a file in the *alembic/versions* directory that contains an upgrade and downgrade function for the detected changes::
 
    revision = 'cfcf1fdff25c'
    
@@ -77,7 +77,7 @@ Then :code:`bin/alembic revision --autogenerate` (note that *bin/alembic* is a t
        op.drop_index(op.f('ix_propsheets_rid'), table_name='propsheets')
        # ### end Alembic commands ###
        
-Running :code:`bin/alembic upgrade head` will apply the upgrade function to Postgres (check the update function for correctness first!). It is possible to upgrade/downgrade by revision ID or relative steps as well: :code:`bin/alembic downgrade cfcf1fdff25c` or :code:`bin/alembic upgrade +1`
+Running :code:`alembic upgrade head` will apply the upgrade function to Postgres (check the update function for correctness first!). It is possible to upgrade/downgrade by revision ID or relative steps as well: :code:`alembic downgrade cfcf1fdff25c` or :code:`alembic upgrade +1`
 
 
 ===================
@@ -92,11 +92,11 @@ but these dbs are both destroyed when you kill the dev-servers process
 
 After building out the software, it will create an executable called json_rdf::
 
-  bin/jsonld-rdf  'https://www.encodeproject.org/search/?type=Item&frame=object&limit=all' -s n3 -o encode-rdf.n3
+  jsonld-rdf  'https://www.encodeproject.org/search/?type=Item&frame=object&limit=all' -s n3 -o encode-rdf.n3
 
 
 The n3 file can be imported into a SPARQL using, for example, Virtuoso ( http://semanticweb.org/wiki/Virtuoso.html_ ) or YasGUI http://yasgui.org/_
 
 The query may take upwards of 20 minutes.
 
-There are other output options documented in src/commands/json_rdf.py  (XML, Turtle, trix others), you can also curl the URL above directly and write a json file (set accept-headers or use &format=json), and pass the file to bin/jsonld-rdf
+There are other output options documented in src/commands/json_rdf.py  (XML, Turtle, trix others), you can also curl the URL above directly and write a json file (set accept-headers or use &format=json), and pass the file to jsonld-rdf

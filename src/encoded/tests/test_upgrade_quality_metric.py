@@ -1,13 +1,5 @@
 import pytest
 
-@pytest.fixture
-def quality_metric_1(pipeline, analysis_step_run):
-    return {
-        'status': 'released',
-        'pipeline': pipeline['uuid'],
-        'step_run': analysis_step_run['uuid'],
-        'schema_version': '1'
-    }
 
 @pytest.mark.parametrize('qc_type, old_version, new_version', [
     ('bismark_quality_metric', '8', '9'),

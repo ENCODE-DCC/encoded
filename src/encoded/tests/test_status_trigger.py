@@ -21,22 +21,6 @@ def content(testapp):
         testapp.post_json(url, item)
 
 
-@pytest.fixture
-def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'uploading',
-    }
-    return item
-
-
 def test_item_set_status_method_exists(testapp, content, root):
     res = testapp.get('/test-encode-items/')
     encode_item_uuid = res.json['@graph'][0]['uuid']
@@ -118,7 +102,12 @@ def test_file_release_does_not_call_s3_acl_if_update_false(testapp, content, moc
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -144,7 +133,12 @@ def test_file_release_does_call_s3_acl_if_update_true(testapp, content, mocker, 
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -199,7 +193,12 @@ def test_file_release_in_progress_file(testapp, file, dummy_request, root):
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -224,7 +223,12 @@ def test_file_unrelease_released_file(testapp, file, dummy_request, root):
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -302,10 +306,10 @@ def test_set_status_catch_access_denied_error(mocker, testapp, file):
     )
     mocker.patch('encoded.types.file.File._get_external_sheet')
     File._get_external_sheet.return_value = {'bucket': 'abc', 'key': 'def'}
-    mocker.patch('encoded.types.file.logging.warn')
+    mocker.patch('encoded.types.file.logging.warning')
     testapp.patch_json(file['@id'] + '@@set_status?update=true', {'status': 'released'})
     # Should log AccessDenied error but shouldn't raise error.
-    assert logging.warn.call_count == 2
+    assert logging.warning.call_count == 2
 
 
 def test_set_status_raise_other_error(mocker, testapp, file):
@@ -335,7 +339,12 @@ def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_req
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -356,10 +365,15 @@ def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_req
 
 @mock_sts
 @mock_s3
-def test_set_status_in_progress_experiment(testapp, root, experiment, replicate, file, award, lab, dummy_request):
+def test_set_status_in_progress_experiment(testapp, root, experiment, replicate_url, file, award, lab, dummy_request):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -373,19 +387,19 @@ def test_set_status_in_progress_experiment(testapp, root, experiment, replicate,
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'in progress'
-    for encode_item in [experiment, file, replicate]:
+    for encode_item in [experiment, file, replicate_url]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'in progress'
     # Release experiment.
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'})
     # File, exp, and rep now released.
-    for encode_item in [experiment, file, replicate]:
+    for encode_item in [experiment, file, replicate_url]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'released'
     # Unrelease experiment.
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true&force_transition=true', {'status': 'released'})
     # Replicate and file remain released.
-    for encode_item in [replicate, file]:
+    for encode_item in [replicate_url, file]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'released'
     # Exp now in progress.
@@ -453,10 +467,15 @@ def test_set_status_changed_paths_experiment(testapp, experiment, dummy_request)
 
 @mock_sts
 @mock_s3
-def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -475,10 +494,15 @@ def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, f
 
 @mock_sts
 @mock_s3
-def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -491,16 +515,22 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
+    
     assert len(res.json_body['changed']) == 5
     assert len(res.json_body['considered']) == 6
 
 
 @mock_sts
 @mock_s3
-def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_children(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_children(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -519,10 +549,15 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_chil
 
 @mock_sts
 @mock_s3
-def test_set_status_force_transition_block_children_default(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_force_transition_block_children_default(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -541,10 +576,15 @@ def test_set_status_force_transition_block_children_default(testapp, experiment,
 
 @mock_sts
 @mock_s3
-def test_set_status_force_transition_block_children_specified(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_force_transition_block_children_specified(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -563,10 +603,15 @@ def test_set_status_force_transition_block_children_specified(testapp, experimen
 
 @mock_sts
 @mock_s3
-def test_set_status_released_to_released_triggers_up_list(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_released_to_released_triggers_up_list(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -581,7 +626,7 @@ def test_set_status_released_to_released_triggers_up_list(testapp, experiment, f
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 5
     assert len(res.json_body['considered']) == 6
-    testapp.patch_json(replicate['@id'], {'status': 'in progress'})
+    testapp.patch_json(replicate_url['@id'], {'status': 'in progress'})
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 1
     assert len(res.json_body['considered']) == 6
@@ -595,7 +640,12 @@ def test_set_status_skip_acl_on_restricted_files(testapp, content, mocker, file,
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -623,7 +673,12 @@ def test_set_status_skip_acl_on_not_available_file(testapp, content, mocker, fil
     # Create mock bucket.
     import boto3
     client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
     # Generate creds.
     testapp.patch_json(file['@id'], {'status': 'uploading'})
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -661,3 +716,121 @@ def test_set_status_no_validation_error_on_content_error_details(testapp, file):
     r = testapp.get(file['@id'] + '@@raw')
     assert 'content_error_detail' in r.json
     testapp.patch_json(file['@id'] + '@@set_status?update=true&validate=false', {'status': 'uploading'}, status=200)
+
+
+def test_set_status_analysis_step_run(testapp, analysis_step_run, analysis_step_version, analysis_step):
+    testapp.patch_json(analysis_step_run['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step_version['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step_run['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.get(analysis_step_run['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(analysis_step_version['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(analysis_step['@id'])
+    assert res.json['status'] == 'in progress'
+
+
+def test_set_status_analysis_step_version(testapp, analysis_step_version, analysis_step, software_version, software):
+    testapp.patch_json(analysis_step_version['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step['@id'], {'status': 'in progress'})
+    testapp.patch_json(software_version['@id'], {'status': 'in progress'})
+    testapp.patch_json(software['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step_version['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.get(analysis_step_version['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(analysis_step['@id'])
+    assert res.json['status'] == 'in progress'
+    res = testapp.get(software_version['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(software['@id'])
+    assert res.json['status'] == 'released'
+
+
+@mock_sts
+@mock_s3
+def test_set_status_analysis_files(testapp, base_analysis, file, dummy_request, root):
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Put mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    # Set to in progress.
+    testapp.patch_json(file['@id'], {'status': 'in progress'})
+    testapp.patch_json(base_analysis['@id'], {'status': 'in progress', 'files':[file['@id']]})
+    # Release analysis.
+    testapp.patch_json(base_analysis['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.get(base_analysis['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'released'
+    # Archive analysis.
+    testapp.patch_json(base_analysis['@id'] + '@@set_status?update=true', {'status': 'archived'}, status=200)
+    res = testapp.get(base_analysis['@id'])
+    assert res.json['status'] == 'archived'
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'archived'
+
+
+@mock_sts
+@mock_s3
+def test_set_status_experiment_analysis(testapp, root, experiment, file, base_analysis, dummy_request):
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(
+        Bucket='test_upload_bucket',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2',
+        },
+    )
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Put mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    # Set to in progress.
+    testapp.patch_json(file['@id'], {'status': 'in progress', 'dataset': experiment['@id']})
+    testapp.patch_json(base_analysis['@id'], {'status': 'in progress', 'files':[file['@id']]})
+    testapp.patch_json(experiment['@id'], {'analyses': [base_analysis['@id']]})
+    for encode_item in [experiment, base_analysis]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'in progress'
+    # Release experiment.
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'})
+    for encode_item in [experiment, base_analysis, file]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'released'
+    # Archive experiment.
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'archived'})
+
+    for encode_item in [experiment, base_analysis, file]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'archived'
+
+
+def test_set_status_transgenic_enhancer_experiment(testapp, transgenic_enhancer_experiment, mouse_whole_organism_biosample, transgene_insertion):
+    testapp.patch_json(mouse_whole_organism_biosample['@id'], {'status': 'in progress'})
+    testapp.patch_json(transgene_insertion['@id'], {'status': 'in progress'})
+    testapp.patch_json(transgenic_enhancer_experiment['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.get(transgenic_enhancer_experiment['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(mouse_whole_organism_biosample['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(transgene_insertion['@id'])
+    assert res.json['status'] == 'released'

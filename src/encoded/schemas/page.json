@@ -218,6 +218,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "name": 1.0,
         "title": 1.0,
         "news_keywords": 1.0,

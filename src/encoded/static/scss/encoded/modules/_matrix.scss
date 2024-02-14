@@ -2,6 +2,8 @@ $data-cell-width: 40px;
 $col-category-header-height: 200px;
 $row-category-cell-height: 22px;
 $row-data-header-width: 200px;
+$matrix-border-color: #f0f0f0;
+$tab-color: #a8a8a8;
 
 // Add a shadow to the right edge of the first column's cells.
 @mixin matrix-freeze-shadow {
@@ -12,9 +14,392 @@ $row-data-header-width: 200px;
     bottom: -1px;
     left: 100%;
     width: 6px;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.0));
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
+.ReferenceEpigenomeMatrix {
+    .matrix-header__title {
+        padding-bottom: 5px;
+    }
+    // Flex styles for "body-image-thumbnail" and "matrix__presentation"
+    .matrix-facet-container {
+        display: flex;
+        border: 0;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            flex-wrap: wrap;
+        }
+
+        .matrix__presentation {
+            flex: 0 1 auto;
+        }
+
+        > .body-map-thumbnail-and-modal {
+            margin: 0;
+        }
+    }
+
+    .test-project-selector {
+        label {
+            margin-left: 5px;
+        }
+    }
+
+    .matrix-header {
+        border-bottom: 0;
+    }
+
+    .header-clear-links {
+        margin-top: 20px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            margin: 10px 5px;
+        }
+
+        button {
+            position: relative;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-sm-min) {
+                width: auto;
+            }
+        }
+    }
+
+    .filter-container {
+        font-family: Mada;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+        }
+    }
+
+    .results-count {
+        font-family: Mada;
+        font-size: 1rem;
+        margin: 20px 0;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+        }
+
+        .bold-total {
+            font-size: 1.1rem;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-xs-min) {
+                font-size: 0.9rem;
+            }
+        }
+
+        text-align: left;
+    }
+
+    .matrix-header__filter-controls {
+        display: block;
+        flex: unset;
+        margin: 10px 0 0;
+    }
+
+    .matrix-general-search {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        text-align: left;
+
+        input[type="search"] {
+            font-size: 0.8rem;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+        }
+
+        i {
+            padding: 5px;
+        }
+
+        p {
+            margin: 0;
+            margin-right: 5px;
+        }
+
+        .searchform {
+            margin-left: 5px;
+        }
+
+        .general-search-entry {
+            padding-right: 0;
+        }
+    }
+
+    .matrix-facet-container {
+        margin-top: 20px;
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: $screen-sm-min) {
+            margin-top: 10px;
+        }
+    }
+}
+
+.mouse-dev-legend {
+    .filter-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .age-selectors {
+        display: flex;
+        margin-top: 10px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .stage-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .stage-selector {
+        display: flex;
+    }
+
+    .legend-option {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    button {
+        font-size: 1rem;
+        line-height: 1.7;
+        padding: 2px;
+        font-family: Mada;
+        font-weight: 400;
+        margin: 1px;
+        background: linear-gradient(#dfdfdf, #f8f8f8);
+        border: 2px solid #dfdfdf;
+        border-radius: 3px;
+
+        &.embryonic {
+            background: lighten(#ffe9c6, 5%);
+        }
+
+        &.postnatal {
+            background: lighten(#f2c782, 8%);
+        }
+
+        &.adult {
+            background: lighten(#e2ae53, 8%);
+        }
+
+        /* stylelint-disable-next-line media-feature-name-disallowed-list */
+        @media screen and (max-width: 500px) {
+            font-size: 0.9rem;
+        }
+    }
+
+    .active {
+        border: 2px solid #000;
+    }
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.type-MouseDevelopmentMatrix {
+    .matrix-header__filter-controls {
+        flex: 0 1 100%;
+    }
+
+    .matrix-general-search {
+        p {
+            margin-bottom: 5px;
+        }
+    }
+
+    .matrix__row-spacer {
+        height: 1px;
+    }
+
+    .matrix__row-category {
+        font-family: Mada;
+
+        > th {
+            > div {
+                font-weight: 500;
+            }
+        }
+    }
+
+    .matrix__content {
+        display: block;
+    }
+
+    .matrix-header {
+        border-bottom: 0;
+    }
+
+    .mouse-stage-selector-container {
+        margin: 5px 0;
+
+        label {
+            margin-right: 10px;
+        }
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    .Matrix-page-link {
+        display: none;
+    }
+
+    .clear-filters {
+        margin: 10px 5px 5px;
+        padding: 0;
+        font-size: 0.9rem;
+        border: none;
+        color: #428bca;
+        background: white;
+    }
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.type-DeeplyProfiledUniformBatchMatrix, .type-DeeplyProfiledMatrix {
+    .test-project-selector {
+        display: flex;
+        align-items: center;
+
+        label {
+            height: 18px;
+        }
+    }
+}
+
+.mouse-dev-matrix {
+    position: relative;
+
+    .matrix__data-wrapper {
+        border: none;
+        padding-left: 0;
+
+        .matrix__data {
+            padding-left: 0;
+        }
+    }
+
+    .matrix__col-category-header {
+        > th {
+            > a {
+                letter-spacing: 1px;
+
+                .sub {
+                    padding-top: 10px;
+                    color: #000;
+                }
+            }
+        }
+    }
+
+    .sub {
+        padding-top: 10px !important;
+        color: #000 !important;
+    }
+
+    .matrix__row-data {
+        td {
+            a {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+        }
+    }
+
+    .column-category {
+        letter-spacing: 0;
+        font-family: Mada;
+        background: #881600;
+        color: white;
+        padding: 7px 5px;
+    }
+
+    .matrix__clear-classifications {
+        margin-bottom: 5px;
+    }
+
+    .matrix__row-data > th {
+        padding: 0;
+    }
+
+    // Tissue jumper links scroll to below the nav bar.
+    [id] {
+        scroll-margin-top: 50px;
+    }
+}
+
+.subcategory-row-text-mouse {
+    @extend .subcategory-row-text;
+
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+
+    .label-stage {
+        font-family: Mada;
+        flex: 0 0 60%;
+        letter-spacing: 1px;
+        font-weight: 500;
+        padding: 6px 0;
+    }
+
+    .label-length {
+        flex: 0 0 40%;
+        font-size: 12px;
+    }
+}
+
+.embryonic {
+    background-color: #fff3e0;
+}
+
+.postnatal {
+    background-color: #f6d8a7;
+}
+
+.adult {
+    background-color: #e8be76;
+}
+
+.tissue-jumper {
+    .tissue-jumper__title {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .tissue-jumper__tissues {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+    }
+}
 
 // Reusable styles for the left-most non-scrolling column.
 %sticky-column {
@@ -25,7 +410,7 @@ $row-data-header-width: 200px;
     border-radius: 0;
     z-index: 1;
 
-    &:after {
+    &::after {
         @include matrix-freeze-shadow;
     }
 }
@@ -34,6 +419,8 @@ $row-data-header-width: 200px;
 .matrix {
     border-collapse: separate;
     max-width: none;
+    width: 1px;
+    height: 1px;
     border-spacing: 0;
 
     // Holds vertical facets and matrix itself.
@@ -74,7 +461,7 @@ $row-data-header-width: 200px;
         flex-shrink: 1;
         flex-basis: calc(100% - 20px);
         width: calc(100% - 20px);
-        border : 1px solid #eee;
+        border: 1px solid #eee;
         overflow: hidden;
         min-width: 0;
     }
@@ -121,12 +508,6 @@ $row-data-header-width: 200px;
                 transform: rotate(180deg);
                 color: #000;
 
-                // Column subcategory links
-                &.sub {
-                    padding-top: 20px;
-                    color: #808080;
-                }
-
                 &:hover {
                     background-color: #e0e0e0;
                 }
@@ -144,12 +525,13 @@ $row-data-header-width: 200px;
         > th {
             width: $row-data-header-width;
             text-align: right;
-            border-left: 1px solid #f0f0f0;
+            border-left: 1px solid $matrix-border-color;
             font-size: 1rem;
             border-bottom: 1px solid #fff;
+
             @extend %sticky-column;
 
-            &:after {
+            &::after {
                 @include matrix-freeze-shadow;
             }
 
@@ -160,6 +542,24 @@ $row-data-header-width: 200px;
                 text-decoration: none;
                 font-weight: 400;
                 line-height: 1.15;
+
+                &.embryonic {
+                    &:hover {
+                        background-color: darken(#ffe9c6, 8%);
+                    }
+                }
+
+                &.postnatal {
+                    &:hover {
+                        background-color: darken(#ffd491, 6%);
+                    }
+                }
+
+                &.adult {
+                    &:hover {
+                        background-color: darken(#e2ae53, 8%);
+                    }
+                }
 
                 &:hover {
                     background-color: #e0e0e0;
@@ -172,8 +572,8 @@ $row-data-header-width: 200px;
             width: $data-cell-width;
             padding: 0 !important;
             text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-            border-left: 1px solid #f0f0f0;
+            border-bottom: 1px solid $matrix-border-color;
+            border-left: 1px solid $matrix-border-color;
             font-size: 1rem;
 
             > a {
@@ -195,7 +595,7 @@ $row-data-header-width: 200px;
     @at-root #{&}__row-spacer {
         margin: 0;
         height: $row-category-cell-height;
-        border-top: 1px solid #f0f0f0;
+        border-top: 1px solid $matrix-border-color;
         vertical-align: top;
 
         > td {
@@ -238,7 +638,9 @@ $row-data-header-width: 200px;
     @at-root #{&}__row-category {
         > th {
             white-space: nowrap;
+
             @extend %sticky-column;
+
             text-align: left;
             font-size: 1.1rem;
 
@@ -254,6 +656,14 @@ $row-data-header-width: 200px;
                     flex: 0 1 auto;
                     font-weight: bold;
                     text-decoration: none;
+
+                    @media screen and (min-width: $screen-md-min) {
+                        white-space: normal;
+                    }
+
+                    @media screen and (min-width: $screen-lg-min) {
+                        white-space: nowrap;
+                    }
                 }
             }
         }
@@ -263,6 +673,7 @@ $row-data-header-width: 200px;
             padding: 0;
             flex: 0 0 auto;
             height: 10px;
+            font-size: 0;
             border: none;
             background-color: transparent;
 
@@ -274,7 +685,7 @@ $row-data-header-width: 200px;
 
         > td {
             padding: 0 !important;
-            border-left: 1px solid #f0f0f0;
+            border-left: 1px solid $matrix-border-color;
             font-size: 1rem;
 
             &:last-child > div, &:last-child > a {
@@ -382,6 +793,7 @@ $row-data-header-width: 200px;
         h2 {
             margin: 0;
             font-size: 1.3rem;
+            border-bottom: none;
         }
     }
 
@@ -392,31 +804,26 @@ $row-data-header-width: 200px;
     }
 }
 
-
 .matrix-header {
     padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #ccc;
 
-    @at-root #{&}__title {
-        display: flex;
-        justify-content: space-between;
+    .matrix-header__banner {
+        margin-bottom: 20px;
 
-        h1 {
-            flex: 0 1 auto;
-            margin: 0;
-            font-size: 1.5rem;
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            justify-content: space-between;
         }
+    }
 
-        .matrix-tags {
-            flex: 0 1 auto;
+    .matrix-header__details {
+        flex-basis: 40%;
+    }
 
-            img {
-                display: inline-block;
-                margin-left: 5px;
-                height: 22px;
-            }
-        }
+    @at-root #{&}__title-sescc-spacing {
+        margin-bottom: 15px;
     }
 
     @at-root #{&}__controls {
@@ -443,6 +850,16 @@ $row-data-header-width: 200px;
         }
     }
 
+    @at-root #{&}__search-controls-sescc {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 100%;
+        }
+
+        .results-table-control {
+            margin-bottom: 0;
+        }
+    }
+
     @at-root #{&}__target-filter-controls {
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 65%;
@@ -461,14 +878,39 @@ $row-data-header-width: 200px;
     }
 }
 
+// Internal tags and type badges for matrix pages.
+.matrix-title-badge {
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .badge-image {
+        margin-top: 33px;
+        height: 38px;
+    }
+}
+
+.matrix-description {
+    margin: 10px 0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        @at-root #{&}__text {
+            flex-basis: 40%;
+            text-align: right;
+        }
+    }
+}
 
 @keyframes arrow-pulse {
     0% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.1;
     }
+
     100% {
         opacity: 1;
     }
@@ -526,13 +968,135 @@ table.matrix th.group-all-groups-cell {
     @extend .group-more-cell__button;
 }
 
-.matrix-general-search {
-    .general-search-entry {
-        margin-bottom: 0;
-        padding-bottom: 0;
+// Specific to grid-matrix
+.grid-matrix {
+    display: grid;
+    $border-color: #f0f0f0;
+    $first-column-width: 320px;
+    $row-data-item-width: 40px;
+
+    &__header {
+        display: grid;
+        grid-auto-flow: column;
+        min-width: auto;
+        max-width: fit-content;
+        border-bottom: 1px solid $border-color;
+
+        &__text {
+            position: absolute;
+            bottom: 1px;
+            font-weight: bold;
+
+            &--gender {
+                text-align: center;
+            }
+        }
+
+        > *:first-child {
+            width: $first-column-width;
+            left: 0;
+            position: sticky;
+            z-index: 1;
+            background-color: white;
+
+            &::after {
+                content: '';
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: -1px;
+                left: 100%;
+                width: 6px;
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), transparent);
+            }
+        }
+
+        * :not(:first-child) {
+            width: $row-data-item-width;
+        }
+
+        a {
+            display: block;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            height: 200px;
+            width: $row-data-item-width;
+            line-height: 40px;
+            font-weight: 400;
+            text-decoration: none;
+            text-align: left;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            writing-mode: vertical-rl;
+            writing-mode: tb-rl;
+            transform: rotate(180deg);
+            color: #000;
+        }
+    }
+
+    &__category {
+        display: grid;
+        grid-auto-flow: column;
+        min-width: auto;
+        max-width: fit-content;
+
+        > * {
+            border-bottom: 1px solid $border-color;
+            border-left: 1px solid $border-color;
+            text-align: center;
+        }
+
+        // https://stackoverflow.com/a/39368105/178550
+        > *:first-child {
+            width: $first-column-width;
+            border: 1px solid white;
+            font-weight: bold;
+            position: sticky;
+            left: 0;
+            text-align: left;
+            border-left: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #000 !important;
+        }
+
+        :not(:first-child) {
+            width: $row-data-item-width;
+        }
+    }
+
+    &__row-data {
+        display: grid;
+        grid-auto-flow: column;
+        min-width: auto;
+        max-width: fit-content;
+
+        :first-child {
+            width: $first-column-width;
+            text-align: right;
+            padding-right: 10px;
+            border-bottom: 1px solid $border-color;
+            border-left: 1px solid $border-color;
+
+            ::after {
+                content: "";
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: -1px;
+                left: 100%;
+                width: 6px;
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), transparent);
+            }
+        }
+
+        :not(:first-child) {
+            border-bottom: 1px solid $border-color;
+            border-left: 1px solid $border-color;
+            width: $row-data-item-width;
+        }
     }
 }
-
 
 /**
  * Styles specific to the reference-epigenome matrix.
@@ -547,6 +1111,11 @@ table.matrix th.group-all-groups-cell {
         .tab-content {
             padding-left: 10px;
             overflow: hidden;
+
+            /* stylelint-disable-next-line media-feature-name-disallowed-list */
+            @media screen and (max-width: $screen-sm-min) {
+                padding-left: 0;
+            }
         }
     }
 
@@ -593,46 +1162,56 @@ table.matrix th.group-all-groups-cell {
 .matrix__content--target {
     @extend .matrix__content--reference-epigenome;
 
-    .chip_seq_matrix__data-wrapper {
-        border: 1px solid #eee;
+    /* stylelint-disable-next-line selector-class-pattern */
+    .chip-seq-matrix__data-wrapper {
+        .tab-content {
+            border-right: 1px solid $tab-color;
+            border-left: 1px solid $tab-color;
+            border-bottom: 1px solid $tab-color;
+        }
+
         overflow-x: auto;
+
         li {
             cursor: -webkit-grab;
             cursor: grab;
+            white-space: nowrap;
+
             a::after {
                 content: none !important;
             }
-        }   
-    }
-}
 
-.chip_seq_matrix__data-wrapper { 
-    .tab-content {
-            overflow-x: auto;
-    }
-}
+            img {
+                vertical-align: middle;
+                width: 30px;
+                height: 35px;
+                margin-right: 5px;
+                display: none;
 
-.chip_seq_matrix-search {
-    display: flex;
-    flex-wrap: nowrap !important;
-    justify-content: space-between;
-
-    select {
-        margin-left: 5px;
-    }
-}
-
-.chip_seq_matrix__data  {
-    table { 
-        tr:nth-child(2) td:nth-child(2) {
-            border-top-left-radius: 14px;
+                @media screen and (min-width: $screen-md-min) {
+                    display: inline-block;
+                }
+            }
         }
-        tr:nth-child(2) td:last-child {
-            border-top-right-radius: 14px;
-        }
-    }  
+    }
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
+.ChipSeqMatrix {
+    .general-search-entry {
+        margin: 0;
+    }
+}
+
+.chip-seq-matrix__facet {
+    .facet-list-wrapper {
+        display: flex;
+
+        .facet {
+            flex: 1 0 auto;
+        }
+    }
+}
 
 // Contents of organism-selection modal.
 .matrix-reference-epigenome__organism-selector {
@@ -654,13 +1233,121 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
-.chip_seq_matrix__organism-selector {
-    @extend .matrix-reference-epigenome__organism-selector;
+// this needs to be refactored in the future
+.chip-seq-matrix {
+    &__organism-selector {
+        @extend .matrix-reference-epigenome__organism-selector;
+    }
+
+    &__facet {
+        &__expander-wrapper {
+            display: flex;
+            margin-top: 30px;
+            margin-bottom: 20px;
+
+            button {
+                background-color: white;
+                right: -2px;
+                border: 1px solid #fff;
+            }
+
+            &--control {
+                cursor: pointer;
+                margin-right: 30px;
+            }
+
+            &--clear {
+                flex: 1 0 auto;
+                min-width: 100px;
+
+                .clear-filters-control {
+                    margin-top: 0;
+                }
+            }
+        }
+
+        &__content {
+            margin-bottom: 10px;
+
+            // override the setting in FacetList component
+            .facet-wrapper {
+                display: flex !important;
+
+                .facet {
+                    flex: auto !important;
+                }
+            }
+        }
+    }
+
+    &__warning {
+        min-height: 40px;
+        margin: 10px;
+    }
+
+    &__data-wrapper {
+        .tab-content {
+            overflow-x: auto;
+        }
+    }
+
+    &-search {
+        display: flex;
+        flex-wrap: nowrap !important;
+        justify-content: space-between;
+
+        select {
+            margin-left: 5px;
+        }
+    }
 }
 
-.chip_seq_matrix__warning {
-    min-height: 40px;
-    margin: 10px;
+/* stylelint-disable-next-line selector-class-pattern */
+.rna_seq_matrix {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap !important;
+    justify-content: space-between;
+    margin-top: 12px;
+    margin-right: 10px;
+
+    input {
+        flex: 1 1 auto;
+    }
+
+    select, button {
+        margin-left: 5px;
+    }
+
+    .error {
+        display: none;
+    }
+
+    .rnaseq-search-autocomplete {
+        position: absolute;
+        z-index: 10;
+        padding: 0;
+        max-height: 300px;
+        overflow-y: scroll;
+        color: #fff;
+        background-color: #0a253d;
+        border: 1px solid #ccc;
+        list-style: none;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+        margin-top: 34px;
+
+        li {
+            margin: 0;
+            padding: 5px 15px;
+            font-size: 13px;
+            cursor: pointer;
+
+            &:hover {
+                color: #404040;
+                background-color: #e0e0e0;
+            }
+        }
+    }
 }
 
 /**
@@ -736,6 +1423,7 @@ $divider-color: #000; // Color of dividers between assays with targets
             width: $donor-cell-width;
             padding: 0;
             border-left: none;
+            text-align: right;
 
             > a {
                 height: $donor-cell-height;
@@ -800,6 +1488,7 @@ $divider-color: #000; // Color of dividers between assays with targets
         margin: 5px 10px;
 
         @at-root #{&}__label {
+            display: flex;
             flex: 1 0 auto;
             margin-left: 5px;
             line-height: $donor-cell-height;
@@ -822,9 +1511,10 @@ $divider-color: #000; // Color of dividers between assays with targets
         }
 
         @at-root #{&}__short-string {
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: $donor-legend-short-string-width;
-            text-align: center;
             line-height: $donor-cell-height;
             border-top-left-radius: 3px;
             border-bottom-left-radius: 3px;
@@ -834,10 +1524,19 @@ $divider-color: #000; // Color of dividers between assays with targets
             font-family: Menlo, Courier, sans-serif;
             letter-spacing: 0.2rem;
 
+            .svg-icon {
+                width: 14px;
+                height: 14px;
+            }
+
             @each $donor, $color, $textcolor, $curve in $donor-styles {
                 @at-root #{&}--#{$donor} {
                     color: $textcolor;
                     background-color: $color;
+
+                    .svg-icon {
+                        fill: $textcolor;
+                    }
                 }
             }
         }
@@ -863,7 +1562,6 @@ $divider-color: #000; // Color of dividers between assays with targets
     }
 }
 
-
 // Dividers for assay/target header and table cells.
 .matrix__row-data > td,
 .matrix__row-data > td:last-of-type,
@@ -877,5 +1575,1090 @@ $divider-color: #000; // Color of dividers between assays with targets
     // at right edge of matrix, or before an assay column without targets.
     &.divider--end {
         border-right: 1px solid $divider-color;
+    }
+}
+
+.sescc__matrix {
+    @at-root #{&}__data {
+        overflow-x: auto;
+
+        a {
+            cursor: pointer;
+        }
+
+        table {
+            tr:nth-child(2) td:nth-child(2) {
+                border-top-left-radius: 14px;
+            }
+
+            tr:nth-child(2) td:last-child {
+                border-top-right-radius: 14px;
+            }
+        }
+    }
+
+    @at-root #{&}__show-all {
+        display: flex;
+        font-size: 1.25rem;
+        margin-bottom: 30px;
+
+        .btn {
+            margin-right: 3px;
+        }
+    }
+}
+
+/**
+ * ENCORE Styles
+ */
+
+// Width of the ENCORE header and subheader cells.
+$encore-subheader-width: 30px;
+$encore-subheader-height: 56px;
+$encore-header-width: $encore-subheader-width;
+$encore-header-height: 150px;
+$encore-header-height-xs: 200px;
+$encore-header-width-spanned: $encore-subheader-width * 2;
+$encore-cell-width: $encore-subheader-width;
+$encore-spacer-width: 10px;
+$encore-term-name-colors:
+    HepG2 #eed78c #000 #e4bc52,
+    K562 #879acd #000 #354b77,
+    none #e0e0e0 #000 #c0c0c0;
+$rnaseq-term-name-colors:
+    HepG2 #e4bc52 #000 #eed78c,
+    K562 #354b77 #fff #879acd,
+    none #c0c0c0 #000 #e0e0e0;
+
+// Styles specific to the ENCORE matrix.
+.matrix__content {
+    // Content for the whole ENCORE page, including the RNA-seq matrix
+    &.matrix__content--encore {
+        display: block;
+
+        .matrix__data {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .category-header {
+            padding: 0;
+            border-left: 1px solid transparent;
+            width: $encore-header-width;
+
+            > a {
+                width: $encore-header-width;
+                line-height: $encore-header-width;
+            }
+
+            &.category-header--spanned {
+                width: $encore-header-width-spanned;
+
+                > a {
+                    width: $encore-header-width-spanned;
+                    line-height: $encore-header-width-spanned;
+                }
+            }
+        }
+
+        .category-subheader {
+            width: $encore-subheader-width;
+            padding: 5px 0;
+            vertical-align: bottom;
+            border-left: 1px solid $matrix-border-color;
+            border-bottom: 1px solid $matrix-border-color;
+
+            @each $term, $header-color, $text-color in $encore-term-name-colors {
+                &.category-subheader--#{$term} {
+                    background-color: $header-color;
+
+                    a {
+                        display: block;
+                        font-weight: normal;
+                        color: $text-color;
+                        width: $encore-subheader-width;
+                        height: $encore-subheader-height;
+                        line-height: $encore-subheader-width;
+                        text-align: left;
+                        writing-mode: tb-rl;
+                        transform: rotate(180deg);
+
+                        &:hover {
+                            text-decoration: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        td {
+            width: $encore-subheader-width;
+            padding: 0 0 1px 1px;
+        }
+
+        .matrix__row-data {
+            height: 100%;
+
+            > th {
+                position: static;
+                width: auto;
+                border-left: none;
+                background-color: transparent;
+                border-bottom: 1px solid transparent;
+
+                > a {
+                    white-space: nowrap;
+                }
+            }
+
+            > td {
+                height: 100%;
+
+                > a {
+                    width: $encore-cell-width;
+                    height: 100%;
+                }
+
+                &:first-of-type {
+                    border-left: 1px solid $matrix-border-color;
+                }
+
+                .encore-cell {
+                    @each $term, $color, $text-color, $cell-color in $encore-term-name-colors {
+                        &.encore-cell--#{$term} {
+                            background-color: $cell-color;
+                        }
+                    }
+                }
+
+                &.encore-column-spacer {
+                    border-bottom: none;
+                }
+            }
+        }
+
+        .matrix__col-category-header {
+            height: $encore-header-height-xs;
+
+            @media screen and (min-width: $screen-sm-min) {
+                height: $encore-header-height;
+            }
+
+            > th {
+                height: $encore-header-height-xs;
+
+                @media screen and (min-width: $screen-sm-min) {
+                    height: $encore-header-height;
+                }
+
+                &.encore-column-spacer {
+                    width: $encore-spacer-width;
+                }
+
+                > a {
+                    height: $encore-header-height-xs;
+
+                    @media screen and (min-width: $screen-sm-min) {
+                        height: $encore-header-height;
+                    }
+                }
+            }
+
+            > td {
+                position: static;
+            }
+        }
+
+        .matrix__message {
+            height: 200px;
+            vertical-align: top;
+
+            > td {
+                padding: 5px 30px;
+                min-height: 100px;
+                text-align: center;
+                white-space: nowrap;
+                font-style: italic;
+            }
+        }
+    }
+}
+
+.matrix {
+    &.matrix--rna-seq {
+        padding: 0 20px 20px 0;
+        border-top: 1px solid $matrix-border-color;
+        border-left: 1px solid $matrix-border-color;
+    }
+}
+
+// Inset RNA-seq matrix.
+.matrix__content.matrix__content--encore {
+    .matrix__presentation {
+        display: block;
+
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        // The RNA-seq portion of the page.
+        .matrix__rna-seq {
+            margin-top: 10px;
+            padding: 3px 0 0 3px;
+            background-color: #e8e8e8;
+            border: 1px solid #d0d0d0;
+            margin-bottom: 50px;
+
+            @media screen and (min-width: $screen-md-min) {
+                order: 1;
+                margin-left: 50px;
+                margin-bottom: 0;
+                min-width: 1px; // Prevents flex row overflow by allowing scrolling of this matrix.
+
+                /* stylelint-disable-next-line selector-class-pattern */
+                .uaTrident & {
+                    flex-grow: 1;
+                }
+            }
+
+            .matrix__col-category-header {
+                > td {
+                    background-color: transparent;
+                }
+            }
+
+            .category-subheader {
+                @each $term, $header-color, $text-color, $cell-color in $rnaseq-term-name-colors {
+                    &.category-subheader--#{$term} {
+                        background-color: $header-color;
+
+                        a {
+                            color: $text-color;
+                        }
+                    }
+                }
+            }
+
+            .matrix__row-data {
+                > td {
+                    .encore-cell {
+                        @each $term, $header-color, $text-color, $cell-color in $rnaseq-term-name-colors {
+                            &.encore-cell--#{$term} {
+                                background-color: $cell-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // The ENCORE portion of the page.
+        .matrix__encore {
+            @media screen and (min-width: $screen-md-min) {
+                order: 0;
+
+                /* stylelint-disable-next-line selector-class-pattern */
+                .uaTrident & {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.type-EncoreMatrix {
+    .matrix-header__target-filter-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 450px;
+        }
+
+        .general-search-entry {
+            padding-right: 0;
+        }
+    }
+}
+
+.encore-column-spacer {
+    border-left: 1px solid $matrix-border-color;
+    width: $encore-spacer-width;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.type-EncoreMatrix {
+    .general-search-entry {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+}
+
+// For large DOM collections, nested "display: flex" partially renders in Chrome and Safari dies trying.
+// "display: table-row" and "display: table-cell" work okay despite performance issues in Chrome and Safari;
+// but better than nothing
+.div-table-matrix-container {
+    .div-table-matrix {
+        // Hiding "display: table" here made the page load a bit  faster. It may be re-added if
+        // future Chrome updates improve rendering-performance
+        //display: table;
+
+        &__row {
+            margin: 0;
+            padding: 0;
+            display: table-row;
+
+            a {
+                color: #000;
+                text-decoration: none;
+                text-overflow: ellipsis;
+                width: 100%;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+
+            // get all first children (space needed after &)
+            & div:first-child {
+                border: 1px solid #fff;
+                width: 150px;
+                position: sticky;
+                left: 0;
+                z-index: 1;
+                background-color: #fff;
+
+                a {
+                    text-align: right;
+                    padding-right: 5px;
+                    text-decoration: none;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            // get all non-first chilren
+            & div:not(div:first-child) {
+                width: 25px;
+
+                a {
+                    text-decoration: none;
+                }
+            }
+
+            // in all non-first rows, get all non-first child
+            &:not(div:first-child) {
+                & div:first-child {
+                    border-width: 0 !important;
+                    border-right: 4px solid !important;
+                    border-image: linear-gradient(#ebebe0, #d7d7c1) 0 100% !important;
+                }
+            }
+
+            // get second child (no space after &)
+            &:nth-child(2) {
+                :nth-child(2) {
+                    border-top-left-radius: 14px;
+                }
+
+                :last-child {
+                    border-top-right-radius: 14px;
+                }
+            }
+
+            &__header-item {
+                display: table-cell;
+
+                a {
+                    writing-mode: vertical-rl;
+                    transform: rotate(180deg);
+                    font-weight: 700;
+                    padding-bottom: 20px;
+                    height: 200px;
+                    padding-top: 10px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    width: 25px;
+                }
+
+                &:first-child {
+                    border-width: 0 !important;
+                    border-right: 4px solid !important;
+                    border-image: linear-gradient(#ebebe0, #d7d7c1) 0 100% !important;
+                }
+            }
+
+            &__data-row-item {
+                border-left: 1px solid #f0f0f0;
+                border-right: 1px solid #f0f0f0;
+                border-bottom: 1px solid #f0f0f0;
+                display: table-cell;
+
+                a {
+                    display: block;
+                }
+            }
+        }
+    }
+}
+
+/* Styles specific to Rush Alzheimer’s Disease Study  */
+.matrix__content--brain {
+    .matrix {
+        tr {
+            td {
+                &:first-child {
+                    padding-right: 10px !important;
+                }
+
+                &:last-child {
+                    border-right: 1px solid $border-color;
+                }
+            }
+        }
+    }
+
+    table {
+        border: 1px solid #000;
+    }
+
+    .text-header {
+        border-top: 2px solid #000;
+        border-bottom: 2px solid #000;
+    }
+
+    .matrix__presentation {
+        flex: 0 1 95%;
+        overflow: auto;
+    }
+
+    .gender-symbol {
+        width: 14px;
+        height: 14px;
+
+        .svg-icon {
+            fill: #000;
+        }
+    }
+
+    &--first {
+        > th {
+            border-top: 1px solid $border-color;
+        }
+
+        > td {
+            border-top: 1px solid $border-color;
+        }
+    }
+
+    .matrix__brain-corner {
+        vertical-align: middle;
+    }
+
+    .matrix__col-category-header {
+        > th {
+            width: $donor-cell-width;
+            padding: 0;
+
+            > a {
+                width: $donor-cell-width;
+                line-height: $donor-cell-width;
+                font-weight: bold;
+
+                // Column subcategory links
+                &.sub {
+                    font-weight: normal;
+                }
+
+                &:hover {
+                    background-color: transparent;
+                }
+            }
+
+            // Base of labels for assays with targets in header
+            &.category-base {
+                border-top: 3px solid $divider-color;
+            }
+
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+    }
+
+    .cirlce-base {
+        flex: none;
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 1px solid #000;
+        margin: 1px;
+        cursor: pointer;
+    }
+
+    .matrix-brain-row-header {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 2px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .matrix-brain-disease-identifier {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 2px;
+
+        &--alzheimers-disease {
+            @extend .cirlce-base;
+
+            background-color: #ff0028;
+        }
+
+        &--mild-cognitive-impairment {
+            @extend .cirlce-base;
+
+            background-color: #f00;
+        }
+
+        &--cognitive-impairment {
+            @extend .cirlce-base;
+
+            background-color: lime;
+        }
+
+        &--no-disease {
+            @extend .cirlce-base;
+
+            background-color: #fff;
+        }
+
+        &--legend-text {
+            font-size: 0.9rem;
+            vertical-align: top;
+            font-weight: 600;
+        }
+    }
+
+    .matrix__row-data--alzheimers-disease {
+        background-color: #e9f4e9;
+    }
+
+    .matrix__row-data-mild-cognitive-impairment {
+        background-color: #dec9ed;
+    }
+
+    .matrix__row-data--cognitive-impairment {
+        background-color: #fbedde;
+    }
+
+    .matrix__row-data--multiple-diseases {
+        background-color: #dbd5c4;
+    }
+
+    .matrix__row-data--no-disease {
+        background-color: #fff;
+    }
+
+    /**
+     * Styles specific to the Brain matrix.
+    */
+    $brain-cell-width: 30px;
+    $brain-cell-height: 30px;
+    $border-color: #e0e0e0;
+    $brain-legend-short-string-width: 33px;
+
+    // Displays donor-quadrant in the matrix itself.
+    .brain-cell {
+        display: flex;
+        flex-wrap: wrap;
+        width: $brain-cell-width;
+        height: $brain-cell-height;
+
+        .brain-quadrant {
+            flex: 0 0 50%;
+            height: 50%;
+        }
+    }
+
+    $brain-styles:
+        head-of-caudate-nucleus #f00 #000 top-left,
+        middle-frontal-area-46 #0f0 #fff top-right,
+        posterior-cingulate-gyrus #00f #000 bottom-left,
+        none #fff #fff bottom-right;
+
+    .brain-quadrant {
+        @each $biosample, $color, $textcolor, $curve in $brain-styles {
+            &--#{$biosample} {
+                border-#{$curve}-radius: $brain-cell-height / 2;
+                background-color: $color;
+
+                &.blank {
+                    background-color: #f0f0f0;
+                }
+            }
+        }
+    }
+
+    .brain-matrix-circle {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 1px solid #000 !important;
+    }
+
+    .brain-legend {
+        &--title {
+            margin-bottom: 0;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .brain-legend__row {
+            display: flex;
+            margin-bottom: 3px;
+
+            &--circle {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 1px solid #000 !important;
+            }
+
+            &__item {
+                flex: auto;
+                text-align: left;
+            }
+
+            &--text {
+                font-size: 1.1rem;
+                padding-left: 5px;
+                padding-top: 4px;
+                margin-top: 2px;
+            }
+
+            &--disease {
+                border: 1px solid #000;
+                height: 25px;
+                width: 25px;
+            }
+        }
+    }
+
+    .brain-set {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        flex: 0 1 100%;
+
+        &__item {
+            flex: unset;
+            margin-right: 10px;
+        }
+    }
+
+    .disease-text {
+        font-size: 1.2rem;
+        padding: 2px 10px;
+
+        .disease-text__cogdx {
+            font-size: 0.9rem;
+        }
+    }
+
+    .hide-item {
+        display: none;
+    }
+}
+
+.matrix-cell-line__cart-button {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.deeply-profiled-matrix-spinner-label {
+    position: relative;
+    float: right;
+    pointer-events: none;
+}
+
+.deeply-profiled-matrix-spinner--loading::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border: 4px solid transparent;
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+    from {
+        transform: rotate(0turn);
+    }
+
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+/* Styles specific to Human Donor */
+.matrix-header__search-controls--human-donor {
+    flex: 0 1 100%;
+}
+
+.radio-btn {
+    & input[type="radio"] {
+        display: none;
+
+        &:checked + label {
+            background: #20b8be;
+            border-radius: 4px;
+        }
+    }
+
+    & label {
+        cursor: pointer;
+        z-index: 90;
+        line-height: 1.8em;
+    }
+}
+
+.disease-shape {
+    height: 12px !important;
+    width: 12px !important;
+    border-style: solid;
+    display: inline-block;
+    border: 1px solid #000;
+    vertical-align: middle;
+    margin-left: 1px;
+}
+
+.multiple-sclerosis-symbol {
+    @extend .disease-shape;
+
+    background-color: red;
+}
+
+.alzheimers-disease-symbol {
+    @extend .disease-shape;
+
+    background-color: orange;
+}
+
+.mild-cognitive-impairment-symbol {
+    @extend .disease-shape;
+
+    background-color: yellow;
+}
+
+.cognitive-impairment-symbol {
+    @extend .disease-shape;
+
+    background-color: green;
+}
+
+.bamyotrophic-lateral-sclerosis-symbol {
+    @extend .disease-shape;
+
+    background-color: purple;
+}
+
+.nonobstructive-coronary-artery-symbol {
+    @extend .disease-shape;
+
+    background-color: brown;
+}
+
+.basal-cell-carcinoma-symbol {
+    @extend .disease-shape;
+
+    background-color: blue;
+}
+
+.squamous-cell-carcinoma-symbol {
+    @extend .disease-shape;
+
+    background-color: gray;
+}
+
+.matrix__content-human-donor {
+    @extend .matrix__content;
+
+    .human-donor-facets {
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 25%;
+    }
+
+    .gender-symbol {
+        width: 0.9rem !important;
+        display: inline-block;
+        line-height: 5px;
+        vertical-align: middle;
+
+        .svg-icon {
+            fill: #000;
+        }
+    }
+
+    .search-results__facets {
+        width: 250px;
+    }
+
+    .fetched-data-region {
+        display: inline;
+        font-weight: 500;
+    }
+}
+
+.matrix__legend-region-human-donor {
+    display: flex;
+    flex-direction: column;
+
+    .human-donor-legend {
+        &--title {
+            margin-bottom: 0;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        &--disease-symbol {
+            font-size: 1.5rem;
+        }
+
+        &--disease-text {
+            font-size: 1rem;
+        }
+
+        &__body {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 15px;
+        }
+    }
+
+    .human-donor-biosample {
+        margin-bottom: 20px;
+
+        &__title {
+            margin-bottom: 0;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        &__body {
+            margin-left: 20px;
+
+            &__area {
+                display: flex;
+                height: 25px;
+            }
+
+            &__options {
+                display: flex;
+                margin-left: 15px;
+
+                label {
+                    font-size: 1rem;
+                }
+            }
+        }
+    }
+}
+
+.matrix-header__cart {
+    margin-top: 5px;
+    margin-bottom: -5px;
+    padding-top: 5px;
+    border-top: 1px solid #ccc;
+}
+
+$matrix-fc-human-bg: #0198c8;
+$matrix-fc-mouse-bg: #5bb150;
+
+.matrix__content {
+    &.matrix__content--degron {
+        display: block;
+        font-weight: normal;
+
+        .matrix__presentation {
+            flex-basis: auto;
+
+            .matrix {
+                border-collapse: collapse;
+
+                .matrix__col-category-header {
+                    > th {
+                        width: auto;
+                        height: 180px;
+
+                        a {
+                            width: 30px;
+                            height: 100%;
+                            line-height: 1.8;
+                        }
+                    }
+                }
+
+                .matrix__row-data {
+                    > th {
+                        white-space: nowrap;
+                        font-weight: normal;
+                        border-left: none;
+
+                        a {
+                            line-height: 1.6;
+                        }
+                    }
+
+                    > td {
+                        border: 1px solid #f0f0f0;
+                        height: 100%;
+                    }
+
+                    .matrix__populated-badge {
+                        height: 100%;
+                        width: 100%;
+
+                        &.matrix__populated-badge--partial {
+                            background-color: rgb(139, 149, 199);
+                        }
+
+                        &.matrix__populated-badge--full {
+                            background-color: rgb(80, 100, 200);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.matrix__content--functional-characterization {
+        display: flex;
+
+        .matrix__col-category-header {
+            > th {
+                height: 280px;
+
+                > a {
+                    height: 100%;
+                    padding-right: 5px;
+                    line-height: 1;
+
+                    .header-title__category {
+                        font-weight: 500;
+                    }
+
+                    .header-title__subcategory {
+                        font-size: 0.8rem;
+                        color: #606060;
+                    }
+                }
+            }
+        }
+
+        .matrix__row-category {
+            > th, > td {
+                color: #fff;
+                font-weight: 700;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            > th {
+                padding-left: 10px;
+                border-top-left-radius: 14px;
+
+                > a {
+                    color: #fff;
+
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+            }
+
+            > td {
+                border-top-right-radius: 14px;
+            }
+
+            &.matrix__row-category--homo-sapiens {
+                > th, > td {
+                    background-color: $matrix-fc-human-bg;
+                }
+            }
+
+            &.matrix__row-category--mus-musculus {
+                > th, > td {
+                    background-color: $matrix-fc-mouse-bg;
+                }
+            }
+        }
+
+        .matrix__populated-badge {
+            height: 100%;
+            width: 100%;
+            background-color: rgb(80, 100, 200);
+        }
+
+        .matrix__row-data {
+            > th {
+                width: $row-data-header-width;
+                max-width: $row-data-header-width;
+                min-width: $row-data-header-width;
+                padding: 0;
+                font-weight: normal;
+
+                > a {
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    height: 100%;
+                }
+            }
+
+            > td {
+                > a {
+                    color: white;
+                    text-decoration: none;
+                }
+            }
+
+            &.matrix__row-data--homo-sapiens {
+                > td:not(:empty) {
+                    background-color: $matrix-fc-human-bg;
+                }
+            }
+
+            &.matrix__row-data--mus-musculus {
+                > td:not(:empty) {
+                    background-color: $matrix-fc-mouse-bg;
+                }
+            }
+        }
+
+        // Blank row between species sections.
+        .matrix__horizontal-divider {
+            height: 20px;
+        }
+
+        // Border for the last subcategory header in each species section.
+        .subcategory-header-last-of-section {
+            border-bottom: 1px solid #f0f0f0;
+        }
+    }
+}
+
+.matrix-general-search--degron {
+    p {
+        margin: 0;
+    }
+
+    input {
+        width: 100%;
     }
 }

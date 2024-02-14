@@ -223,3 +223,132 @@ def library_9_10(value, system):
             else:
                 value['notes'] = value['library_size_selection_method']
             value['library_size_selection_method'] = 'other'
+
+
+@upgrade_step('library', '10', '11')
+def library_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5080
+    if 'strand_specificity' in value:
+        if value['strand_specificity'] == False:
+            value.pop('strand_specificity')
+        elif value['strand_specificity'] == True:
+            value['strand_specificity'] = 'strand-specific'
+
+
+@upgrade_step('library', '11', '12')
+def library_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5321
+    if 'fragmentation_methods' in value:
+        frag_methods = value.get('fragmentation_methods')
+        if 'chemical (HindIII/DpnII restriction)' in frag_methods:
+            frag_methods.remove('chemical (HindIII/DpnII restriction)')
+            if 'chemical (DpnII restriction)' not in frag_methods:
+                frag_methods.append('chemical (DpnII restriction)')
+            if 'chemical (HindIII restriction)' not in frag_methods:
+                frag_methods.append('chemical (HindIII restriction)')
+            value['fragmentation_methods'] = frag_methods
+
+
+@upgrade_step('library', '12', '13')
+def library_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5297
+    if 'adapters' in value:
+        for adapter in value['adapters']:
+            if 'type' in adapter:
+                if adapter['type'] == '5\' adapter': adapter['type'] = 'read1 5\' adapter'
+                if adapter['type'] == '3\' adapter': adapter['type'] = 'read1 3\' adapter'
+            else:
+                adapter['type'] = 'unspecified adapter'
+
+
+@upgrade_step('library', '13', '14')
+def library_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5368
+    notes = value.get('notes', '')
+    if 'depleted_in_term_name' in value:
+        if 'polyadenylated mRNA' in value['depleted_in_term_name']:
+            if value['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                value['nucleic_acid_term_name'] = 'RNA'
+                value['notes'] = (notes + ' The nucleic_acid_term_name of this library was automatically upgraded by ENCD-5368.').strip()
+
+
+@upgrade_step('library', '14', '15')
+def library_14_15(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5647
+    notes = value.get('notes', '')
+    if 'depleted_in_term_name' in value:
+        if 'polyadenylated mRNA' in value['depleted_in_term_name']:
+            if value['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                value['nucleic_acid_term_name'] = 'RNA'
+                value['notes'] = (notes + ' The nucleic_acid_term_name of this library was converted to RNA due to a conflict with polyA mRNA in depleted_in_term_name.').strip()
+
+
+@upgrade_step('library', '15', '16')
+def library_15_16(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5753
+    notes = value.get('notes', '')
+    new_linkers = []
+    if 'linkers' in value:
+        for linker in value['linkers']:
+            if 'type' in linker:
+                if linker['type'] == 'linker a':
+                    linker['type'] = 'linker a top'
+                    new_linkers.append(linker)
+                    linker_a_bottom = {'type': 'linker a bottom', 'sequence': linker['sequence']}
+                    new_linkers.append(linker_a_bottom)
+                if linker['type'] == 'linker b':
+                    linker['type'] = 'linker b top'
+                    new_linkers.append(linker)
+                    linker_b_bottom = {'type': 'linker b bottom', 'sequence': linker['sequence']}
+                    new_linkers.append(linker_b_bottom)
+    if len(new_linkers) == 4:
+        value['linkers'] = new_linkers
+        value['notes'] = (notes + ' The linkers of this library were converted as linker a and linker b have been deprecated as linkers type.').strip()
+
+
+@upgrade_step('library', '16', '17')
+def library_16_17(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5844
+    notes = value.get('notes', '')
+    if 'strand_specificity' not in value:
+        value['strand_specificity'] = 'unstranded'
+        value['notes'] = (notes + ' The strand_specificity of this library was defaulted to unstranded in an upgrade.').strip()
+
+
+@upgrade_step('library', '17', '18')
+def library_17_18(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6008
+    notes = value.get('notes', '')
+    if 'nucleic_acid_starting_quantity' in value:
+        quantity = value.get('nucleic_acid_starting_quantity')
+        try:
+            converted_quantity = float(quantity)
+            value['nucleic_acid_starting_quantity'] = converted_quantity
+        except ValueError:
+            value['nucleic_acid_starting_quantity'] = 0
+            value['notes'] = (notes + ' The nucleic_acid_starting_quantity of this library could not be upgraded: '+ quantity).strip()
+
+
+@upgrade_step('library', '18', '19')
+def library_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6102
+    if 'lot_id' in value and value['lot_id'] == '':
+        value.pop('lot_id')
+    if 'product_id' in value and value['product_id'] == '':
+        value.pop('product_id')
+
+
+@upgrade_step('library', '19', '20')
+def library_19_20(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6178
+    if 'construction_method' in value:
+        if value['construction_method'] == 'CapTrap':
+            value['construction_method'] = ['CapTrap']
+        if value['construction_method'] == 'Nanopore Direct RNA Kit':
+            value['construction_method'] = ['Nanopore Direct RNA Kit']
+        if value['construction_method'] == 'Nanopore PCR-cDNA Kit':
+            value['construction_method'] = ['Nanopore PCR-cDNA Kit']
+        if value['construction_method'] == 'Parse Single Cell Whole Transcriptome Kit':
+            value['construction_method'] = ['Parse Single Cell Whole Transcriptome Kit']
+        if value['construction_method'] == 'R2C2':
+            value['construction_method'] = ['R2C2']

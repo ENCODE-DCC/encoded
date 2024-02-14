@@ -1,5 +1,10 @@
 ## Changelog for analysis_step_run.json
 
+### Minor changes since schema version 5
+
+* Add *pipeline_run_id*.
+* Add *award* and *lab* as submittable properties.
+
 ### Schema version 5
 
 * Remove *virtual* as status and use *standard_status* mixin.

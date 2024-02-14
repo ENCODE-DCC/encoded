@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { collapseIcon } from '../libs/svg-icons';
-import * as globals from './globals';
+import UserRoles from '../libs/user_roles';
 
 // This module supports the display of an object's audits in the form of an indicator button that
 // shows a summary of the categories of audits in the current object. Currently, we have four
@@ -125,7 +125,7 @@ export const ObjectAuditIcon = ({ object, audit, isAuthorized }) => {
         const objectAudit = audit || object.audit;
 
         if (objectAudit) {
-            const sortedAuditLevels = _(Object.keys(objectAudit)).sortBy(level => -objectAudit[level][0].level);
+            const sortedAuditLevels = _(Object.keys(objectAudit)).sortBy((level) => -objectAudit[level][0].level);
 
             // Only authorized users should see ambulance icon (INTERNAL_ACTION)
             highestAuditLevel = !isAuthorized && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
@@ -200,7 +200,7 @@ class AuditGroup extends React.Component {
 
     detailSwitch() {
         // Click on the detail disclosure triangle
-        this.setState(prevState => (
+        this.setState((prevState) => (
             ({ detailOpen: !prevState.detailOpen })
         ));
     }
@@ -217,8 +217,8 @@ class AuditGroup extends React.Component {
         return (
             <div className={alertClass}>
                 <div className="audit-detail__summary">
-                    <div className={`icon audit-detail__trigger--${level}`}>
-                        <button onClick={this.detailSwitch} className="collapsing-title">
+                    <div className={`audit-detail__trigger audit-detail__trigger--${level}`}>
+                        <button type="button" onClick={this.detailSwitch} className="collapsing-title">
                             {collapseIcon(!detailOpen)}
                         </button>
                     </div>
@@ -226,18 +226,18 @@ class AuditGroup extends React.Component {
                         <i className={iconClass} />
                         <strong>&nbsp;{categoryName}</strong>
                         <div className="btn-info-audit">
-                            <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} title={`View description of ${categoryName} in a new tab`} rel="noopener noreferrer" target="_blank"><i className="icon icon-question-circle" /></a>
+                            <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} rel="noopener noreferrer" target="_blank"><span className="sr-only">{`View description of ${categoryName} in a new tab`}</span><i className="icon icon-info-circle" /></a>
                         </div>
                     </div>
                 </div>
                 {this.state.detailOpen ?
                     <div className="audit-details-section">
                         <div className="audit-details-decoration" />
-                        {group.map((audit, i) =>
+                        {group.map((audit, i) => (
                             <div className={alertItemClass} key={i} role="alert">
                                 <DetailEmbeddedLink detail={audit.detail} />
                             </div>
-                        )}
+                        ))}
                     </div>
                 : null}
             </div>
@@ -269,13 +269,39 @@ export function auditsDisplayed(audits, session) {
 
 
 /**
+ * Filter the given audit object (as it appears in the object JSON) and generate a new audit object
+ * only containing the audits relevant to the given path, e.g. /experiments/ACCESSION/. An empty
+ * object in the `audit` parameter results in an empty object returned.
+ * @param {object} audit System audit object
+ * @param {string} path Returned audits all refer to this path/@id
+ * @return {object} System audit object but only with keys and values relevant to the given path
+ */
+export const filterAuditByPath = (audit, path) => (
+    Object.keys(audit).reduce((accAudit, auditSection) => {
+        // Within an audit section, get all the audits relevant to the given path.
+        const auditsForPath = audit[auditSection].filter((singleAudit) => (
+            singleAudit.path === path
+        ));
+
+        // Add this audit section's relevant audits to the accumulating filtered audits.
+        if (auditsForPath.length > 0) {
+            return { ...accAudit, [auditSection]: auditsForPath };
+        }
+
+        // No audits in this section relevant to the given path.
+        return accAudit;
+    }, {})
+);
+
+
+/**
  * Display a summary of audit levels and their counts. Useful in audit buttons.
  */
 export const AuditCounts = ({ audits, useWrapper, isAuthorized }) => {
     // Sort the audit levels by their level number, using the first element of each warning
     // category.
     if (audits && Object.keys(audits).length > 0) {
-        const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
+        const sortedAuditLevels = _(Object.keys(audits)).sortBy((level) => -audits[level][0].level);
         const auditCountsContent = (
             sortedAuditLevels.map((level) => {
                 if (isAuthorized || level !== 'INTERNAL_ACTION') {
@@ -329,23 +355,27 @@ AuditCounts.defaultProps = {
 // parameter to this function. This decorator returns a component that's the original component
 // plus the audit rendering functions. These functions get added to the original component's
 // properties. See the documentation at the top of this file for details.
-export const auditDecor = AuditComponent => class extends React.Component {
+export const auditDecor = (AuditComponent) => (class extends React.Component {
     constructor() {
         super();
         this.state = { auditDetailOpen: false };
         this.toggleAuditDetail = this.toggleAuditDetail.bind(this);
+        this.auditCloseDetail = this.auditCloseDetail.bind(this);
         this.auditIndicators = this.auditIndicators.bind(this);
         this.auditDetail = this.auditDetail.bind(this);
     }
 
     toggleAuditDetail() {
-        this.setState(prevState => ({ auditDetailOpen: !prevState.auditDetailOpen }));
+        this.setState((prevState) => ({ auditDetailOpen: !prevState.auditDetailOpen }));
+    }
+
+    auditCloseDetail() {
+        this.setState({ auditDetailOpen: false });
     }
 
     auditIndicators(audits, id, options) {
         const { session, search, sessionProperties } = options || {};
-        const roles = globals.getRoles(sessionProperties);
-        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+        const userRoles = new UserRoles(sessionProperties);
 
         if (auditsDisplayed(audits, session)) {
             // Calculate the class of the indicator button based on whether the audit detail panel
@@ -354,13 +384,13 @@ export const auditDecor = AuditComponent => class extends React.Component {
             const auditItems = Object.keys(audits);
 
             // special case for unauthorized users
-            if (!isAuthorized && auditItems.length === 1 && auditItems[0] === 'INTERNAL_ACTION') {
+            if (!userRoles.isPrivileged && auditItems.length === 1 && auditItems[0] === 'INTERNAL_ACTION') {
                 return null;
             }
 
             return (
-                <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
-                    <AuditCounts audits={audits} useWrapper={false} isAuthorized={isAuthorized} />
+                <button type="button" className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
+                    <AuditCounts audits={audits} useWrapper={false} isAuthorized={userRoles.isPrivileged} />
                 </button>
             );
         }
@@ -374,29 +404,28 @@ export const auditDecor = AuditComponent => class extends React.Component {
         if (audits && this.state.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning
             // category.
-            const sortedAuditLevelNames = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
-            const roles = globals.getRoles(sessionProperties);
-            const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+            const sortedAuditLevelNames = _(Object.keys(audits)).sortBy((level) => -audits[level][0].level);
+            const userRoles = new UserRoles(sessionProperties);
 
             // First loop by audit level, then by audit group
             return (
                 <div className="audit-detail" id={id.replace(/\W/g, '')} aria-hidden={!this.state.auditDetailOpen}>
                     {sortedAuditLevelNames.map((auditLevelName) => {
-                        if (isAuthorized || auditLevelName !== 'INTERNAL_ACTION') {
+                        if (userRoles.isPrivileged || auditLevelName !== 'INTERNAL_ACTION') {
                             const audit = audits[auditLevelName];
 
                             // Group audits within a level by their category ('name' corresponds to
                             // 'category' in a more machine-like form)
                             const groupedAudits = _(audit).groupBy('category');
 
-                            return Object.keys(groupedAudits).map(groupName =>
+                            return Object.keys(groupedAudits).map((groupName) => (
                                 <AuditGroup
                                     group={groupedAudits[groupName]}
                                     groupName={groupName}
                                     auditLevelName={auditLevelName}
                                     key={groupName}
                                 />
-                            );
+                            ));
                         }
                         return null;
                     })}
@@ -412,7 +441,8 @@ export const auditDecor = AuditComponent => class extends React.Component {
                 {...this.props}
                 auditIndicators={this.auditIndicators}
                 auditDetail={this.auditDetail}
+                auditCloseDetail={this.auditCloseDetail}
             />
         );
     }
-};
+});

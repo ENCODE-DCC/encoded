@@ -56,7 +56,11 @@ def test_updated_source(content, testapp):
 def test_updated_source_changed(content, testapp):
     url = '/testing-link-sources/' + sources[0]['uuid']
     res = testapp.patch_json(url, {'target': targets[1]['uuid']})
-    assert set(res.headers['X-Updated'].split(',')) == {sources[0]['uuid'], targets[1]['uuid']}
+    assert set(res.headers['X-Updated'].split(',')) == {
+        sources[0]['uuid'],
+        targets[0]['uuid'],
+        targets[1]['uuid'],
+    }
 
 
 def test_updated_target(content, testapp):
@@ -65,11 +69,11 @@ def test_updated_target(content, testapp):
     assert set(res.headers['X-Updated'].split(',')) == {targets[0]['uuid']}
 
 
-def test_embedded_uuids_experiment(experiment, replicate, library, biosample, organism, dummy_request, threadlocals):
+def test_embedded_uuids_experiment(experiment, replicate_url, library_url, biosample, organism, dummy_request, threadlocals):
     dummy_request.embed(experiment['@id'], '@@embedded')
     embedded_uuids = dummy_request._embedded_uuids
     assert experiment['uuid'] in embedded_uuids
-    assert replicate['uuid'] in embedded_uuids
-    assert library['uuid'] in embedded_uuids
+    assert replicate_url['uuid'] in embedded_uuids
+    assert library_url['uuid'] in embedded_uuids
     assert biosample['uuid'] in embedded_uuids
     assert organism['uuid'] in embedded_uuids

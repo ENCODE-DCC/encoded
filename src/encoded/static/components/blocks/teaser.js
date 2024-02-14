@@ -133,7 +133,7 @@ const displayModeSelect = (
         </select>
     </div>
 );
-const imagePicker = <ObjectPicker searchBase={'?mode=picker&type=image'} />;
+const imagePicker = <ObjectPicker searchBase="?mode=picker&type=image" />;
 
 globals.blocks.register({
     label: 'teaser block',

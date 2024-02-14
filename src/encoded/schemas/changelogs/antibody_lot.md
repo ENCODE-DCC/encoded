@@ -1,5 +1,8 @@
 ## Changelog for antibody_lot.json
 
+### Schema version 10
+* Modified regex pattern for *lot_id* and *product_id* to disallow blank strings.
+
 ### Minor changes since schema version 9
 
 * Added *single cell* to *biosample_type* enums

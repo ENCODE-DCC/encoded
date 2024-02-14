@@ -1,0 +1,17 @@
+[
+    {
+        "_test": "pulse chase time series",
+        "accession": "ENCSR001PCT",
+        "award": "UM1HG009390",
+        "description": "Pulse chase time series.",
+        "lab": "ali-mortazavi",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR200BRU",
+            "/experiments/ENCSR600BRU"
+        ],
+        "uuid": "c5917215-ccc7-465d-85e7-cd87b8feaba3",
+        "date_released": "2020-09-11"
+    }
+]

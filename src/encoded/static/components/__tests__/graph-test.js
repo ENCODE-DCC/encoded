@@ -30,14 +30,14 @@ describe('Experiment Graph', () => {
         }
 
         // See if all the given ids are in the nodes
-        return _(ids).all(id => id in allNodes);
+        return _(ids).all((id) => id in allNodes);
     }
 
     // Utility returns true if child ID has all parents in "parent" IDs
     function hasParents(graph, child, parents) {
         const matchingTargets = _(graph.edges).where({ target: child });
         if (matchingTargets.length) {
-            return _(parents).all(parent => _(matchingTargets).any(target => parent === target.source));
+            return _(parents).all((parent) => _(matchingTargets).any((target) => parent === target.source));
         }
         return null;
     }

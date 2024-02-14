@@ -1,5 +1,14 @@
 ## Changelog for dataset.json
 
+### Minor changes since schema version 15
+
+* Added *LRGASP* and *ENCYCLOPEDIAv6* to the *internal_tags* enums list
+* Added *doi* property
+* Added *analyses* property
+* Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *Deeply Profiled* to the *internal_tags* enum
+* Added *Degron* to *internal_tags* enums list.
+
 ### Schema version 15
 
 * Update the dbxref regex to remove IHEC; IHEC is explicitly allowed only in Annotation and ReferenceEpigenome objects

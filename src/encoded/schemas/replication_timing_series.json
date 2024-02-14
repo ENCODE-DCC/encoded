@@ -1,6 +1,6 @@
 {
     "title": "Replication timing series",
-    "description": "Schema for submitting metadata for a replication timing series.",
+    "description": "Experimental data assessing replication timing phenomena at various phases of the cell cycle.",
     "id": "/profiles/replication_timing_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -44,34 +44,59 @@
             ]
         }
     },
-    "dependencies": {
-        "status": {
-            "oneOf": [
-                {
-                    "required": ["date_released"],
-                    "properties": {
-                        "status": {
-                            "enum": ["released", "revoked"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "status": {
-                                "enum": ["released", "revoked"]
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-    },
     "properties": {
         "schema_version": {
-            "default": "17"
+            "default": "18"
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "related_datasets.assay_term_name",
+                "target.investigated_as",
+                "target.label"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "organism.scientific_name",
+                "biosample_ontology.classification",
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims",
+                "related_datasets.replicates.library.biosample.sex",
+                "related_datasets.replicates.library.biosample.life_stage",
+                "related_datasets.replicates.library.biosample.phase"
+            ]
+        },
+        {
+            "title": "Analysis",
+            "facet_fields": [
+                "assembly",
+                "related_datasets.files.file_type"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title",
+                "award.project",
+                "award.rfa"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "related_datasets.assay_term_name": {
             "title": "Assay name"
@@ -88,8 +113,14 @@
         "target.investigated_as": {
             "title": "Target category"
         },
+        "target.label": {
+            "title": "Target of assay"
+        },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -97,35 +128,17 @@
         "biosample_ontology.cell_slims": {
             "title": "Cell"
         },
+        "related_datasets.replicates.library.biosample.sex": {
+            "title": "Sex"
+        },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage"
         },
-        "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Biosample treatment"
+        "related_datasets.replicates.library.biosample.phase": {
+            "title": "Cell cycle phase"
         },
         "related_datasets.files.file_type": {
             "title": "Available file types"
-        },
-        "related_datsets.files.run_type": {
-            "title": "Run type"
-        },
-        "related_datasets.files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "related_datasets.files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "related_datasets.replicates.library.size_range": {
-            "title": "Library fragment size (nt)"
-        },
-        "related_datasets.replicates.library.nucleic_acid_term_name": {
-            "title": "Library material"
-        },
-        "related_datasets.replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in"
-        },
-        "related_datasets.replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment"
         },
         "lab.title": {
             "title": "Lab"
@@ -170,8 +183,16 @@
             "title": "Status",
             "type": "string"
         },
+        "target.@id": {
+            "title": "Targets",
+            "type": "string"
+        },
         "target.label": {
             "title": "Target",
+            "type": "string"
+        },
+        "related_datasets.@id": {
+            "title": "Additional datasets",
             "type": "string"
         },
         "related_datasets.replicates.antibody.accession": {
@@ -186,6 +207,10 @@
             "title": "Biosample age",
             "type": "string"
         },
+        "related_datasets.replicates.library.biosample.phase": {
+            "title": "Cell cycle phase",
+            "type": "string"
+        },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment",
             "type": "string"
@@ -194,12 +219,12 @@
             "title": "Biosample treatment ontology ID",
             "type": "string"
         },
-        "related_datasets.replicates.library.biosample.treatments.concentration": {
-            "title": "Biosample treatment concentration",
+        "related_datasets.replicates.library.biosample.treatments.amount": {
+            "title": "Biosample treatment amount",
             "type": "number"
         },
-        "related_datasets.replicates.library.biosample.treatments.concentration_units": {
-            "title": "Biosample treatment concentration units",
+        "related_datasets.replicates.library.biosample.treatments.amount_units": {
+            "title": "Biosample treatment amount units",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.duration": {
@@ -224,6 +249,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "related_datasets.assay_term_name": 1.0,
@@ -286,11 +312,12 @@
         "target.aliases": 1.0,
         "target.genes.symbol": 1.0,
         "target.label": 1.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/replication_timing_series.md"
 

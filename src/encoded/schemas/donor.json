@@ -37,7 +37,7 @@
             "items": {
                 "type": "string",
                 "description": "External identifier that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
-                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$|^(JAX:\\d{6})$|^(NBRP:\\d+)$|^(TRiP:[A-Z0-9]+)$"
+                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$|^(JAX:\\d{6})$|^(NBRP:\\d+)$|^(TRiP:[A-Z0-9]+)$|^(AllCells:\\d+)$"
             }
         },
         "alternate_accessions": {
@@ -63,10 +63,59 @@
             "linkTo": "Organism"
         }
     },
+    "facet_groups": [
+        {
+            "title": "Donor",
+            "facet_fields": [
+                "life_stage",
+                "sex",
+                "organism.scientific_name",
+                "strain_background"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "lab.title"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
+    "facets": {
+        "life_stage": {
+            "title": "Life stage"
+        },
+        "sex": {
+            "title": "Sex"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "organism.scientific_name": {
+            "title": "Organism"
+        },
+        "strain_background": {
+            "title": "Strain background"
+        }
+    },
     "boost_values": {
         "external_ids": 1.0,
         "aliases": 1.0,
         "accession": 1.0,
-        "alternate_accessions": 1.0
+        "alternate_accessions": 1.0,
+        "organism.scientific_name": 1.0,
+        "organism.name": 1.0
     }
 }

@@ -32,6 +32,7 @@ import time
 
 log = logging.getLogger(__name__)
 
+MAX_NUMBER_OF_RENDERED_RESULTS = 1000
 
 def includeme(config):
     config.add_tween(
@@ -209,8 +210,18 @@ def canonical_redirect(event):
     location = canonical_path + ('?' if qs else '') + qs
     raise HTTPMovedPermanently(location=location)
 
+def too_many_results_to_render(limit):
+    try:
+        return int(limit) > MAX_NUMBER_OF_RENDERED_RESULTS
+    except (ValueError, TypeError):
+        return limit == 'all'
+
 
 def should_transform(request, response):
+    limit = request.params.get('limit')
+    if limit is not None and too_many_results_to_render(limit):
+        return False
+
     if request.method not in ('GET', 'HEAD'):
         return False
 

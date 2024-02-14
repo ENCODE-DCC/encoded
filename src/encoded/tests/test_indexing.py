@@ -6,10 +6,14 @@ elasticsearch running as subprocesses.
 
 import pytest
 
-pytestmark = [pytest.mark.indexing]
+
+pytestmark = [
+    pytest.mark.indexer,
+    pytest.mark.usefixtures('indexer_testapp'),
+]
 
 
-def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
+def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
     settings['create_tables'] = True
@@ -25,16 +29,17 @@ def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server
     settings['queue_server'] = True
     settings['queue_worker'] = True
     settings['queue_worker_processes'] = 2
-    settings['queue_worker_chunk_size'] = 1024
+    settings['queue_worker_chunk_size'] = 5000
     settings['queue_worker_batch_size'] = 2000
     settings['visindexer'] = True
     settings['regionindexer'] = True
     return settings
 
 
+
 @pytest.fixture(scope='session')
-def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
-    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server):
+    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server)
 
 
 def _app(app_settings):
@@ -112,7 +117,6 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['total'] == 2
 
 
-@pytest.mark.slow
 def test_indexing_workbook(testapp, indexer_testapp):
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
@@ -137,11 +141,6 @@ def test_indexing_workbook(testapp, indexer_testapp):
     assert res.json['cycle_took']
     assert res.json['title'] == 'vis_indexer'
 
-    res = indexer_testapp.post_json('/index_region', {'record': True})
-    assert res.json['cycle_took']
-    assert res.json['title'] == 'region_indexer'
-    assert res.json['indexed'] > 0
-
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
 
@@ -160,19 +159,6 @@ def test_indexer_vis_state(dummy_request):
     result = state.finish_cycle(result, [])
     assert result['cycles'] == (cycles + 1)
     assert result['status'] == 'done'
-
-
-def test_indexer_region_state(dummy_request):
-    from encoded.region_indexer import RegionIndexerState
-    INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
-    es = dummy_request.registry['elasticsearch']
-    state = RegionIndexerState(es,INDEX)
-    result = state.get_initial_state()
-    assert result['title'] == 'region_indexer'
-    assert result['status'] == 'idle'
-    display = state.display()
-    assert 'files_added' in display
-    assert 'files_dropped' in display
 
 
 def test_listening(testapp, listening_conn):

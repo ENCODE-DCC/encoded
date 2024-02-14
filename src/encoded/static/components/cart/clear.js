@@ -5,8 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { removeMultipleFromCartAndSave } from './actions';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
+import { clearCartAndSave } from './actions';
 
 
 /**
@@ -22,8 +22,8 @@ class CartClearModalComponent extends React.Component {
      * Called when a user clicks the modal button to confirm clearing the cart.
      */
     handleConfirmClearClick() {
-        const { elements, onClearCartClick, closeClickHandler } = this.props;
-        onClearCartClick(elements);
+        const { onClearCartClick, closeClickHandler } = this.props;
+        onClearCartClick();
         closeClickHandler();
     }
 
@@ -36,8 +36,8 @@ class CartClearModalComponent extends React.Component {
                     <p id="clear-cart-description">Clearing the cart is not reversible.</p>
                 </ModalBody>
                 <ModalFooter
-                    closeModal={<button id="clear-cart-close" onClick={closeClickHandler} className="btn btn-default">Cancel</button>}
-                    submitBtn={<button onClick={this.handleConfirmClearClick} disabled={inProgress} className="btn btn-danger" id="clear-cart-submit">Clear</button>}
+                    closeModal={<button type="button" id="clear-cart-close" onClick={closeClickHandler} className="btn btn-default">Cancel</button>}
+                    submitBtn={<button type="button" onClick={this.handleConfirmClearClick} disabled={inProgress} className="btn btn-danger" id="clear-cart-submit">Clear</button>}
                     dontClose
                 />
             </Modal>
@@ -46,8 +46,6 @@ class CartClearModalComponent extends React.Component {
 }
 
 CartClearModalComponent.propTypes = {
-    /** Items in the current cart */
-    elements: PropTypes.array.isRequired,
     /** Name of current cart */
     cartName: PropTypes.string,
     /** True if cart operation in progress */
@@ -63,20 +61,19 @@ CartClearModalComponent.defaultProps = {
     inProgress: false,
 };
 
-CartClearModalComponent.mapStateToProps = state => ({
-    elements: state.elements,
+CartClearModalComponent.mapStateToProps = (state) => ({
     cartName: state.savedCartObj && state.savedCartObj.name,
     inProgress: state.inProgress,
 });
 
 CartClearModalComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    onClearCartClick: elements => dispatch(removeMultipleFromCartAndSave(elements, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+    onClearCartClick: () => dispatch(clearCartAndSave(ownProps.fetch)),
 });
 
 const CartClearModalInternal = connect(CartClearModalComponent.mapStateToProps, CartClearModalComponent.mapDispatchToProps)(CartClearModalComponent);
 
-export const CartClearModal = ({ closeClickHandler }, { session, fetch }) => (
-    <CartClearModalInternal closeClickHandler={closeClickHandler} session={session} fetch={fetch} />
+export const CartClearModal = ({ closeClickHandler }, { fetch }) => (
+    <CartClearModalInternal closeClickHandler={closeClickHandler} fetch={fetch} />
 );
 
 CartClearModal.propTypes = {
@@ -85,7 +82,6 @@ CartClearModal.propTypes = {
 };
 
 CartClearModal.contextTypes = {
-    session: PropTypes.object,
     fetch: PropTypes.func,
 };
 
@@ -93,52 +89,49 @@ CartClearModal.contextTypes = {
 /**
  * Display an actuator button to clear the current cart, and handle the resulting warning modal.
  */
-class CartClearButtonComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            /** True if modal about clearing the cart is visible */
-            modalOpen: false,
-        };
-        this.handleClearCartClick = this.handleClearCartClick.bind(this);
-        this.handleCloseClick = this.handleCloseClick.bind(this);
-    }
+const CartClearButtonComponent = ({ elements, inProgress, isCartReadOnly }) => {
+    const [modalOpen, setModalOpen] = React.useState(false);
 
     /**
      * Handle a click in the Clear Cart button by showing the confirmation modal.
      */
-    handleClearCartClick() {
-        this.setState({ modalOpen: true });
-    }
+    const handleClearCartClick = () => {
+        setModalOpen(true);
+    };
 
     /**
      * Handle a click for closing the modal without doing anything.
      */
-    handleCloseClick() {
-        this.setState({ modalOpen: false });
-    }
+    const handleCloseClick = () => {
+        setModalOpen(false);
+    };
 
-    render() {
-        const { elements, inProgress } = this.props;
-        if (elements.length > 0) {
-            return (
-                <React.Fragment>
-                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm">Clear cart</button>
-                    {this.state.modalOpen ?
-                        <CartClearModal closeClickHandler={this.handleCloseClick} />
-                    : null}
-                </React.Fragment>
-            );
-        }
-        return null;
+    if (elements.length > 0) {
+        return (
+            <div className="cart-tools-extras__button">
+                <button
+                    type="button"
+                    disabled={inProgress || isCartReadOnly}
+                    onClick={handleClearCartClick}
+                    id="clear-cart-actuator"
+                    className="btn btn-danger btn-sm btn-inline"
+                >
+                    Clear cart
+                </button>
+                {modalOpen && <CartClearModal closeClickHandler={handleCloseClick} />}
+            </div>
+        );
     }
-}
+    return null;
+};
 
 CartClearButtonComponent.propTypes = {
     /** Current contents of cart */
     elements: PropTypes.array,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool,
+    /** True if cart is read only */
+    isCartReadOnly: PropTypes.bool.isRequired,
 };
 
 CartClearButtonComponent.defaultProps = {
@@ -146,10 +139,11 @@ CartClearButtonComponent.defaultProps = {
     inProgress: false,
 };
 
-CartClearButtonComponent.mapStateToProps = state => ({
+CartClearButtonComponent.mapStateToProps = (state) => ({
     elements: state.elements,
     inProgress: state.inProgress,
 });
+
 const CartClearButton = connect(CartClearButtonComponent.mapStateToProps)(CartClearButtonComponent);
 
 export default CartClearButton;

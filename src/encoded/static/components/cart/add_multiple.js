@@ -2,136 +2,131 @@
  * Displays the button at the top of search result pages that lets the user add all results to the
  * cart.
  */
-import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as encoding from '../../libs/query_encoding';
-import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
+import url from 'url';
+import QueryString from '../../libs/query_string';
+import { atIdToType, hasType, truncateString } from '../globals';
 import { requestSearch } from '../objectutils';
-import { MaximumElementsLoggedoutModal, CART_MAXIMUM_ELEMENTS_LOGGEDOUT, getAllowedCartTypes, mergeCarts } from './util';
+import { addMultipleToCartAndSave, cartOperationInProgress, triggerAlert } from './actions';
+import CartLoggedOutWarning, { useLoggedOutWarning } from './loggedout_warning';
+import CartMaxElementsWarning from './max_elements_warning';
+import {
+    cartGetAllowedTypes,
+    cartGetAllowedObjectPathTypes,
+    CART_MAX_ELEMENTS,
+    mergeCarts,
+    getReadOnlyState,
+} from './util';
 
 /**
  * Button to add all qualifying elements to the user's cart.
  */
-class CartAddAllSearchComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            /** True if search results total more than maximum # of elements while not logged in */
-            overMaximumError: false,
-        };
-        this.handleClick = this.handleClick.bind(this);
-        this.handleErrorModalClose = this.handleErrorModalClose.bind(this);
-    }
+const CartAddAllSearchComponent = ({
+    savedCartObj,
+    searchResults,
+    inProgress,
+    addAllResults,
+    setInProgress,
+    loggedIn,
+    showMaxElementsWarning,
+}) => {
+    /** Get hooks for the logged-out warning modal */
+    const [loggedOutWarningStates, loggedOutWarningActions] = useLoggedOutWarning(false);
+    const readOnlyState = getReadOnlyState(savedCartObj);
 
     /**
      * Handle a click in the Add All button by doing a search of elements allowed in carts to get
      * all their @ids that we can add to the cart.
      */
-    handleClick() {
-        // Get the array of object types in the cart and remove any types found in the filter
-        // array of the current search results. Also make a copy of the current search results
-        // including only the properties we need to avoid mutating a prop.
-        const allowedTypes = getAllowedCartTypes();
-        const queryFilters = [];
-        this.props.searchResults.filters.forEach((filter) => {
-            // Copy all filter fields and terms to our array of filters used for the query, except
-            // any 'type=something' terms for types not allowed in carts.
-            if (filter.field !== 'type' || allowedTypes.indexOf(filter.term) !== -1) {
-                queryFilters.push({ field: filter.field, term: filter.term });
-            }
+    const handleClick = () => {
+        if (loggedIn) {
+            // Don't use existing search results as they might only include 25 results and we need all
+            // of them. Do the same search but with limit=all and field=@id.
+            const parsedUrl = url.parse(searchResults['@id']);
+            const query = new QueryString(parsedUrl.query);
+            query.replaceKeyValue('limit', 'all').addKeyValue('field', '@id').addKeyValue('field', 'related_datasets');
+            const searchQuery = query.format();
 
-            // If the filter is for a type allowed in the cart, remove it from the allowedTypes
-            // list as we don't need to add it later.
-            if (filter.field === 'type') {
-                const index = allowedTypes.indexOf(filter.term);
-                if (index !== -1) {
-                    allowedTypes.splice(index, 1);
-                }
-            }
-        });
+            // With the updated query string, perform the search of all @ids matching the current
+            // search.
+            setInProgress(true);
+            requestSearch(searchQuery).then((results) => {
+                setInProgress(false);
+                if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
+                    const allowedTypes = cartGetAllowedTypes();
 
-        // Add a partial filter entry for any types not included in the current search result
-        // filters.
-        allowedTypes.forEach((type) => {
-            queryFilters.push({ field: 'type', term: type });
-        });
+                    // Get all elements from results that qualify to exist in carts.
+                    const allowedElements = results['@graph'].filter((result) => allowedTypes.includes(result['@type'][0]));
 
-        // Use the existing query plus any cartable object types to search for all @ids to add to
-        // the cart.
-        const searchQuery = `${queryFilters.map(element => (
-            `${element.field}=${encoding.encodedURIComponentOLD(element.term)}`
-        )).join('&')}&limit=all&field=%40id`;
-        this.props.setInProgress(true);
-        requestSearch(searchQuery).then((results) => {
-            this.props.setInProgress(false);
-            if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
-                const loggedIn = !!(this.props.session && this.props.session['auth.userid']);
-                const elementsForCart = results['@graph'].map(result => result['@id']);
-                if (!loggedIn) {
-                    // Not logged in, so test whether the merged new and existing carts would have
-                    // more elements than allowed in a logged-out cart. Display an error modal if
-                    // that happens.
-                    const margedCarts = mergeCarts(this.props.elements, elementsForCart);
-                    if (margedCarts.length > CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
-                        this.setState({ overMaximumError: true });
-                        return;
+                    // For any elements with related datasets, also add those to the cart.
+                    const elementsForCart = allowedElements.reduce((accSeriesAndDatasets, element) => {
+                        if (hasType(element, 'Series')) {
+                            // Extract all child datasets from the series and add them to the cart.
+                            const allowedRelatedDatasets = element.related_datasets.filter((dataset) => allowedTypes.includes(dataset['@type'][0]));
+                            return accSeriesAndDatasets.concat(allowedRelatedDatasets);
+                        }
+                        return accSeriesAndDatasets;
+                    }, allowedElements).map((element) => element['@id']);
+
+                    // Check whether the final cart would have more elements than allowed by doing a
+                    // trial merge. If the merged cart fits under the limit, add the new elements
+                    // to the cart.
+                    const mergedElements = mergeCarts(savedCartObj.elements, elementsForCart);
+                    if (mergedElements.length > CART_MAX_ELEMENTS) {
+                        showMaxElementsWarning();
+                    } else if (elementsForCart.length > 0) {
+                        addAllResults(elementsForCart);
                     }
                 }
-                this.props.addAllResults(elementsForCart);
-            }
-        });
-    }
+            });
+        } else {
+            // The user hasn't logged in, so show a modal that allows them to.
+            loggedOutWarningActions.setIsWarningVisible(true);
+        }
+    };
 
-    /**
-     * Called when user clicks the close button on the error modal.
-     */
-    handleErrorModalClose() {
-        this.setState({ overMaximumError: false });
-    }
-
-    render() {
-        const { savedCartObj, inProgress } = this.props;
-        const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
+    if (savedCartObj) {
+        const cartName = Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '';
         return (
-            <React.Fragment>
+            <div className="cart-add-all">
+                {savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
                 <button
-                    disabled={inProgress}
+                    type="button"
+                    disabled={inProgress || readOnlyState.any}
                     className="btn btn-info btn-sm"
-                    onClick={this.handleClick}
-                    title={`Add all experiments in search results to cart${cartName ? `: ${cartName}` : ''}`}
+                    onClick={handleClick}
+                    title={`Add all datasets in search results to cart${cartName ? `: ${cartName}` : ''}`}
                 >
                     Add all items to cart
                 </button>
-                {this.state.overMaximumError ?
-                    <MaximumElementsLoggedoutModal closeClickHandler={this.handleErrorModalClose} />
-                : null}
-            </React.Fragment>
+                {loggedOutWarningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={loggedOutWarningActions.handleCloseWarning} /> : null}
+            </div>
         );
     }
-}
+    return null;
+};
 
 CartAddAllSearchComponent.propTypes = {
-    /** Existing cart contents before adding new items */
-    elements: PropTypes.array.isRequired,
     /** Current cart saved object */
     savedCartObj: PropTypes.object,
     /** Search result object of elements to add to cart */
     searchResults: PropTypes.object.isRequired,
-    /** True if cart updating operation is in progress */
+    /** True if cart-updating operation is in progress */
     inProgress: PropTypes.bool,
     /** Function to call when Add All clicked */
     addAllResults: PropTypes.func.isRequired,
     /** Function to indicate cart operation in progress */
     setInProgress: PropTypes.func.isRequired,
-    /** Logged-in user information */
-    session: PropTypes.object,
+    /** True if user has logged in */
+    loggedIn: PropTypes.bool.isRequired,
+    /** Call to show the max elements warning alert */
+    showMaxElementsWarning: PropTypes.func.isRequired,
 };
 
 CartAddAllSearchComponent.defaultProps = {
     inProgress: false,
     savedCartObj: null,
-    session: null,
 };
 
 CartAddAllSearchComponent.mapStateToProps = (state, ownProps) => ({
@@ -139,17 +134,18 @@ CartAddAllSearchComponent.mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     searchResults: ownProps.searchResults,
-    session: ownProps.session,
+    loggedIn: ownProps.loggedIn,
 });
 CartAddAllSearchComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
-    setInProgress: enable => dispatch(cartOperationInProgress(enable)),
+    addAllResults: (elementsForCart) => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.fetch)),
+    setInProgress: (enable) => dispatch(cartOperationInProgress(enable)),
+    showMaxElementsWarning: () => dispatch(triggerAlert(<CartMaxElementsWarning />)),
 });
 
 const CartAddAllSearchInternal = connect(CartAddAllSearchComponent.mapStateToProps, CartAddAllSearchComponent.mapDispatchToProps)(CartAddAllSearchComponent);
 
 export const CartAddAllSearch = (props, reactContext) => (
-    <CartAddAllSearchInternal searchResults={props.searchResults} session={reactContext.session} fetch={reactContext.fetch} />
+    <CartAddAllSearchInternal searchResults={props.searchResults} fetch={reactContext.fetch} loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])} />
 );
 
 CartAddAllSearch.propTypes = {
@@ -158,45 +154,84 @@ CartAddAllSearch.propTypes = {
 };
 
 CartAddAllSearch.contextTypes = {
-    session: PropTypes.object,
     fetch: PropTypes.func,
+    session: PropTypes.object,
 };
 
 
 /**
  * Renders a button to add all elements from an array of dataset objects to the current cart.
  */
-class CartAddAllElementsComponent extends React.Component {
-    constructor() {
-        super();
-        this.handleClick = this.handleClick.bind(this);
-    }
+const CartAddAllElementsComponent = ({
+    savedCartObj,
+    elements,
+    inProgress,
+    addAllResults,
+    loggedIn,
+    showMaxElementsWarning,
+}) => {
+    /** Get hooks for the logged-out warning modal */
+    const [loggedOutWarningStates, loggedOutWarningActions] = useLoggedOutWarning(false);
 
     /**
      * Handle a click in the button to add all datasets from a list to the current cart.
      */
-    handleClick() {
-        const elementAtIds = this.props.elements.map(element => element['@id']);
-        this.props.addAllResults(elementAtIds);
-    }
+    const handleClick = () => {
+        if (loggedIn) {
+            // Filter the added elements to those allowed in carts.
+            const allowedPathTypes = cartGetAllowedObjectPathTypes();
+            const allowedElements = elements.filter((element) => (
+                allowedPathTypes.includes(atIdToType(element['@id']))
+            ));
 
-    render() {
-        const { savedCartObj, inProgress } = this.props;
-        const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
-        return (
-            <div className="cart__add-all-element-control">
-                <button
-                    disabled={inProgress}
-                    className="btn btn-info btn-sm"
-                    onClick={this.handleClick}
-                    title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}
-                >
-                    Add all items to cart
-                </button>
-            </div>
-        );
-    }
-}
+            // Add the allowed elements to the cart.
+            if (allowedElements.length > 0) {
+                // For any elements with related datasets, also add those to the cart.
+                const elementsForCart = allowedElements.reduce((accSeriesAndDatasets, element) => {
+                    if (hasType(element, 'Series')) {
+                        const allowedTypes = cartGetAllowedTypes();
+
+                        // Extract all child datasets from the series and add them to the cart.
+                        const allowedRelatedDatasets = element.related_datasets.filter((dataset) => allowedTypes.includes(dataset['@type'][0]));
+                        return accSeriesAndDatasets.concat(allowedRelatedDatasets);
+                    }
+                    return accSeriesAndDatasets;
+                }, allowedElements).map((element) => element['@id']);
+
+                // Check whether the final cart would have more elements than allowed by doing a
+                // trial merge. If the merged cart fits under the limit, add the new elements to
+                // the cart.
+                const mergedElements = mergeCarts(savedCartObj.elements, elementsForCart);
+                if (mergedElements.length > CART_MAX_ELEMENTS) {
+                    showMaxElementsWarning();
+                } else {
+                    addAllResults(elementsForCart);
+                }
+            }
+        } else {
+            // The user hasn't logged in, so show a modal that allows them to.
+            loggedOutWarningActions.setIsWarningVisible(true);
+        }
+    };
+
+    const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
+    const readOnlyState = getReadOnlyState(savedCartObj);
+    return (
+        <div className="cart-add-all">
+            {savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
+            <button
+                type="button"
+                disabled={inProgress || readOnlyState.any}
+                className="btn btn-info btn-sm"
+                onClick={handleClick}
+                title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}
+            >
+                Add all items to cart
+            </button>
+            {loggedOutWarningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={loggedOutWarningActions.handleCloseWarning} /> : null}
+        </div>
+    );
+};
 
 CartAddAllElementsComponent.propTypes = {
     /** Current cart saved object */
@@ -207,6 +242,10 @@ CartAddAllElementsComponent.propTypes = {
     inProgress: PropTypes.bool.isRequired,
     /** Function to call when Add All clicked */
     addAllResults: PropTypes.func.isRequired,
+    /** True if user has logged in */
+    loggedIn: PropTypes.bool.isRequired,
+    /** Call to show the max elements warning alert */
+    showMaxElementsWarning: PropTypes.func.isRequired,
 };
 
 CartAddAllElementsComponent.defaultProps = {
@@ -217,10 +256,12 @@ CartAddAllElementsComponent.mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     elements: ownProps.elements,
     inProgress: state.inProgress,
+    loggedIn: ownProps.loggedIn,
 });
 
 CartAddAllElementsComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elements => dispatch(addMultipleToCartAndSave(elements, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+    addAllResults: (elements) => dispatch(addMultipleToCartAndSave(elements, ownProps.fetch)),
+    showMaxElementsWarning: () => dispatch(triggerAlert(<CartMaxElementsWarning />)),
 });
 
 const CartAddAllElementsInternal = connect(CartAddAllElementsComponent.mapStateToProps, CartAddAllElementsComponent.mapDispatchToProps)(CartAddAllElementsComponent);
@@ -228,11 +269,11 @@ const CartAddAllElementsInternal = connect(CartAddAllElementsComponent.mapStateT
 
 // Public component used to bind to context properties.
 export const CartAddAllElements = ({ elements }, reactContext) => (
-    <CartAddAllElementsInternal elements={elements} session={reactContext.session} fetch={reactContext.fetch} />
+    <CartAddAllElementsInternal elements={elements} fetch={reactContext.fetch} loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])} />
 );
 
 CartAddAllElements.propTypes = {
-    /** New elements to add to cart as array of dataset objects */
+    /** New elements to add to cart as array of @ids */
     elements: PropTypes.array,
 };
 

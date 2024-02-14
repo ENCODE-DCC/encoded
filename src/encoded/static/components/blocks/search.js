@@ -7,14 +7,14 @@ import { ResultTable, Listing } from '../search';
 
 
 const SearchResultsLayout = (props) => {
-    const context = props.context;
+    const { context } = props;
     const results = context['@graph'];
-    const columns = context.columns;
+    const { columns } = context;
     return (
         <div className="panel">
             <ul className="nav result-table">
                 {results.length > 0 ?
-                    results.map(result => Listing({ context: result, columns, key: result['@id'] }))
+                    results.map((result) => Listing({ context: result, columns, key: result['@id'] }))
                 : null}
             </ul>
         </div>

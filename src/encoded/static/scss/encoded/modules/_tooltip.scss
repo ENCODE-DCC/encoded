@@ -1,7 +1,6 @@
 $tooltip-width: 300px;
 $tooltip-color: #000;
 
-
 // Generic tooltips with clickable triggers
 .tooltip-trigger {
     display: inline-block;
@@ -11,14 +10,7 @@ $tooltip-color: #000;
 
 // Tooltips specifically for antibody statuses
 .tooltip-status {
-    position: absolute;
-    visibility: hidden;
-    top: 20px;
-    left: 15px;
     padding: 2px 5px;
-    z-index: 100;
-    background-color: $tooltip-color;
-    color: #fff;
     text-align: center;
     white-space: nowrap;
     font-size: 0.9rem;
@@ -26,10 +18,6 @@ $tooltip-color: #000;
 
     span:last-child {
         font-weight: normal;
-    }
-
-    &.tooltipopen {
-        visibility: visible;
     }
 }
 
@@ -40,14 +28,53 @@ $tooltip-color: #000;
     cursor: default;
 }
 
+// Series and info tooltip sizing
+.series-tooltip, .tooltip-home-info {
+    button {
+        font-size: 1rem;
+    }
+
+    @media screen and (min-width: $screen-md-min) {
+        button {
+            font-size: 1.2rem;
+        }
+    }
+}
+
+// Info icons with tooltips.
+.tooltip-home-info {
+    margin-left: 5px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    vertical-align: baseline;
+
+    .tooltip-container__trigger {
+        font-size: 0;
+
+        .svg-icon-question-circle {
+            width: 16px;
+            fill: #b3b3b3;
+        }
+    }
+}
+
+// Series tooltip on experiment pages
+.series-tooltip {
+    margin-left: 2px;
+}
+
 .tooltip {
     position: absolute;
     z-index: 1030;
     display: block;
-    visibility: hidden;
-    font-size: 12px;
     line-height: 1.4;
-    opacity: 0;
+    font-size: 0.8rem;
+
+    @media screen and (min-width: $screen-md-min) {
+        font-size: 1rem;
+        line-height: 1.2;
+    }
 
     &.right {
         transform: translateY(-50%);
@@ -57,7 +84,7 @@ $tooltip-color: #000;
 
         .tooltip-inner {
             text-align: left;
-            max-width: none; 
+            max-width: none;
         }
     }
 
@@ -69,19 +96,23 @@ $tooltip-color: #000;
 
         .tooltip-inner {
             text-align: center;
-            min-width: 250px; 
+            min-width: 250px;
         }
     }
 }
 
 .tooltip-inner {
     max-width: 200px;
-    padding: 3px 8px;
-    color: #fff;
+    padding: 10px;
+    margin-top: 5px;
     text-align: center;
     text-decoration: none;
-    background-color: #000;
     border-radius: 3px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    -webkit-box-shadow: 7px 5px 7px -5px #ccc;
+    -moz-box-shadow: 7px 5px 7px -5px #ccc;
+    box-shadow: 7px 5px 7px -5px #ccc;
 }
 
 .tooltip-open {
@@ -89,12 +120,83 @@ $tooltip-color: #000;
     opacity: 1;
 }
 
+.menu-tooltip {
+    position: relative;
+    width: auto;
+    padding: 5px 60px 15px;
+    top: unset;
+    left: unset;
+    color: black;
+    background: #b3b3b3;
+    border: 0;
+    line-height: 1.4;
+    font-size: 0.8rem;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    margin-top: 5px;
+    margin-left: -25px;
+    margin-right: -30px;
+    z-index: 9999;
+    white-space: pre-wrap;
+    letter-spacing: 0;
+    font-weight: 400;
+    // For now, we do not keep the menu tooltip bubbles open when they are hovered over
+    pointer-events: none;
+
+    &.sub-menu {
+        margin-left: -45px;
+        padding-left: 60px;
+
+        @media screen and (min-width: $screen-md-min) {
+            margin: 0;
+            padding: 10px;
+        }
+    }
+
+    .tooltip-inner {
+        max-width: inherit;
+        padding: 0;
+        color: inherit;
+        text-align: inherit;
+        background-color: inherit;
+        border-radius: inherit;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        border: none;
+    }
+
+    @media screen and (min-width: $screen-md-min) {
+        position: absolute;
+        width: 350px;
+        padding: 10px;
+        top: 3px;
+        left: 30px;
+        color: black;
+        background: white;
+        border: 1px solid #d2d2d2;
+        line-height: 1.2;
+        font-size: 1rem;
+        -webkit-box-shadow: 7px 5px 7px -5px #ccc;
+        -moz-box-shadow: 7px 5px 7px -5px #ccc;
+        box-shadow: 7px 5px 7px -5px #ccc;
+        margin: 0;
+
+        .tooltip-inner {
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            border: none;
+        }
+    }
+}
+
 .dl-tooltip-trigger {
     @extend .tooltip-trigger;
 
     padding-left: 5px;
 }
-
 
 // When a tooltip appears next to a real button, use this to wrap that button so that even if thead
 // button gets disabled, we can add an absolutely positioned div within this div that can respond
@@ -113,6 +215,11 @@ $tooltip-color: #000;
     left: 0;
 }
 
+.tooltip-trigger, .tooltip-container {
+    .icon-question-circle {
+        color: #b3b3b3;
+    }
+}
 
 .tooltip-container {
     position: relative;

@@ -1,11 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { RelatedItems } from './item';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, TopAccessories } from './objectutils';
 import { ExperimentTable } from './typeutils';
 
 
@@ -15,11 +13,11 @@ const Target = ({ context }) => {
     const source = context.organism ? context.organism.scientific_name : context.investigated_as[0];
 
     if (context.genes) {
-        geneIDs = context.genes.map(gene => `GeneID:${gene.geneid}`);
+        geneIDs = context.genes.map((gene) => `GeneID:${gene.geneid}`);
     }
 
     // Set up breadcrumbs
-    const assayTargets = context.investigated_as.map(assayTarget => `investigated_as=${assayTarget}`);
+    const assayTargets = context.investigated_as.map((assayTarget) => `investigated_as=${assayTarget}`);
     const crumbs = [
         { id: 'Targets' },
         { id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ') },
@@ -32,13 +30,11 @@ const Target = ({ context }) => {
         });
     }
 
-    const crumbsReleased = (context.status === 'released');
-
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header>
-                <Breadcrumbs root="/search/?type=target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                <h2>{context.label} (<em>{source}</em>)</h2>
+                <TopAccessories context={context} crumbs={crumbs} />
+                <h1>{context.label} (<em>{source}</em>)</h1>
                 <ItemAccessories item={context} />
             </header>
 
@@ -51,10 +47,27 @@ const Target = ({ context }) => {
                         </div>
 
                         {geneIDs.length > 0 ?
-                            <div data-test="gene">
-                                <dt>Target gene</dt>
+                            <div data-test="gene-id">
+                                <dt>Target gene ID</dt>
                                 <dd>
                                     <DbxrefList context={context} dbxrefs={geneIDs} />
+                                </dd>
+                            </div>
+                        : null}
+
+                        {context.genes && context.genes.length > 0 ?
+                            <div data-test="gene-symbol">
+                                <dt>Target gene symbol</dt>
+                                <dd>
+                                    <ul>
+                                        {context.genes.map((gene) => (
+                                            <li key={gene['@id']} className="multi-comman">
+                                                <a href={gene['@id']}>
+                                                    {gene.symbol}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </dd>
                             </div>
                         : null}
@@ -62,8 +75,8 @@ const Target = ({ context }) => {
                         <div data-test="external">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxref.length > 0 ?
-                                    <DbxrefList context={context} dbxrefs={context.dbxref} />
+                                {context.dbxrefs && context.dbxrefs.length > 0 ?
+                                    <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
                         </div>
@@ -72,8 +85,14 @@ const Target = ({ context }) => {
             </Panel>
 
             <RelatedItems
-                title={`Experiments using target ${context.label}`}
+                title={`Functional genomics experiments using target ${context.label}`}
                 url={`/search/?type=Experiment&target.uuid=${context.uuid}`}
+                Component={ExperimentTable}
+            />
+
+            <RelatedItems
+                title={`Functional characterization experiments using target ${context.label}`}
+                url={`/search/?type=FunctionalCharacterizationExperiment&target.uuid=${context.uuid}`}
                 Component={ExperimentTable}
             />
         </div>

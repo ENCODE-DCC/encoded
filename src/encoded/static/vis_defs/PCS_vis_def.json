@@ -1,0 +1,46 @@
+{
+    "PCS": {
+        "rule": "'{assay_term_name}' == 'pooled clone sequencing'",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE pooled clone sequencing experiments",
+            "shortLabel": "ENCODE pooled clone sequencing"
+        },
+        "longLabel":  "{assay_title} of {biosample_term_name} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Signal of unique reads" ],
+            "groups": {
+                "Signal of unique reads": {
+                    "tag": "aSIG",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "autoScale": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of unique reads" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled"
+                        }
+                    }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}

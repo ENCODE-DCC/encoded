@@ -39,3 +39,41 @@ def award_6_7(value, system):
         assay_term_name = milestone.get('assay_term_name', '')
         if assay_term_name == 'single-nuclei ATAC-seq':
             milestone['assay_term_name'] = 'single-nucleus ATAC-seq'
+
+
+@upgrade_step('award', '7', '8')
+def award_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5304
+    for milestone in value.get('milestones', []):
+        assay_term_name = milestone.get('assay_term_name', '')
+        if assay_term_name == 'single cell isolation followed by RNA-seq':
+            milestone['assay_term_name'] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('award', '8', '9')
+def award_8_9(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5787
+    for milestone in value.get('milestones', []):
+        assay_term_name = milestone.get('assay_term_name', '')
+        if assay_term_name == 'genotyping by high throughput sequencing assay':
+            milestone['assay_term_name'] = 'whole genome sequencing assay'
+        if assay_term_name == 'single-nucleus RNA-seq':
+            milestone['assay_term_name'] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('award', '9', '10')
+def award_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5828
+    for milestone in value.get('milestones', []):
+        assay_term_name = milestone.get('assay_term_name', '')
+        if assay_term_name == 'single-cell ATAC-seq':
+            milestone['assay_term_name'] = 'single-nucleus ATAC-seq'
+
+
+@upgrade_step('award', '10', '11')
+def award_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5964
+    for milestone in value.get('milestones', []):
+        assay_term_name = milestone.get('assay_term_name', '')
+        if assay_term_name == 'Capture Hi-C':
+            milestone['assay_term_name'] = 'capture Hi-C'

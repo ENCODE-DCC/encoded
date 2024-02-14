@@ -24,8 +24,11 @@ class GeneticModification(Item):
     embedded = [
         'characterizations',
         'characterizations.lab',
+        'introduced_gene',
+        'introduced_gene.organism',
         'modified_site_by_target_id',
         'modified_site_by_target_id.genes',
+        'modified_site_by_gene_id',
         'treatments',
         'lab'
     ]

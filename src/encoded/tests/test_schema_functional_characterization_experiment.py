@@ -2,71 +2,6 @@ import pytest
 from datetime import datetime
 
 
-@pytest.fixture
-def functional_characterization_experiment_item(testapp, lab, award, cell_free):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assay_term_name': 'STARR-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def functional_characterization_experiment_screen(testapp, lab, award, heart, target):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assay_term_name': 'CRISPR screen',
-        'biosample_ontology': heart['uuid'],
-        'status': 'in progress',
-        'target': target['uuid']
-
-    }
-    return item
-
-
-@pytest.fixture
-def functional_characterization_experiment(testapp, lab, award, cell_free):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assay_term_name': 'STARR-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
-
-
-@pytest.fixture
-def functional_characterization_experiment_4(testapp, lab, award):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assay_term_name': 'CRISPR screen',
-        'status': 'in progress',
-        'target_expression_percentile': 70
-    }
-    return item
-
-
-@pytest.fixture
-def functional_characterization_experiment_5(testapp, lab, award, ctcf):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assay_term_name': 'CRISPR screen',
-        'status': 'in progress',
-        'examined_loci': [{
-             'gene': ctcf['uuid'],
-             'gene_expression_percentile': 80
-         }]
-    }
-    return item
-
-
 def test_valid_functional_characterization_experiment(testapp, functional_characterization_experiment_item):
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_item, status=201)
 
@@ -131,13 +66,34 @@ def test_functional_characterization_experiment_target_expression_dependency(tes
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_4, status=422)
 
 
-def test_functional_characterization_experiment_examined_loci_dependency(testapp, functional_characterization_experiment_5, ctcf, bap1):
-    # the property examined_loci has to have at least two items
-    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
-    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid'], 'gene_expression_range_minimum': 2, 'gene_expression_range_maximum': 70}]})
-    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
-    # the property examined_loci needs to specify either gene_expression_percentile or gene_expression_range_maximum and gene_expression_range_minimum for each item
-    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid']}]})
-    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
-    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid'], 'gene_expression_percentile': 25}]})
-    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
+def test_functional_characterization_experiment_examined_loci_dependency(testapp, functional_characterization_experiment_6, ctcf):
+    # the property examined_loci may specify a single gene, without expression percentile or range properties
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=201)
+
+    # the property examined_loci may not specify expression_percentile AND expression_range_maximum, expression_range_minimum for each item
+    functional_characterization_experiment_6.update({'examined_loci': [
+        {'gene': ctcf['uuid'], 'expression_percentile': 80, 'expression_range_minimum': 50, 'expression_range_maximum': 100, 'expression_measurement_method': 'qPCR'}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=422)
+
+    # expression_range_maximum and expression_range_minimum must be included together
+    functional_characterization_experiment_6.update({'examined_loci': [
+        {'gene': ctcf['uuid'], 'expression_range_maximum': 100, 'expression_measurement_method': 'qPCR'}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=422)
+    functional_characterization_experiment_6.update({'examined_loci': [
+        {'gene': ctcf['uuid'], 'expression_range_minimum': 50, 'expression_range_maximum': 100, 'expression_measurement_method': 'qPCR'}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=201)
+
+    # expression_percentile may be specified with gene, but not in combination with a single range property
+    functional_characterization_experiment_6.update({'examined_loci': [
+        {'gene': ctcf['uuid'], 'expression_percentile': 100, 'expression_range_minimum': 50, 'expression_measurement_method': 'qPCR'}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=422)
+    functional_characterization_experiment_6.update({'examined_loci': [
+        {'gene': ctcf['uuid'], 'expression_percentile': 100, 'expression_measurement_method': 'qPCR'}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_6, status=201)
+
+
+def test_functional_characterization_experiment_target_import_items(testapp, submitter_testapp, functional_characterization_experiment_item, target):
+    # Target can not be submitted without admin permissions
+    res = testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_item, status=201)
+    submitter_testapp.patch_json(res.json['@graph'][0]['@id'], {'target': target['uuid']}, status=422)
+    testapp.patch_json(res.json['@graph'][0]['@id'], {'target': target['uuid']}, status=200)

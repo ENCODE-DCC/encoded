@@ -4,13 +4,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import jsonschema from 'jsonschema';
 import _ from 'underscore';
+import url from 'url';
 import offset from '../libs/offset';
+import UserRoles from '../libs/user_roles';
 import { FetchedData, Param } from './fetched';
-import { parseAndLogError, listingTitles, getRoles } from './globals';
+import { parseAndLogError, listingTitles } from './globals';
 import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
 import DropdownButton from '../libs/ui/button';
-import { DropdownMenu } from '../libs/ui/dropdown-menu';
 
 
 const validator = new jsonschema.Validator();
@@ -89,7 +90,8 @@ const filterValue = function filterValue(value) {
 const defaultValue = function defaultValue(schema) {
     if (schema.default !== undefined) {
         return schema.default !== undefined ? schema.default : undefined;
-    } else if (schema.properties !== undefined) {
+    }
+    if (schema.properties !== undefined) {
         const value = {};
         _.each(schema.properties, (property, name) => {
             if (property.notSubmittable) return;
@@ -106,7 +108,7 @@ const defaultValue = function defaultValue(schema) {
 };
 
 
-const UpdateChildMixin = superclass => class extends superclass {
+const UpdateChildMixin = (superclass) => (class extends superclass {
     updateChild(name, subvalue) {
         // This is the workhorse for passing for field updates
         // up the hierarchy of form fields.
@@ -114,12 +116,12 @@ const UpdateChildMixin = superclass => class extends superclass {
         // by replacing the value of one of its children,
         // then propagates the new value to its parent.
 
-        const schema = this.props.schema;
+        const { schema } = this.props;
         let oldValue = this.props.value;
         let newValue;
         if (schema.type === 'object') {
             // Clone the old value so we don't mutate it
-            newValue = Object.assign({}, oldValue);
+            newValue = { ...oldValue };
             // Set the new value unless it is undefined
             if (subvalue !== undefined) {
                 newValue[name] = subvalue;
@@ -135,7 +137,7 @@ const UpdateChildMixin = superclass => class extends superclass {
         // Pass the new value to the parent
         this.props.updateChild(this.props.name, newValue);
     }
-};
+});
 
 
 class RepeatingItem extends React.Component {
@@ -257,7 +259,7 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
     handleAdd(e) {
         // Called when the add button is clicked.
         e.preventDefault();
-        const schema = this.props.schema;
+        const { schema } = this.props;
         const subtype = e.target.getAttribute('data-subtype');
         let newValue;
         if (subtype) {
@@ -287,26 +289,25 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
     render() {
         /* eslint-disable jsx-a11y/anchor-is-valid */
         const { path, value, schema } = this.props;
-        const schemas = this.context.schemas;
-        const linkFrom = schema.items.linkFrom;
+        const { schemas } = this.context;
+        const { linkFrom } = schema.items;
         const subtypes = linkFrom ? schemas._subtypes[parseLinkFrom(linkFrom).type] : [];
         let button = null;
         if (!this.context.readonly) {
             if (subtypes.length > 1) {
                 button = (
-                    <DropdownButton title="Add" buttonClasses="rf-RepeatingFieldset__add">
-                        <DropdownMenu>
-                            {subtypes.map(subtype =>
-                                <a
-                                    href="#"
-                                    key={subtype}
-                                    data-subtype={subtype}
-                                    onClick={this.handleAdd}
-                                >
-                                    {schemas[subtype].title}
-                                </a>)}
-                        </DropdownMenu>
-                    </DropdownButton>
+                    <DropdownButton.Immediate label="Add" css="rf-RepeatingFieldset__add">
+                        {subtypes.map((subtype) => (
+                            <a
+                                href="#"
+                                key={subtype}
+                                data-subtype={subtype}
+                                onClick={this.handleAdd}
+                            >
+                                {schemas[subtype].title}
+                            </a>
+                        ))}
+                    </DropdownButton.Immediate>
                 );
             } else {
                 button = (
@@ -396,14 +397,14 @@ class ChildObject extends React.Component {
     constructor(props, context) {
         super(props);
 
-        const value = this.props.value;
+        const { value } = this.props;
         const error = context.errors[this.props.path];
-        const url = typeof value === 'string' ? value : null;
+        const link = typeof value === 'string' ? value : null;
         this.state = {
-            url,
+            url: link,
             // Start collapsed for existing children,
             // expanded when adding a new one or if there are errors
-            collapsed: url && !error,
+            collapsed: link && !error,
         };
 
         // Bind `this` to non-React methods.
@@ -413,9 +414,10 @@ class ChildObject extends React.Component {
 
     toggleCollapsed() {
         // Toggle collapsed state when collapsible trigger is clicked.
-        this.setState({ collapsed: !this.state.collapsed });
+        this.setState((state) => ({ collapsed: !state.collapsed }));
     }
 
+    // Contains intentional side effect.
     updateChild(name, value) {
         // Pass new value up to our parent.
         if (this.state.url) {
@@ -566,7 +568,7 @@ export class Field extends UpdateChildMixin(React.Component) {
             if (e.target.type === 'checkbox') {
                 value = e.target.checked;
             } else {
-                value = e.target.value;
+                ({ value } = e.target);
             }
         } else {
             // We were passed the value itself, not an event.
@@ -576,7 +578,7 @@ export class Field extends UpdateChildMixin(React.Component) {
         if (value === null || value === '') {
             value = undefined;
         }
-        const type = this.props.schema.type;
+        const { type } = this.props.schema;
         if (value && (type === 'integer' || type === 'number')) {
             try {
                 value = parseFloat(value);
@@ -596,13 +598,11 @@ export class Field extends UpdateChildMixin(React.Component) {
         if (schema === undefined) {
             return null;
         }
-        const errors = this.context.errors;
+        const { errors } = this.context;
         const isValid = !errors[path];
         const type = schema.type || 'string';
         const sessionProperties = this.context.session_properties;
-        const roles = getRoles(sessionProperties);
-        // check if user is not admin nor submitter
-        const notAuthorized = !['admin', 'submitter'].some(role => roles.includes(role));
+        const userRoles = new UserRoles(sessionProperties);
 
         let classBase = 'rf-Field';
         if (type === 'object') {
@@ -610,7 +610,7 @@ export class Field extends UpdateChildMixin(React.Component) {
         } else if (type === 'array') {
             classBase = 'rf-RepeatingFieldset';
         }
-        let className = this.props.className;
+        let { className } = this.props;
         const readonly = this.context.readonly || schema.readonly;
         const inputProps = {
             name,
@@ -670,25 +670,24 @@ export class Field extends UpdateChildMixin(React.Component) {
                 updateChild={this.props.updateChild}
             />);
         } else if (schema.enum) {
-            let options = schema.enum.map(v => <option key={v} value={v}>{v}</option>);
+            let options = schema.enum.map((v) => <option key={v} value={v}>{v}</option>);
             if (!schema.default) {
                 // "_null_" is a placeholder; it'd be nice if we could actually use null
                 // to avoid potential collision with real options, but it's not a valid
                 // React key.
-                options = [<option key="_null_" value={null} />].concat(options);
+                options = [<option key="_null_" value={null}>&nbsp;</option>].concat(options);
             }
             // special case where Status is disabled for unpriviledged users
-            const isDisabled = notAuthorized && schema.title === 'Status';
-            input = <select className="form-control" {...inputProps} disabled={isDisabled} >{options}</select>;
+            const isDisabled = !userRoles.isPrivileged && schema.title === 'Status';
+            input = <select className="form-control" {...inputProps} disabled={isDisabled}>{options}</select>;
         } else if (schema.linkTo) {
             // Restrict ObjectPicker to finding the specified type
-            // FIXME this should handle an array of types too
             input = (<ObjectPicker
                 {...inputProps}
-                searchBase={`?mode=picker&type=${schema.linkTo}`}
+                searchBase={`?mode=picker&type=${Array.isArray(schema.linkTo) ? schema.linkTo.join('&type=') : schema.linkTo}`}
             />);
         } else if (schema.type === 'boolean') {
-            input = <input type="checkbox" {...inputProps} />;
+            input = <input type="checkbox" {...inputProps} checked={!!value} />;
         } else if (schema.type === 'integer' || schema.type === 'number') {
             input = <input type="number" {...inputProps} />;
         } else {
@@ -701,10 +700,10 @@ export class Field extends UpdateChildMixin(React.Component) {
         return (
             <div className={`${classBase} ${className}`}>
                 {!this.props.hideLabel ?
-                    <label className={`${classBase}__label rf-Label`}>
+                    <div className={`${classBase}__label rf-Label`}>
                         <span className="rf-Label__label">{schema.title}</span>
                         <span className="rf-Hint">{schema.description}</span>
-                    </label>
+                    </div>
                 : ''}
                 {(this.context.submitted || this.state.isDirty) && errors[path] ?
                     <span className="rf-Message">{errors[path]}</span>
@@ -793,6 +792,7 @@ export class Form extends React.Component {
         this.validate = this.validate.bind(this);
         this.update = this.update.bind(this);
         this.canSave = this.canSave.bind(this);
+        this.cancel = this.cancel.bind(this);
         this.save = this.save.bind(this);
         this.receive = this.receive.bind(this);
         this.showErrors = this.showErrors.bind(this);
@@ -842,7 +842,7 @@ export class Form extends React.Component {
         //   `instance.aliases.0`
         // so we have to convert them here.
         validation.errorsByPath = {};
-        const errorsByPath = validation.errorsByPath;
+        const { errorsByPath } = validation;
         validation.errors.forEach((error) => {
             let path = error.property.replace(/\[/g, '.').replace(/]/g, '');
             // Missing values for required properties are reported
@@ -889,6 +889,13 @@ export class Form extends React.Component {
         // It is enabled if the form has been edited, the value is valid
         // according to the schema, and the form submission is not in progress.
         return this.state.isDirty && this.state.isValid && !this.state.editor_error && !this.communicating;
+    }
+
+    cancel() {
+        const link = url.parse(this.context.location_href, true);
+
+        // the last '/' is a hack to reload the page. In app.js, fallbackNavigate() did not without it.
+        this.context.navigate(`${link.pathname}/`, { reload: true });
     }
 
     save(e) {
@@ -1024,8 +1031,9 @@ export class Form extends React.Component {
                     updateChild={this.update}
                 />
                 <div className="form-edit__save-controls">
-                    <a href="" className="btn btn-default">Cancel</a>
+                    <button type="button" className="btn btn-default" onClick={() => this.cancel()}>Cancel</button>
                     <button
+                        type="button"
                         className="btn btn-success"
                         onClick={this.save}
                         disabled={!this.canSave()}
@@ -1035,6 +1043,7 @@ export class Form extends React.Component {
                     </button>
                     {this.props.showSaveAndAdd ?
                         <button
+                            type="button"
                             data-button="saveAndAdd"
                             className="btn btn-success"
                             onClick={this.save}
@@ -1078,6 +1087,8 @@ Form.defaultProps = {
 Form.contextTypes = {
     adviseUnsavedChanges: PropTypes.func,
     fetch: PropTypes.func,
+    location_href: PropTypes.string,
+    navigate: PropTypes.func,
 };
 
 Form.childContextTypes = {

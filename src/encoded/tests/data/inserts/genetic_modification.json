@@ -41,7 +41,7 @@
             "end": 21000
         },
         "purpose": "repression",
-        "category": "deletion",
+        "category": "CRISPR cutting",
         "method": "CRISPR",
         "reagents": [
             { 
@@ -53,6 +53,7 @@
             "CAGTTAGCAGTACATGGAACACAGT",
             "ATTAGCGGCTATAATTGCCGGTATT"
         ],
+        "guide_type": "sgRNA",
         "zygosity": "homozygous",
         "submitted_by": "amet.fusce@est.fermentum"
     },
@@ -94,7 +95,7 @@
         "lab": "/labs/robert-waterston/",
         "category": "insertion",
         "purpose": "tagging",
-        "method": "stable transfection",
+        "nucleic_acid_delivery_method": ["stable transfection"],
         "reagents": [
             {
                 "source": "kevin-white",
@@ -104,35 +105,6 @@
         "documents": ["kevin-white:K562_BAC_transfection_White_protocol"],
         "award": "/awards/U41HG007355/",
         "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d"
-    },
-    {
-        "accession": "ENCGM198AQA",
-        "status": "released", 
-        "modified_site_by_coordinates": {
-            "chromosome": "X",
-            "assembly": "hg19",
-            "start": 48560532,
-            "end": 48560547
-        },
-        "award": "/awards/U41HG007355/",
-        "lab": "/labs/robert-waterston/",
-        "uuid": "b9264c83-2222-4678-a82f-4915af941fa4",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "category": "replacement",
-        "purpose": "characterization",
-        "zygosity": "heterozygous",
-        "reagents": [{
-            "source": "/sources/sigma/",
-            "identifier": "addgene:123456"
-        }],
-        "method": "TALEN",
-        "RVD_sequence_pairs": [
-            {
-                "left_RVD_sequence": "NN,NG,HD,NI,NI,NN",
-                "right_RVD_sequence": "NI,NN,ND,NG,NG,ND"
-            }
-        ],
-        "introduced_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
     },
     {
         "accession": "ENCGM345ZQX",
@@ -207,10 +179,10 @@
         ],
         "category": "episome",
         "purpose": "characterization",
-        "donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
+        "introduced_elements_donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
         "introduced_elements": "sheared genomic DNA",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
-        "method": "transient transfection"
+        "nucleic_acid_delivery_method": ["transient transfection"]
     },
     {
         "accession": "ENCGM359MPR",
@@ -227,7 +199,7 @@
         "introduced_elements": "synthesized DNA",
         "modified_site_nonspecific": "random",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
-        "method": "transduction"
+        "nucleic_acid_delivery_method": ["transduction"]
     },
     {
         "accession": "ENCGM200XPR",
@@ -236,10 +208,17 @@
         ],
         "award": "/awards/U41HG007355/",
         "category": "episome",
-        "donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
+        "introduced_elements_donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
         "introduced_elements": "genomic DNA regions",
+        "reagents": [
+            {
+                "source": "thermo-fisher",
+                "identifier": "thermo-fisher:L3000008",
+                "promoter_details": "ORI"
+            }
+        ],
         "lab": "/labs/kevin-white/",
-        "method": "transient transfection",
+        "nucleic_acid_delivery_method": ["transient transfection"],
         "purpose": "characterization",
         "status": "released",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
@@ -265,5 +244,203 @@
             "TGGGCTAACATTAGCCAGA"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant"
+    },
+    {
+        "accession": "ENCGM555KOT",
+        "aliases": [
+            "bing-ren:CRISPR_knockout"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "knockout",
+        "lab": "/labs/bing-ren/",
+        "method": "CRISPR",
+        "purpose": "characterization",
+        "status": "released",
+        "uuid": "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM555HRK",
+        "aliases": [
+            "john-stamatoyannopoulos:HR_knockout"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "knockout",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "method": "homologous recombination",
+        "purpose": "repression",
+        "modified_site_by_gene_id": "/genes/912/",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM555CRP",
+        "aliases": [
+            "bing-ren:CRISPR_step_one"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "introduced_elements": "gRNAs and CRISPR machinery",
+        "lab": "/labs/bing-ren/",
+        "nucleic_acid_delivery_method": ["transduction"],
+        "purpose": "expression",
+        "reagents": [
+            {
+            "source": "genbank",
+            "identifier": "genbank:AB000001.1"
+            }
+        ],
+        "guide_type": "sgRNA",
+        "MOI": "low",
+        "status": "released",
+        "submitted_by": "/users/dignissim.euismod@amet.habitant/"
+    },
+    {
+        "accession": "ENCGM222MUS",
+        "status": "released",
+        "modified_site_by_coordinates": {
+            "chromosome": "X",
+            "assembly": "GRCh38",
+            "start": 38560532,
+            "end": 38560547
+        },
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/robert-waterston/",
+        "uuid": "b9264c83-2222-4678-a82f-4915af941fa5",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "category": "insertion",
+        "purpose": "in vivo enhancer characterization",
+        "nucleic_acid_delivery_method": ["mouse pronuclear microinjection"],
+        "introduced_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
+    },
+    {
+        "accession": "ENCGM000CRO",
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "introduced_elements": "gRNAs and CRISPR machinery",
+        "guide_type": "pgRNA",
+        "lab": "/labs/bing-ren/",
+        "nucleic_acid_delivery_method": ["transduction"],
+        "method": "TALEN",
+        "RVD_sequence_pairs": [
+            {
+                "left_RVD_sequence": "NN,NG,HD,NI,NI,NN",
+                "right_RVD_sequence": "NI,NN,ND,NG,NG,ND"
+            }
+        ],
+        "zygosity": "heterozygous",
+        "purpose": "expression",
+        "status": "released",
+        "submitted_by": "/users/dignissim.euismod@amet.habitant/"
+    },
+    {
+        "accession": "ENCGM200XPH",
+        "award": "/awards/U41HG007355/",
+        "category": "episome",
+        "introduced_elements_organism": "human",
+        "introduced_elements": "genomic DNA regions",
+        "lab": "/labs/kevin-white/",
+        "nucleic_acid_delivery_method": ["transient transfection"],
+        "purpose": "characterization",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM098CMC",
+        "uuid": "305e1d00-2a9d-432a-ab83-05339836ffc0",
+        "status": "released",
+        "lab": "/labs/kevin-white/",
+        "award": "/awards/U41HG007355/",
+        "category": "mutagenesis",
+        "purpose": "characterization",
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/CTCF-human/",
+        "submitted_by": "dignissim.euismod@amet.habitant"
+    },
+    {
+        "accession": "ENCGM303MPT",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "status": "released",
+        "introduced_tags": [
+            {
+                "name": "mAID",
+                "location": "C-terminal"
+            }
+        ],
+        "modified_site_by_target_id": "/targets/FTO-human/",
+        "lab": "/labs/robert-waterston/",
+        "category": "insertion",
+        "purpose": "tagging",
+        "method": "CRISPR",
+        "award": "/awards/U41HG007355/",
+        "uuid": "10aca140-fb2a-4c27-ac35-a65205e0accf",
+        "reagents": [
+            {
+            "source": "genbank",
+            "identifier": "thermo-fisher:01010101"
+            }
+        ]
+    },
+    {
+        "accession": "ENCGM303MPQ",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "status": "released",
+        "introduced_tags": [
+            {
+                "name": "mEGFP",
+                "location": "C-terminal"
+            }
+        ],
+        "modified_site_by_target_id": "/targets/FTO-human/",
+        "lab": "/labs/robert-waterston/",
+        "category": "insertion",
+        "purpose": "tagging",
+        "method": "CRISPR",
+        "award": "/awards/U41HG007355/",
+        "uuid": "b79cb3ba-745e-5d9a-8903-4a02327a7e09"
+    },
+    {
+        "accession": "ENCGM628IQH",
+        "aliases": [
+            "erez-aiden:HCT116-CTCF-tag"
+        ],
+        "award": "UM1HG009390",
+        "category": "insertion",
+        "introduced_tags": [
+            {
+                "name": "mAID-mClover",
+                "location": "C-terminal"
+            }
+        ],
+        "lab": "bradley-bernstein",
+        "method": "CRISPR",
+        "modified_site_by_target_id": "CTCF-human",
+        "purpose": "tagging",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "uuid": "e19c6450-8dad-4194-8fcc-2adb357fa149"
+    },
+    {
+        "accession": "ENCGM628AIR",
+        "aliases": [
+            "erez-aiden:CMV-OsTIR1F74G"
+        ],
+        "award": "UM1HG009390",
+        "category": "insertion",
+        "introduced_gene": "/genes/24252/",
+        "lab": "bradley-bernstein",
+        "method": "CRISPR",
+        "modified_site_by_gene_id": "/genes/15077/",
+        "purpose": "expression",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "reagents": [
+            {
+                "source": "erez-aiden",
+                "identifier": "addgene:140536",
+                "url": "https://www.addgene.org/140536/"
+            }
+        ],
+        "uuid": "d81223da-50d3-4e39-ba82-a172e58ac62f"
     }
 ]

@@ -30,6 +30,7 @@ ORDER = [
     'fly_donor',
     'worm_donor',
     'human_donor',
+    'manatee_donor',
     'donor_characterization',
     'genetic_modification',
     'genetic_modification_characterization',
@@ -38,7 +39,9 @@ ORDER = [
     'platform',
     'library',
     'experiment',
+    'single_cell_unit',
     'functional_characterization_experiment',
+    'transgenic_enhancer_experiment',
     'replicate',
     'annotation',
     'project',
@@ -55,7 +58,14 @@ ORDER = [
     'replication_timing_series',
     'aggregate_series',
     'experiment_series',
+    'gene_silencing_series',
+    'differentiation_series',
+    'pulse_chase_time_series',
+    'multiomics_series',
     'reference_epigenome',
+    'disease_series',
+    'collection_series',
+    'differential_accessibility_series',
     'software',
     'software_version',
     'analysis_step',
@@ -73,12 +83,20 @@ ORDER = [
     'atac_library_complexity_quality_metric',
     'atac_peak_enrichment_quality_metric',
     'atac_replication_quality_metric',
+    'bpnet_quality_metric',
+    'bru_library_quality_metric',
+    'chia_pet_alignment_quality_metric',
+    'chia_pet_chr_interactions_quality_metric',
+    'chia_pet_peak_enrichment_quality_metric',
     'chip_alignment_samstat_quality_metric',
     'chip_alignment_enrichment_quality_metric',
     'chip_library_quality_metric',
     'chip_peak_enrichment_quality_metric',
     'chip_replication_quality_metric',
     'chipseq_filter_quality_metric',
+    'dnase_alignment_quality_metric',
+    'dnase_footprinting_quality_metric',
+    'hic_quality_metric',
     'micro_rna_quantification_quality_metric',
     'micro_rna_mapping_quality_metric',
     'long_read_rna_mapping_quality_metric',
@@ -98,6 +116,18 @@ ORDER = [
     'histone_chipseq_quality_metric',
     'generic_quality_metric',
     'gencode_category_quality_metric',
+    'gembs_alignment_quality_metric',
+    'sc_atac_alignment_quality_metric',
+    'sc_atac_read_quality_metric',
+    'sc_atac_multiplet_quality_metric',
+    'sc_atac_library_complexity_quality_metric',
+    'sc_atac_analysis_quality_metric',
+    'sc_atac_counts_summary_quality_metric',
+    'star_solo_quality_metric',
+    'scrna_seq_counts_summary_quality_metric',
+    'segway_quality_metric',
+    'quality_standard',
+    'analysis',
     'image',
     'page',
     'cart',
@@ -123,6 +153,40 @@ IS_ATTACHMENT = [
     'tss_enrichment_plot',
     'fragment_length_distribution_plot',
     'peak_width_distribution_plot',
+    'dispersion_model',
+    'mapq_plot',
+    'insert_size_plot',
+    'insert_size_histogram',
+    'insert_size_metric',
+    'nuclear_preseq',
+    'nuclear_preseq_targets',
+    'multiplet_stats',
+    'picard_markdup_stats',
+    'pbc_stats',
+    'archr_doublet_summary_figure',
+    'archr_fragment_size_distribution',
+    'archr_tss_by_unique_frags',
+    'archr_doublet_summary_text',
+    'archr_pre_filter_metadata',
+    'barcode_matching_stats',
+    'adapter_trimming_stats',
+    'barcode_revcomp_stats',
+    'mito_stats',
+    'samstats',
+    'barcodes_status',
+    'barcode_pairs_multiplets',
+    'barcode_pairs_expanded',
+    'multiplet_threshold_plot',
+    'barcode_rank_plot',
+    'sequencing_saturation_plot',
+    'total_counts_vs_pct_mitochondria',
+    'total_counts_vs_genes_by_count',
+    'counts_violin_plot',
+    'trackname_assay',
+    'feature_aggregation_tab',
+    'signal_distribution_tab',
+    'segment_sizes_tab',
+    'length_distribution_tab',
 ]
 
 
@@ -495,8 +559,11 @@ def attachment(path):
 
     filename = os.path.basename(path)
     mime_type, encoding = mimetypes.guess_type(path)
+    if encoding == 'gzip':
+        mime_type = 'application/gzip'
     major, minor = mime_type.split('/')
     detected_type = magic.from_file(path, mime=True)
+    Image.MAX_IMAGE_PIXELS = 500000000
 
     # XXX This validation logic should move server-side.
     if not (detected_type == mime_type or
@@ -510,7 +577,7 @@ def attachment(path):
             'href': 'data:%s;base64,%s' % (mime_type, b64encode(stream.read()).decode('ascii'))
         }
 
-        if mime_type in ('application/pdf', 'text/plain', 'text/tab-separated-values', 'text/html'):
+        if mime_type in ('application/pdf', 'application/json', 'application/gzip', 'text/plain', 'text/tab-separated-values', 'text/html'):
             # XXX Should use chardet to detect charset for text files here.
             return attach
 
@@ -592,13 +659,19 @@ PHASE1_PIPELINES = {
         remove_keys('derived_from', 'pooled_from', 'part_of', 'host'),
     ],
     'library': [
-        remove_keys('spikeins_used', 'adapters'),
+        remove_keys('spikeins_used', 'adapters', 'inclusion_list'),
     ],
     'experiment': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
     'functional_characterization_experiment': [
-        remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
+        remove_keys('possible_controls', 'supersedes', 'elements_mappings', 'elements_references', 'analyses'),
+    ],
+    'single_cell_unit': [
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
+    ],
+    'transgenic_enhancer_experiment': [
+        remove_keys('related_files', 'supersedes'),
     ],
     'mouse_donor': [
         remove_keys('parent_strains', 'genetic_modifications'),
@@ -616,7 +689,7 @@ PHASE1_PIPELINES = {
         remove_keys('datasets'),
     ],
     'annotation': [
-        remove_keys('related_files', 'software_used'),
+        remove_keys('related_files', 'software_used', 'analyses'),
     ],
     'project': [
         remove_keys('related_files'),
@@ -625,7 +698,7 @@ PHASE1_PIPELINES = {
         remove_keys('related_files'),
     ],
     'reference': [
-        remove_keys('related_files', 'software_used'),
+        remove_keys('related_files', 'software_used', 'related_pipelines'),
     ],
     'computational_model': [
         remove_keys('related_files', 'software_used'),
@@ -634,31 +707,52 @@ PHASE1_PIPELINES = {
         remove_keys('related_files'),
     ],
     'functional_characterization_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'single_cell_rna_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'treatment_time_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'treatment_concentration_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'aggregate_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'organism_development_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
     ],
     'replication_timing_series': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
+    ],
+    'gene_silencing_series': [
+        remove_keys('related_datasets', 'analyses'),
+    ],
+    'differentiation_series': [
+        remove_keys('related_datasets', 'analyses'),
+    ],
+    'pulse_chase_time_series': [
+        remove_keys('related_datasets', 'analyses'),
+    ],
+    'multiomics_series': [
+        remove_keys('related_datasets', 'analyses'),
     ],
     'reference_epigenome': [
-        remove_keys('related_datasets', 'supersedes'),
+        remove_keys('related_datasets', 'supersedes', 'analyses'),
+    ],
+    'disease_series': [
+        remove_keys('related_datasets', 'supersedes', 'analyses'),
+    ],
+    'collection_series': [
+        remove_keys('related_datasets', 'analyses'),
     ],
     'matched_set': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'analyses'),
+    ],
+    'differential_accessibility_series': [
+        remove_keys('related_datasets', 'supersedes', 'analyses'),
     ],
     'file': [
         remove_keys('derived_from', 'controlled_by', 'supersedes')
@@ -687,13 +781,19 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of', 'host'),
     ],
     'library': [
-        skip_rows_missing_all_keys('spikeins_used', 'adapters'),
+        skip_rows_missing_all_keys('spikeins_used', 'adapters', 'inclusion_list'),
     ],
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
     ],
     'functional_characterization_experiment': [
-        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
+        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mappings', 'elements_references', 'analyses'),
+    ],
+    'single_cell_unit': [
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
+    ],
+    'transgenic_enhancer_experiment': [
+        skip_rows_missing_all_keys('related_files', 'supersedes'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
@@ -708,7 +808,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
     'annotation': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
+        skip_rows_missing_all_keys('related_files', 'software_used', 'analyses'),
     ],
     'project': [
         skip_rows_missing_all_keys('related_files'),
@@ -717,7 +817,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'reference': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
+        skip_rows_missing_all_keys('related_files', 'software_used', 'related_pipelines'),
     ],
     'computational_model': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
@@ -726,31 +826,52 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'functional_characterization_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'single_cell_rna_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'treatment_time_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'aggregate_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'treatment_concentration_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'organism_development_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'replication_timing_series': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
+    ],
+    'gene_silencing_series': [
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
+    ],
+    'differentiation_series': [
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
+    ],
+    'pulse_chase_time_series': [
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
+    ],
+    'multiomics_series': [
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'reference_epigenome': [
-        skip_rows_missing_all_keys('related_datasets', 'supersedes'),
+        skip_rows_missing_all_keys('related_datasets', 'supersedes', 'analyses'),
+    ],
+    'disease_series': [
+        skip_rows_missing_all_keys('related_datasets', 'supersedes', 'analyses'),
+    ],
+    'collection_series': [
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
     ],
     'matched_set': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'analyses'),
+    ],
+    'differential_accessibility_series': [
+        skip_rows_missing_all_keys('related_datasets', 'supersedes', 'analyses'),
     ],
     'publication': [
         skip_rows_missing_all_keys('datasets'),

@@ -1,8 +1,8 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 import _ from 'underscore';
 import { cartModule, CartManager } from '../cart';
 import {
@@ -12,9 +12,13 @@ import {
     REMOVE_MULTIPLE_FROM_CART,
     CACHE_SAVED_CART,
     CART_OPERATION_IN_PROGRESS,
+    SET_STATUS,
 } from '../cart/actions';
 import { isAllowedElementsPossible } from '../cart/util';
+import { processPseudoDefaultFiles } from '../cart/cart';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 // Create the Redux mock store.
 const initialCart = {
@@ -65,13 +69,14 @@ describe('Cart actions', () => {
             state = {
                 elements: ['/experiment/ENCSR000AAA/', '/experiment/ENCSR001AAA/', '/experiment/ENCSR002AAA/'],
                 name: 'Untitled',
+                fileViews: [],
                 savedCartObj: {},
                 inProgress: false,
             };
         });
 
         test('REMOVE_FROM_CART works and does not mutate state', () => {
-            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR001AAA/' });
+            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR001AAA/', filePaths: [] });
             expect(newState.elements).toHaveLength(2);
             expect(newState.elements[0]).toEqual('/experiment/ENCSR000AAA/');
             expect(newState.elements[1]).toEqual('/experiment/ENCSR002AAA/');
@@ -79,7 +84,7 @@ describe('Cart actions', () => {
         });
 
         test('Failed REMOVE_FROM_CART does not modify contents', () => {
-            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR004AAA/' });
+            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR004AAA/', filePaths: [] });
             expect(_.isEqual(state.elements, newState.elements)).toEqual(true);
         });
 
@@ -87,6 +92,12 @@ describe('Cart actions', () => {
             const newState = cartModule(state, { type: REMOVE_MULTIPLE_FROM_CART, elementAtIds: ['/experiment/ENCSR000AAA/', '/experiment/ENCSR002AAA/'] });
             expect(newState.elements).toHaveLength(1);
             expect(newState.elements[0]).toEqual('/experiment/ENCSR001AAA/');
+            expect(newState).not.toEqual(state);
+        });
+
+        test('SET_STATUS works and does not mutate state', () => {
+            const newState = cartModule(state, { type: SET_STATUS, status: 'listed' });
+            expect(newState.status).toEqual('listed');
             expect(newState).not.toEqual(state);
         });
     });
@@ -293,14 +304,14 @@ describe('Cart manager while logged in as submitter', () => {
 
     test('the cart count is correct', () => {
         const tableCount = cartManager.find('.cart-counts');
-        expect(tableCount.text()).toEqual('3 carts (30 maximum)');
+        expect(tableCount.text()).toEqual('2 carts (30 maximum)');
     });
 
     test('the column count is correct', () => {
         const tableHeaderRows = cartManager.find('.table.table__sortable thead tr');
         expect(tableHeaderRows).toHaveLength(2);
         const tableHeaderCells = tableHeaderRows.at(1).find('th');
-        expect(tableHeaderCells).toHaveLength(5);
+        expect(tableHeaderCells).toHaveLength(4);
     });
 
     test('the row count is correct', () => {
@@ -413,25 +424,284 @@ describe('Cart manager while logged in as admin', () => {
 
     test('the cart count is correct', () => {
         const tableCount = cartManager.find('.cart-counts');
-        expect(tableCount.text()).toEqual('3 carts (30 maximum)');
+        expect(tableCount.text()).toEqual('2 carts (30 maximum)');
     });
 
     test('the column count is correct', () => {
         const tableHeaderRows = cartManager.find('.table.table__sortable thead tr');
         expect(tableHeaderRows).toHaveLength(2);
         const tableHeaderCells = tableHeaderRows.at(1).find('th');
-        expect(tableHeaderCells).toHaveLength(6);
+        expect(tableHeaderCells).toHaveLength(5);
     });
 
     test('the row count is correct', () => {
         const tableRows = cartManager.find('.table.table__sortable tbody tr');
-        expect(tableRows).toHaveLength(4);
+        expect(tableRows).toHaveLength(3);
     });
 
     test('the special row CSS classes are correct', () => {
         const tableRows = cartManager.find('.table.table__sortable tbody tr');
         expect(tableRows.at(0).find('.cart-manager-table__autosave-row')).toHaveLength(1);
-        expect(tableRows.at(2).find('.cart-manager-table__deleted-row')).toHaveLength(1);
-        expect(tableRows.at(3).find('.cart-manager-table__current-row')).toHaveLength(1);
+        expect(tableRows.at(2).find('.cart-manager-table__current-row')).toHaveLength(1);
+    });
+});
+
+describe('Process pseudo-default files', () => {
+    let nonVisuzalizablefiles;
+    let mixedBioRepFiles;
+    let homogeneousOutputTypes0;
+    let homogeneousOutputTypes1;
+
+    const getDefaultFiles = (datasets) => (
+        datasets.reduce((accFiles, dataset) => {
+            const defaultFiles = dataset.files.filter((file) => file.preferred_default || file.pseudo_default);
+            return accFiles.concat(defaultFiles);
+        }, [])
+    );
+
+    beforeEach(() => {
+        nonVisuzalizablefiles = [
+            {
+                '@id': '/files/ENCFF249UEP/',
+                '@type': ['File', 'Item'],
+                accession: 'ENCFF249UEP',
+                assay_term_name: 'microRNA-seq',
+                assembly: 'mm10',
+                biological_replicates: [1],
+                file_format: 'bam',
+                file_type: 'bam',
+                genome_annotation: 'M21',
+                output_category: 'alignment',
+                output_type: 'alignments',
+                status: 'released',
+                technical_replicates: ['1_1'],
+                title: 'ENCFF249UEP',
+                uuid: 'ed01d987-3f6d-4456-b84f-95f3a55b48b9',
+            },
+            {
+                '@id': '/files/ENCFF142RED/',
+                '@type': ['File', 'Item'],
+                accession: 'ENCFF142RED',
+                assay_term_name: 'microRNA-seq',
+                assembly: 'mm10',
+                biological_replicates: [1],
+                file_format: 'tsv',
+                file_type: 'tsv',
+                genome_annotation: 'M21',
+                output_category: 'quantification',
+                output_type: 'microRNA quantifications',
+                status: 'released',
+                technical_replicates: ['1_1'],
+                title: 'ENCFF142RED',
+                uuid: '80bd2ef6-f6a0-4f6e-8079-ba8a5b3d768b',
+            },
+        ];
+
+        mixedBioRepFiles = [
+            {
+                '@id': '/files/ENCFF650BOQ/',
+                '@type': ['File', 'Item'],
+                accession: 'ENCFF650BOQ',
+                assay_term_name: 'ATAC-seq',
+                assembly: 'GRCh38',
+                biological_replicates: [1, 2],
+                file_format: 'bigWig',
+                file_type: 'bigWig',
+                output_category: 'signal',
+                output_type: 'fold change over control',
+                status: 'released',
+                title: 'ENCFF650BOQ',
+                uuid: '0977a1e1-cf38-4a22-ae77-bbe97a0ab93a',
+            },
+            {
+                '@id': '/files/ENCFF565QME/',
+                '@type': ['File', 'Item'],
+                accession: 'ENCFF565QME',
+                assay_term_name: 'ATAC-seq',
+                assembly: 'GRCh38',
+                biological_replicates: [1, 2],
+                file_format: 'bigWig',
+                file_type: 'bigWig',
+                output_category: 'signal',
+                output_type: 'signal p-value',
+                status: 'released',
+                title: 'ENCFF565QME',
+                uuid: '208d70fd-7573-4682-87e6-ace8ae048f14',
+            },
+        ];
+
+        homogeneousOutputTypes0 = [
+            {
+                '@id': '/files/ENCFF671MSU/',
+                '@type': ['File', 'Item'],
+                accession: 'ENCFF671MSU',
+                assay_term_name: 'ChIP-seq',
+                assembly: 'GRCh38',
+                biological_replicates: [1],
+                file_format: 'bigBed',
+                file_format_type: 'narrowPeak',
+                file_type: 'bigBed narrowPeak',
+                output_category: 'annotation',
+                output_type: 'pseudoreplicated peaks',
+                status: 'released',
+                technical_replicates: ['1_1'],
+                title: 'ENCFF671MSU',
+                uuid: '2636ce93-92f5-4d04-9597-a89ccc812ed6',
+            },
+            {
+                '@id': '/files/ENCFF914XCR/',
+                '@type': ['File', 'Item'],
+                accession: 'ENCFF914XCR',
+                assay_term_name: 'ChIP-seq',
+                assembly: 'GRCh38',
+                biological_replicates: [1],
+                file_format: 'bigBed',
+                file_format_type: 'narrowPeak',
+                file_type: 'bigBed narrowPeak',
+                output_category: 'annotation',
+                output_type: 'pseudoreplicated peaks',
+                status: 'released',
+                technical_replicates: ['2_1'],
+                title: 'ENCFF914XCR',
+                uuid: '011cbaee-dffc-45af-80ff-d677706e2016',
+            },
+        ];
+
+        homogeneousOutputTypes1 = [
+            {
+                '@id': '/files/ENCFF615QOX/',
+                '@type': ['File', 'Item'],
+                accession: 'ENCFF615QOX',
+                assay_term_name: 'ChIP-seq',
+                assembly: 'GRCh38',
+                biological_replicates: [1],
+                file_format: 'bigWig',
+                file_type: 'bigWig',
+                output_category: 'signal',
+                output_type: 'fold change over control',
+                status: 'released',
+                technical_replicates: ['1_1'],
+                title: 'ENCFF615QOX',
+                uuid: '2af0c872-a65f-42d7-b5d3-7a4993123cd3',
+            },
+            {
+                '@id': '/files/ENCFF933QRH/',
+                '@type': ['File', 'Item'],
+                accession: 'ENCFF933QRH',
+                assay_term_name: 'ChIP-seq',
+                assembly: 'GRCh38',
+                biological_replicates: [2],
+                file_format: 'bigWig',
+                file_type: 'bigWig',
+                output_category: 'signal',
+                output_type: 'fold change over control',
+                status: 'released',
+                technical_replicates: ['2_1'],
+                title: 'ENCFF933QRH',
+                uuid: '4874dd69-3ce9-4fb5-bf80-a622ed7de2fd',
+            },
+        ];
+    });
+
+    describe('No visualizable files', () => {
+        test('With no visualizable files, no preferred_default set', () => {
+            const datasets = [
+                {
+                    '@id': '/experiments/ENCSR424VMF/',
+                    '@type': ['Experiment', 'Dataset', 'Item'],
+                    accession: 'ENCSR424VMF',
+                    assay_slims: ['Transcription'],
+                    assay_term_id: 'OBI:0001922',
+                    assay_term_name: 'microRNA-seq',
+                    assay_title: 'microRNA-seq',
+                    assembly: ['mm10'],
+                    files: nonVisuzalizablefiles,
+                    perturbed: false,
+                    status: 'released',
+                    uuid: 'cc5c9298-168f-400d-9b61-3d56b9871d68',
+                },
+            ];
+
+            processPseudoDefaultFiles(datasets);
+            const preferredDefaultFiles = getDefaultFiles(datasets);
+            expect(preferredDefaultFiles).toHaveLength(0);
+        });
+    });
+
+    describe('Mixed biological-replicate files', () => {
+        test('Mixed biological-replicate files get default, non-mixed don\'t', () => {
+            const datasets = [
+                {
+                    '@id': '/experiments/ENCSR551CSY/',
+                    '@type': ['Dataset', 'Item'],
+                    accession: 'ENCSR551CSY',
+                    assay_slims: ['DNA accessibility'],
+                    assay_term_id: 'OBI:0002039',
+                    assay_term_name: 'ATAC-seq',
+                    assay_title: 'ATAC-seq',
+                    assembly: ['GRCh38'],
+                    files: [...nonVisuzalizablefiles, ...mixedBioRepFiles],
+                    perturbed: false,
+                    status: 'released',
+                    uuid: 'b3d394bc-40d8-43ef-98a6-2740850e74b6',
+                },
+            ];
+
+            processPseudoDefaultFiles(datasets);
+            const preferredDefaultFiles = getDefaultFiles(datasets);
+            expect(preferredDefaultFiles).toHaveLength(2);
+        });
+    });
+
+    describe('Homogeneous output types', () => {
+        test('Homogeneous output types select first bigWig/bigBed in replicate 1', () => {
+            const datasets = [
+                {
+                    '@id': '/experiments/ENCSR587VHH/',
+                    '@type': ['Experiment', 'Dataset', 'Item'],
+                    accession: 'ENCSR587VHH',
+                    assay_term_id: 'OBI:0000716',
+                    assay_term_name: 'ChIP-seq',
+                    assay_title: 'Histone ChIP-seq',
+                    assembly: ['GRCh38'],
+                    files: homogeneousOutputTypes0,
+                    perturbed: false,
+                    status: 'released',
+                    uuid: 'a6385551-316f-4ec0-8604-07d4d26d97bd',
+                },
+            ];
+
+            processPseudoDefaultFiles(datasets);
+            const preferredDefaultFiles = getDefaultFiles(datasets);
+            expect(preferredDefaultFiles).toHaveLength(1);
+            expect(preferredDefaultFiles[0].accession).toEqual('ENCFF671MSU');
+        });
+    });
+
+    describe('Heterogeneous output types', () => {
+        test('Heterogeneous output types select first bigWig/bigBed in first replicate', () => {
+            const datasets = [
+                {
+                    '@id': '/experiments/ENCSR587VHH/',
+                    '@type': ['Experiment', 'Dataset', 'Item'],
+                    accession: 'ENCSR587VHH',
+                    assay_term_id: 'OBI:0000716',
+                    assay_term_name: 'ChIP-seq',
+                    assay_title: 'Histone ChIP-seq',
+                    assembly: ['GRCh38'],
+                    files: [...homogeneousOutputTypes0, ...homogeneousOutputTypes1],
+                    perturbed: false,
+                    status: 'released',
+                    uuid: 'a6385551-316f-4ec0-8604-07d4d26d97bd',
+                },
+            ];
+
+            processPseudoDefaultFiles(datasets);
+            const preferredDefaultFiles = getDefaultFiles(datasets);
+            expect(preferredDefaultFiles).toHaveLength(3);
+            expect(preferredDefaultFiles[0].accession).toEqual('ENCFF671MSU');
+            expect(preferredDefaultFiles[1].accession).toEqual('ENCFF615QOX');
+            expect(preferredDefaultFiles[2].accession).toEqual('ENCFF933QRH');
+        });
     });
 });

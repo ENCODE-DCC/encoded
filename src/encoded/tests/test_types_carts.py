@@ -1,69 +1,6 @@
 import pytest
 
-
-@pytest.fixture
-def cart(testapp, submitter):
-    item = {
-        'name': 'test cart',
-        'submitted_by': submitter['uuid'],
-    }
-    return testapp.post_json('/cart', item).json['@graph'][0]
-
-
-@pytest.fixture
-def other_cart(testapp, remc_member):
-    item = {
-        'name': 'test cart',
-        'submitted_by': remc_member['uuid'],
-    }
-    return testapp.post_json('/cart', item).json['@graph'][0]
-
-
-@pytest.fixture
-def deleted_cart(testapp, submitter):
-    item = {
-        'name': 'test cart',
-        'status': 'deleted',
-        'elements': [],
-        'submitted_by': submitter['uuid'],
-    }
-    return testapp.post_json('/cart', item).json['@graph'][0]
-
-
-@pytest.fixture
-def autosave_cart(testapp, submitter):
-    item = {
-        'name': 'test cart',
-        'status': 'disabled',
-        'elements': [],
-        'submitted_by': submitter['uuid'],
-    }
-    return testapp.post_json('/cart', item).json['@graph'][0]
-
-
-@pytest.fixture
-def cart_submitter_testapp(app, submitter):
-    '''TestApp with JSON accept header for non-admin user.
-    '''
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': submitter['uuid'],
-    }
-    return TestApp(app, environ)
-
-
-@pytest.fixture
-def other_cart_submitter_testapp(app, remc_member):
-    '''TestApp with JSON accept header for non-admin user.
-    '''
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': remc_member['uuid'],
-    }
-    return TestApp(app, environ)
-
+from pyramid.exceptions import HTTPBadRequest
 
 def test_add_element_to_cart(testapp, cart, experiment):
     testapp.patch_json(
@@ -93,15 +30,11 @@ def test_not_owner_cannot_add_element_to_cart(cart_submitter_testapp, testapp, o
 
 def test_other_can_see_cart(cart_submitter_testapp, other_cart, remc_member):
     res = cart_submitter_testapp.get(other_cart['@id'])
-    assert res.json['submitted_by'] == remc_member['@id']
+    assert res.json['submitted_by']['@id'] == remc_member['@id']
 
 
 def test_submitter_cant_see_deleted_cart(cart_submitter_testapp, deleted_cart, submitter):
     cart_submitter_testapp.get(deleted_cart['@id'], status=403)
-
-
-def test_other_cant_see_autosave_cart(other_cart_submitter_testapp, autosave_cart, remc_member):
-    other_cart_submitter_testapp.get(autosave_cart['@id'], status=403)
 
 
 def test_submitter_can_see_autosave_cart(cart_submitter_testapp, autosave_cart, submitter):
@@ -144,7 +77,7 @@ def test_get_or_create_cart_by_user(cart_submitter_testapp, submitter):
     carts = res.json['@graph']
     assert carts and '/carts/' in carts[0]
     created_cart = cart_submitter_testapp.get(carts[0])
-    assert created_cart.json['submitted_by'] == submitter['@id']
+    assert created_cart.json['submitted_by']['@id'] == submitter['@id']
     # Cart should exist
     retrieved_cart = cart_submitter_testapp.get('/carts/@@get-cart').json['@graph'][0]
     assert created_cart.json['@id'] == retrieved_cart
@@ -152,3 +85,238 @@ def test_get_or_create_cart_by_user(cart_submitter_testapp, submitter):
 
 def test_get_or_create_cart_no_user(testapp):
     testapp.get('/carts/@@get-cart', status=400)
+
+
+def test_cart_object_init(dummy_request):
+    from encoded.cart_view import Cart
+    cart = Cart(dummy_request)
+    assert isinstance(cart, Cart)
+    assert cart.request == dummy_request
+    assert cart.uuids == []
+    assert cart.max_cart_elements == None
+
+
+def test_cart_object_get_carts_from_params(dummy_request):
+    from encoded.cart_view import Cart
+    cart = Cart(dummy_request)
+    assert cart._get_carts_from_params() == []
+    dummy_request.environ['QUERY_STRING'] = (
+        'cart=abc123&cart=def456'
+    )
+    cart = Cart(dummy_request)
+    assert cart._get_carts_from_params() == ['abc123', 'def456']
+
+
+def test_cart_get_cart_object_or_error(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    c = Cart(dummy_request, uuids=[cart['uuid']])
+    cart_object = c._get_cart_object_or_error(cart['uuid'])
+    assert cart_object.get('@id') == cart['@id']
+    with pytest.raises(KeyError):
+        c._get_cart_object_or_error('abc')
+
+def test_cart_try_to_get_cart_object(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    c = Cart(dummy_request, uuids=[cart['uuid']])
+    cart_object = c._try_to_get_cart_object(cart['uuid'])
+    assert cart_object.get('@id') == cart['@id']
+    assert c._try_to_get_cart_object('abc') == {}
+
+def test_cart_object_try_to_get_elements_from_cart(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    c = Cart(dummy_request, uuids=[cart['uuid']])
+    assert c.uuids == [cart['uuid']]
+    elements = c._try_to_get_elements_from_cart(cart['uuid'])
+    assert elements == [experiment['@id']]
+    assert c._try_to_get_elements_from_cart('abc') == []
+
+
+def test_cart_object_get_elements_from_carts(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["@id"]}'
+    )
+    c = Cart(dummy_request)
+    elements = list(c._get_elements_from_carts())
+    assert elements == [experiment['@id']]
+    c = Cart(dummy_request, uuids=[cart['@id']])
+    elements = list(c._get_elements_from_carts())
+    assert elements == [experiment['@id']]
+    c = Cart(dummy_request, uuids=[cart['uuid']])
+    elements = list(c._get_elements_from_carts())
+    assert elements == [experiment['@id']]
+    c = Cart(dummy_request, uuids=['abc'])
+    elements = list(c._get_elements_from_carts())
+    assert elements == []
+
+
+def test_cart_object_validate_cart_size(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    from pyramid.exceptions import HTTPBadRequest
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["@id"]}'
+    )
+    c = Cart(dummy_request)
+    c._elements = [experiment['@id']]
+    c._validate_cart_size()
+    c = Cart(dummy_request, max_cart_elements=0)
+    c._elements = [experiment['@id']]
+    with pytest.raises(HTTPBadRequest):
+        c._validate_cart_size()
+
+
+def test_cart_object_elements(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id'], experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["uuid"]}'
+    )
+    c = Cart(dummy_request)
+    assert list(c.elements) == [experiment['@id']]
+
+
+def test_cart_object_as_params(cart, submitter, experiment, dummy_request, threadlocals, testapp, mocker):
+    mocker.spy(dummy_request, 'embed')
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id'], experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["uuid"]}'
+    )
+    c = Cart(dummy_request)
+    assert dummy_request.embed.call_count == 0
+    assert c.as_params() == [('@id', experiment['@id'])]
+    assert dummy_request.embed.call_count == 1
+    # Cache value
+    assert c.as_params() == [('@id', experiment['@id'])]
+    assert dummy_request.embed.call_count == 1
+
+
+def test_cart_object_no_elements(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    from encoded.cart_view import Cart
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["uuid"]}'
+    )
+    c = Cart(dummy_request)
+    assert list(c.elements) == []
+    assert c.as_params() == []
+
+
+def test_cart_object_no_carts(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    from encoded.cart_view import Cart
+    c = Cart(dummy_request)
+    assert list(c.elements) == []
+    assert c.as_params() == []
+
+
+def test_cart_object_two_carts(cart, submitter, experiment, dummy_request, threadlocals, testapp, mocker):
+    mocker.spy(dummy_request, 'embed')
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id'], experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["uuid"]}&cart={cart["@id"]}'
+    )
+    c = Cart(dummy_request)
+    assert dummy_request.embed.call_count == 0
+    assert c.as_params() == [
+        ('@id', experiment['@id'])
+    ]
+    assert dummy_request.embed.call_count == 2
+    # Cache value
+    assert c.as_params() == [
+        ('@id', experiment['@id'])
+    ]
+    assert dummy_request.embed.call_count == 2
+
+
+def test_cart_with_elements_object_init(dummy_request):
+    from encoded.cart_view import CartWithElements
+    cart = CartWithElements(dummy_request)
+    assert isinstance(cart, CartWithElements)
+    assert cart.request == dummy_request
+    assert cart.uuids == []
+    assert cart.max_cart_elements == 8000
+    cart = CartWithElements(
+        dummy_request,
+        max_cart_elements=5
+    )
+    cart.max_cart_elements == 5
+
+
+def test_cart_with_elements_object_try_to_get_cart_object(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import CartWithElements
+    c = CartWithElements(dummy_request, uuids=[cart['uuid']])
+    cart_object = c._try_to_get_cart_object(cart['uuid'])
+    assert cart_object.get('@id') == cart['@id']
+    with pytest.raises(HTTPBadRequest):
+        c._try_to_get_cart_object('abc')
+
+
+def test_cart_with_elements_object_try_to_get_elements_from_cart(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import CartWithElements
+    c = CartWithElements(dummy_request, uuids=[cart['uuid']])
+    assert c.max_cart_elements == 8000
+    assert c.uuids == [cart['uuid']]
+    elements = c._try_to_get_elements_from_cart(cart['uuid'])
+    assert elements == [experiment['@id']]
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': []}
+    )
+    with pytest.raises(HTTPBadRequest):
+        c._try_to_get_elements_from_cart(cart['uuid'])
+
+
+def test_cart_with_object_validate_cart_size(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    from pyramid.exceptions import HTTPBadRequest
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import CartWithElements
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["@id"]}'
+    )
+    c = CartWithElements(dummy_request, max_cart_elements=3)
+    c._elements = [experiment['@id']]
+    assert c.max_cart_elements == 3
+    c._validate_cart_size()
+    c._elements = ['a', 'b', 'c', 'd']
+    with pytest.raises(HTTPBadRequest):
+        c._validate_cart_size()

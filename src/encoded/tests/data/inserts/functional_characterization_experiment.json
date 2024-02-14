@@ -1,5 +1,20 @@
 [
     {
+        "accession": "ENCSR476KHP",
+        "analyses": [
+            "ENCAN672HZP"
+        ],
+        "assay_term_name": "Flow-FISH CRISPR screen",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "date_released": "2021-10-18",
+        "date_submitted": "2021-09-23",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "fae140ad-c8d8-4674-b934-87826a7c0ebb"
+    },
+    {
         "_test": "mpra",
         "accession": "ENCSR222MPR",
         "assay_term_name": "MPRA",
@@ -10,13 +25,26 @@
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
-        "elements_mapping": "ENCSR212POL",
+        "elements_cloning": "ENCSR476KHP",
+        "elements_mappings": ["ENCSR212POL", "ENCSR051STU"],
         "elements_references": ["ENCSR001REF"],
+        "references": [
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
+        ],
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "5a6d5a51-e62d-44b9-a1bd-5d1915247348"
+        "uuid": "5a6d5a51-e62d-44b9-a1bd-5d1915247348",
+        "examined_loci": [{
+            "gene": "/genes/7025/",
+            "expression_percentile": 90,
+            "expression_measurement_method": "PrimeFlow"
+        }, {"gene": "/genes/1879/",
+            "expression_range_minimum": 0,
+            "expression_range_maximum": 20,
+            "expression_measurement_method": "PrimeFlow"}]
     },
     {
         "_test": "pooled_cloned_sequencing",
+        "control_type": "control",
         "accession": "ENCSR212POL",
         "assay_term_name": "pooled clone sequencing",
         "award": "U54HG007004",
@@ -38,27 +66,30 @@
         "biosample_ontology": "cell_line_EFO_0009747",
         "award": "U54HG007010",
         "description": "CRISPR screen experiment description",
-        "assay_term_name": "CRISPR screen",
+        "assay_term_name": "proliferation CRISPR screen",
         "lab": "/labs/gregory-crawford/",
         "date_released": "2017-12-31",
         "accession": "ENCSR759STU",
-        "elements_mapping": "ENCSR051STU",
+        "elements_mappings": ["ENCSR051STU"],
         "elements_references": ["ENCSR001REF", "ENCSR500ELM"],
-        "uuid": "b9e3fdf6-70ee-11e9-a923-1681be663d3e",
-        "gRNA_tiling_loci": ["/genes/912/", "/genes/2995/"]
+        "uuid": "b9e3fdf6-70ee-11e9-a923-1681be663d3e"
     },
     {
         "_test": "pooled clone sequencing test",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "archived",
+        "status": "released",
         "date_submitted": "2015-04-20",
         "biosample_ontology": "cell_line_EFO_0009747",
         "award": "U54HG007010",
+        "control_type": "control",
         "description": "pooled clone sequencing mapping description",
         "assay_term_name": "pooled clone sequencing",
         "lab": "/labs/gregory-crawford/",
         "date_released": "2019-04-10",
         "accession": "ENCSR051STU",
+        "references": [
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
+        ],
         "uuid": "b9e400e4-70ee-11e9-a923-1681be663d3e",
         "plasmids_library_type": "elements mapping"
     },
@@ -67,8 +98,9 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "status": "released",
         "date_submitted": "2015-04-20",
-        "biosample_ontology": "cell_line_EFO_0009747",
+        "biosample_ontology": "cloning_host_NTR_0000545",
         "award": "U54HG007010",
+        "control_type": "control",
         "description": "pooled clone sequencing elements validation",
         "assay_term_name": "pooled clone sequencing",
         "lab": "/labs/gregory-crawford/",
@@ -88,10 +120,38 @@
         "status": "revoked",
         "date_submitted": "2011-01-20",
         "date_released": "2019-01-01",
-        "elements_mapping": "ENCSR212POL",
+        "elements_mappings": ["ENCSR212POL"],
         "elements_references": ["ENCSR001REF"],
         "submitted_by": "felis.senectus@hymenaeos.nibh",
         "uuid": "5a1d5a51-e62d-48b9-a1bd-1d1915247341"
+    },
+    {
+        "accession": "ENCSR114CEL",
+        "assay_term_name": "FACS CRISPR screen",
+        "award": "U54HG006997",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "date_released": "2019-08-10",
+        "date_submitted": "2015-04-20",
+        "description": "Test submission for CRISPR screen with examined loci",
+        "elements_mappings": ["ENCSR212POL"],
+        "elements_cloning": "ENCSR127PCE",
+        "lab": "bing-ren",
+        "status": "released",
+        "submitted_by": "tristique.sem@faucibus.semper",
+        "uuid": "f4455f2b-8dd3-462b-aa00-4d0ea471714a",
+        "examined_loci": [{
+            "gene": "/genes/912/",
+            "expression_percentile": 80,
+            "expression_measurement_method": "PrimeFlow"
+        }, {"gene": "/genes/2995/",
+            "expression_range_minimum": 2,
+            "expression_range_maximum": 70,
+            "expression_measurement_method": "PrimeFlow"
+        }, {"gene": "/genes/6482/",
+            "expression_measurement_method": "fluorescence activated cell sorting"
+        }, {"gene": "/genes/15077/",
+            "expression_measurement_method": "PrimeFlow"
+        }]
     },
     {
         "_test": "mpra",
@@ -104,18 +164,27 @@
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
-        "elements_mapping": "ENCSR212POL",
+        "elements_cloning": "ENCSR114CEL",
+        "elements_mappings": ["ENCSR212POL"],
         "elements_references": ["ENCSR848CFY"],
+        "references": [
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
+        ],
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "392ac214-317b-11ea-aec2-2e728ce88125"
+        "uuid": "392ac214-317b-11ea-aec2-2e728ce88125",
+        "examined_loci": [{
+            "gene": "/genes/7025/",
+            "expression_percentile": 20,
+            "expression_measurement_method": "PrimeFlow"
+        }]
     },
     {
         "accession": "ENCSR112TRG",
-        "assay_term_name": "CRISPR screen",
+        "assay_term_name": "proliferation CRISPR screen",
         "award": "U54HG006997",
         "biosample_ontology": "cell_line_EFO_0002067",
         "description": "Test submission for CRISPR screen experiment",
-        "elements_mapping": "ENCSR212POL",
+        "elements_mappings": ["ENCSR212POL"],
         "lab": "bing-ren",
         "status": "in progress",
         "submitted_by": "tristique.sem@faucibus.semper",
@@ -126,12 +195,13 @@
     },
     {
         "accession": "ENCSR113TRG",
-        "assay_term_name": "CRISPR screen",
+        "assay_term_name": "Flow-FISH CRISPR screen",
         "award": "U54HG006997",
         "biosample_ontology": "cell_line_EFO_0002067",
         "description": "Test submission for CRISPR screen experiment",
-        "elements_mapping": "ENCSR212POL",
+        "elements_mappings": ["ENCSR212POL"],
         "elements_cloning": "ENCSR127PCE",
+        "elements_references": ["ENCSR580ZYI", "ENCSR580REG", "ENCSR500ELM", "ENCSR580BOT"],
         "lab": "bing-ren",
         "status": "in progress",
         "submitted_by": "tristique.sem@faucibus.semper",
@@ -140,22 +210,59 @@
         "uuid": "bbd32130-4f13-4c45-9117-3cdebe0ad40a"
     },
     {
-        "accession": "ENCSR114CEL",
-        "assay_term_name": "CRISPR screen",
-        "award": "U54HG006997",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "Test submission for CRISPR screen with examined loci",
-        "elements_mapping": "ENCSR212POL",
-        "elements_cloning": "ENCSR127PCE",
-        "lab": "bing-ren",
+        "accession": "ENCSR928SVL",
+        "assay_term_name": "STARR-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "description": "STARR-seq on undifferentiated WTC11",
+        "analyses": ["ENCAN913ASZ"],
+        "lab": "kevin-white",
+        "status": "released",
+        "date_submitted": "2019-02-20",
+        "date_released": "2020-03-05",
+        "elements_mappings": ["ENCSR212POL"],
+        "elements_references": ["ENCSR001REF"],
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "242dcf83-6173-4e7c-8c71-2ee28998352f"
+    },
+    {
+        "accession": "ENCSR041PSC",
+        "assay_term_name": "perturbation followed by scRNA-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0001086",
+        "description": "perturbed scRNA-seq in A549",
+        "lab": "tim-reddy",
         "status": "in progress",
-        "submitted_by": "tristique.sem@faucibus.semper",
-        "uuid": "f4455f2b-8dd3-462b-aa00-4d0ea471714a",
-        "examined_loci": [{
-            "gene": "/genes/912/",
-            "gene_expression_percentile": 80
-        }, {"gene": "/genes/2995/",
-            "gene_expression_range_minimum": 2,
-            "gene_expression_range_maximum": 70}]
+        "elements_references": ["ENCSR001REF"],
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "dca5442b-2246-407f-9634-e62734363971"
+    },
+    {
+        "accession": "ENCSR555PCR",
+        "assay_term_name": "genomic perturbation followed by RT-qPCR",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "Example of validation by genomic perturbation followed by RT-qPCR",
+        "lab": "kevin-white",
+        "status": "in progress",
+        "elements_references": ["ENCSR001REF"],
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "759d0fdc-2246-97b9-9634-e62721ae3775"
+    },
+    {
+        "accession": "ENCSR004TXD",
+        "aliases": [
+            "yin-shen:Low eGFP sorted cells assay_Sox2"
+        ],
+        "assay_term_name": "FACS CRISPR screen",
+        "award": "U54HG006996",
+        "biosample_ontology": "/biosample-types/tissue_UBERON_0000948/",
+        "date_released": "2020-08-07",
+        "date_submitted": "2020-07-30",
+        "doi": "10.17989/ENCSR004TXD",
+        "lab": "bing-ren",
+        "status": "released",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "60292d01-db37-4523-a492-7cf4d6c996df"
     }
 ]

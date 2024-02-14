@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import pluralize from 'pluralize';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
+import Tooltip from '../libs/ui/tooltip';
+import { CartAddAllElements } from './cart';
 import { TextFilter } from './search';
 
 
@@ -10,7 +12,55 @@ import { TextFilter } from './search';
  * Maximum number of selected items that can be visualized.
  * @constant
  */
-export const MATRIX_VISUALIZE_LIMIT = 500;
+export const MATRIX_VISUALIZE_LIMIT = 200;
+
+
+/**
+ * Render a button to add all datasets displayed on the matrix page to the current cart.
+ */
+export const MatrixAddCart = ({ context }, reactContext) => {
+    /** Receives response for all datasets represented by the matrix */
+    const [experimentData, setExperimentData] = React.useState(null);
+
+    React.useEffect(() => {
+        const link = `${context.search_base}&limit=all&field=@id&field=@type&field=related_datasets.@id&field=related_datasets.@type`;
+        reactContext.fetch(link, {
+            headers: { Accept: 'application/json' },
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            return [];
+        }).then((data) => {
+            const experiments = data['@graph'];
+            setExperimentData(experiments || []);
+        });
+    }, [context]);
+
+    return (
+        experimentData !== null
+            ? (
+                <>
+                    <div className="matrix-cell-line__cart-button">
+                        <CartAddAllElements elements={experimentData} />
+                    </div>
+                </>
+            )
+            : (
+                <button type="button" className="btn btn-info btn-sm deeply-profiled-matrix-spinner-label deeply-profiled-matrix-spinner--loading">
+                    Loading &nbsp;
+                </button>
+            )
+    );
+};
+
+MatrixAddCart.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
+MatrixAddCart.contextTypes = {
+    fetch: PropTypes.func,
+};
 
 
 /**
@@ -34,6 +84,7 @@ export class RowCategoryExpander extends React.Component {
         const { categoryId, expanderColor, expanderBgColor, expanded } = this.props;
         return (
             <button
+                type="button"
                 className="matrix__category-expander"
                 aria-expanded={expanded}
                 aria-controls={categoryId}
@@ -83,21 +134,28 @@ export class SearchFilter extends React.Component {
     }
 
     render() {
-        const { context } = this.props;
+        const { context, type, css } = this.props;
         const parsedUrl = url.parse(this.context.location_href);
         const matrixBase = parsedUrl.search || '';
         const matrixSearch = matrixBase + (matrixBase ? '&' : '?');
-        const parsed = url.parse(matrixBase, true);
-        const queryStringType = parsed.query.type || '';
-        const type = pluralize(queryStringType.toLocaleLowerCase());
+
+        // Automatically determine the type of object being searched if not given.
+        let automaticType = '';
+        if (!type) {
+            const parsed = url.parse(matrixBase, true);
+            const queryStringType = parsed.query.type || '';
+            automaticType = pluralize(queryStringType.toLocaleLowerCase());
+        }
         return (
-            <div className="matrix-general-search">
-                <p>Enter search terms to filter the {type} included in the matrix.</p>
+            <div className={`matrix-general-search ${css}`}>
                 <div className="general-search-entry">
-                    <i className="icon icon-search" />
-                    <div className="searchform">
-                        <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
-                    </div>
+                    <p>
+                        <i className="icon icon-search" />
+                        Filter the {type || automaticType} included in the matrix:
+                    </p>
+                </div>
+                <div className="searchform">
+                    <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
                 </div>
             </div>
         );
@@ -107,9 +165,35 @@ export class SearchFilter extends React.Component {
 SearchFilter.propTypes = {
     /** Matrix search results object */
     context: PropTypes.object.isRequired,
+    /** Explicit type; overrides automatic one calculated here */
+    type: PropTypes.string,
+    /** CSS class to add to the wrapper div */
+    css: PropTypes.string,
+};
+
+SearchFilter.defaultProps = {
+    type: '',
+    css: '',
 };
 
 SearchFilter.contextTypes = {
     navigate: PropTypes.func,
     location_href: PropTypes.string,
 };
+
+
+/**
+ * Displays a hover-over tooltip for the Uniform Batch Growth radio button on the deeply profiled
+ * matrix page.
+ */
+export const UniformBatchGrowthTooltip = () => (
+    <Tooltip
+        trigger={svgIcon('questionCircle')}
+        tooltipId="matrix-deeply-profiled"
+        css="tooltip-home-info"
+    >
+        This unique sample collection of 16 cell lines were grown as two
+        replicate batches in one lab to minimize batch effects and then
+        distributed to the ENCODE labs to perform different bioassays.
+    </Tooltip>
+);

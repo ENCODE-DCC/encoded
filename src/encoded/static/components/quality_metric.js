@@ -52,6 +52,62 @@ const qcAttachmentProperties = {
     AtacReplicationQualityMetric: [
         { idr_dispersion_plot: 'IDR dispersion plot' },
     ],
+    GembsAlignmentQualityMetric: [
+        { mapq_plot: 'MAPQ plot' },
+        { insert_size_plot: 'Insert size plot' },
+    ],
+    DnaseFootprintingQualityMetric: [
+        { dispersion_model: 'Dispersion model' },
+    ],
+    DnaseAlignmentQualityMetric: [
+        { insert_size_histogram: 'Insert size histogram' },
+        { insert_size_metric: 'Insert size metric file' },
+        { nuclear_preseq: 'Total read metric file' },
+        { nuclear_preseq_targets: 'Sequencing depths file' },
+    ],
+    ScAtacAlignmentQualityMetric: [
+        { mito_stats: 'Mitochondrial read statistics' },
+        { samstats: 'SAMstats QC' },
+    ],
+    ScAtacReadQualityMetric: [
+        { barcode_matching_stats: 'Barcode matching QC' },
+        { adapter_trimming_stats: 'Adapter trimming QC' },
+        { barcode_revcomp_stats: 'Barcode reverse complement detection QC' },
+    ],
+    ScAtacMultipletQualityMetric: [
+        { multiplet_stats: 'Multiplet detection statistics file' },
+        { barcodes_status: 'Per-barcode multiplet status' },
+        { barcode_pairs_multiplets: 'Multiplet barcode pair statistics' },
+        { barcode_pairs_expanded: 'Total barcode pair statistics' },
+        { multiplet_threshold_plot: 'Plot illustrating multiplet Jaccard distance threshold' },
+    ],
+    ScAtacLibraryComplexityQualityMetric: [
+        { picard_markdup_stats: 'Picard MarkDup statistics' },
+        { pbc_stats: 'PBC statistics' },
+    ],
+    ScAtacAnalysisQualityMetric: [
+        { archr_doublet_summary_figure: 'ArchR doublet summary' },
+        { archr_fragment_size_distribution: 'ArchR fragment size distribution' },
+        { archr_tss_by_unique_frags: 'ArchR TSS-by-fragment plot' },
+        { archr_doublet_summary_text: 'ArchR doublet data' },
+        { archr_pre_filter_metadata: 'ArchR pre-filter metadata' },
+    ],
+    StarSoloQualityMetric: [
+        { barcode_rank_plot: 'Barcode rank plot' },
+        { sequencing_saturation_plot: 'Sequencing saturation plot' },
+    ],
+    ScrnaSeqCountsSummaryQualityMetric: [
+        { total_counts_vs_pct_mitochondria: 'Total counts vs pct mitochondria' },
+        { total_counts_vs_genes_by_count: 'Total counts vs genes by count' },
+        { counts_violin_plot: 'Counts violin plot' },
+    ],
+    SegwayQualityMetric: [
+        { trackname_assay: 'Trackname assay' },
+        { feature_aggregation_tab: 'Feature aggregation tab' },
+        { signal_distribution_tab: 'Signal distribution tab' },
+        { segment_sizes_tab: 'Segment sizes tab' },
+        { length_distribution_tab: 'Length distribution tab' },
+    ],
 };
 
 
@@ -74,7 +130,7 @@ function qcModalContent(qc, file, qcSchema, genericQCSchema) {
                 return match;
             }
             return '';
-        }).filter(acc => !!acc);
+        }).filter((acc) => !!acc);
     }
 
     // Get the list of attachment properties for the given qc object @type. and generate the JSX for their display panels.
@@ -157,7 +213,13 @@ const QualityMetricsModal = (props) => {
 
     /* eslint-disable jsx-a11y/anchor-is-valid */
     return (
-        <Modal actuator={<button className="btn btn-info qc-individual-panel__modal-actuator" title="View data and attachments for this quality metric"><i className="icon icon-info-circle" /></button>}>
+        <Modal
+            actuator={
+                <button type="button" className="btn btn-info qc-individual-panel__modal-actuator" title="View data and attachments for this quality metric">
+                    <i className="icon icon-info-circle" />
+                </button>
+            }
+        >
             <ModalHeader closeModal addCss="graph-modal-quality-metric">
                 {meta ? meta.header : null}
             </ModalHeader>
@@ -181,7 +243,7 @@ QualityMetricsModal.propTypes = {
 // Top-level component to display the panel containing QC metrics panels. It initiates the GET
 // request to retrieve the system-wide schemas so that we can extract the QC property titles
 // from it, then renders the resulting QC panel.
-export const QualityMetricsPanel = props => (
+export const QualityMetricsPanel = (props) => (
     <FetchedData>
         <Param name="schemas" url="/profiles/" />
         <QualityMetricsPanelRenderer qcMetrics={props.qcMetrics} file={props.file} />
@@ -211,7 +273,7 @@ class ExpandTrigger extends React.Component {
     render() {
         const { expanded, id } = this.props;
         return (
-            <button className="qc-individual-panel__expand-trigger" onClick={this.handleClick} aria-controls={id} title={expanded ? 'Collapse this panel to a smaller size' : 'Expand this panel to show all data'}>
+            <button type="button" className="qc-individual-panel__expand-trigger" onClick={this.handleClick} aria-controls={id} title={expanded ? 'Collapse this panel to a smaller size' : 'Expand this panel to show all data'}>
                 {collapseIcon(!expanded)}
             </button>
         );
@@ -246,7 +308,7 @@ export const isRenderableProp = (propName, qcMetric, qcSchema) => {
         if (typeof schemaProperty.type === 'object' && Array.isArray(schemaProperty.type) && schemaProperty.type.length > 0) {
             // Schema has more than one possible type for this property. Determine if we can
             // render any of them.
-            return schemaProperty.type.some(schemaPropType => (
+            return schemaProperty.type.some((schemaPropType) => (
                 renderableSchemaTypes.indexOf(schemaPropType) !== -1
             ));
         }
@@ -265,24 +327,40 @@ const QCDataDisplay = (props) => {
     // Make a list of QC metric object keys to display. Filter to only display strings and
     // numbers -- not objects which are usually attachments that we only display in the modals.
     // Also filter out anything in the generic QC schema, as those properties (@id, uuid, etc.)
-    // aren't interesting for the QC panel. Also sort the keys case insensitively.
-    const displayKeys = Object.keys(qcMetric).filter(key => (
-        !genericQCSchema.properties[key] && isRenderableProp(key, qcMetric, qcSchema)
-    )).sort((a, b) => {
-        const aUp = a.toUpperCase();
-        const bUp = b.toUpperCase();
-        return aUp < bUp ? -1 : (aUp > bUp ? 1 : 0);
+    // aren't interesting for the QC panel.
+    // Key order will stay the same as how they are defined in schema
+    const categories = {};
+    Object.keys(qcSchema.properties).forEach((prop) => {
+        if (
+            genericQCSchema.properties[prop]
+            || !isRenderableProp(prop, qcMetric, qcSchema)
+        ) {
+            return;
+        }
+        const category = qcSchema.properties[prop].category || 'unknown';
+        if (!categories[category]) {
+            categories[category] = [];
+        }
+        categories[category].push(prop);
     });
 
     return (
         <div className="quality-metrics-modal__data">
             <dl className="key-value">
-                {displayKeys.map(key =>
-                    <div key={key} data-test={key}>
-                        <dt className="sentence-case">{qcSchema.properties[key].title}</dt>
-                        <dd>{typeof qcMetric[key] === 'boolean' ? qcMetric[key].toString() : qcMetric[key]}</dd>
+                {Object.keys(categories).map((category, i) => (
+                    <div key={category}>
+                        {category !== 'unknown' ?
+                            <h4>{category}</h4>
+                        : null}
+                        {categories[category].map((key) => (
+                            <div key={key} data-test={key}>
+                                <dt className="sentence-case">{qcSchema.properties[key].title}</dt>
+                                <dd>{typeof qcMetric[key] === 'boolean' ? qcMetric[key].toString() : qcMetric[key]}</dd>
+                            </div>
+                        ))}
+                        {i !== Object.keys(categories).length - 1 ? <hr /> : null}
                     </div>
-                )}
+                ))}
             </dl>
         </div>
     );
@@ -324,7 +402,7 @@ class QCIndividualPanel extends React.Component {
 
     expandClick() {
         // Toggle the expanded state of the QC panel in response to a click in ExpandTrigger.
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             expanded: !prevState.expanded,
         }));
     }
@@ -363,7 +441,7 @@ QCIndividualPanel.propTypes = {
     qcMetric: PropTypes.object.isRequired, // QC metric object whose properties we're displaying
     qcSchema: PropTypes.object.isRequired, // Schema that applies to the given qcMetric object
     genericQCSchema: PropTypes.object.isRequired, // Generic quality metric schema
-    file: PropTypes.object.isRequired, // FIle whose QC object is being displayed
+    file: PropTypes.object.isRequired, // File whose QC object is being displayed
 };
 
 
@@ -372,7 +450,7 @@ const QualityMetricsPanelRenderer = (props) => {
     const { qcMetrics, schemas, file } = props;
 
     // Extract the GenericQualityMetric schema. We don't display properties that exist in this
-    // schema because they're generic properties, not interesting QC proeprties.
+    // schema because they're generic properties, not interesting QC properties.
     const genericQCSchema = schemas.GenericQualityMetric;
     if (!genericQCSchema) {
         // Not having this schema would be very weird, but just in case...
@@ -419,7 +497,7 @@ const QCDetailView = function QCDetailView(node) {
     let modalContent = {};
 
     if (selectedQc && Object.keys(selectedQc).length > 0) {
-        const schemas = node.schemas;
+        const { schemas } = node;
         const genericQCSchema = schemas.GenericQualityMetric;
         const qcSchema = schemas[selectedQc['@type'][0]];
         modalContent = qcModalContent(selectedQc, node.parent, qcSchema, genericQCSchema);

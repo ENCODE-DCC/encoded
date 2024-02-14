@@ -1,7 +1,12 @@
 ## Changelog for document.json
 
+### Minor changes since schema version 30
+* Added *position weight matrix* and *sequence logo* as enum in *document_type*.
+* Added *high resolution slide image* as enum in *document_type*.
+
 ### Schema version 8
 
+* Added *plasmid map* as enum in *document_type*
 * *status* property was restricted to one of  
     "enum" : [
         "in progress",

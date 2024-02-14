@@ -1,0 +1,222 @@
+{
+    "title": "gemBS alignment quality metric",
+    "description": "Schema for gemBS alignment quality metrics",
+    "id": "/profiles/gembs_alignment_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of", "award", "lab"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "mapq_plot": {
+            "title": "Mapping quality plot",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "application/pdf",
+                        "image/png"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "insert_size_plot": {
+            "title": "Insert size plot",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "application/pdf",
+                        "image/png"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "sequenced_reads": {
+            "title": "Number of sequenced reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "unmapped_reads": {
+            "title": "Number of unmapped reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_unmapped_reads": {
+            "title": "Percentage of unmapped reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "correct_pairs": {
+            "title": "Number of correct pairs",
+            "type": "integer",
+            "minimum": 0
+        },
+        "general_reads": {
+            "title": "Number of general reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "average_coverage": {
+            "title": "Average coverage",
+            "type": "number",
+            "minimum": 0
+        },
+        "pct_general_reads": {
+            "title": "Percentage of general reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "unique_fragments": {
+            "title": "Number of unique fragments",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_unique_fragments": {
+            "title": "Percentage of unique fragments",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "conversion_rate": {
+            "title": "Conversion rate",
+            "type": "number",
+            "minimum": 0
+        },      
+        "reads_under_conversion_control": {
+            "title": "Number of reads under conversion control",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_reads_under_conversion_control": {
+            "title": "Percentage of reads under conversion control",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "reads_over_conversion_control": {
+            "title": "Number of reads over conversion control",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_reads_over_conversion_control": {
+            "title": "Percentage of reads over conversion control",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "bisulfite_reads_c2t": {
+            "title": "Number of bisulfite reads C2T",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_bisulfite_reads_c2t": {
+            "title": "Percentage of bisulfite reads C2T",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+
+        "bisulfite_reads_g2a": {
+            "title": "Number of bisulfite reads G2A",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_bisulfite_reads_g2a": {
+            "title": "Percentage of bisulfite reads G2A",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/gembs_alignment_quality_metric.md"
+}

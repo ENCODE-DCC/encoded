@@ -1,0 +1,83 @@
+[
+    {
+        "uuid": "b04c7cca-5701-44ca-8d79-bc1453c1e70a",
+        "accession": "ENCAN050LQR",
+        "complete": true,
+        "files": ["ENCFF001RCV", "ENCFF001RCZ"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "pipeline_version": "0.0.4"
+    },
+    {
+        "uuid": "dcdf12fd-f377-42c2-9aa2-34f08c6e130f",
+        "accession": "ENCAN545UKN",
+        "complete": false,
+        "documents": [
+            "encode-processing-pipeline:cromwell-metadata-dc52ccc3-96aa-4422-ae8b-72cca0d9c2c7"
+        ],
+        "files": ["ENCFF101RCZ"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "pipeline_version": "1.2.3",
+        "status": "released"
+    },
+    {
+        "uuid": "02c08844-fbda-436d-a359-c6ff32835404",
+        "accession": "ENCAN914ASY",
+        "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "pipeline_version": "1.1.2-prerelease+meta",
+        "lab": "cfb789b8-46f3-4d59-a2b3-adc39e7df93a",
+        "award": "8bafd685-aa17-43fe-95aa-37bc1c90074a"
+    },
+    {
+        "uuid": "c334db96-ef24-461e-93c4-ba5f1f0f8d9b",
+        "quality_standard": "a05a6a79-024c-47b9-b507-1fa5e323044c",
+        "accession": "ENCAN820ARO",
+        "files": ["ENCFF003MRN", "ENCFF005MRN"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "supersedes": ["ENCAN914ASY"],
+        "pipeline_version": "10.20.30"
+    },
+    {
+        "uuid": "860f157c-e4da-a330-1f14-e5b89bf40423",
+        "accession": "ENCAN913ASY",
+        "files": ["ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "pipeline_version": "1.1.2-prerelease+meta",
+        "supersedes": ["ENCAN914ASY"]
+    },
+    {
+        "uuid": "860f157c-e4da-a330-1f14-e5b89bf40426",
+        "accession": "ENCAN913ASZ",
+        "files": ["ENCFF762DWI"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "status": "released"
+    },
+    {
+        "accession": "ENCAN672HZP",
+        "award": "U54HG007004",
+        "files": [
+            "ENCFF227AAG"
+        ],
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "22d08c01-0289-4a8d-aeb5-1fb22291fda8"
+    },
+    {
+        "_test": "Megamap aggregate series",
+        "accession": "ENCAN000MMP",
+        "aliases": [
+            "encode-processing-pipeline:41e8f9e5-85b9-45c3-af65-07b04b4d5eea"
+        ],
+        "award": "U24HG009397",
+        "lab": "encode-processing-pipeline",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "files": [
+            "ENCFF200MMP",
+            "ENCFF210MMP",
+            "ENCFF211MMP"
+        ],
+        "status": "in progress",
+        "uuid": "ce7f6ec3-2c9a-4bbe-8b8d-a2d75bba0f18"
+    }
+]

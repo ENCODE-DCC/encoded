@@ -10,13 +10,55 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/submitted" },     
-        { "$ref": "mixins.json#/shared_status" },
+        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/uuid" }
     ],
+    "dependencies": {
+        "status":{
+            "comment": "Listed, released, or revoked carts must have a description.",
+            "oneOf": [
+                {
+                    "required": ["description"],
+                    "properties": {
+                        "status": {
+                            "enum": ["listed", "released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "status": {
+                            "enum": ["unlisted", "deleted"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "3"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "unlisted",
+            "oneOf": [
+                {
+                    "enum": [
+                        "unlisted",
+                        "listed",
+                        "deleted"
+                    ]
+                },
+                {
+                    "permission": "import_items",
+                    "enum": [
+                        "released",
+                        "revoked"
+                    ]
+                }
+            ]
         },
         "name": {
             "title": "Name",
@@ -31,6 +73,37 @@
             "type": "string",
             "pattern": "^(?!\\s)[\\S]*\\S$"
         },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the cart.",
+            "type": "string",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
+            "formInput": "textarea"
+        },
+        "doi": {
+            "title": "Digital object identifier",
+            "description": "Assigned DOI from Crossref.",
+            "type": "string",
+            "pattern": "^(10.17989/ENCSR\\d{3}[A-Z]{3})$",
+            "permission": "import_items"
+        },
+        "locked": {
+            "title": "Locked cart",
+            "description": "A flag indicating a read-only cart",
+            "default": false,
+            "type": "boolean"
+        },
         "elements": {
             "title": "Cart elements",
             "description": "Tracks all elements in the cart",
@@ -42,6 +115,41 @@
                 "type":  "string",
                 "linkTo": "Dataset"
             }
+        },
+        "file_views": {
+            "title": "Cart file views",
+            "description": "Views of subsets of files within a cart",
+            "type": "array",
+            "items": {
+                "title": "Single cart file view",
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "title": "File view title",
+                        "description": "Title of one file view",
+                        "type": "string"
+                    },
+                    "files": {
+                        "title": "File view contents",
+                        "description": "Files within a file view",
+                        "type": "array",
+                        "items": {
+                            "title": "File within a view",
+                            "description": "Reference to a file within a view",
+                            "type": "string",
+                            "linkTo": "File"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "submitted_by.lab.title": {
+            "title": "Lab"
         }
     },
     "columns": {
@@ -51,14 +159,20 @@
         "elements": {
             "title": "Cart elements"
         },
+        "file_views": {
+            "title": "Cart file views"
+        },
         "name": {
             "title": "Name"
+        },
+        "description": {
+            "title": "Description"
         },
         "status": {
             "title": "Status"
         },
-        "submitted_by": {
-            "title": "Submitted by"
+        "submitted_by.lab.title": {
+            "title": "Lab"
         },
         "uuid": {
             "title": "UUID"

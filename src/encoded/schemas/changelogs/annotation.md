@@ -1,5 +1,113 @@
 ## Changelog for annotation.json
 
+### Schema version 40
+* Changed *element gene link predictions* to *element gene regulatory interaction predictions* in enum for *annotation_type*
+
+### Minor changes since schema version 39
+* Added *pseudobulk* to the *annotation_type* enum list.
+* Added *disease_term_id*.
+* Added *treatments*.
+
+### Schema version 39
+* Upgraded *internal_tags* as follows:
+    * *ENCYCLOPEDIAv3* is now *ENCYCLOPEDIAv0.3*
+    * *ENCYCLOPEDIAv4* is now *ENCYCLOPEDIAv1*
+    * *ENCYCLOPEDIAv5* is now *ENCYCLOPEDIAv2*
+    * *ENCYCLOPEDIAv6* is now *ENCYCLOPEDIAv3*
+
+### Minor changes since schema version 38
+* Added *RegulomeDB_2_2*, *RegulomeDB_2_3*, *RegulomeDB_3_0* and *RegulomeDB_3_1* to the *internal_tags* enum list.
+* Added *ChromBPNet-bias-model* and *BPNet-control* to the *annotation_type* enum list.
+
+### Schema version 38
+* *annotation_type* enum *long-range chromatin interactions* is replaced with *loops*.
+* Added *physical modeling* to enum list for *annotation_type*
+
+### Minor changes since schema version 37
+* Added *cell type annotation* to enum list for *annotation_type*.
+* Added *Degron* to enum list for *internal_tags*.
+* Added *regulatory elements signal matrix* to the enum list for *annotation_type*.
+
+### Schema version 37
+* Changed enum *dsQTLs* to *caQTLs* in the *annotation_type* enum list.
+
+### Minor changes since schema version 36
+* Added *seqFISH* to *assay_term_name* enum.
+* Added *ChromBPnet-model* and *BPnet-model* to *annotation_type* enum.
+* Added *element gene link predictions* enum to *annotation_type* property.
+* Added *ENCODE v4* and *ENCODE v5* to *encyclopedia_version* enum.
+* Added *genotyping* to annotation_type enum.
+
+### Schema version 36
+* Added *donor* property, linking to Donor objects.
+* Changed *experimental_input* property to an array.
+
+### Schema version 35
+* The *assay_term_name* property is now submittable as an array.
+
+### Minor changes since schema version 34
+* Added *trait* property that is allowed only for *annotation_type* enum *fine-mapped variants*
+
+### Schema version 34
+* Updated the *annotation_type* enum from *gkmSVM-model* to *gkm-SVM-model*
+* Changed *encyclopedia_version* to an array and updated the enums as follows:
+  * *ENCODE v1* is now *ENCODE v0.1*
+  * *ENCODE v2* is now *ENCODE v0.2*
+  * *ENCODE v3* is now *ENCODE v0.3*
+  * *ENCODE v4* is now *ENCODE v1*
+  * *ENCODE v5* is now *ENCODE v2*
+  * *ENCODE v6* is now *ENCODE v3*
+  * Added new enum *current*
+
+### Minor changes since schema version 33
+* Added *simple_biosample_summary* truncated version of biosample_summary as calculated property
+* Added *calf*, *child*, *mixed stage*, and *newborn* to *relevant_life_stage* enums list
+* Added *RushAD* and *YaleImmuneCells* to the *internal_tags* enum
+* Added *LC/MS label-free quantitative proteomics*, *LC-MS/MS isobaric label quantitative proteomics*, and *Ribo-seq* to *assay_term_name* enum. *assay_term_name* enum *Capture Hi-C* was changed to *capture Hi-C*
+* Added *DHS* to the *annotation_subtype* enum, and restricted submission of the property to admin only
+* Added *proteomics analysis* enum to *annotation_type* property
+* Added *cross-species functional conservation* enum to *annotation_type* property
+* Added *Deeply Profiled* to the *internal_tags* enum
+* Added *gkmSVM-model* enum to *annotation_type* property
+* Added *experimental_input* property
+
+### Schema version 33
+* Updated the *internal_tags* enum from *RegulomeDB* to *RegulomeDB_1_0*
+* Added *RegulomeDB_2_0* and *RegulomeDB_2_1* to the *internal_tags* enum list.
+
+### Minor changes since schema version 32
+* Added *ENCYCLOPEDIAv6* to *internal_tags* enums list
+
+### Schema version 32
+* Changed the *analysis_objects* property to be *analyses*
+
+### Schema version 31
+* Changed *blacklist* to *exclusion list* in enum for *annotation_type*
+
+### Minor changes since schema version 30
+* Added *curated SNVs*, *dsQTLs*, *eQTLs*, *footprints* and *PWMs* enum to *annotation_type* property.
+* Added *doi* property
+* Added *analysis_objects* property.
+* Added *GRO-cap*, *GRO-seq*, and *long read single-cell RNA-seq* to *assay_term_name* enum;  *single-nucleus RNA-seq* and *genotyping by high throughput sequencing assay* were removed and remapped to *single-cell RNA sequencing assay* and *whole genome sequencing assay* respectively
+* Removed *single-cell ATAC-seq* from *assay_term_name* enum and remapped to *single-nucleus ATAC-seq*
+* Added *fine-mapped variants* enum to *annotation_type* property.
+* Added a new property, *annotation_subtype*, to specify the elements in a *candidate Cis-Regulatory Elements* annotation object
+
+### Minor changes since schema version 30
+* Added *LRGASP* to the *internal_tags* enum
+
+### Schema version 30
+* Updated *representative DNase hypersensitivity sites (rDHSs)*  to *representative DNase hypersensitivity sites* in enum for *annotation_type*
+
+### Minor changes since schema version 29
+* The *biochemical_inputs* calculated property now lists the biochemical signal inputs used to generate a candidate Cis-Regulatory Elements (cCRE) annotation.
+
+### Schema version 29
+* Remove enum *stage* from *relevant_timepoint* property.
+
+### Schema version 28
+* Updated *representative DNase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *annotation_type*.
+
 ### Minor changes since schema version 27
 * Added ENCODE v6 to the list of enums within *encyclopedia_version* property.
 

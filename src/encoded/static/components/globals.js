@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import ga from 'google-analytics';
+import url from 'url';
 import Registry from '../libs/registry';
 import DataColors from './datacolors';
 
@@ -67,28 +68,7 @@ export function truncateString(str, len) {
 
 // Given an array of objects with @id properties, this returns the same array but with any
 // duplicate @id objects removed.
-export const uniqueObjectsArray = objects => _(objects).uniq(object => object['@id']);
-
-export function bindEvent(el, eventName, eventHandler) {
-    if (el.addEventListener) {
-        // Modern browsers
-        el.addEventListener(eventName, eventHandler, false);
-    } else if (el.attachEvent) {
-        // IE8 specific
-        el.attachEvent(`on${eventName}`, eventHandler);
-    }
-}
-
-export function unbindEvent(el, eventName, eventHandler) {
-    if (el.removeEventListener) {
-        // Modern browsers
-        el.removeEventListener(eventName, eventHandler, false);
-    } else if (el.detachEvent) {
-        // IE8 specific
-        el.detachEvent(`on${eventName}`, eventHandler);
-    }
-}
-
+export const uniqueObjectsArray = (objects) => _(objects).uniq((object) => object['@id']);
 
 /**
  * Remove spaces from id so it can be accepted as an id by HTML
@@ -96,13 +76,24 @@ export function unbindEvent(el, eventName, eventHandler) {
  * @param {string} id
  * @returns id without space or dash if id is empty
  */
-export const sanitizeId = id => (id ? `${id.replace(/\s/g, '_')}` : '-');
+export const sanitizeId = (id) => (id ? `${id.replace(/\s/g, '_')}` : '-');
 
 
 // Take an @id and return the corresponding accession. If no accession could be found in the @id,
-// the empty string is returned.
+// the unchanged @id is returned.
 export function atIdToAccession(atId) {
     const matched = atId.match(/^\/.+\/(.+)\/$/);
+    if (matched && matched.length === 2) {
+        return matched[1];
+    }
+    return atId;
+}
+
+
+// Take an @id and return the corresponding object type. If no object type could be found in the
+// @id, the empty string is returned.
+export function atIdToType(atId) {
+    const matched = atId.match(/^\/(.+)\/.+\/$/);
     if (matched && matched.length === 2) {
         return matched[1];
     }
@@ -140,10 +131,19 @@ export function zeroFill(n, digits) {
 }
 
 // Convert a status string to a string suitable to build a CSS class name.
-export const statusToClassElement = status => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
+export const statusToClassElement = (status) => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
 
 
-export const productionHost = { 'www.encodeproject.org': 1, 'encodeproject.org': 1, 'www.encodedcc.org': 1 };
+/**
+ * Returns true if code runs on the production host, as opposed to test, demos, or local. This
+ * applies to both server and browser rendering.
+ * @param {string} currentUrl Normally from React context.location_href
+ *
+ * @return True if code runs on production host
+ */
+export const isProductionHost = (currentUrl) => (
+    ['www.encodeproject.org', 'encodeproject.org', 'www.encodedcc.org'].includes(url.parse(currentUrl).hostname)
+);
 
 export const encodeVersionMap = {
     ENCODE2: '2',
@@ -155,6 +155,11 @@ export const assemblyPriority = [
     'GRCh38',
     'GRCh38-minimal',
     'hg19',
+    'ENC001.1',
+    'ENC002.1',
+    'ENC003.1',
+    'ENC004.1',
+    'GRCm39',
     'mm10',
     'mm10-minimal',
     'mm9',
@@ -170,24 +175,12 @@ export const browserPriority = [
     'Ensembl',
 ];
 
-// Determine the given object's ENCODE version
-export function encodeVersion(context) {
-    let encodevers = '';
-    if (context.award && context.award.rfa) {
-        encodevers = encodeVersionMap[context.award.rfa.substring(0, 7)];
-        if (typeof encodevers === 'undefined') {
-            encodevers = '';
-        }
-    }
-    return encodevers;
-}
-
-// Display a human-redable form of the file size given the size of a file in bytes. Returned as a
+// Display a human-readable form of the file size given the size of a file in bytes. Returned as a
 // string.
 export function humanFileSize(size) {
     if (size >= 0) {
         const i = Math.floor(Math.log(size) / Math.log(1024));
-        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
+        const adjustedSize = (size / (1024 ** i)).toPrecision(3) * 1;
         const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
         return `${adjustedSize} ${units}`;
     }
@@ -228,35 +221,6 @@ export function parseAndLogError(cause, response) {
     return promise;
 }
 
-export function getRoles(sessionProperties) {
-    // handles {}, null and other signs of lacks of content
-    if (_.isEmpty(sessionProperties)) {
-        return [];
-    }
-
-    const roles = [];
-
-    // non-empty auth.userid-object shows user is logged at least, so has unprivileged rights
-    if (sessionProperties['auth.userid']) {
-        roles.push('unprivileged');
-    }
-
-    if (sessionProperties.admin) {
-        roles.push('admin');
-    }
-
-    const userSessionProperties = sessionProperties.user;
-
-    if (userSessionProperties &&
-            userSessionProperties.lab &&
-            userSessionProperties.lab.status === 'current' &&
-            userSessionProperties.submits_for &&
-            userSessionProperties.submits_for.length > 0) {
-        roles.push('submitter');
-    }
-
-    return roles;
-}
 
 /**
  * Sort an array of documents first by attachment download name, and then by @id.
@@ -290,6 +254,12 @@ export const dbxrefPrefixMap = {
 };
 
 
+// Sanitize user input and facet terms for comparison: convert to lowercase, remove white space and asterisks (which cause regular expression error)
+export const sanitizedString = (inputString) => inputString.toLowerCase()
+    .replace(/ /g, '') // remove spaces (to allow multiple word searches)
+    .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
+
+
 // Keep lists of currently known project and biosample_type. As new project and biosample_type
 // enter the system, these lists must be updated. Used mostly to keep chart and matrix colors
 // consistent.
@@ -309,7 +279,34 @@ export const biosampleTypeList = [
     'in vitro differentiated cells',
     'single cell',
     'cell-free sample',
+    'cloning host',
     'organoid',
+    'technical sample',
+];
+
+const deeplyProfiledCellLines = [
+    'A549',
+    'A673',
+    'Caco-2',
+    'Calu3',
+    'endothelial cell of umbilical vein',
+    'GM12878',
+    'GM23338',
+    'H1',
+    'H9',
+    'HCT116',
+    'HepG2',
+    'HFFc6',
+    'IMR-90',
+    'K562',
+    'mammary epithelial cell',
+    'MCF-7',
+    'MCF 10A',
+    'OCI-LY7',
+    'PC-9',
+    'PC-3',
+    'Panc1',
+    'WTC11',
 ];
 
 export const replicateTypeList = [
@@ -323,6 +320,7 @@ export const replicateTypeList = [
 export const projectColors = new DataColors(projectList);
 export const biosampleTypeColors = new DataColors(biosampleTypeList);
 export const replicateTypeColors = new DataColors(replicateTypeList);
+export const DeeplyProfiledCellLineListColors = new DataColors(deeplyProfiledCellLines);
 
 
 // Map view icons to svg icons.
@@ -332,3 +330,68 @@ export const viewToSvg = {
     summary: 'summary',
     th: 'matrix',
 };
+
+
+// Media query breakpoints to match those in style.scss.
+const SCREEN_XS = 480;
+const SCREEN_SM = 768;
+const SCREEN_MD = 960;
+const SCREEN_LG = 1160;
+const SCREEN_XL = 1716;
+
+
+/**
+ * Determine whether the current browser-window width activates the given Bootstrap-based media
+ * query code. The component this function gets called from must have mounted.
+ * @param min {string} Bootstrap-based code for each breakpoint
+ *
+ * @return {bool} True if specified breakpoint is active
+ */
+export const isMediaQueryBreakpointActive = (min) => {
+    if (window.matchMedia) {
+        let breakpoint;
+        switch (min) {
+        case 'XS':
+            breakpoint = SCREEN_XS;
+            break;
+        case 'SM':
+            breakpoint = SCREEN_SM;
+            break;
+        case 'MD':
+            breakpoint = SCREEN_MD;
+            break;
+        case 'LG':
+            breakpoint = SCREEN_LG;
+            break;
+        case 'XL':
+            breakpoint = SCREEN_XL;
+            break;
+        default:
+            // Undefined code; default to mobile.
+            breakpoint = 0;
+        }
+        const mql = window.matchMedia(`(min-width: ${breakpoint}px)`);
+        return mql.matches;
+    }
+
+    // Browser doesn't support matchMedia, so default to mobile.
+    return false;
+};
+
+
+/**
+ * Convert  a text to title case
+ *
+ * @param {string} title Title
+ * @returns Title in title case
+ */
+export const titleize = (title) => title?.toLowerCase().replace(/(^|\s)\S/g, (firstLetter) => firstLetter.toUpperCase());
+
+
+/**
+ * Determine whether an object has the matching @type.
+ * @param {object} item Object to check the @type of
+ * @param {string} type Type to check for
+ * @returns {boolean} True if the object has the matching @type
+ */
+export const hasType = (item, type) => item['@type'].includes(type);

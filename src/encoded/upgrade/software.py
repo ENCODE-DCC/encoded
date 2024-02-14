@@ -32,3 +32,48 @@ def software_5_6(value, system):
     for i, p in enumerate(value.get('purpose', [])):
         if p == 'single-nuclei ATAC-seq':
             value['purpose'][i] = 'single-nucleus ATAC-seq'
+
+
+@upgrade_step('software', '6', '7')
+def software_6_7(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4711
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'single cell isolation followed by RNA-seq':
+            value['purpose'][i] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('software', '7', '8')
+def software_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5787
+    notes = ''
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'single-nucleus RNA-seq':
+            value['purpose'][i] = 'single-cell RNA sequencing assay'
+            notes += 'The purpose for this software is now scRNA-seq, upgraded from snRNA-seq.'
+        elif p == 'genotyping by high throughput sequencing assay':
+            value['purpose'][i] = 'whole genome sequencing assay'
+            notes += 'The purpose for this software is now WGS, upgraded from genotyping HTS assay.'
+    if notes != '':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {notes}'
+        else:
+            value['notes'] = notes
+
+
+@upgrade_step('software', '8', '9')
+def software_8_9(value, system):
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'single-cell ATAC-seq':
+            value['purpose'][i] = 'single-nucleus ATAC-seq'
+            if 'notes' in value:
+                value['notes'] = f'{value.get("notes")}. The purpose for this software is now snATAC-seq, upgraded from scATAC-seq.'
+            else:
+                value['notes'] = 'The purpose for this software is now snATAC-seq, upgraded from scATAC-seq.'
+
+
+@upgrade_step('software', '9', '10')
+def software_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5964
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'Capture Hi-C':
+            value['purpose'][i] = 'capture Hi-C'

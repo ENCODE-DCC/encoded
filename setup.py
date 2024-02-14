@@ -1,66 +1,72 @@
 import os
-import sys
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
+# Edit Snovault version after the `@` here, can be a branch or tag
+SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@1.0.68"
 
-requires = [
-    'alembic',
-    'botocore',
-    'boto3',
-    'moto',
-    'snovault',
-    'Pillow',
-    'PyBrowserID',
-    'SQLAlchemy>=1.0.0b1',
-    'WSGIProxy2',
-    'WebTest',
-    'jmespath',
-    'elasticsearch',
-    'lucenequery',
-    'future',
-    'humanfriendly',
-    'jsonschema_serialize_fork',
-    'loremipsum',
-    'netaddr',
-    'passlib',
-    'psutil',
-    'pyramid',
-    'pyramid_localroles',
-    'pyramid_multiauth',
-    'pyramid_tm',
-    'python-magic',
-    'pytz',
-    'rdflib',
-    'rdflib-jsonld',
-    'rfc3987',
-    'setuptools',
-    'simplejson',
-    'strict_rfc3339',
-    'subprocess_middleware',
-    'xlrd',
-    'zope.sqlalchemy',
+INSTALL_REQUIRES = [
+    "PasteDeploy==2.1.0",
+    "Pillow==7.0.0",
+    "SQLAlchemy==1.3.13",
+    "WSGIProxy2==0.4.6",
+    "WebOb==1.8.6",
+    "WebTest==2.0.35",
+    "alembic==1.4.0",
+    "boto3==1.11.9",
+    "botocore==1.14.9",
+    "certifi==2019.11.28",
+    "elasticsearch==5.4.0",
+    "future==0.18.2",
+    "humanfriendly==6.1",
+    "jsonschema_serialize_fork==2.1.1",
+    "loremipsum==1.0.5",
+    "passlib==1.7.2",
+    "psutil==5.6.7",
+    "psycopg2==2.8.4",
+    "pyramid-localroles==0.1",
+    "pyramid-multiauth==0.9.0",
+    "pyramid-translogger==0.1",
+    "pyramid==1.10.4",
+    "python-magic==0.4.15",
+    "pytz==2019.3",
+    "rdflib-jsonld==0.4.0",
+    "rdflib==4.2.2",
+    "repoze.debug==1.1",
+    "rfc3987==1.3.8",
+    "rutter==0.2",
+    "subprocess_middleware==0.3",
+    "transaction==3.0.0",
+    "waitress==1.4.3",
+    "xlrd==1.2.0",
+    "zope.interface==5.3.0",
+    "zope.sqlalchemy==1.2",
+    f"snovault @ {SNOVAULT_DEP}",
 ]
 
-if sys.version_info.major == 2:
-    requires.extend([
-        'backports.functools_lru_cache',
-        'subprocess32',
-    ])
+EXTRAS_REQUIRE = {
+    "tests": [
+        "coverage==5.0.3",
+        "moto[s3,sts]==2.0.2",
+        "pytest-bdd==3.2.1",
+        "pytest-cov==2.8.1",
+        "pytest-exact-fixtures==0.3",
+        "pytest-instafail==0.4.1.post0",
+        "pytest-mock==2.0.0",
+        "splinter==0.17.0",
+        "pytest-splinter==2.0.1",
+        "pytest==5.3.2",
+        "responses==0.14.0",
+    ],
+}
 
-tests_require = [
-    'pytest>=2.4.0',
-    'pytest-bdd',
-    'pytest-mock',
-    'pytest-splinter',
-    'pytest_exact_fixtures',
-]
+EXTRAS_REQUIRE["dev"] = EXTRAS_REQUIRE["tests"]
 
 setup(
     name='encoded',
-    version='96.1',
+    version='132.0',
     description='Metadata database for ENCODE',
     long_description=README + '\n\n' + CHANGES,
     packages=find_packages('src'),
@@ -71,11 +77,8 @@ setup(
     author_email='lrowe@stanford.edu',
     url='http://encode-dcc.org',
     license='MIT',
-    install_requires=requires,
-    tests_require=tests_require,
-    extras_require={
-        'test': tests_require,
-    },
+    install_requires=INSTALL_REQUIRES,
+    extras_require=EXTRAS_REQUIRE,
     entry_points='''
         [console_scripts]
         batchupgrade = snovault.batchupgrade:main
@@ -94,8 +97,6 @@ setup(
         migrate-files-aws = encoded.commands.migrate_files_aws:main
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
-        generate-annotations = encoded.commands.generate_annotations:main
-        index-annotations = encoded.commands.index_annotations:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
         migrate-dataset-type = encoded.commands.migrate_dataset_type:main
         alembic = encoded.commands.alembic:main
@@ -106,7 +107,6 @@ setup(
         [paste.composite_factory]
         indexer = snovault.elasticsearch.es_index_listener:composite
         visindexer = snovault.elasticsearch.es_index_listener:composite
-        regionindexer = snovault.elasticsearch.es_index_listener:composite
 
         [paste.filter_app_factory]
         memlimit = encoded.memlimit:filter_app

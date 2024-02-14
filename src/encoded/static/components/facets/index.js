@@ -6,15 +6,36 @@
  * Custom facet-renderer modules all need to be imported anonymously here so that they can register
  * themselves on page load.
  */
-import FacetRegistry from './registry';
-import { DefaultFacet, DefaultTitle, DefaultTerm, DefaultTermName } from './defaults';
+import FacetRegistry, { SpecialFacetRegistry, FacetFunctionRegistry } from './registry';
+import {
+    DefaultFacet,
+    DefaultTitle,
+    DefaultTerm,
+    DefaultTermName,
+    DefaultSelectedTermName,
+    defaultSortTerms,
+} from './defaults';
+import {
+    FacetGroup,
+    filterTopLevelFacets,
+    generateFacetGroupIdentifier,
+    generateFacetGroupIdentifierList,
+    generateFacetGroupNameList,
+    getFacetGroupFieldsInFacets,
+    areFacetGroupsEqual,
+} from './facet_groups';
+
 // Custom facet-renderer modules imported here. Keep them alphabetically sorted.
 import './audit';
+import './biochemical_inputs';
 import './date_selector';
 import './exists';
 import './internal_status';
 import './organism';
+import './perturbed';
+import './sort_desc';
 import './status';
+import './supressed';
 import './type';
 
 
@@ -25,13 +46,39 @@ FacetRegistry.Title._setDefaultComponent(DefaultTitle);
 FacetRegistry.Term._setDefaultComponent(DefaultTerm);
 FacetRegistry.TermName._setDefaultComponent(DefaultTermName);
 FacetRegistry.Facet._setDefaultComponent(DefaultFacet);
+FacetRegistry.SelectedTermName._setDefaultComponent(DefaultSelectedTermName);
 
+
+/**
+ * Set the default special facet components.
+ */
+SpecialFacetRegistry.Title._setDefaultComponent(DefaultTitle);
+SpecialFacetRegistry.Term._setDefaultComponent(DefaultTerm);
+SpecialFacetRegistry.TermName._setDefaultComponent(DefaultTermName);
+SpecialFacetRegistry.Facet._setDefaultComponent(DefaultFacet);
+SpecialFacetRegistry.SelectedTermName._setDefaultComponent(DefaultSelectedTermName);
+
+
+/**
+ * Set the default facet functions.
+ */
+FacetFunctionRegistry.sortTerms._setDefaultFunction(defaultSortTerms);
 
 /**
  * All usage of the facet registry external to this directory should only use what gets exported
  * here.
  */
-export default FacetRegistry;
+export {
+    FacetRegistry,
+    SpecialFacetRegistry,
+    FacetGroup,
+    filterTopLevelFacets,
+    generateFacetGroupIdentifier,
+    generateFacetGroupIdentifierList,
+    generateFacetGroupNameList,
+    getFacetGroupFieldsInFacets,
+    areFacetGroupsEqual,
+};
 
 
 /**
@@ -64,6 +111,8 @@ export default FacetRegistry;
  *   e.g. "type=Experiment&status=released".
  *
  *   onFilter (optional) - Special term click handler, used for facets on edit forms.
+ *
+ *   allowNegation (optional) - Allow facet terms to have negation controls. Defaults to true.
  *
  *   Registration method:
  *   FacetRegistry.Facet.register(<facet field>, <React component to render this facet>);
@@ -111,6 +160,8 @@ export default FacetRegistry;
  *
  *   onFilter (optional) - Special term click handler, used for facets on edit forms.
  *
+ *   allowNegation (optional) - Allow facet terms to have negation controls. Defaults to true.
+ *
  *   Registration method:
  *   FacetRegistry.Term.register(<facet field>, <React component to render this term>);
  *
@@ -120,28 +171,28 @@ export default FacetRegistry;
  * component you register gets called once for each term of the facet of a specific "field" value
  * you've attached it to. If you have custom Facet or Term components registered for this facet
  * field value, they would most likely render their own term titles in their own ways, and you
- * would not typically use this TermName registry for that case. It receives the following
- * properties:
- *
- *   selected - True if the term being rendered is currently selected.
+ * would not typically use this TermName registry for that case. Custom TermName components receive
+ * the following properties:
  *
  *   term - Relevant term object within the facet object this component has registered for. The
  *   text of the term is in `term.key` and might have the "string" or "number" type.
  *
- *   facet - Relevant `facet` object from `facets` array in `results`.
- *
- *   results - Complete search-results object for the entire page. This can be the object for a
- *   search-results object, report object, matrix object, etc.
- *
- *   mode (optional) - Indicates any special display modes, e.g. "picker".
- *
- *   pathname - Search results path without query-string portion, e.g. "/search/" or "/matrix/".
- *
- *   queryString (optional) - Query-string portion of current URL without initial question mark,
- *   e.g. "type=Experiment&status=released".
- *
  *   Registration method:
  *   FacetRegistry.TermName.register(<facet field>, <React component to render this term name>);
+ *
+ *
+ * SelectedTermName -- Render the text within the "Selected filters" links. This registry exists
+ * for when you need to change the styling of the terms that can be cleared from the facet, or if
+ * you have a mapping of actual facet term value to displayed term within "Selected filters."
+ * Custom SelectedTermName components receive the following properties:
+ *
+ *   filter - facets.filters object that is offered to the user for clearing. filter.term holds the
+ *   name for the clear link.
+ *
+ *   Registration method:
+ *   FacetRegistry.SelectedTermName.register(<facet field>
+ *                                           <React component to render this selected term>);
+ *
  *
  * Organization
  * Generally, each type of facet should be implemented in its own file and included above. However,

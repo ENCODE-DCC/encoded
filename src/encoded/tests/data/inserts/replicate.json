@@ -344,9 +344,6 @@
     },
     {
         "_test": "organism development series 3 rep 1",
-        "aliases": [
-            "robert-waterston:MT13544_880_1_rep1"
-        ],
         "library": "ENCLB595GWE",
         "experiment": "/experiments/ENCSR787DGZ/",
         "technical_replicate_number": 1,
@@ -376,7 +373,7 @@
         "library": "ENCLB002SER",
         "uuid": "982b0033-204d-484d-adde-8b141356871b"
     },
-        {
+    {
         "_test": "treatment time series 3 rep 1",
         "experiment": "/experiments/ENCSR003SER/",
         "technical_replicate_number": 1,
@@ -386,7 +383,7 @@
         "library": "ENCLB003SER",
         "uuid": "e26ef779-bcc2-4878-b8f6-43b69d921a62"
     },
-        {
+    {
         "_test": "treatment concentration series 1 rep 1",
         "experiment": "/experiments/ENCSR001CON/",
         "technical_replicate_number": 1,
@@ -406,7 +403,7 @@
         "library": "ENCLB002CON",
         "uuid": "60ee5509-882c-4617-bc5a-81143d3f5fae"
     },
-        {
+    {
         "_test": "treatment concentration series 3 rep 1",
         "experiment": "/experiments/ENCSR003CON/",
         "technical_replicate_number": 1,
@@ -728,5 +725,347 @@
         "submitted_by": "elementum.mus@dictumst.nostra",
         "technical_replicate_number": 1,
         "uuid": "6af49008-9208-43bb-b000-80aeddf4b9a6"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "aliases": [
+            "john-stamatoyannopoulos:ENCSR123AAA-1-1"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR123AAA",
+        "library": "ENCLB123AAA",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "7e9df875-e622-4185-8160-758bf4f8ae9e"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "aliases": [
+            "john-stamatoyannopoulos:ENCSR123AAB-1-1"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR123AAB",
+        "library": "ENCLB123AAB",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "e20fff5c-d5cb-4f88-93eb-07dc7c66e5d6"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "aliases": [
+            "john-stamatoyannopoulos:ENCSR123AAC-1-1"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR123AAC",
+        "library": "ENCLB123AAC",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "f1843c60-e027-4b18-8582-64d3f3eae45b"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "aliases": [
+            "john-stamatoyannopoulos:ENCSR123AAD-1-1"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR123AAD",
+        "library": "ENCLB123AAD",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "f1843c60-e027-4b18-8582-64d3f3eae46b"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "aliases": [
+            "john-stamatoyannopoulos:ENCSR123AAE-1-1"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR123AAE",
+        "library": "ENCLB123AAE",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "f1843c60-e027-4b18-8582-64d3f3eae47b"
+    },
+    {
+        "aliases": [
+            "michael-snyder:mL-ENCBS248BKB-ENCLB642NXW"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR606VJQ",
+        "library": "ENCLB642NXW",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "b76ed89f-fe6b-4d4b-b1eb-5ed817e6ae30"
+    },
+    {
+        "aliases": [
+            "michael-snyder:mL-ENCBS475JUN-ENCLB643NXW"
+        ],
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR606VJQ",
+        "library": "ENCLB643NXW",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "36411c1a-a05d-43a5-a8bc-f794fe94e471"
+    },
+    {
+        "aliases": [
+            "modencode:25_library1"
+        ],
+        "biological_replicate_number": 3,
+        "experiment": "ENCSR606VJQ",
+        "library": "ENCLB543LDY",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "dbbda446-177c-401c-a4b5-4d22cc4fcea0"
+    },
+    {
+        "aliases": [
+            "michael-snyder:mL-ENCBS474KMT-ENCLB031QDV"
+        ],
+        "biological_replicate_number": 4,
+        "experiment": "ENCSR606VJQ",
+        "library": "ENCLB031QDV",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "8176fe0e-59a4-45ef-87fb-4b3b285a64c8"
+    },
+    {
+        "_test": "DNase-seq rep1",
+        "experiment": "ENCSR604DNT",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB000RCC",
+        "uuid": "e11915f9-6f11-4383-a943-669edaa15d47"
+    },
+    {
+        "aliases": [
+            "michael-snyder:ATACrun_replicate1"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR808ATA",
+        "library": "ENCLB723ATA",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "9287fe0e-59a4-45ef-87fb-4b3b285a64c8"
+    },
+    {
+        "aliases": [
+            "michael-snyder:ATACrun_replicate2"
+        ],
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR808ATA",
+        "library": "ENCLB724ATA",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "f057fba1-1595-461d-a923-54e00843b985"
+    },
+    {
+        "aliases": ["eric-lecuyer:R-HepG2-init-Insoluble_1"],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR813BDU",
+        "library": "ENCLB414HBO",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "technical_replicate_number": 1,
+        "uuid": "6c430a38-35b9-4a67-8506-1c8c1871a9a9"
+    },
+    {
+        "aliases": ["kevin-white:WTC11-starr-lib"],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR928SVL",
+        "library": "ENCLB741SFV",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "technical_replicate_number": 1,
+        "uuid": "31f76c7b-b6ac-4e06-b1d3-8907a4136ab1"
+    },
+    {
+        "aliases": ["gregory-crawford:PCE-lib"],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR127PCE",
+        "library": "ENCLB102GPS",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "technical_replicate_number": 1,
+        "uuid": "23d52556-2287-47e2-add1-777d7df6b56d"
+    },
+    {
+        "_test": "ChIA-PET rep1",
+        "experiment": "ENCSR270OQH",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB128CHP",
+        "uuid": "9571a30b-799d-428e-beb9-31c412e9dda3"
+    },
+    {
+        "_test": "replicate for mixed biosamples",
+        "experiment": "/experiments/ENCSR751ISO/",
+        "biological_replicate_number": 3,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001MIX",
+        "uuid": "a69a923f-c2a2-49ac-9d72-6710233ef615"
+    },
+    {
+        "_test": "ATAC regT rep1",
+        "experiment": "ENCSR263RTC",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB345CTR",
+        "uuid": "2c58a489-7be8-4741-a9f7-9952e8f4b9ac"
+    },
+    {
+        "_test": "ATAC memT rep1",
+        "experiment": "ENCSR897MTC",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB027CMT",
+        "uuid": "d6960d34-b371-4930-841b-3ca08305caa9"
+    },
+    {
+        "_test": "ATAC act regT rep1",
+        "experiment": "ENCSR309ART",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB849DQW",
+        "uuid": "618d2a08-4d29-4140-86cc-012a942b1ad8"
+    },
+    {
+        "_test": "CRISPR screen rep",
+        "experiment": "ENCSR114CEL",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB849CRI",
+        "uuid": "0f45174f-3ded-4ab4-a826-872241b0bf11"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR555DLG",
+        "library": "ENCLB152YGP",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "76b13fc9-e052-4a16-81f2-ec33b7967072"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR556DLG",
+        "library": "ENCLB153YGP",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "a721ce33-53b4-46f9-a3ec-066783b84b00"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR200BRU",
+        "library": "ENCLB001BRU",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "a366f842-07aa-40dc-980f-bbfbf7712624"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR600BRU",
+        "library": "ENCLB002BRU",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "524e0cd3-5e5b-4871-9480-4dafd999dd59"
+    },
+    {
+        "aliases": [
+            "ryan-tewhey:mpra-OL13-fads-plasmid-r1-l1_t1"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR212POL",
+        "library": "ENCLB845YWC",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "452f0ba6-dc57-4e0e-aae0-3b12b30f998b"
+    },
+    {
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR476KHP",
+        "library": "ENCLB107MIM",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "dc14112d-23bb-44bc-a1cd-f7923fb2ff20"
+    },
+    {
+        "aliases": [
+            "ali-mortazavi:seqFISH_replicate"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR539FSH",
+        "library": "ENCLB845YWC",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "78e20d15-d3c3-4e0e-aae0-3b12b30fa175"
+    },
+    {
+        "aliases": [
+            "bradley-bernstein:Rep_DNA_Lib 13312"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR160GVO",
+        "library": "ENCLB577ZMM",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "technical_replicate_number": 1,
+        "uuid": "2f305cf2-4a52-4fc4-a24b-54d5be9fefd4"
+    },
+    {
+        "aliases": [
+            "bradley-bernstein:Rep_DNA_Lib 13280"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR160GVO",
+        "library": "ENCLB600DTX",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "technical_replicate_number": 2,
+        "status": "released",
+        "uuid": "74baf5ef-a66f-4c14-a38c-8ffdf1bee602"
+    },
+    {
+        "aliases": [
+            "yin-shen:Sox2_eGFP_rep1_XY036"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR004TXD",
+        "library": "ENCLB885SCY",
+        "status": "released",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "technical_replicate_number": 1,
+        "uuid": "e1e5bd0d-8769-4617-9774-5bc7d3e77a9e"
     }
 ]

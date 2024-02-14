@@ -1,5 +1,5 @@
 [
-	{
+    {
         "_test": "reference epigenome",
         "accession": "ENCSR300EPI",
         "award": "ENCODE2",
@@ -21,7 +21,7 @@
         "uuid": "7ae7b199-e881-4906-b977-2b1b62de70f7",
         "date_released": "2016-01-01"
     },
-	{
+    {
         "_test": "reference epigenome",
         "accession": "ENCSR571AGY",
         "award": "U41HG006992",

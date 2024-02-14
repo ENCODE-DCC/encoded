@@ -1,7 +1,6 @@
 /**
  * Renders cart-related controls at the top of search results.
  */
-import React from 'react';
 import PropTypes from 'prop-types';
 import { CartAddAllSearch } from './add_multiple';
 import { isAllowedElementsPossible } from './util';

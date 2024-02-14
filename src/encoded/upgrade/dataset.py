@@ -578,3 +578,301 @@ def dataset_28_29(value, system):
         value.pop('dbxrefs', None)
     else:
         value['dbxrefs'] = sorted(new_dbxrefs)
+
+
+@upgrade_step('annotation', '27', '28')
+def annotation_27_28(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    annotation_type = value.get('annotation_type', None)
+
+    if annotation_type == "representative DNase hypersensitivity sites":
+        value['annotation_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
+    return
+
+
+@upgrade_step('reference', '18', '19')
+def reference_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5259
+    if 'examined_loci' in value:
+        examined_loci = value.get('examined_loci', None)
+        if examined_loci == []:
+            value.pop('examined_loci', None)
+
+
+@upgrade_step('annotation', '28', '29')
+def annotation_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4438
+    units = value.get('relevant_timepoint_units')
+    if units == 'stage':
+        info = f'{value.get("relevant_timepoint")} {units}'
+        value.pop('relevant_timepoint', None)
+        value.pop('relevant_timepoint_units', None)
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. Removed timepoint metadata: {info}'
+        else:
+            value['notes'] = info
+    return
+
+
+@upgrade_step('experiment', '28', '29')
+def experiment_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5343
+    unrunnable = f'Previous internal_status claimed this experiment was unrunnable on a pipeline'
+    if 'pipeline_error_detail' in value:
+        error_detail = f'Previous internal_status claimed a pipeline error: {value.get("pipeline_error_detail")}'
+        value.pop('pipeline_error_detail')
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {error_detail}'
+        else:
+            value['notes'] = error_detail
+    if value.get('internal_status') == 'unrunnable':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {unrunnable}'
+        else:
+            value['notes'] = unrunnable
+
+    value['internal_status'] = 'unreviewed'
+    return
+
+
+@upgrade_step('experiment', '29', '30')
+def experiment_29_30(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5304
+    if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq':
+        value['assay_term_name'] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('experiment', '30', '31')
+def experiment_30_31(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5354
+    if not value.get('analyses'):
+        return
+    analyses_files = ';'.join(
+        sorted(
+            ','.join(sorted(a['files'])) for a in value['analyses']
+        )
+    )
+    value['notes'] = f'{value.get("notes", "")}. [Experiment.analyses] {analyses_files}'
+    value.pop('analyses')
+
+
+@upgrade_step('annotation', '29', '30')
+def annotation_29_30(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5573
+    annotation_type = value.get('annotation_type', None)
+
+    if annotation_type == "representative DNase hypersensitivity sites (rDHSs)":
+        value['annotation_type'] = 'representative DNase hypersensitivity sites'
+    return
+
+
+@upgrade_step('annotation', '30', '31')
+def annotation_30_31(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5657
+    annotation_type = value.get('annotation_type', None)
+
+    if annotation_type == "blacklist":
+        value['annotation_type'] = 'exclusion list'
+    return
+
+
+@upgrade_step('experiment', '31', '32')
+def experiment_31_32(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5787
+    if value.get('assay_term_name') == 'single-nucleus RNA-seq':
+        value['assay_term_name'] = 'single-cell RNA sequencing assay'
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. This assay was previously labeled single-nucleus RNA-seq.'
+        else:
+            value['notes'] = 'This assay was previously labeled single-nucleus RNA-seq.'
+    if value.get('assay_term_name') == 'genotyping by high throughput sequencing assay':
+        value['assay_term_name'] = 'whole genome sequencing assay'
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. This assay was previously labeled genotyping HTS.'
+        else:
+            value['notes'] = 'This assay was previously labeled genotyping HTS.'
+    return
+
+
+@upgrade_step('experiment', '32', '33')
+def experiment_32_33(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5828
+    if value.get('assay_term_name') == 'single-cell ATAC-seq':
+        value['assay_term_name'] = 'single-nucleus ATAC-seq'
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. This assay was previously labeled single-cell ATAC-seq.'
+        else:
+            value['notes'] = 'This assay was previously labeled single-cell ATAC-seq.'
+    return
+
+@upgrade_step('experiment', '33', '34')
+@upgrade_step('annotation', '31', '32')
+@upgrade_step('functional_characterization_experiment', '6', '7')
+@upgrade_step('single_cell_unit', '1', '2')
+def dataset_29_30(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5840
+    if not value.get('analysis_objects'):
+        return
+    value['analyses'] = value['analysis_objects']
+    value.pop('analysis_objects')
+
+@upgrade_step('experiment', '34', '35')
+@upgrade_step('annotation', '32', '33')
+@upgrade_step('reference', '19', '20')
+def dataset_30_31(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5932
+    if  'RegulomeDB' in value['internal_tags']:
+            value['internal_tags'].remove('RegulomeDB')
+            value['internal_tags'].append('RegulomeDB_1_0')
+
+
+@upgrade_step('experiment', '35', '36')
+def experiment_35_36(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5964
+    if value.get('assay_term_name') == 'Capture Hi-C':
+        value['assay_term_name'] = 'capture Hi-C'
+
+
+@upgrade_step('reference', '20', '21')
+def reference_20_21(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6134
+    new_elements_selection_method = []
+    new_notes = []
+    old_to_new = {
+        'ATAC-seq': 'accessible genome regions',
+        'DNase-seq': 'DNase hypersensitive sites',
+        'GRO-cap': 'transcription start sites',
+        'point mutations': 'sequence variants',
+        'single nucleotide polymorphisms': 'sequence variants',
+        'transcription factors': 'TF binding sites'
+    }
+    if 'elements_selection_method' in value:
+        for element_selection_method in value['elements_selection_method']:
+            if element_selection_method in old_to_new:
+                new_elements_selection_method.append(old_to_new[element_selection_method])
+                new_notes.append(f"This elements_selection_method was previously {element_selection_method} but now has been renamed to be {old_to_new[element_selection_method]}.")
+            else:
+                new_elements_selection_method.append(element_selection_method)
+    if len(new_elements_selection_method) >= 1:
+        value['elements_selection_method'] = list(set(new_elements_selection_method))
+        if 'notes' in value:
+            value['notes'] = f"{value['notes']} {' '.join(new_notes)}"
+        else:
+            value['notes'] = ' '.join(new_notes)
+
+
+@upgrade_step('annotation', '33', '34')
+def annotation_33_34(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6169
+    annotation_type = value.get('annotation_type', None)
+    if annotation_type == "gkmSVM-model":
+        value['annotation_type'] = 'gkm-SVM-model'
+    # https://encodedcc.atlassian.net/browse/ENCD-6143
+    if 'encyclopedia_version' in value:
+        if value['encyclopedia_version'] == 'ENCODE v1':
+            value['encyclopedia_version'] = ['ENCODE v0.1']
+        elif value['encyclopedia_version'] == 'ENCODE v2':
+            value['encyclopedia_version'] = ['ENCODE v0.2']
+        elif value['encyclopedia_version'] == 'ENCODE v3':
+            value['encyclopedia_version'] = ['ENCODE v0.3']
+        elif value['encyclopedia_version'] == 'ENCODE v4':
+            value['encyclopedia_version'] = ['ENCODE v1']
+        elif value['encyclopedia_version'] == 'ENCODE v5':
+            value['encyclopedia_version'] = ['ENCODE v2', 'current']
+        elif value['encyclopedia_version'] == 'ENCODE v6':
+            value['encyclopedia_version'] = ['ENCODE v3']
+        elif value['encyclopedia_version'] == 'Roadmap':
+            value['encyclopedia_version'] = ['Roadmap']
+
+
+@upgrade_step('annotation', '34', '35')
+def annotation_34_35(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6260
+    assay_term_name = value.get('assay_term_name', None)
+    if assay_term_name:
+        value['assay_term_name'] = [assay_term_name]
+
+
+@upgrade_step('functional_characterization_series', '3', '4')
+def functional_characterization_series_3_4(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-6147
+    return
+
+
+@upgrade_step('annotation', '35', '36')
+def annotation_35_36(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-41
+    experimental_input = value.get('experimental_input', None)
+    if experimental_input:
+        value['experimental_input'] = [experimental_input]
+
+
+@upgrade_step('annotation', '36', '37')
+def annotation_36_37(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-30
+    annotation_type = value.get('annotation_type', None)
+    if annotation_type == "dsQTLs":
+        value['annotation_type'] = 'caQTLs'
+
+
+@upgrade_step('annotation', '37', '38')
+def annotation_37_38(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-97
+    annotation_type = value.get('annotation_type', None)
+    if annotation_type == "long-range chromatin interactions":
+        value['annotation_type'] = 'loops'
+
+@upgrade_step('aggregate_series', '3', '4')
+@upgrade_step('annotation', '38', '39')
+@upgrade_step('collection_series', '1', '2')
+@upgrade_step('computational_model', '1', '2')
+@upgrade_step('differential_accessibility_series', '1', '2')
+@upgrade_step('differentiation_series', '1', '2')
+@upgrade_step('disease_series', '1', '2')
+@upgrade_step('experiment', '36', '37')
+@upgrade_step('experiment_series', '3', '4')
+@upgrade_step('functional_characterization_experiment', '12', '13')
+@upgrade_step('functional_characterization_series', '4', '5')
+@upgrade_step('gene_silencing_series', '1', '2')
+@upgrade_step('matched_set', '17', '18')
+@upgrade_step('multiomics_series', '1', '2')
+@upgrade_step('organism_development_series', '17', '18')
+@upgrade_step('project', '17', '18')
+@upgrade_step('publication_data', '17', '18')
+@upgrade_step('pulse_chase_time_series', '1', '2')
+@upgrade_step('reference', '21', '22')
+@upgrade_step('reference_epigenome', '17', '18')
+@upgrade_step('replication_timing_series', '17', '18')
+@upgrade_step('single_cell_rna_series', '3', '4')
+@upgrade_step('single_cell_unit', '2', '3')
+@upgrade_step('transgenic_enhancer_experiment', '2', '3')
+@upgrade_step('treatment_concentration_series', '17', '18')
+@upgrade_step('treatment_time_series', '18', '19')
+@upgrade_step('ucsc_browser_composite', '17', '18')
+def dataset_31_32(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-131
+    if 'internal_tags' in value:
+        if 'ENCYCLOPEDIAv3' in value['internal_tags']:
+            value['internal_tags'].remove('ENCYCLOPEDIAv3')
+            value['internal_tags'].append('ENCYCLOPEDIAv0.3')
+        if 'ENCYCLOPEDIAv4' in value['internal_tags']:
+            value['internal_tags'].remove('ENCYCLOPEDIAv4')
+            value['internal_tags'].append('ENCYCLOPEDIAv1')
+        if 'ENCYCLOPEDIAv5' in value['internal_tags']:
+            value['internal_tags'].remove('ENCYCLOPEDIAv5')
+            value['internal_tags'].append('ENCYCLOPEDIAv2')
+        if 'ENCYCLOPEDIAv6' in value['internal_tags']:
+            value['internal_tags'].remove('ENCYCLOPEDIAv6')
+            value['internal_tags'].append('ENCYCLOPEDIAv3')
+
+
+@upgrade_step('annotation', '39', '40')
+def annotation_39_40(value, system):
+    # https://igvf.atlassian.net/browse/ENCM-182
+    annotation_type = value.get('annotation_type', None)
+    if annotation_type == "element gene link predictions":
+        value['annotation_type'] = 'element gene regulatory interaction predictions'
+        if 'notes' in value:
+            value['notes'] = f"{value['notes']} This object's annotation_type was changed from element gene link predictions to element gene regulatory interaction predictions."
+        else:
+            value['notes'] = "This object's annotation_type was changed from element gene link predictions to element gene regulatory interaction predictions."

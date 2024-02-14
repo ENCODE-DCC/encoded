@@ -1,79 +1,96 @@
 /**
  * Components to display the Share Cart modal.
  */
+
+// node_modules
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import url from 'url';
+// libs/ui
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
+// components
+import { useMount } from '../hooks';
+import { CopyButton } from '../objectutils';
+// local
+import { setDescriptionAndSave } from './actions';
+import { sanitizeDescription } from './description';
+import { CartListingConfigContent } from './status';
 
 
 /**
  * Internal component to display and process the modal used to share a cart URL. The copyable cart
  * URL gets placed into a read-only <input> element.
  */
-class CartShareComponent extends React.Component {
-    constructor() {
-        super();
-        this.copyUrl = this.copyUrl.bind(this);
-    }
+const CartShareComponent = ({ userCart, locationHref, closeShareCart, inProgress, setDescription }) => {
+    /** Current contents of the description text area */
+    const [editedDescription, setEditedDescription] = React.useState(userCart.description || '');
+    /** Modal Visit Shareable Cart button */
+    const submitRef = React.useRef(null);
+
+    // Generate the shared cart URL.
+    const parsedUrl = url.parse(locationHref);
+    Object.assign(parsedUrl, {
+        pathname: userCart['@id'],
+        search: '',
+        query: '',
+    });
+    const shareableUrl = url.format(parsedUrl);
 
     /**
-     * Called when the user clicks the Copy button to copy the URL to the clipboard.
+     * Called when the user changes the contents of the description text area.
+     * @param {string} value Contents of description text area
      */
-    copyUrl() {
-        // Gewt the URL text <input> element in the DOM and select all of the text in it to copy to
-        // the user's clipboard.
-        // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#Using_execCommand()
-        this.cartUrlBox.select();
+    const onChangeDescription = (value) => {
+        setEditedDescription(value);
+    };
 
-        // Execute copy command. Firefox can throw errors on rare occasion. As this is so unusual,
-        // we just show a console warning in that case.
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            console.warn('Text copy failed.');
-        }
+    /**
+     * Called when the user clicks the Save Description button.
+     */
+    const onSaveDescriptionClick = () => {
+        // Strip the description of anything dangerous, save it to the cart object in the database
+        // and then update the edit field with the sanitized description.
+        const descriptionToSave = sanitizeDescription(editedDescription);
+        setDescription(descriptionToSave, userCart);
+        setEditedDescription(descriptionToSave);
+    };
 
-        // Remove the selection after copying.
-        this.cartUrlBox.setSelectionRange(0, 0);
-    }
+    useMount(() => {
+        // Focus on the Visit Shareable Cart button on mount.
+        submitRef.current.focus();
+    });
 
-    render() {
-        const { userCart, locationHref, closeShareCart } = this.props;
-
-        // Generate the shared cart URL.
-        const parsedUrl = url.parse(locationHref);
-        Object.assign(parsedUrl, {
-            pathname: userCart['@id'],
-            search: '',
-            query: '',
-        });
-        const sharableUrl = url.format(parsedUrl);
-
-        return (
-            <Modal closeModal={closeShareCart} labelId="share-cart-label" descriptionId="share-cart-description" focusId="share-cart-close">
-                <ModalHeader title={`Share cart: ${userCart.name}`} labelId="share-cart-label" closeModal={closeShareCart} />
-                <ModalBody>
-                    <p id="share-cart-description" role="document">
+    return (
+        <Modal closeModal={closeShareCart} labelId="share-cart-label" descriptionId="share-cart-description" focusId="share-cart-close" widthClass="sm">
+            <ModalHeader title={`Share cart: ${userCart.name}`} labelId="share-cart-label" closeModal={closeShareCart} />
+            <ModalBody>
+                <div id="share-cart-description" role="document">
+                    <p>
                         Copy the URL below to share with other people. Some items might not appear
                         for all people depending on whether they have logged in or not.
                     </p>
-                    <div className="cart__share-url">
-                        <input ref={(input) => { this.cartUrlBox = input; }} type="text" aria-label="Sharable cart URL" value={sharableUrl} readOnly />
-                        <button id="cart-share-url-trigger" aria-label="Copy shared cart URL" onClick={this.copyUrl} className="btn btn-sm"><i className="icon icon-clipboard" />&nbsp;Copy</button>
-                    </div>
-                </ModalBody>
-                <ModalFooter
-                    closeModal={closeShareCart}
-                    cancelTitle="Close"
-                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info" href={sharableUrl}>Visit sharable cart</a>}
-                    closeId="share-cart-close"
+                </div>
+                <div className="cart__share-url">
+                    <input type="text" aria-label="Shareable cart URL" value={shareableUrl} readOnly />
+                    <CopyButton label="Copy shared cart URL" copyText={shareableUrl} css="btn-sm cart__share-button" />
+                </div>
+                <CartListingConfigContent
+                    cart={userCart}
+                    editedDescription={editedDescription}
+                    onChangeDescription={onChangeDescription}
+                    onSaveDescriptionClick={onSaveDescriptionClick}
                 />
-            </Modal>
-        );
-    }
-}
+            </ModalBody>
+            <ModalFooter
+                closeModal={closeShareCart}
+                cancelTitle="Close"
+                submitBtn={<a data-bypass="true" ref={submitRef} disabled={inProgress} target="_self" className="btn btn-info" href={shareableUrl}>Visit shareable cart</a>}
+                closeId="share-cart-close"
+            />
+        </Modal>
+    );
+};
 
 CartShareComponent.propTypes = {
     /** Logged-in users's cart object */
@@ -82,19 +99,36 @@ CartShareComponent.propTypes = {
     locationHref: PropTypes.string,
     /** Function to close the modal */
     closeShareCart: PropTypes.func.isRequired,
+    /** True if global cart operation in progress */
+    inProgress: PropTypes.bool,
+    /** Called to set an edited description */
+    setDescription: PropTypes.func.isRequired,
 };
 
 CartShareComponent.defaultProps = {
     locationHref: '',
+    inProgress: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
     userCart: ownProps.userCart,
     locationHref: ownProps.locationHref,
+    inProgress: state.inProgress,
     closeShareCart: ownProps.closeShareCart,
 });
 
-const CartShareInternal = connect(mapStateToProps)(CartShareComponent);
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    setDescription: (description, cart) => dispatch(
+        setDescriptionAndSave(
+            description,
+            cart,
+            ownProps.sessionProperties && ownProps.sessionProperties.user,
+            ownProps.fetch,
+        )
+    ),
+});
+
+const CartShareInternal = connect(mapStateToProps, mapDispatchToProps)(CartShareComponent);
 
 
 /**
@@ -102,7 +136,13 @@ const CartShareInternal = connect(mapStateToProps)(CartShareComponent);
  * CartShareInternal.
  */
 const CartShare = ({ userCart, closeShareCart }, reactContext) => (
-    <CartShareInternal userCart={userCart} closeShareCart={closeShareCart} locationHref={reactContext.location_href} />
+    <CartShareInternal
+        userCart={userCart}
+        closeShareCart={closeShareCart}
+        locationHref={reactContext.location_href}
+        sessionProperties={reactContext.session_properties}
+        fetch={reactContext.fetch}
+    />
 );
 
 CartShare.propTypes = {
@@ -118,6 +158,8 @@ CartShare.defaultProps = {
 
 CartShare.contextTypes = {
     location_href: PropTypes.string,
+    fetch: PropTypes.func,
+    session_properties: PropTypes.object,
 };
 
 export default CartShare;

@@ -1,194 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def genetic_modification_1(lab, award):
-    return {
-        'modification_type': 'deletion',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'modifiction_description': 'some description'
-    }
-
-
-@pytest.fixture
-def genetic_modification_2(lab, award):
-    return {
-        'modification_type': 'deletion',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'modification_description': 'some description',
-        'modification_zygocity': 'homozygous',
-        'modification_purpose': 'tagging',
-        'modification_treatments': [],
-        'modification_genome_coordinates': [{
-            'chromosome': '11',
-            'start': 5309435,
-            'end': 5309451
-            }]
-    }
-
-
-@pytest.fixture
-def crispr(lab, award, source):
-    return {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'source': source['uuid'],
-        'guide_rna_sequences': [
-            "ACA",
-            "GCG"
-        ],
-        'insert_sequence': 'TCGA',
-        'aliases': ['encode:crispr_technique1'],
-        '@type': ['Crispr', 'ModificationTechnique', 'Item'],
-        '@id': '/crisprs/79c1ec08-c878-4419-8dba-66aa4eca156b/',
-        'uuid': '79c1ec08-c878-4419-8dba-66aa4eca156b'
-    }
-
-
-@pytest.fixture
-def genetic_modification_5(lab, award, crispr):
-    return {
-        'modification_type': 'deletion',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'description': 'blah blah description blah',
-        'zygosity': 'homozygous',
-        'treatments': [],
-        'source': 'sigma',
-        'product_id': '12345',
-        'modification_techniques': [crispr],
-        'modified_site': [{
-            'assembly': 'GRCh38',
-            'chromosome': '11',
-            'start': 5309435,
-            'end': 5309451
-            }]
-    }
-
-@pytest.fixture
-def genetic_modification_6(lab, award, crispr, source):
-    return {
-        'purpose': 'validation',
-        'category': 'deeltion',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'description': 'blah blah description blah',
-        "method": "CRISPR",
-        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
-        "reagents": [
-            {
-                "identifier": "placeholder_id",
-                "source": source['uuid']
-            }
-        ]
-    }
-
-
-@pytest.fixture
-def genetic_modification_7_invalid_reagent(lab, award, crispr):
-    return {
-        'purpose': 'characterization',
-        'category': 'deletion',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'description': 'blah blah description blah',
-        "method": "CRISPR",
-        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
-        "reagents": [
-            {
-                "identifier": "placeholder_id",
-                "source": "/sources/sigma/"
-            }
-        ]
-    }
-
-
-@pytest.fixture
-def genetic_modification_7_valid_reagent(lab, award, crispr):
-    return {
-        'purpose': 'characterization',
-        'category': 'deletion',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'description': 'blah blah description blah',
-        "method": "CRISPR",
-        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
-        "reagents": [
-            {
-                "identifier": "ABC123",
-                "source": "/sources/sigma/"
-            }
-        ]
-    }
-
-
-@pytest.fixture
-def genetic_modification_7_addgene_source(testapp):
-    item = {
-        'name': 'addgene',
-        'title': 'Addgene',
-        'status': 'released'
-    }
-    return testapp.post_json('/source', item).json['@graph'][0]
-
-
-@pytest.fixture
-def genetic_modification_7_multiple_matched_identifiers(lab, award, crispr):
-    return {
-        'purpose': 'characterization',
-        'category': 'deletion',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'description': 'blah blah description blah',
-        "method": "CRISPR",
-        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
-        "reagents": [
-            {
-                "identifier": "12345",
-                "source": "/sources/addgene/"
-            }
-        ]
-    }
-
-
-@pytest.fixture
-def genetic_modification_7_multiple_reagents(lab, award, crispr):
-    return {
-        'purpose': 'characterization',
-        'category': 'deletion',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'description': 'blah blah description blah',
-        "method": "CRISPR",
-        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
-        "reagents": [
-            {
-                "identifier": "12345",
-                "source": "/sources/addgene/",
-                "url": "http://www.addgene.org"
-            },
-            {
-                "identifier": "67890",
-                "source": "/sources/addgene/",
-                "url": "http://www.addgene.org"
-            }
-        ]
-    }
-
-
-@pytest.fixture
-def genetic_modification_8(lab, award):
-    return {
-        'purpose': 'analysis',
-        'category': 'interference',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        "method": "CRISPR",
-    }
-
-
 def test_genetic_modification_upgrade_1_2(upgrader, genetic_modification_1):
     value = upgrader.upgrade('genetic_modification', genetic_modification_1,
                              current_version='1', target_version='2')
@@ -279,3 +91,62 @@ def test_genetic_modification_upgrade_8_9(upgrader, genetic_modification_8):
                              current_version='8', target_version='9')
     assert value['schema_version'] == '9'
     assert value.get('purpose') == 'characterization'
+
+
+def test_genetic_modification_upgrade_9_10(upgrader, genetic_modification_9, human_donor_1):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_9,
+                             current_version='9', target_version='10')
+    assert value['nucleic_acid_delivery_method'] == ['transient transfection']
+    assert 'method' not in value
+    assert value['introduced_elements_donor'] == human_donor_1['@id']
+    assert 'donor' not in value
+
+
+def test_genetic_modification_upgrade_10_11(upgrader, genetic_modification_10):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_10,
+                             current_version='10', target_version='11')
+    assert value['schema_version'] == '11'
+    assert value.get('guide_type') == 'sgRNA'
+    assert value['notes'] == 'guide_type on this GM was defaulted to sgRNA in an upgrade.'
+
+
+def test_genetic_modification_upgrade_11_12(
+    upgrader,
+    genetic_modification_11,
+    binding_genetic_modification_2,
+    transgene_insertion_2,
+    tale_replacement,
+    activation_genetic_modification_2,
+    crispr_deletion,
+    crispri
+):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_11,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPR cutting'
+    value = upgrader.upgrade('genetic_modification', binding_genetic_modification_2,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPR dCas'
+    value = upgrader.upgrade('genetic_modification', transgene_insertion_2,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'insertion'
+    value = upgrader.upgrade('genetic_modification', tale_replacement,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'mutagenesis'
+    value = upgrader.upgrade('genetic_modification', activation_genetic_modification_2,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPRa'
+    crispr_deletion['purpose'] = 'characterization'
+    value = upgrader.upgrade('genetic_modification', crispr_deletion,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPR cutting'
+    crispri['purpose'] = 'characterization'
+    value = upgrader.upgrade('genetic_modification', crispri,
+                             current_version='11', target_version='12')
+    assert value['schema_version'] == '12'
+    assert value.get('category') == 'CRISPRi'

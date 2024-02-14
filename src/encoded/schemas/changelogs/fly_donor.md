@@ -1,5 +1,9 @@
 ## Changelog for fly_donor.json
 
+### Minor changes since schema version 10
+
+* *supersedes* list property was added along with the calculated list property *superseded_by*
+
 ### Schema version 10
 
 * The enum *kyoto* was removed from *aliases* and *dbxrefs* namespaces and replaced with *encode* in *aliases* and *DGGR* in *external_ids*

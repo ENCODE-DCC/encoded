@@ -27,6 +27,7 @@ from snovault import (
     AfterModified,
     BeforeModified
 )
+from snovault.elasticsearch.searches.configs import search_config
 
 
 @lru_cache()
@@ -369,7 +370,7 @@ class Item(snovault.Item):
         validate = asbool(request.params.get('validate', True))
         self._update_status(new_status, current_status, properties, schema, request, item_id, update, validate=validate)
         request._set_status_considered_paths.add((item_id, current_status, new_status))
-        logging.warn(
+        logging.warning(
             'Considering {} from status {} to status {}'.format(item_id, current_status, new_status)
         )
         block_children = self._calculate_block_children(request, force_transition)
@@ -378,6 +379,23 @@ class Item(snovault.Item):
         related_objects = self._get_related_object(child_paths, embedded_properties, request)
         self._set_status_on_related_objects(new_status, related_objects, root, request)
         return True
+
+
+@search_config(
+    name='Item'
+)
+def item_search_config():
+    return {
+        'facets': {
+            'type': {
+                'title': 'Data Type',
+                'exclude': ['Item']
+            },
+            'status': {
+                'title': 'Item status'
+            },
+        }
+    }
 
 
 class SharedItem(Item):

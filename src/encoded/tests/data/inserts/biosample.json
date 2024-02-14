@@ -5,7 +5,8 @@
         "aliases": [
             "richard-myers:MCF-7 rep 3",
             "rob-spitale:biosample 1",
-            "andrew-fire:biosample 1"
+            "andrew-fire:biosample 1",
+            "altius:biosample AAA"
         ],
         "award": "ENCODE2",
         "biosample_ontology": "cell_line_EFO_0001203",
@@ -170,6 +171,7 @@
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "source": "sherman-weissman",
+        "status": "in progress",
         "submitted_by": "semper.habitant@ut.venenatis",
         "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f"
     },
@@ -537,6 +539,23 @@
         "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe"
     },
     {
+        "accession": "ENCBS001MWO",
+        "award": "U54HG006997",
+        "biosample_ontology": "whole_organisms_UBERON_0000468",
+        "description": "Mouse embryo",
+        "donor": "ENCDO015AAA",
+        "lab": "kevin-white",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "mouse_life_stage": "embryonic",
+        "model_organism_age": "14.5",
+        "model_organism_age_units": "day",
+        "model_organism_sex": "mixed",
+        "status": "in progress",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "20d8e4b0-0fa6-4679-b25c-71e9293d9272"
+    },
+    {
         "_test": "has mouse life stage and depleted in term name and id",
         "accession": "ENCBS000MUS",
         "award": "U54HG006997",
@@ -646,11 +665,48 @@
         "lab": "michael-snyder",
         "organism": "human",
         "product_id": "GM12878",
+        "cell_isolation_method": "fluorescence activated cell sorting",
+        "expressed_genes": [
+            {
+                "gene": "/genes/1879/",
+                "expression_percentile": 15
+            },
+            {
+                "gene": "/genes/677792/",
+                "expression_range_maximum": 10,
+                "expression_range_minimum": 20
+            }
+        ],
         "source": "coriell",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
         "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM12878",
         "uuid": "d8ca0867-13cd-40df-9de0-29f9da53d935"
+    },
+    {
+        "accession": "ENCBS631AAA",
+        "award": "ENCODE2",
+        "biosample_ontology": "cell_line_EFO_0002784",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:GM12878"
+        ],
+        "description": "B-lymphocyte, lymphoblastoid, International HapMap Project - CEPH/Utah - European Caucasion, Epstein-Barr Virus",
+        "donor": "ENCDO000AAK",
+        "lab": "michael-snyder",
+        "organism": "human",
+        "product_id": "GM12878",
+        "cell_isolation_method": "fluorescence activated cell sorting",
+        "expressed_genes": [
+            {
+                "gene": "/genes/1879/",
+                "expression_percentile": 15
+            }
+        ],
+        "source": "coriell",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM12878",
+        "uuid": "3a5955ce-810f-4535-bef1-10f0cc23cca7"
     },
     {
         "_test": "Paired set 1 biosample",
@@ -913,15 +969,14 @@
             "encode:modification-test-2",
             "ef12855f-5d3e-4da5-8684-3a594c60505a",
             "2f33a486-e3d9-4633-8682-a363b48ba67d",
-            "b9264c83-2222-4678-a82f-4915af941fa4",
             "46758afd-237b-4e01-951e-5f624714bfde"
         ]
     },
     {
         "accession": "ENCBS175SCS",
         "award": "UM1HG009390",
-        "biosample_ontology": "single_cell_CL_0002322",
-        "description": "Undifferentiated mouse embryonic stem single cell",
+        "biosample_ontology": "in_vitro_differentiated_cells_CL_0002322",
+        "description": "Undifferentiated mouse embryonic stem cell",
         "donor": "ENCDO015AAA",
         "lab": "john-stamatoyannopoulos",
         "model_organism_health_status": "unknown",
@@ -952,10 +1007,28 @@
         "donor": "ENCDO000HUM",
         "lab": "gregory-crawford",
         "organism": "human",
+        "genetic_modifications": [
+            "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
+        ],
         "source": "dana-levasseur",
         "status": "released",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
         "uuid": "693c82ee-70f1-11e9-a923-1681be663d3e"
+    },
+    {
+        "accession": "ENCBS303RUL",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "description": "WTC11 cell line",
+        "donor": "ENCDO000HUM",
+        "lab": "gregory-crawford",
+        "organism": "human",
+        "post_nucleic_acid_delivery_time": 30,
+        "post_nucleic_acid_delivery_time_units": "minute",
+        "source": "dana-levasseur",
+        "status": "released",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
+        "uuid": "78268bc7-1715-4f49-97ef-88a123b56269"
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -969,6 +1042,7 @@
         "internal_tags": [
             "ENTEx"
         ],
+        "disease_term_id": ["HP:0100543", "DOID:10652"],
         "lab": "encode2-project",
         "nih_institutional_certification": "NIC00019",
         "organism": "human",
@@ -1039,5 +1113,375 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "17790c53-a3f4-4e9e-86a6-227689f757cb"
+    },
+    {
+        "_test": "mouse dev matrix biosample_1",
+        "accession": "ENCBS123AAA",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_1",
+        "lab": "len-pennacchio",
+        "model_organism_age": "0",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "postnatal",
+        "organism": "mouse",
+        "part_of": "ENCBS123AAC",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "bc5b62f7-ce28-4a1e-b6b3-93c9c5a86d7a"
+    },
+    {
+        "_test": "mouse dev matrix biosample_2",
+        "accession": "ENCBS123AAB",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_2",
+        "lab": "len-pennacchio",
+        "model_organism_sex": "male",
+        "model_organism_age": "12",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "embryonic",
+        "organism": "mouse",
+        "part_of": "ENCBS123AAA",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "b8d504af-5af8-4f6e-b250-9980085bee80"
+    },
+    {
+        "_test": "mouse dev matrix biosample_3",
+        "accession": "ENCBS123AAC",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_3",
+        "lab": "len-pennacchio",
+        "model_organism_age": "12",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "embryonic",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9d"
+    },
+    {
+        "_test": "mouse dev matrix biosample_4",
+        "accession": "ENCBS123AAD",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_4",
+        "lab": "len-pennacchio",
+        "model_organism_age": "12",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "embryonic",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9e"
+    },
+    {
+        "_test": "mouse dev matrix biosample_5",
+        "accession": "ENCBS123AAE",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_5",
+        "lab": "len-pennacchio",
+        "model_organism_age": "8",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "adult",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9f"
+    },
+    {
+        "accession": "ENCBS248BKB",
+        "aliases": [
+            "michael-snyder:mBsAC-8819",
+            "michael-snyder:mBsAC-W62 left lung CRYO 1"
+        ],
+        "award": "UM1HG009442",
+        "biosample_ontology": "tissue_UBERON_0002168",
+        "date_obtained": "2017-06-09",
+        "donor": "ENCDO575EGL",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00005",
+        "organism": "human",
+        "preservation_method": "cryopreservation",
+        "source": "michael-snyder",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "7986a8dd-bbf9-478d-93dd-efb45b4d5b90"
+    },
+    {
+        "accession": "ENCBS475JUN",
+        "aliases": [
+            "michael-snyder:pB-12166",
+            "michael-snyder:pB-eGFP-MBNL3 HepG2 Batch 2"
+        ],
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0001187",
+        "date_created": "2020-04-14T00:51:42.554115+00:00",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "be6fc08f-ea65-470f-8178-69a7d2ea8909"
+    },
+    {
+        "accession": "ENCBS881WJU",
+        "aliases": [
+            "modencode:F45C12.2_GFP_OP212_L4_Rep1"
+        ],
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0001187",
+        "description": "Transgenic C. elegans line, stably expressing a C-terminal GFP-FLAG tag fused to F45C12.2",
+        "donor": "ENCDO183YYY",
+        "lab": "michael-snyder",
+        "model_organism_sex": "mixed",
+        "organism": "celegans",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "375221ff-52ed-4e91-9d33-6bc09dd26ac9",
+        "worm_life_stage": "L4 larva"
+    },
+    {
+        "accession": "ENCBS474KMT",
+        "aliases": [
+            "michael-snyder:pB-11765",
+            "michael-snyder:pB-SK-N-SH batch 6 scATAC rep1"
+        ],
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0001187",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "9fa06607-ac16-4b57-8f3f-2e3088166454"
+    },
+    {
+        "accession": "ENCBS715CSM",
+        "aliases": [
+            "bradley-bernstein:skin_bc_carcinoma"
+        ],
+        "award": "U54HG006991",
+        "biosample_ontology": "tissue_UBERON_0001003",
+        "donor": "ENCDO000AAK",
+        "disease_term_id": ["DOID:2513"],
+        "lab": "bradley-bernstein",
+        "organism": "human",
+        "source": "dana-levasseur",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "3440ad39-bb3a-488f-8a88-525027b8e943"
+    },
+    {
+        "accession": "ENCBS470XDJ",
+        "aliases": ["eric-lecuyer:HepG2-init-Insoluble_1"],
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0001187",
+        "description": "Initial insoluble fractions on HepG2 Long Total from Lecuyer",
+        "donor": "ENCDO017AAA",
+        "lab": "brenton-graveley",
+        "lot_id": "59635738",
+        "organism": "human",
+        "product_id": "HB-8065",
+        "source": "dana-levasseur",
+        "subcellular_fraction_term_name": "insoluble cytoplasmic fraction",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "uuid": "2ee9acb1-6a04-4226-ac62-afcf1e1f5db3"
+    },
+    {
+        "accession": "ENCBS972CAB",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "cab31060-9794-4d8c-9f8f-d1726790c1a8"
+    },
+    {
+        "accession": "ENCBS375PCM",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000897",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "79ce360f-8173-47c1-be89-42f732b31105"
+    },
+    {
+        "accession": "ENCBS979OUG",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "treatments": ["373bf377-6f76-4dd9-a956-b4c1ded4b2c0"],
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "caeab93d-6909-40f6-9658-d0ee9d7a69a2"
+    },
+    {
+        "accession": "ENCBS001TEE",
+        "award": "UM1HG009442",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "donor": "ENCDO001TEE",
+        "lab": "j-michael-cherry",
+        "treatments": ["373bf377-6f76-4dd9-a956-b4c1ded4b2c0"],
+        "organism": "manatee",
+        "source": "barbara-wold",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "843516f2-c2df-4689-ba92-ad7cf4ed686e"
+    },
+    {
+        "accession": "ENCBS888CRI",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "description": "WTC11 cell line",
+        "donor": "ENCDO000HUM",
+        "internal_tags": [
+            "RushAD",
+            "YaleImmuneCells",
+            "Degron"
+        ],
+        "lab": "bing-ren",
+        "organism": "human",
+        "genetic_modifications": [
+            "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
+        ],
+        "source": "dana-levasseur",
+        "status": "released",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
+        "uuid": "dc21931b-2838-4279-944c-470ef4fb4fce"
+    },
+    {
+        "_test": "For disease series biosample",
+        "accession": "ENCBS371IWM",
+        "award": "UM1HG009442",
+        "biosample_ontology": "tissue_UBERON_0012314",
+        "dbxrefs": ["GEO:SAMN18513265"],
+        "disease_term_id": ["DOID:10652"],
+        "donor": "ENCDO921RVK",
+        "lab": "john-stamatoyannopoulos",
+        "nih_institutional_certification": "NIC00037",
+        "organism": "human",
+        "status": "released",
+        "source": "john-stamatoyannopoulos",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "99f3e660-867a-40dc-b1bb-292eef044c65"
+    },
+    {
+        "_test": "For disease series biosample",
+        "accession": "ENCBS372IWM",
+        "award": "UM1HG009442",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "dbxrefs": ["GEO:SAMN18513265"],
+        "donor": "ENCDO921RVK",
+        "internal_tags": [
+            "Deeply Profiled"
+        ],
+        "lab": "john-stamatoyannopoulos",
+        "nih_institutional_certification": "NIC00037",
+        "organism": "human",
+        "status": "released",
+        "source": "john-stamatoyannopoulos",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "1313fc4e-b989-4fae-a65c-b16f309a2b79"
+    },
+    {
+        "accession": "ENCBS001BRU",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "5a8c94ee-7ca6-4e50-bb6a-240fcd844f62",
+        "pulse_chase_time": 2,
+        "pulse_chase_time_units": "hour"
+    },
+    {
+        "accession": "ENCBS002BRU",
+        "award": "UM1HG009442",
+        "biosample_ontology": "primary_cell_CL_0000815",
+        "donor": "ENCDO058AAA",
+        "lab": "michael-snyder",
+        "nih_institutional_certification": "NIC00007",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "525202d7-0242-4e92-8edd-ccb26a6cb887",
+        "pulse_chase_time": 6,
+        "pulse_chase_time_units": "hour"
+    },
+    {
+        "accession": "ENCBS088IDX",
+        "aliases": [
+            "bradley-bernstein:BioSam 4644"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0002824",
+        "culture_harvest_date": "2021-07-01",
+        "donor": "ENCDO000ABE",
+        "genetic_modifications": [
+            "ENCGM628IQH",
+            "ENCGM628AIR"
+        ],
+        "lab": "bradley-bernstein",
+        "nih_institutional_certification": "NIC00050",
+        "organism": "human",
+        "source": "erez-aiden",
+        "status": "released",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "uuid": "9f03eb47-5b1e-47db-9e9f-af750ac94b67"
+    },
+    {
+        "accession": "ENCBS766NUP",
+        "aliases": [
+            "yin-shen:mESC_Sox2_1-eGFP"
+        ],
+        "award": "U54HG006996",
+        "biosample_ontology": "/biosample-types/tissue_UBERON_0000948/",
+        "cell_isolation_method": "fluorescence activated cell sorting",
+        "culture_harvest_date": "2018-02-19",
+        "culture_start_date": "2018-02-09",
+        "donor": "ENCDO817NHY",
+        "lab": "bing-ren",
+        "organism": "mouse",
+        "passage_number": 5,
+        "source": "len-pennacchio",
+        "status": "released",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "af987d36-1dc2-45df-8d7c-6ac9d4798b46"
     }
 ]

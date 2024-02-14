@@ -43,7 +43,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "related_datasets": {
             "title": "Additional datasets",
@@ -59,6 +59,43 @@
             }
         }
     },
+    "facet_groups": [
+        {
+            "title": "Assay",
+            "facet_fields": [
+                "assay_slims",
+                "assay_title",
+                "target.investigated_as",
+                "target.label"
+            ]
+        },
+        {
+            "title": "Biosample",
+            "facet_fields": [
+                "biosample_ontology.classification",
+                "biosample_ontology.term_name",
+                "biosample_ontology.organ_slims",
+                "biosample_ontology.cell_slims"
+            ]
+        },
+        {
+            "title": "Provenance",
+            "facet_fields": [
+                "contributors.title",
+                "date_released"
+            ]
+        },
+        {
+            "title": "Quality",
+            "facet_fields": [
+                "status",
+                "audit.ERROR.category",
+                "audit.NOT_COMPLIANT.category",
+                "audit.WARNING.category",
+                "audit.INTERNAL_ACTION.category"
+            ]
+        }
+    ],
     "facets": {
         "assay_slims": {
             "title": "Assay type"
@@ -76,7 +113,7 @@
             "title": "Organ"
         },
         "biosample_ontology.term_name": {
-            "title": "Biosample term name",
+            "title": "Biosample",
             "type": "typeahead",
             "length": "long"
         },
@@ -141,6 +178,9 @@
         "status": {
             "title": "Status"
         },
+        "target.@id": {
+            "title": "Targets"
+        },
         "target.genes.symbol": {
             "title": "Target gene symbol"
         },
@@ -172,9 +212,10 @@
         "target.aliases": 1.0,
         "target.genes.symbol": 1.0,
         "target.label": 1.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 1.0,
-        "target.organism.scientific_name": 1.0
+        "target.organism.scientific_name": 1.0,
+        "doi": 1.0
     },
     "changelog": "/profiles/changelogs/experiment_series.md"
 }

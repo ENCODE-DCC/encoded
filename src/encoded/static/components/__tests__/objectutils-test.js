@@ -1,9 +1,11 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme, { mount } from 'enzyme';
 
 // Import test component and data.
-import { InternalTags } from '../objectutils';
+import { InternalTags, internalTagsMap, findRelatedLocation } from '../objectutils';
 
+// Temporary use of adapter until Enzyme is compatible with React 17.
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('InternalTags', () => {
     let context;
@@ -27,12 +29,54 @@ describe('InternalTags', () => {
 
 
     test('generates the right images in each link', () => {
-        const uris = testTags.map(tag => `/static/img/tag-${tag}.png`);
+        const uris = testTags.map((tag) => `/static/img/${internalTagsMap[tag].badgeFilename}`);
         wrapper.find('a').forEach((link, i) => {
             const image = link.find('img');
             expect(image).toHaveLength(1);
             expect(image.prop('src')).toEqual(uris[i]);
             expect(image.prop('alt')).toContain(testTags[i]);
         });
+    });
+});
+
+describe('FindRelatedLocations', () => {
+    let context;
+
+    beforeAll(() => {
+        context = {
+            related_datasets: [
+                {
+                    elements_references: [
+                        {
+                            examined_loci: [
+                                {
+                                    status: 'released',
+                                    locations: [
+                                        {
+                                            assembly: 'GRCh38',
+                                            chromosome: 'chrX',
+                                            start: 134460165,
+                                            end: 134500668,
+                                        },
+                                        {
+                                            assembly: 'hg19',
+                                            chromosome: 'chrX',
+                                            start: 133594195,
+                                            end: 133634698,
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        };
+    });
+
+    test('finds location from related dataset', () => {
+        const defaultLocation = findRelatedLocation(context, 'hg19');
+        expect(defaultLocation.chromosome).toEqual('chrX');
+        expect(defaultLocation.start).toEqual(133594195);
     });
 });

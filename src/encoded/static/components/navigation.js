@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import url from 'url';
+import { svgIcon } from '../libs/svg-icons';
 import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
 import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
-import { CartStatus } from './cart';
-import { productionHost } from './globals';
-
+import { CartMenu } from './cart';
+import { isProductionHost } from './globals';
+import Tooltip from '../libs/ui/tooltip';
+import { BrowserFeat } from './browserfeat';
+import NavBarMultiSearch from './top_hits/multi/search';
 
 /**
  * Navigation bar home-page button.
@@ -23,7 +25,7 @@ class HomeBrand extends React.Component {
 
     render() {
         return (
-            <button className="home-brand" onClick={this.handleClick}>
+            <button type="button" className="home-brand" onClick={this.handleClick}>
                 {this.context.portal.portal_title}
                 <span className="sr-only">Home</span>
             </button>
@@ -36,7 +38,6 @@ HomeBrand.contextTypes = {
     portal: PropTypes.object,
 };
 
-
 export default class Navigation extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -46,7 +47,7 @@ export default class Navigation extends React.Component {
             /** ID of the currently dropped-down main navigation menu; '' if none */
             openDropdown: '',
             /** True if test warning banner visible; default depends on domain */
-            testWarning: !productionHost[url.parse(context.location_href).hostname],
+            testWarning: !isProductionHost(context.location_href),
         };
 
         // Bind this to non-React methods.
@@ -65,77 +66,12 @@ export default class Navigation extends React.Component {
 
     componentDidMount() {
         // Add a click handler to the DOM document -- the entire page
-        document.addEventListener('click', this.documentClickHandler);
+        document.addEventListener('click', (e) => this.documentClickHandler(e));
     }
 
     componentWillUnmount() {
         // Remove the DOM document click handler now that the DropdownButton is going away.
-        document.removeEventListener('click', this.documentClickHandler);
-    }
-
-    /**
-     * A click outside the DropdownButton closes the dropdown.
-     */
-    documentClickHandler() {
-        this.setState({ openDropdown: '' });
-    }
-
-    /**
-     * Called when the user clicks a main navigation drop-down menu.
-     * @param {string} dropdownId ID of the clicked menu, if any
-     * @param {object} e React synthetic event
-     */
-    dropdownClick(dropdownId, e) {
-        // Check if device has touch events
-        function isMobile() {
-            try {
-                document.createEvent('TouchEvent');
-                return true;
-            } catch (evt) {
-                return false;
-            }
-        }
-        const isMobileDevice = isMobile();
-        // Clicks and mouseover actions do not behave the same way (clicks should toggle activation whereas hovering should maintain activation)
-        // so depending on the device we want user actions have different results
-        // We do enable clicks on non-touch devices so that menus are available by keyboard (tab)
-        let activateMenuItem = false;
-        const dropdownIdIsString = typeof dropdownId === 'string';
-        if (e) {
-            // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
-            e.nativeEvent.stopImmediatePropagation();
-            // On touch devices, activate menu item if new one chosen or deactivate menu item if old one chosen
-            if (e.type === 'click' && isMobileDevice) {
-                activateMenuItem = dropdownId !== this.state.openDropdown;
-                this.setState(prevState => ({
-                    openDropdown: ((dropdownId !== prevState.openDropdown) && dropdownIdIsString) ? dropdownId : '',
-                }));
-            // On non-touch devices, a click functions like a hover would, it only activates and cannot deactivate
-            // This is primarily useful for accessibility
-            } else if (e.type === 'click') {
-                activateMenuItem = true;
-                this.setState({
-                    openDropdown: (activateMenuItem && dropdownIdIsString) ? dropdownId : '',
-                });
-            // On non-touch devices, activate menu item on mouseenter or deactivate on mouseleave
-            // Note that mouseenter and mouseleave are not available on touch devices
-            } else if ((e.type === 'mouseenter' || e.type === 'mouseleave') && !(isMobileDevice)) {
-                // On mousenter, activate menu item
-                if (e.type === 'mouseenter') {
-                    activateMenuItem = true;
-                }
-                // On mouseleave, de-activate menu item
-                if (e.type === 'mouseleave') {
-                    activateMenuItem = false;
-                }
-                this.setState({
-                    openDropdown: (activateMenuItem && dropdownIdIsString) ? dropdownId : '',
-                });
-            }
-        // If there is no event trigger, user's cursor has left dropdown so we want to close it
-        } else if (!isMobileDevice) {
-            this.setState({ openDropdown: '' });
-        }
+        document.removeEventListener('click', (e) => this.documentClickHandler(e));
     }
 
     /**
@@ -158,6 +94,73 @@ export default class Navigation extends React.Component {
         }
     }
 
+    /**
+     * A click outside the DropdownButton closes the dropdown.
+     */
+    documentClickHandler(e) {
+        const { className } = e.target;
+        // Only close navigation hamburger when user does not click on tooltip icon
+        // Note: "toString" is required for hamburger SVG on mobile which does not have a className that is a string
+        // Elements with validClassName and validTagName should not close the menu when clicked on
+        let validClassName = false;
+        if (className) {
+            validClassName = (className.toString().indexOf('icon-question-circle') > -1) || (className.toString().indexOf('tooltip-container__trigger') > -1);
+        }
+        const validTagName = e.target.tagName === 'LI' || e.target.tagName === 'I';
+        if (!(validClassName || validTagName)) {
+            this.setState({ openDropdown: '' });
+        }
+    }
+
+    /**
+     * Called when the user clicks a main navigation drop-down menu.
+     * @param {string} dropdownId ID of the clicked menu, if any
+     * @param {object} e React synthetic event
+     */
+    dropdownClick(dropdownId, e) {
+        // Clicks and mouseover actions do not behave the same way (clicks should toggle activation whereas hovering should maintain activation)
+        // so depending on the device we want user actions have different results
+        // We do enable clicks on non-touch devices so that menus are available by keyboard (tab)
+        let activateMenuItem = false;
+        const isMobile = BrowserFeat.getBrowserCaps('touchEnabled');
+        const dropdownIdIsString = typeof dropdownId === 'string';
+        if (e) {
+            // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
+            e.nativeEvent.stopImmediatePropagation();
+            // On touch devices, activate menu item if new one chosen or deactivate menu item if old one chosen
+            if (e.type === 'click' && isMobile) {
+                activateMenuItem = dropdownId !== this.state.openDropdown;
+                this.setState((prevState) => ({
+                    openDropdown: ((dropdownId !== prevState.openDropdown) && dropdownIdIsString) ? dropdownId : '',
+                }));
+            // On non-touch devices, a click functions like a hover would, it only activates and cannot deactivate
+            // This is primarily useful for accessibility
+            } else if (e.type === 'click') {
+                activateMenuItem = true;
+                this.setState({
+                    openDropdown: (activateMenuItem && dropdownIdIsString) ? dropdownId : '',
+                });
+            // On non-touch devices, activate menu item on mouseenter or deactivate on mouseleave
+            // Note that mouseenter and mouseleave are not available on touch devices
+            } else if ((e.type === 'mouseenter' || e.type === 'mouseleave') && !isMobile) {
+                // On mousenter, activate menu item
+                if (e.type === 'mouseenter') {
+                    activateMenuItem = true;
+                }
+                // On mouseleave, de-activate menu item
+                if (e.type === 'mouseleave') {
+                    activateMenuItem = false;
+                }
+                this.setState({
+                    openDropdown: (activateMenuItem && dropdownIdIsString) ? dropdownId : '',
+                });
+            }
+        // If there is no event trigger, user's cursor has left dropdown so we want to close it
+        } else if (!isMobile) {
+            this.setState({ openDropdown: '' });
+        }
+    }
+
     render() {
         return (
             <div id="navbar" className="navbar__wrapper">
@@ -170,13 +173,13 @@ export default class Navigation extends React.Component {
                     navClasses="navbar-main"
                 >
                     <GlobalSections />
-                    <SecondarySections isHomePage={this.props.isHomePage} />
+                    <SecondarySections />
                 </Navbar>
                 {this.state.testWarning ?
                     <div className="test-warning">
                         <div className="container test-warning__content">
                             <div className="test-warning__text">The data displayed on this page is not official and only for testing purposes.</div>
-                            <button className="test-warning__close" onClick={this.handleClickWarning}>
+                            <button type="button" className="test-warning__close" onClick={this.handleClickWarning}>
                                 <i className="icon icon-times-circle-o" />
                                 <span className="sr-only">Close test warning banner</span>
                             </button>
@@ -188,14 +191,6 @@ export default class Navigation extends React.Component {
     }
 }
 
-Navigation.propTypes = {
-    isHomePage: PropTypes.bool, // True if current page is home page
-};
-
-Navigation.defaultProps = {
-    isHomePage: false,
-};
-
 Navigation.contextTypes = {
     location_href: PropTypes.string,
 };
@@ -205,11 +200,11 @@ Navigation.childContextTypes = {
     dropdownClick: PropTypes.func, // Called when a dropdown title gets clicked
 };
 
-
 // Main navigation menus
 const GlobalSections = (props, context) => {
-    const actions = context.listActionsFor('global_sections').map(action =>
-        <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} >
+    const glossary = require('./glossary/glossary.json');
+    const actions = context.listActionsFor('global_sections').map((action) => (
+        <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
             {action.children ?
                 <DropdownMenu label={action.id}>
                     {action.children.map((childAction) => {
@@ -217,10 +212,30 @@ const GlobalSections = (props, context) => {
                         if (childAction.id.substring(0, 4) === 'sep-') {
                             return <DropdownMenuSep key={childAction.id} />;
                         }
-
+                        const glossaryMatch = glossary.find((def) => def.term.toLowerCase() === childAction.title.toLowerCase());
+                        if (glossaryMatch) {
+                            return (
+                                <div
+                                    key={childAction.id}
+                                    className={`${childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'} ${childAction.url ? 'hoverable' : ''}`}
+                                >
+                                    <a href={childAction.url || ''}>
+                                        {childAction.title}
+                                    </a>
+                                    <Tooltip
+                                        trigger={<i className="icon icon-question-circle" />}
+                                        tooltipId={childAction.id}
+                                        innerCss={`menu-tooltip ${childAction.tag ? 'sub-menu' : ''}`}
+                                        relativeTooltipFlag
+                                    >
+                                        {glossaryMatch.definition}
+                                    </Tooltip>
+                                </div>
+                            );
+                        }
                         // Render any regular linked items in the dropdown
                         return (
-                            <a href={childAction.url || ''} key={childAction.id} className={childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'}>
+                            <a href={childAction.url || ''} key={childAction.id} className={childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'} {...childAction.attr}>
                                 {childAction.title}
                             </a>
                         );
@@ -228,7 +243,7 @@ const GlobalSections = (props, context) => {
                 </DropdownMenu>
             : null}
         </NavItem>
-    ).concat(<CartStatus key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
+    )).concat(<CartMenu key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
     return <Nav>{actions}</Nav>;
 };
 
@@ -249,25 +264,49 @@ GlobalSections.contextTypes = {
 };
 
 
-const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }) => (
-    <Nav>
-        <Search />
-        {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
-        <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
-    </Nav>
-);
+const SecondarySections = ({ openDropdown, dropdownClick }, reactContext) => {
+    const disabled = !reactContext.session;
+    const userActionRender = !(reactContext.session && reactContext.session['auth.userid']) ?
+        <a href="#!" className="dropdown__toggle" data-trigger="login" disabled={disabled}>{svgIcon('user')}</a> :
+        null;
+
+    return (
+        <Nav>
+            {!reactContext.isHomePage &&
+                <>
+                    <NavBarMultiSearch />
+                    <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
+                </>
+            }
+            <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
+            <li className="dropdown" id="user-actions-footer">{userActionRender}</li>
+            <a
+                href="https://twitter.com/EncodeDCC"
+                className="navbar-twitter"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="ENCODE Twitter feed"
+            >
+                {svgIcon('twitter')}
+            </a>
+        </Nav>);
+};
 
 SecondarySections.propTypes = {
-    /** True if current page is home page */
-    isHomePage: PropTypes.bool,
     /** ID of the dropdown currently visible */
     openDropdown: PropTypes.string,
     /** Function to call when dropdown clicked */
     dropdownClick: PropTypes.func,
 };
 
+SecondarySections.contextTypes = {
+    /** Login session information */
+    session: PropTypes.object,
+    /** True if currently displaying home page */
+    isHomePage: PropTypes.bool,
+};
+
 SecondarySections.defaultProps = {
-    isHomePage: false,
     openDropdown: '',
     dropdownClick: null,
 };
@@ -275,11 +314,11 @@ SecondarySections.defaultProps = {
 
 // Context actions: mainly for editing the current object
 const ContextActions = (props, context) => {
-    const actions = context.listActionsFor('context').map(action =>
+    const actions = context.listActionsFor('context').map((action) => (
         <a href={action.href} key={action.name}>
             <i className="icon icon-pencil" /> {action.title}
         </a>
-    );
+    ));
 
     // No action menu
     if (actions.length === 0) {
@@ -318,46 +357,18 @@ ContextActions.contextTypes = {
 };
 
 
-const Search = (props, context) => {
-    const id = url.parse(context.location_href, true);
-    const searchTerm = id.query.searchTerm || '';
-    return (
-        <li className="navbar__item navbar__item--search">
-            <form className="navbar__search" action="/search/">
-                <input
-                    aria-label="Search"
-                    type="text"
-                    placeholder="Search..."
-                    name="searchTerm"
-                    defaultValue={searchTerm}
-                    key={searchTerm}
-                />
-                <button type="submit" className="search-button">
-                    <i className="icon icon-search" />
-                    <span className="sr-only">Search</span>
-                </button>
-            </form>
-        </li>
-    );
-};
-
-Search.contextTypes = {
-    location_href: PropTypes.string,
-};
-
-
 const UserActions = (props, context) => {
     const sessionProperties = context.session_properties;
     if (!sessionProperties['auth.userid']) {
         // Logged out, so no user menu at all
         return null;
     }
-    const actions = context.listActionsFor('user').map(action =>
+    const actions = context.listActionsFor('user').map((action) => (
         <a href={action.href || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
             {action.title}
         </a>
-    );
-    const user = sessionProperties.user;
+    ));
+    const { user } = sessionProperties;
     const fullname = (user && user.title) || 'unknown';
     return (
         <NavItem dropdownId="useractions" dropdownTitle={fullname} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
@@ -399,7 +410,7 @@ export const Breadcrumbs = (props) => {
     let accretingTip = '';
 
     // Get an array of just the crumbs with something in their id
-    const crumbs = _.filter(props.crumbs, crumb => crumb.id);
+    const crumbs = _.filter(props.crumbs, (crumb) => crumb.id);
     const rootTitle = crumbs[0].id;
 
     return (

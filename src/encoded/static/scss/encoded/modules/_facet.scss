@@ -1,16 +1,28 @@
 // Title of page when included in a facet list.
 @mixin facet-title {
-    font-size: 1.5rem;
     margin-top: 0;
     margin-bottom: 5px;
     padding-bottom: 5px;
     border-bottom: 1px solid #ccc;
+    line-height: 1.3;
 }
 
+.facet-list-wrapper {
+    padding: 0;
+    border: 1px #ccc solid;
+
+    &.facet-list-wrapper--facet-group {
+        padding: 0;
+        margin-bottom: 10px;
+    }
+
+    &:empty {
+        padding: 0;
+        border: none;
+    }
+}
 
 .box.facets {
-    padding: 10px;
-    border: 1px #ccc solid;
     border-radius: 3px;
     overflow: hidden;
 
@@ -78,13 +90,14 @@
         position: absolute;
         top: 0;
         left: 0;
-        font-size: .9rem;
+        font-size: 0.9rem;
     }
 }
 
 .facets h5, .facets legend {
-    margin: 2px 0;
-    padding-bottom: 5px;
+    margin: 2px 0 0;
+    font-weight: 600;
+    text-align: left;
 }
 
 // Note: "will-change" under .term-list is to fix a Chrome slow-scrolling issue when scrollable
@@ -92,21 +105,24 @@
 // https://stackoverflow.com/questions/24741502/can-i-do-anything-about-repaints-on-scroll-warning-in-chrome-for-overflowscr/#answer-41026886
 
 .facet {
-    flex-wrap: wrap;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
     overflow: hidden;
     position: relative;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 10px 15px;
     word-break: break-word;
+    border-bottom: 0.5px solid #f0f0f0;
 
-    @at-root #{&}__content {
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .facet-terms {
         display: flex;
         position: relative;
 
         ul {
-            margin: 0 2px 0 0;
-            padding: 3px 0 3px 3px;
+            margin: 0;
+            padding: 3px 0;
             max-height: 95px;
             flex: 1 1 auto;
             overflow-y: scroll;
@@ -119,21 +135,86 @@
         }
     }
 
-    &:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-        margin-bottom: 0;
+    @at-root #{&}__multiselect {
+        a {
+            margin: 2px;
+            font-size: 0.9rem;
+            padding: 1px 5px;
+            display: block;
+            border-radius: 3px;
+            border: 1px solid #bfbfbf;
+            background-color: rgb(239, 239, 239);
+            color: #000;
+
+            &.selected {
+                color: white;
+                background-color: #4183c4;
+                border: 1px solid #4183c4;
+            }
+
+            &.anyall {
+                margin-top: 7px;
+                font-weight: 600;
+                background-color: #cecece;
+                border: 1px solid #7d7d7d;
+
+                &.selected {
+                    background-color: #0a447d;
+                }
+            }
+        }
     }
+
+    @at-root #{&}-expander {
+        display: flex;
+        width: 100%;
+        border: none;
+        background-color: transparent;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .facet-chevron {
+        flex: 0 0 16px;
+        width: 16px;
+        height: 10px;
+
+        .svg-icon {
+            fill: #000;
+        }
+    }
+
+    .facet-open {
+        display: inline;
+    }
+
+    .facet-close {
+        display: none;
+    }
+
+    &.hide {
+        display: none;
+    }
+}
+
+.facet-content {
+    padding: 0;
+    overflow: hidden;
 }
 
 // Radio button facet styles.
 fieldset.facet {
-    padding: 0;
-    border: none;
+    border-top: none;
+    border-right: none;
+    border-left: none;
 
     legend {
+        padding: 0;
         font-size: 1rem;
-        font-weight: bold;
+        font-weight: 600;
     }
 
     .facet__radio {
@@ -165,6 +246,13 @@ fieldset.facet {
     }
 }
 
+.facet-list-disabled {
+    background-color: ghostwhite;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 9999;
+}
+
 .facet-list {
     margin: 0;
 }
@@ -181,7 +269,7 @@ fieldset.facet {
     display: flex;
     position: relative;
     align-items: center;
-    margin: 4px 0;
+    margin: 1px 0;
     padding: 0;
     font-size: 0.9rem;
     line-height: 1;
@@ -227,7 +315,7 @@ fieldset.facet {
     @at-root #{&}__item {
         position: relative;
         display: flex;
-        padding: 2px 10px;
+        padding: 2px;
         border-radius: 3px;
         justify-content: space-between;
         align-items: center;
@@ -265,15 +353,16 @@ fieldset.facet {
     // Bar graph representing the relative count.
     @at-root #{&}__bar {
         position: absolute;
-        background-color: #E5E5E5;
+        background-color: #e5e5e5;
         right: 2px;
         top: 0;
-        bottom:0;
+        bottom: 0;
         z-index: -1;
     }
 
     // Button to negate a facet term...
     $negator-width: 12px;
+
     @at-root #{&}__negator {
         flex: 0 0 $negator-width;
         padding: 0 2px 0 0;
@@ -308,19 +397,15 @@ fieldset.facet {
 
 .date-selector {
     select {
-         border-radius: 2px;
-         border: 1px solid #cccccc !important;
-         font-weight: 400;
-         color: inherit !important;
-         margin-right: 2px;
+        border-radius: 2px;
+        border: 1px solid #ccc !important;
+        font-weight: 400;
+        color: inherit !important;
+        margin-right: 2px;
     }
 }
 
 .date-selector-facet {
-    h5 {
-        margin-bottom: 10px;
-    }
-
     @at-root #{&}__controls {
         display: flex;
         margin: 10px 0;
@@ -328,15 +413,17 @@ fieldset.facet {
 }
 
 .date-selector-btn {
-    color: rgb(79,104,158);
+    color: rgb(79, 104, 158);
     background: none;
     border: none;
     padding-left: 0;
     margin-left: 5px;
     font-size: 1rem;
+
     &:hover {
         text-decoration: underline;
     }
+
     .icon-caret-right {
         margin-right: 5px;
     }
@@ -353,6 +440,7 @@ fieldset.facet {
     display: flex;
     position: relative;
     align-items: flex-end;
+
     .date-selector-module {
         flex: 0 0 45%;
 
@@ -374,11 +462,18 @@ fieldset.facet {
 .date-selector-toggle-wrapper {
     .date-selector-toggle {
         display: inline-block;
+
         input {
             margin: 5px;
         }
+
+        input[disabled] + label {
+            color: #9f9f9f;
+        }
+
         margin-right: 10px;
     }
+
     margin-bottom: 10px;
 }
 
@@ -396,14 +491,23 @@ fieldset.facet {
         margin-right: 5px;
         flex: 0 0 auto;
     }
+
     .searchform {
         flex: 1 1 auto;
     }
+
     input {
         border-radius: 5px;
         padding: 4px;
         width: 100%;
     }
+}
+
+.typeahead-entry {
+    @extend .general-search-entry;
+
+    padding: 0;
+    margin: 5px 0 0;
 }
 
 .searcherror {
@@ -416,13 +520,14 @@ fieldset.facet {
     right: 29px;
     left: 0;
     height: 30px;
-    text-align:center;
+    text-align: center;
     cursor: pointer;
     pointer-events: none;
     opacity: 1;
     transition: opacity 0.5s ease-in-out;
     -moz-transition: opacity 0.5s ease-in-out;
     -webkit-transition: opacity 0.5s ease-in-out;
+
     &.hide-shading {
         opacity: 0;
     }
@@ -435,31 +540,58 @@ fieldset.facet {
 .bottom-shading {
     padding-bottom: 2px;
     bottom: 0;
-    background: linear-gradient(rgba(0,0,0,0), 70%, rgba(0,0,0,0.2));
+    background: linear-gradient(rgba(0, 0, 0, 0), 70%, rgba(0, 0, 0, 0.2));
 }
 
 .top-shading {
     top: 0;
-    background: linear-gradient(rgba(0,0,0,0.2), 30%, rgba(0,0,0,0));
+    background: linear-gradient(rgba(0, 0, 0, 0.2), 30%, rgba(0, 0, 0, 0));
 }
 
 .filter-container {
-    display: block;
-    margin: 10px auto;
-    .filter-hed {
-        display: inline-block;
-        padding: 0 5px;
-    }
-    .negation-filter {
-        color: #e50400;
-    }
+    display: flex;
+    margin: 2px -2px 10px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
     .filter-link {
-        display: inline-block;
-        text-align: center;
+        display: flex;
+        margin: 2px;
         padding: 0 5px;
-        cursor: pointer;
+        flex-grow: 0;
+        align-items: center;
+        overflow: hidden;
+        font-size: 0.9rem;
+        font-weight: normal;
+        color: #000;
+        background-color: scale-color(#4183c4, $lightness: 70%);
+        border: none;
+        border-radius: 3px;
+
+        &.filter-link--negative {
+            background-color: scale-color(#e50400, $lightness: 70%);
+        }
+
+        &.filter-link--alternate {
+            background-color: #d0d0d0;
+        }
+
         &:hover {
-            text-decoration: underline;
+            text-decoration: none;
+        }
+
+        .filter-link__title {
+            margin-right: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .filter-link__icon {
+            width: 7px;
+
+            .svg-icon {
+                fill: #000;
+            }
         }
     }
 }
@@ -476,7 +608,7 @@ fieldset.facet {
     font-size: 0.9rem;
     font-weight: normal;
 
-    a[href^="http"]:after {
+    a[href^="http"]::after {
         font-size: 0.9rem;
     }
 }
@@ -537,7 +669,6 @@ div.meta-status {
     to { max-width: 100%; }
 }
 
-
 // Styles for publication listing
 
 .list-author {
@@ -569,5 +700,169 @@ div.meta-status {
 
     .btn {
         display: block;
+    }
+}
+
+.facet--audit-warning {
+    margin-right: 20px;
+
+    select {
+        width: 100%;
+    }
+}
+
+// Styles for boolean switch
+
+.boolean-switch {
+    display: flex;
+    position: relative;
+    padding: 2px;
+    justify-content: space-between;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 2px solid transparent;
+
+    input[type='checkbox'] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: -1;
+    }
+
+    @at-root #{&}__title {
+        display: flex;
+        align-items: center;
+        margin-left: 5px;
+    }
+
+    // The actuator slides inside the frame.
+    @at-root #{&}__frame {
+        position: relative;
+        border: none;
+        box-shadow: 0 1px 1px inset rgba(0, 0, 0, 0.2);
+        transition: background-color 0.2s ease;
+    }
+
+    @at-root #{&}__actuator {
+        position: absolute;
+        top: 2px;
+        background-color: #fff;
+        transition: left 0.2s ease, border-radius 0.2s ease, width 0.2s ease;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+
+    // Focus border because opacity:0 on <input> also hides this.
+    @at-root #{&}--focused {
+        border: 2px solid #000;
+    }
+}
+
+// Style for biochemical inputs facet
+.biochemical-toggle-description {
+    font-size: 0.9rem;
+    padding-bottom: 5px;
+}
+
+// Facet groups including the title and subordinate facets.
+.facet-group {
+    border-bottom: 1px solid #ccc;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .facet-group__content {
+        padding: 0;
+        overflow: hidden;
+    }
+}
+
+$facet-group-title-transition-time: 200ms;
+$facet-group-color: #606060;
+$facet-group-color-accent: scale-color($facet-group-color, $lightness: 95%);
+
+.facet-group-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    border-radius: 0;
+    border: none;
+    background-color: $facet-group-color-accent;
+    box-shadow: inset 0 0 12px 6px rgba(0, 0, 0, 0.05);
+    transition: background-color $facet-group-title-transition-time linear;
+
+    .facet-group-title__title-name {
+        flex: 1 0 auto;
+        text-align: left;
+    }
+
+    .facet-group-title__title {
+        display: flex;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #000;
+        transition: color $facet-group-title-transition-time linear;
+    }
+
+    .facet-group-title__name {
+        color: #a0a0a0;
+        font-weight: bold;
+        font-size: 0.8rem;
+        line-height: 0.6;
+        transition: color $facet-group-title-transition-time linear;
+    }
+
+    .facet-group-title__selection-indicator {
+        margin-left: 5px;
+        flex: 0 0 8px;
+        width: 8px;
+
+        .svg-icon {
+            fill: $facet-group-color;
+            transition: fill $facet-group-title-transition-time linear;
+        }
+    }
+
+    .facet-group-title__expand-indicator {
+        flex: 0 0 16px;
+        width: 16px;
+
+        .svg-icon {
+            fill: #000;
+            transition: fill $facet-group-title-transition-time linear;
+        }
+    }
+
+    &.facet-group-title--open {
+        background-color: $facet-group-color;
+        transition: background-color $facet-group-title-transition-time linear;
+
+        .facet-group-title__title {
+            color: #fff;
+            transition: color $facet-group-title-transition-time linear;
+        }
+
+        .facet-group-title__name {
+            color: #e0e0e0;
+            transition: color $facet-group-title-transition-time linear;
+        }
+
+        .facet-group-title__selection-indicator {
+            .svg-icon {
+                fill: $facet-group-color-accent;
+                transition: fill $facet-group-title-transition-time linear;
+            }
+        }
+
+        .facet-group-title__expand-indicator {
+            .svg-icon {
+                fill: #fff;
+                transition: fill $facet-group-title-transition-time linear;
+            }
+        }
     }
 }

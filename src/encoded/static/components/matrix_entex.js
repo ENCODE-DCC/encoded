@@ -4,11 +4,11 @@ import _ from 'underscore';
 import * as encoding from '../libs/query_encoding';
 import { svgIcon } from '../libs/svg-icons';
 import { Panel, PanelBody } from '../libs/ui/panel';
-import DataTable from './datatable';
+import { DataTable } from './datatable';
 import * as globals from './globals';
 import { MATRIX_VISUALIZE_LIMIT, SearchFilter } from './matrix';
-import { MatrixInternalTags } from './objectutils';
-import { SearchControls } from './search';
+import { MatrixBadges } from './objectutils';
+import { ClearSearchTerm, SearchControls } from './search';
 
 
 /**
@@ -64,25 +64,29 @@ const entexDonors = [
         accession: 'ENCDO845WKR',
         cssSuffix: 'male1',
         voice: 'Male 1',
-        legendText: '\u26421',
+        legendIcon: 'mars',
+        legendText: '1',
     },
     {
         accession: 'ENCDO793LXB',
         cssSuffix: 'female3',
         voice: 'Female 3',
-        legendText: '\u26403',
+        legendIcon: 'venus',
+        legendText: '3',
     },
     {
         accession: 'ENCDO451RUA',
         cssSuffix: 'male2',
         voice: 'Male 2',
-        legendText: '\u26422',
+        legendIcon: 'mars',
+        legendText: '2',
     },
     {
         accession: 'ENCDO271OUW',
         cssSuffix: 'female4',
         voice: 'Female 4',
-        legendText: '\u26404',
+        legendIcon: 'venus',
+        legendText: '4',
     },
 ];
 
@@ -95,12 +99,12 @@ const entexDonors = [
 const DonorLegendRow = ({ entexDonor }) => (
     <div className="donor-legend-row">
         <div className="donor-cell">
-            {entexDonors.map(donorQuadrant => (
+            {entexDonors.map((donorQuadrant) => (
                 <div key={donorQuadrant.accession} className={`donor-quadrant donor-quadrant--${donorQuadrant.cssSuffix}${donorQuadrant.accession !== entexDonor.accession ? ' blank' : ''}`} />
             ))}
         </div>
         <div className="donor-legend-row__label">
-            <div className={`donor-legend-row__short-string donor-legend-row__short-string--${entexDonor.cssSuffix}`}>{entexDonor.legendText}</div>
+            <div className={`donor-legend-row__short-string donor-legend-row__short-string--${entexDonor.cssSuffix}`}>{svgIcon(entexDonor.legendIcon)} {entexDonor.legendText}</div>
             <a href={`/human-donors/${entexDonor.accession}`} aria-label={`Go to donor page for ${entexDonor.voice} ${entexDonor.accession}`}>{entexDonor.accession}</a>
         </div>
     </div>
@@ -117,7 +121,7 @@ DonorLegendRow.propTypes = {
  */
 const DonorLegend = () => (
     <div className="donor-legend">
-        {entexDonors.map(entexDonor => (
+        {entexDonors.map((entexDonor) => (
             <DonorLegendRow key={entexDonor.accession} entexDonor={entexDonor} />
         ))}
     </div>
@@ -210,7 +214,7 @@ const generateColMap = (context) => {
     });
 
     // If targetAssays only contains nulls, then just empty it so we can skip the targetAssay row.
-    if (!targetAssays.some(assay => assay !== null)) {
+    if (!targetAssays.some((assay) => assay !== null)) {
         targetAssays = [];
     }
 
@@ -224,8 +228,8 @@ const generateColMap = (context) => {
  */
 const DonorCell = ({ donorDatum, rowCategory, rowSubcategory, colCategory, colSubcategory }) => {
     // Construct the screen-reader string with all provided accessions, comma separated.
-    const relevantDonors = entexDonors.filter(entexDonor => donorDatum.includes(entexDonor.accession));
-    const donorVoice = relevantDonors.map(relevantDonor => relevantDonor.voice).join(', ');
+    const relevantDonors = entexDonors.filter((entexDonor) => donorDatum.includes(entexDonor.accession));
+    const donorVoice = relevantDonors.map((relevantDonor) => relevantDonor.voice).join(', ');
 
     return (
         <div className="donor-cell">
@@ -282,7 +286,7 @@ const convertContextToDataTable = (context) => {
 
     // Convert column map to an array of column map values sorted by column number for displaying
     // in the matrix header.
-    const sortedCols = Object.keys(colMap).map(assayColKey => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
+    const sortedCols = Object.keys(colMap).map((assayColKey) => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
 
     // Generate the matrix header row labels for the assays with targets. Need a max-width inline
     // style so that wide labels don't make the target columns expand.
@@ -467,10 +471,26 @@ const MatrixHeader = ({ context }) => {
 
     return (
         <div className="matrix-header">
-            <div className="matrix-header__title">
-                <h1>{context.title}</h1>
-                <div className="matrix-tags">
-                    <MatrixInternalTags context={context} />
+            <div className="matrix-header__banner">
+                <div className="matrix-header__title">
+                    <h1>{context.title}</h1>
+                    <ClearSearchTerm searchUri={context['@id']} />
+                </div>
+                <div className="matrix-header__details">
+                    <div className="matrix-title-badge">
+                        <MatrixBadges context={context} />
+                    </div>
+                    <div className="matrix-description">
+                        <div className="matrix-description__text">
+                            <span>ENTEx is a collaboration with the GTEx Consortium to profile approximately 30 overlapping tissues from four donors.<br /></span>
+                            <span>Publication: </span>
+                            <a href="/publications/1d19dfcb-4f1c-40c9-a5c7-fadf975b5fcf/">Rozowsky et al. Cell 2023</a>
+                            <span>.<br /></span>
+                            <span>Additional ancillary files are available from </span>
+                            <a href="http://entex.encodeproject.org/" rel="noopener noreferrer" target="_blank"><span>http://entex.encodeproject.org/</span></a>
+                            <span>.<br /></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className="matrix-header__controls">
@@ -522,7 +542,7 @@ const MatrixPresentation = ({ context }) => {
     // why.
     React.useEffect(() => {
         // Direct callbacks not memoized because of their small size.
-        const handleScrollEvent = event => handleScroll(event.target);
+        const handleScrollEvent = (event) => handleScroll(event.target);
         const handleResizeEvent = () => handleScroll(ref.current);
 
         // Cache the reference to the scrollable matrix <div> so that we can remove the "scroll"

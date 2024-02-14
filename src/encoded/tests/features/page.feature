@@ -1,8 +1,8 @@
-@page @usefixtures(workbook,admin_user)
+@page
 Feature: Portal pages
 
     Scenario: Render page layout
-        When I visit "/pages/homepage/"
+        When I visit "/pages/testpage/"
         And I wait for the content to load
         Then I should see an element with the css selector "div.layout__block--33"
 
@@ -10,17 +10,3 @@ Feature: Portal pages
         When I visit "/test-section/"
         And I wait for the content to load
         Then I should see an element with the css selector ".class_override"
-
-    Scenario: Add a page
-        When I visit "/pages/"
-        And I wait for the content to load
-        And I press "Add"
-        And I wait for 20 seconds
-        And I wait for the form to fully load
-        And I fill in "name" with "test"
-        And I fill in "title" with "Test"
-        And I press "Save"
-        And I wait for 30 seconds
-        And I wait for the content to load
-        Then the browser's URL should contain "/test/"
-        And the title should contain the text "Test"
