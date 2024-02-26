@@ -734,7 +734,7 @@
                 "phastcons score reference",
                 "motif clusters reference",
                 "variant reference",
-                "repeat reference"
+                "repeats reference"
         ],
         "output_file_types": [
                 "fragments",
@@ -743,7 +743,7 @@
                 "phastcons score reference",
                 "motif clusters reference",
                 "variant reference",
-                "repeat reference"
+                "repeats reference"
         ],
         "status": "released",
         "uuid": "06f1ef66-27f0-40ed-b6bb-2a0dca45793e"
