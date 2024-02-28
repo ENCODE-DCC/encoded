@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 22
 * Added *variants* to *reference_type* enums list.
+* Added *phastcons scores*, *repeats* and *motif clusters* to *reference_type* enums list.
 
 ### Schema version 22
 

@@ -148,6 +148,7 @@
                 "representative DNase hypersensitivity sites",
                 "representative IDR thresholded peaks",
                 "transcript expression",
+                "transcription factor ancestral origin estimate",
                 "transcription factor motifs",
                 "transcription start sites",
                 "validated enhancers",

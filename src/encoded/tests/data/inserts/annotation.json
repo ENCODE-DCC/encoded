@@ -292,5 +292,24 @@
         ],
         "post_treatment_time": "3",
         "post_treatment_time_units": "hour"
+    },
+    {
+        "_test": "annotation_type transcription factor ancestral origin estimate",
+        "accession": "ENCSR767PSZ",
+        "award": "U54HG007004",
+        "annotation_type": "transcription factor ancestral origin estimate",
+        "description": "Test for annotation_type transcription factor ancestral origin estimate",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "c9e71565-979c-4748-89c1-07e82d1c7653",
+        "date_released": "2023-03-15",
+        "disease_term_id": ["HP:0100543", "DOID:10652"],
+        "treatments": [
+            "3280b708-0f05-40fa-bff2-54e2b6505c13"
+        ],
+        "post_treatment_time": "3",
+        "post_treatment_time_units": "hour"
     }
 ]
