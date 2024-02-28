@@ -3204,5 +3204,9 @@
          "target.label": 1.0,
          "targets.label": 1.0
      },
+    "es": {
+	"shards": 3,
+	"replicas": 1
+    },
     "changelog": "/profiles/changelogs/file.md"
 }
