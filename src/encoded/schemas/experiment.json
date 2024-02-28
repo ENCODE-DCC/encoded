@@ -608,8 +608,8 @@
         "doi": 1.0
     },
     "es": {
-	"shards": 3,
-	"replicas" 1
+        "shards": 3,
+        "replicas": 1
     },
     "changelog": "/profiles/changelogs/experiment.md"
 }
