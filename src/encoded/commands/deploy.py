@@ -1001,7 +1001,7 @@ def _parse_args():
     )
     parser.add_argument('--es-wait', action='store_true', help="Create es nodes and head node.")
     parser.add_argument('--cluster-name', default=None, type=hostname, help="Name of the cluster")
-    parser.add_argument('--cluster-size', type=int, default=5, help="Elasticsearch cluster size")
+    parser.add_argument('--cluster-size', type=int, default=3, help="Elasticsearch cluster size")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
     parser.add_argument(
@@ -1085,9 +1085,9 @@ def _parse_args():
     if not args.instance_type:
         if args.es_elect or args.es_wait:
             # datanode
-            args.instance_type = 'r5.xlarge'
+            args.instance_type = 'r6a.xlarge'
             # Head node
-            args.eshead_instance_type = 'r5.xlarge'
+            args.eshead_instance_type = 'r6a.xlarge'
         elif args.arm_image_id:
             # Type/Size for arm architecture
             args.instance_type = 'm6g.4xlarge'
