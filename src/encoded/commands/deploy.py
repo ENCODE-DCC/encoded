@@ -1085,9 +1085,9 @@ def _parse_args():
     if not args.instance_type:
         if args.es_elect or args.es_wait:
             # datanode
-            args.instance_type = 'r5.xlarge'
+            args.instance_type = 'r6a.xlarge'
             # Head node
-            args.eshead_instance_type = 'r5.xlarge'
+            args.eshead_instance_type = 'r6a.xlarge'
         elif args.arm_image_id:
             # Type/Size for arm architecture
             args.instance_type = 'm6g.4xlarge'
