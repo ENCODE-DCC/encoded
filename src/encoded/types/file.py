@@ -85,7 +85,6 @@ def property_closure(request, propname, root_uuid):
     return seen
 
 
-ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'
 RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']
 
 
@@ -115,7 +114,6 @@ AZURE_PUBLIC_TOKEN = '?sv=2019-10-10&si=prod&sr=c&sig=9qSQZo4ggrCNpybBExU8SypuUZ
 
 def file_is_md5sum_constrained(properties):
     conditions = [
-        properties.get('lab') != ENCODE_PROCESSING_PIPELINE_UUID,
         properties.get('output_type') in RAW_OUTPUT_TYPES
     ]
     return any(conditions)
