@@ -141,7 +141,7 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
       'set queue_worker_get_size': queue_worker_get_size,
       'set queue_worker_processes': queue_worker_processes,
       'set remote_indexing': remote_indexing,
-      'set remote_indexing_threshold': 10001,
+      'set remote_indexing_threshold': 1001,
       'set stage_for_followup': 'vis_indexer',
       'set timeout': 60,
     },
