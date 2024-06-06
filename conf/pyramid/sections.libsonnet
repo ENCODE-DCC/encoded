@@ -116,6 +116,7 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
     queue_worker_chunk_size=1024,
     queue_worker_batch_size=5000,
     queue_worker_get_size=2500000,
+    remote_indexing_threshold=10001,  // Default value
   ): {
     'composite:indexer': section_data,
     local section_data = {
@@ -125,11 +126,8 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
       timeout: 60,
       'set embed_cache.capacity': 25000,
       'set indexer': true,
-      // Log indexing data to file
       'set indexer_initial_log': indexer_initial_log,
       'set indexer_initial_log_path': '/srv/encoded/initial-indexing-times.txt',
-      // Used to limit the indexed uuids.  Either leave blank or set to a number like
-      // 10 or 1000
       'set indexer_short_uuids': 0,
       'set queue_host': 'localhost',
       'set queue_port': 6379,
@@ -141,7 +139,7 @@ PasteDeploy `set` keyword then enclose it in quotes, as in the example below:
       'set queue_worker_get_size': queue_worker_get_size,
       'set queue_worker_processes': queue_worker_processes,
       'set remote_indexing': remote_indexing,
-      'set remote_indexing_threshold': 1000,
+      'set remote_indexing_threshold': remote_indexing_threshold,
       'set stage_for_followup': 'vis_indexer',
       'set timeout': 60,
     },

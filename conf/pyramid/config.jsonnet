@@ -10,46 +10,48 @@ local sections = import 'sections.libsonnet';
   // Output INI files
   'demo.ini': std.manifestIni(demo_ini),
   'demo_frontend.ini': std.manifestIni(demo_frontend_ini),
-  'rc.ini': std.manifestIni(rc_ini),
-  'rc_frontend.ini': std.manifestIni(rc_frontend_ini),
+  'rc.ini': std.manifestIni({
+    sections:
+      sections.App(development=false) +
+      sections.Indexer(queue_worker_processes=16, remote_indexing_threshold=1001) +
+      shared_non_development_ini_sections,
+  }),
+  'rc_frontend.ini': std.manifestIni({
+    sections:
+      sections.App(development=false) +
+      sections.Indexer(queue_worker_processes=8, remote_indexing_threshold=1001) +
+      shared_non_development_ini_sections,
+  }),
   'smalldb.ini': std.manifestIni({
     sections:
       sections.App(development=false, use_small_db=true) +
       sections.Indexer() +
       shared_non_development_ini_sections,
   }),
-  'test.ini': std.manifestIni(
-    {
-      sections:
-        test_app_section +
-        sections.Indexer(queue_type='REDIS_LIST') +
-        shared_non_development_ini_sections,
-    }
-  ),
-  'test_frontend.ini': std.manifestIni(
-    {
-      sections:
-        test_app_section +
-        sections.Indexer(queue_type='REDIS_LIST', queue_worker_processes=8) +
-        shared_non_development_ini_sections,
-    }
-  ),
-  'candidate.ini': std.manifestIni(
-    {
-      sections:
-        candidate_app_section +
-        sections.Indexer(queue_type='BASE_QUEUE_TYPE') +
-        shared_non_development_ini_sections,
-    }
-  ),
-  'candidate_frontend.ini': std.manifestIni(
-    {
-      sections:
-        candidate_app_section +
-        sections.Indexer(queue_type='BASE_QUEUE_TYPE', queue_worker_processes=8) +
-        shared_non_development_ini_sections,
-    }
-  ),
+  'test.ini': std.manifestIni({
+    sections:
+      test_app_section +
+      sections.Indexer(queue_type='REDIS_LIST', queue_worker_processes=16, remote_indexing_threshold=1001) +
+      shared_non_development_ini_sections,
+  }),
+  'test_frontend.ini': std.manifestIni({
+    sections:
+      test_app_section +
+      sections.Indexer(queue_type='REDIS_LIST', queue_worker_processes=8, remote_indexing_threshold=1001) +
+      shared_non_development_ini_sections,
+  }),
+  'candidate.ini': std.manifestIni({
+    sections:
+      candidate_app_section +
+      sections.Indexer(queue_type='BASE_QUEUE_TYPE', queue_worker_processes=16, remote_indexing_threshold=1001) +
+      shared_non_development_ini_sections,
+  }),
+  'candidate_frontend.ini': std.manifestIni({
+    sections:
+      candidate_app_section +
+      sections.Indexer(queue_type='BASE_QUEUE_TYPE', queue_worker_processes=8, remote_indexing_threshold=1001) +
+      shared_non_development_ini_sections,
+  }),
   'development.ini': std.manifestIni(
     {
       sections:
