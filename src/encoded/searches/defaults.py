@@ -79,6 +79,7 @@ TOP_HITS_ITEM_TYPES = [
     'TransgenicEnhancerExperiment',
     'Reference',
     'PublicationData',
+    'MultiomicsSeries',
 ]
 
 DEFAULT_RNA_EXPRESSION_SORT = [
