@@ -30,7 +30,7 @@ local sections = import 'sections.libsonnet';
     {
       sections:
         test_app_section +
-        sections.Indexer(queue_type='REDIS_LIST', queue_worker_processes=8) +
+        sections.Indexer(queue_type='REDIS_LIST', queue_worker_processes=4) +
         shared_non_development_ini_sections,
     }
   ),
@@ -46,7 +46,7 @@ local sections = import 'sections.libsonnet';
     {
       sections:
         candidate_app_section +
-        sections.Indexer(queue_type='BASE_QUEUE_TYPE', queue_worker_processes=8) +
+        sections.Indexer(queue_type='BASE_QUEUE_TYPE', queue_worker_processes=4) +
         shared_non_development_ini_sections,
     }
   ),
@@ -109,7 +109,7 @@ local sections = import 'sections.libsonnet';
   local demo_frontend_ini = {
     sections:
       sections.App(development=false) +
-      sections.Indexer(queue_worker_processes=8) +
+      sections.Indexer(queue_worker_processes=4) +
       shared_non_development_ini_sections,
   },
   local rc_ini = {
@@ -121,7 +121,7 @@ local sections = import 'sections.libsonnet';
   local rc_frontend_ini = {
     sections:
       sections.App(development=false) +
-      sections.Indexer(queue_worker_processes=8) +
+      sections.Indexer(queue_worker_processes=4) +
       shared_non_development_ini_sections,
   },
   local shared_non_development_ini_sections =
