@@ -23,6 +23,11 @@ const singleCellList = {
         search: '?type=SingleCellRnaSeries&status=released',
         description: 'Single cell experiments where individual cells were isolated and investigated.',
     },
+    annotations: {
+        title: 'Cell type annotations',
+        search: '?type=Annotation&annotation_type=cell+type+annotation',
+        description: 'Cell type annotations for high-throughput single-cell RNA-seq and ATAC-seq datasets.',
+    },
 };
 
 // Default facets to display (others will be hidden)
@@ -74,7 +79,15 @@ const SingleCell = (props, context) => {
     let selectedSeries = 'highThroughput';
     if (query.getKeyValues('type')[0]) {
         const selectedType = query.getKeyValues('type')[0];
-        selectedSeries = selectedType === 'Experiment' ? 'highThroughput' : selectedType === 'FunctionalCharacterizationExperiment' ? 'perturbedHighThroughput' : 'lowThroughput';
+        if (selectedType === 'Experiment') {
+            selectedSeries = 'highThroughput';
+        } else if (selectedType === 'FunctionalCharacterizationExperiment') {
+            selectedSeries = 'perturbedHighThroughput';
+        } else if (selectedType === 'SingleCellRnaSeries') {
+            selectedSeries = 'lowThroughput';
+        } else if (selectedType === 'Annotation') {
+            selectedSeries = 'annotations';
+        }
     }
     const searchBase = url.parse(context.location_href).search || '';
     const descriptionData = singleCellList[selectedSeries].description;
