@@ -25,7 +25,7 @@ const singleCellList = {
     },
     annotations: {
         title: 'Cell type annotations',
-        search: '?type=Annotation&annotation_type=cell+type+annotation',
+        search: '?type=Annotation&annotation_type=cell+type+annotation&status=released',
         description: 'Cell type annotations for high-throughput single-cell RNA-seq and ATAC-seq datasets.',
     },
 };
