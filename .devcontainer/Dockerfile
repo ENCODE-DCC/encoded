@@ -1,4 +1,4 @@
-FROM node:20-bullseye-slim
+FROM node:18-bullseye-slim
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
         build-essential \

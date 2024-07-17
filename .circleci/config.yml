@@ -14,7 +14,7 @@ executors:
       - JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
   node:
     docker:
-      - image: cimg/node:20.15.1
+      - image: cimg/node:18.20.4
     working_directory: ~/encoded
 
 # Avoid repetition in requires for tests
