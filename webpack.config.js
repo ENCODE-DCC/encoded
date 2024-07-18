@@ -97,7 +97,12 @@ const rules = [
         use: [
             MiniCssExtractPlugin.loader,
             { loader: 'css-loader', options: { sourceMap: true } },
-            { loader: 'sass-loader', options: { sourceMap: true } },
+            {
+                loader: 'sass-loader', // Compiles Sass to CSS
+                options: {
+                    implementation: require('sass'), // Uses dart-sass
+                },
+            },
         ],
     },
 ];
