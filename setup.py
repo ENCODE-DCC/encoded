@@ -12,7 +12,7 @@ INSTALL_REQUIRES = [
     "Pillow==7.0.0",
     "SQLAlchemy==1.3.13",
     "WSGIProxy2==0.4.6",
-    "WebOb==1.8.6",
+    "WebOb==1.8.8",
     "WebTest==2.0.35",
     "alembic==1.4.0",
     "boto3==1.11.9",
