@@ -21,7 +21,9 @@ Feature: Home page
         And I should see an element with the css selector ".adv-search-form"
 
     Scenario: Collection search
-        When I fill in "search-input-native" with "human"
+        When I visit "/"
+        And I wait for the content to load
+        And I fill in "search-input-native" with "human"
         And I wait for 3 seconds
         Then I should see 8 elements with the css selector ".card--highlighted"
         And I should see 2 elements with the css selector ".card-count"
