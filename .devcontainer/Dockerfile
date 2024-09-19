@@ -47,7 +47,7 @@ RUN echo "-Dlog4j2.formatMsgNoLookups=true" | sudo tee -a /etc/elasticsearch/jvm
 
 WORKDIR /app
 USER encoded
-ENV LANG en_US.utf8
+ENV LANG=en_US.utf8
 ENV PATH=/app/venv/bin:/usr/share/elasticsearch/bin:/usr/lib/postgresql/13/bin:${PATH}
 
 COPY --chown=encoded requirements.txt ./

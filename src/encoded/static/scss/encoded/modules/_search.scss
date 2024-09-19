@@ -553,3 +553,15 @@ $form-bg: #f3f3f3;
         margin-bottom: 20px;
     }
 }
+
+// Single-cell references include ul and li, none of which have margins, padding, nor list-style.
+.single-cell-references {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        margin: 0;
+        padding: 0;
+    }
+}
