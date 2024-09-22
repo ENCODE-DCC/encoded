@@ -24,8 +24,8 @@ const singleCellList = {
         description: 'Single cell experiments where individual cells were isolated and investigated.',
     },
     annotations: {
-        title: 'Cell type annotations',
-        search: '?type=Annotation&annotation_type=cell+type+annotation&status=released',
+        title: 'Cell type and pseudobulk annotations',
+        search: '?type=Annotation&annotation_type=cell+type+annotation&status=released&annotation_type=pseudobulk',
         description: (
             <div>
                 Cell type annotations for high-throughput single-cell RNA-seq and ATAC-seq datasets.
