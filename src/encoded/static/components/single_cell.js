@@ -28,8 +28,8 @@ const singleCellList = {
         search: '?type=Annotation&annotation_type=cell+type+annotation&status=released&annotation_type=pseudobulk',
         description: (
             <div>
-                Cell type annotations for high-throughput single-cell RNA-seq and ATAC-seq datasets.
-                <h5>Metadata Tables for Cell Type Annotations from the ENCODE 4 Single Cell Working Group</h5>
+                Cell type and pseudobulk annotations for high-throughput single-cell RNA-seq and ATAC-seq datasets.
+                <h5>Metadata Tables for Cell Type and Pseudobulk Annotations from the ENCODE 4 Single Cell Working Group</h5>
                 <ul className="single-cell-references">
                     <li>
                         <a href="/documents/0f99810a-697c-4631-bc0c-def084b56042/" target="_blank" rel="noopener noreferrer">
