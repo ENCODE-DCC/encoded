@@ -800,7 +800,7 @@ const AltModalMessage = () => (
             the files in the list:
         </p>
 
-        <code>xargs -L 1 curl -O -J -L &lt; files.txt</code>
+        <code>xargs -n 1 curl -O -L &lt; files.txt</code>
 
         <p>Or you can directly access the files in AWS S3: <a href="https://registry.opendata.aws/encode-project/">https://registry.opendata.aws/encode-project/</a></p>
     </div>

@@ -284,7 +284,7 @@ const modalDefaultText = (
             The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
             The following command using cURL can be used to download all the files in the list:
         </p>
-        <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
+        <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
     </>);
 
 
