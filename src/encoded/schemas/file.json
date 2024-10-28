@@ -2374,6 +2374,7 @@
                         "variant effect quantifications",
                         "variant reference",
                         "variants contact matrix",
+                        "variant functional prediction",
                         "z scores matrix"
                     ]
                 },

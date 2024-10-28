@@ -152,7 +152,8 @@
                 "transcription factor motifs",
                 "transcription start sites",
                 "validated enhancers",
-                "variant calls"
+                "variant calls",
+                "variant functional prediction"
             ]
         },
         "annotation_subtype": {

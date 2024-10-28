@@ -1,6 +1,7 @@
 ## Changelog for annotation.json
 
 ### Minor changes since schema version 40
+* Added *variant functional prediction* to enum for *annotation_type*.
 * Added *transcription factor ancestral origin estimate* to enum for *annotation_type*.
 
 ### Schema version 40

@@ -1,6 +1,7 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 31
+* Added *variant functional prediction* to enum list for *output_type*.
 * Added *topic gene weights* and *cell topic participation* to enum list for *output_type*.
 * Added *yaml* to enum list for *file_format*.
 * Added *motif clusters reference*, *phastcons score reference*, *transposable element TF ancestral origin percent by motif*, *transposable element TF ancestral origin percent by subfamily*, *repeats reference*, and *variant reference* to enum list for *output_type*.
