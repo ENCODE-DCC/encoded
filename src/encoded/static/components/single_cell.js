@@ -38,22 +38,26 @@ const SingleCellReferences = () => (
         </p>
         <ul>
             <li>
+                Metadata and quality control metrics for all scRNA-seq Level 1 pseudobulks [
                 <a
                     href="/documents/fe984cd5-e9dd-45e2-b083-a83d810dd672/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Metadata and quality control metrics for all scRNA-seq Level 1 pseudobulks
+                    TSV file
                 </a>
+                ]
             </li>
             <li>
+                Metadata and quality control metrics for all scATAC-seq Level 1 pseudobulks [
                 <a
                     href="/documents/f4f9d6b4-1b6f-49ed-8af6-c0f575a5461b/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Metadata and quality control metrics for all scATAC-seq Level 1 pseudobulks
+                    TSV file
                 </a>
+                ]
             </li>
         </ul>
         <p>
@@ -63,22 +67,26 @@ const SingleCellReferences = () => (
         </p>
         <ul>
             <li>
+                Metadata and quality control metrics for all scRNA-seq Level 2 pseudobulks [
                 <a
                     href="/documents/3a5a3644-2877-426a-9df3-2cd3259449b7/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Metadata and quality control metrics for all scRNA-seq Level 2 pseudobulks
+                    TSV file
                 </a>
+                ]
             </li>
             <li>
+                Metadata and quality control metrics for all scATAC-seq Level 2 pseudobulks [
                 <a
                     href="/documents/82ae885c-afd4-4cfc-9cc6-98fa2b6dd84d/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Metadata and quality control metrics for all scATAC-seq Level 2 pseudobulks
+                    TSV file
                 </a>
+                ]
             </li>
         </ul>
         <p>
@@ -88,22 +96,26 @@ const SingleCellReferences = () => (
         </p>
         <ul>
             <li>
+                Metadata and quality control metrics for all scRNA-seq Level 3 pseudobulks [
                 <a
                     href="/documents/3745dc72-1fae-49bd-b42d-f15bddf2edec/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Metadata and quality control metrics for all scRNA-seq Level 3 pseudobulks
+                    TSV file
                 </a>
+                ]
             </li>
             <li>
+                Metadata and quality control metrics for all scATAC-seq Level 3 pseudobulks [
                 <a
                     href="/documents/2cc13b15-181e-4cd4-ad4d-cc8fc5ea445d/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Metadata and quality control metrics for all scATAC-seq Level 3 pseudobulks
+                    TSV file
                 </a>
+                ]
             </li>
         </ul>
     </>
