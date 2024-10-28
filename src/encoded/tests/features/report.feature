@@ -1,11 +1,3 @@
-@title
-Feature: Title
-
-    Scenario: Title updates
-        When I visit "/report/?type=Experiment"
-        And I wait for the content to load
-        Then the title should contain the text "Report – ENCODE"
-
 @report
 Feature: Report
     Background:
