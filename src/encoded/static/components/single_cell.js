@@ -10,24 +10,28 @@ const SingleCellReferences = () => (
     <>
         <ul className="single-cell-references">
             <li>
+                Metadata for all unique cell types and cell states annotated from all single cell
+                experiments [
                 <a
                     href="/documents/6267390f-76d3-4a93-a842-f8612164a229/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Metadata for all unique cell types and cell states annotated from all single
-                    cell experiments
+                    TSV file
                 </a>
+                ]
             </li>
             <li>
+                Unified metadata and cell type annotation for all QC filtered cells from all single
+                cell experiments [
                 <a
                     href="/documents/0f99810a-697c-4631-bc0c-def084b56042/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Unified metadata and cell type annotation for all QC filtered cells from all
-                    single cell experiments
+                    TSV file
                 </a>
+                ]
             </li>
         </ul>
         <p>
