@@ -9,7 +9,7 @@ Feature: Experiments
         When I visit "/experiments/"
         And I wait for the content to load
         When I click the link to "/search/?type=Experiment&control_type!=*&assay_slims=DNA+binding"
-        And I wait for 10 seconds
+        And I wait for 5 seconds
         Then I should see an element with the css selector "div.search-results"
         And I should see "Showing 21 of 21 results"
 
