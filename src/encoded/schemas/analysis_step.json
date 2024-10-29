@@ -380,6 +380,7 @@
                     "UV enriched segment quantifications",
                     "variant calls",
                     "variant effect quantifications",
+                    "variant functional prediction",
                     "variant reference",
                     "variants contact matrix",
                     "z scores matrix"
@@ -656,6 +657,7 @@
                     "UV enriched segment quantifications",
                     "variant calls",
                     "variant effect quantifications",
+                    "variant functional prediction",
                     "variant reference",
                     "variants contact matrix",
                     "z scores matrix"
