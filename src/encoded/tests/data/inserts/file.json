@@ -6336,5 +6336,20 @@
         "lab":"j-michael-cherry",
         "output_type": "repeats reference",
         "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd"
+    },
+    {
+        "_test": "output_type variant functional prediction",
+        "status": "released",
+        "submitted_file_name": "test_variant_functional_prediction.tsv",
+        "uuid": "157e20a6-aef8-4531-96ec-808f8b92eb49",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "md5sum": "6397caa0e43ea5aa249a16ac20e02cab",
+        "accession": "ENCFF301TWB",
+        "file_format": "tsv",
+        "award": "/awards/U54HG006998/",
+        "dataset": "ENCSR222QSB",
+        "file_size": 502729395,
+        "lab":"j-michael-cherry",
+        "output_type": "variant functional prediction"
     }
 ]

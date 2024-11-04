@@ -311,5 +311,17 @@
         ],
         "post_treatment_time": "3",
         "post_treatment_time_units": "hour"
+    },
+    {
+        "_test": "annotation_type variant functional prediction",
+        "accession": "ENCSR222QSB",
+        "award": "U54HG007004",
+        "annotation_type": "variant functional prediction",
+        "description": "Test for annotation_type variant functional prediction",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "45ddd3ad-4b36-4fe9-9f88-4eeaf753f1fe",
+        "date_released": "2023-03-15"
     }
 ]
