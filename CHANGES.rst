@@ -1,6 +1,16 @@
 Changes
 =======
 
+133.0 snovault ENCM-204-configure-shards-by-type
+------------------------------------------------
+ENCM-197-ting-wang-support (#4420)
+ENCM-204-configure-shards-by-type (#4421)
+ENCM-202-md5-restriction-uniform-processing (#4422)
+ENCM-209-reduce-local-indexing (#4424)
+ENCM-195-multiomics-search (#4425)
+ENCM-234-add-variant-funtion-pred (#4435)
+ENCM-206-single-cell-annotations (#4427)
+
 132.0 (released) snovault 1.0.68
 --------------------------------
 ENCM-193 restore audit inherit  (#4419)
