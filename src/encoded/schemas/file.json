@@ -3093,6 +3093,7 @@
         "z scores matrix": "annotation",
         "topic gene weights": "annotation",
         "cell topic participation": "annotation",
+        "variant functional prediction": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
