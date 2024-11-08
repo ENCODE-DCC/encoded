@@ -246,6 +246,7 @@
                     "shRNA knockdown followed by RNA-seq",
                     "single-cell RNA sequencing assay",
                     "single-nucleus ATAC-seq",
+                    "single-nucleus RNA sequencing assay",
                     "siRNA knockdown followed by RNA-seq",
                     "small RNA-seq",
                     "SPRITE",
