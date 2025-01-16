@@ -6353,12 +6353,12 @@
         "output_type": "variant functional prediction"
     },
     {
-        "_test": "output_type *mRNA stabilities",
+        "_test": "output_type mRNA stabilities",
         "status": "released",
-        "submitted_file_name": "test_variant_functional_prediction.tsv",
-        "uuid": "f85dab00-9bb0-4531-4f03-808f8b92eb49",
+        "submitted_file_name": "test_mrna_stabilities.tsv",
+        "uuid": "f85dab00-9bb0-4531-4f03-82eb4908f8b9",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "md5sum": "8820e3063316ac397caae43ea5a5a0b",
+        "md5sum": "4a5e28c6fb4363adc466258a39411422",
         "accession": "ENCFF291MSB",
         "file_format": "tsv",
         "award": "/awards/U54HG006998/",
@@ -6370,8 +6370,8 @@
     {
         "_test": "output_type genic regions quantifications",
         "status": "released",
-        "submitted_file_name": "test_variant_functional_prediction.tsv",
-        "uuid": "157e20a6-aef8-4531-dc34-806b7192eb49",
+        "submitted_file_name": "test_genic_regions_quantifications.tsv",
+        "uuid": "157e20a6-aef8-4531-dc34-6b719280eb49",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "md5sum": "654d3e7ca09a16aa5aa2439c20e0750e",
         "accession": "ENCFF599GRQ",
