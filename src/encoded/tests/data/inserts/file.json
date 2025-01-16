@@ -6351,5 +6351,35 @@
         "file_size": 502729395,
         "lab":"j-michael-cherry",
         "output_type": "variant functional prediction"
+    },
+    {
+        "_test": "output_type *mRNA stabilities",
+        "status": "released",
+        "submitted_file_name": "test_variant_functional_prediction.tsv",
+        "uuid": "f85dab00-9bb0-4531-4f03-808f8b92eb49",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "md5sum": "8820e3063316ac397caae43ea5a5a0b",
+        "accession": "ENCFF291MSB",
+        "file_format": "tsv",
+        "award": "/awards/U54HG006998/",
+        "dataset": "ENCSR222QSB",
+        "file_size": 9829103,
+        "lab":"j-michael-cherry",
+        "output_type": "mRNA stabilities"
+    },
+    {
+        "_test": "output_type genic regions quantifications",
+        "status": "released",
+        "submitted_file_name": "test_variant_functional_prediction.tsv",
+        "uuid": "157e20a6-aef8-4531-dc34-806b7192eb49",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "md5sum": "654d3e7ca09a16aa5aa2439c20e0750e",
+        "accession": "ENCFF599GRQ",
+        "file_format": "tsv",
+        "award": "/awards/U54HG006998/",
+        "dataset": "ENCSR222QSB",
+        "file_size": 2301943,
+        "lab":"j-michael-cherry",
+        "output_type": "genic regions quantifications"
     }
 ]

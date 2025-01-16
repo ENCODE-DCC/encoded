@@ -323,5 +323,17 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "45ddd3ad-4b36-4fe9-9f88-4eeaf753f1fe",
         "date_released": "2023-03-15"
+    },
+    {
+        "_test": "annotation_type mRNA stabilities",
+        "accession": "ENCSR702MSB",
+        "award": "U54HG007004",
+        "annotation_type": "mRNA stabilities",
+        "description": "Test for annotation_type mRNA stabilities",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "40b8a3ad-d498-4fe9-50ec-894bf41151fe",
+        "date_released": "2024-03-15"
     }
 ]
