@@ -712,12 +712,14 @@
         "input_file_types": [
                 "alignments",
                 "promoter prediction model",
-                "topic gene weights"
+                "topic gene weights",
+                "genic regions quantifications"
         ],
         "output_file_types": [
                 "regulatory elements prediction model",
                 "enhancer prediction model",
-                "cell topic participation"
+                "cell topic participation",
+                "mRNA stabilities"
         ],
         "status": "released",
         "uuid": "1351fd89-27f0-40ed-b6bb-2a0dca45793e"

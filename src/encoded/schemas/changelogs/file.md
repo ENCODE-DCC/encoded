@@ -1,6 +1,7 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 31
+* Added *mRNA stabilities* and *genic regions quantifications* to enum list for *output_type*.
 * Added *variant functional prediction* to enum list for *output_type*.
 * Added *topic gene weights* and *cell topic participation* to enum list for *output_type*.
 * Added *yaml* to enum list for *file_format*.

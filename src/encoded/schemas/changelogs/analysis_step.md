@@ -1,6 +1,7 @@
 ## Changelog for analysis_step.json
 
 ### Minor changes since schema version 17
+* Added *mRNA stabilities* and *genic regions quantifications* to enum list for *input_file_types* and *output_file_types*.
 * Added *variant functional prediction* to enum list for *input_file_types* and *output_file_types*.
 * Added *topic gene weights* and *cell topic participation* to enum list for *input_file_types* and *output_file_types*.
 * Added *topic modeling*, *TF binding site identification*, and *element annotation* to enum list for *analysis_step_types*.
