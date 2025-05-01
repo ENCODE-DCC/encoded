@@ -1277,7 +1277,8 @@
                                             "subreads",
                                             "spike-ins",
                                             "diploid personal genome alignments",
-                                            "haplotype-specific alignments"
+                                            "haplotype-specific alignments",
+                                            "methylated reads"
                                         ]
                                     }
                                 }
@@ -1293,6 +1294,23 @@
                                 "output_type": {
                                     "enum": [
                                         "subreads"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "methylated reads"
                                     ]
                                 }
                             },
