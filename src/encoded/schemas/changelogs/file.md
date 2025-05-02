@@ -1,7 +1,7 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 31
-* Added *minus strand inosine methylation state*, *plus strand inosine methylation state*, *minus strand pseudouridine methylation state*, *plus strand pseudouridine methylation state*, *minus strand m5C methylation state*, *plus strand m5C methylation state*, *minus strand m6A methylation state*, *plus strand m6A methylation state* and *methylated reads* to enum list for *output_type*.
+* Added *minus strand inosine methylation state*, *plus strand inosine methylation state*, *minus strand pseudouridine methylation state*, *plus strand pseudouridine methylation state*, *minus strand m5C methylation state*, *plus strand m5C methylation state*, *minus strand m6A methylation state*, *plus strand m6A methylation state*, *alignments with modifications*, and *methylated reads* to enum list for *output_type*.
 * Added *mRNA stabilities* and *genic regions quantifications* to enum list for *output_type*.
 * Added *variant functional prediction* to enum list for *output_type*.
 * Added *topic gene weights* and *cell topic participation* to enum list for *output_type*.

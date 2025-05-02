@@ -1166,7 +1166,6 @@
                         },
                         {
                             "required": [
-                              
                                 "platform",
                                 "run_type"
                             ],
@@ -2143,6 +2142,7 @@
                     "enum": [
                         "3D structure",
                         "alignments",
+                        "alignments with modifications",
                         "allele-specific contact matrix",
                         "allele-specific variants",
                         "archr project",
@@ -2888,8 +2888,10 @@
         "R2C2 subreads": "raw data",
         "filtered reads": "raw data",
         "raw imaging signal": "raw data",
+        "methylated reads": "raw data",
 
         "alignments": "alignment",
+        "alignments with modifications": "alignment",
         "diploid personal genome alignments": "alignment",
         "haplotype-specific alignments": "alignment",
         "unfiltered alignments": "alignment",
@@ -3125,6 +3127,14 @@
         "topic gene weights": "annotation",
         "cell topic participation": "annotation",
         "variant functional prediction": "annotation",
+        "minus strand inosine methylation state": "annotation",
+        "plus strand inosine methylation state": "annotation",
+        "minus strand pseudouridine methylation state": "annotation",
+        "plus strand pseudouridine methylation state": "annotation",
+        "minus strand m5C methylation state": "annotation",
+        "plus strand m5C methylation state": "annotation",
+        "minus strand m6A methylation state": "annotation",
+        "plus strand m6A methylation state": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",

@@ -77,6 +77,8 @@
                      "merging",
                      "methylation estimation",
                      "model generation",
+                     "modification calling",
+                     "modification site annotation",
                      "open chromatin region identification",
                      "partition concordance",
                      "personalized genome assembly",
@@ -120,6 +122,7 @@
                 "enum": [
                     "3D structure",
                     "alignments",
+                    "alignments with modifications",
                     "allele-specific contact matrix",
                     "allele-specific variants",
                     "archr project",
@@ -411,6 +414,7 @@
                 "enum": [
                     "3D structure",
                     "alignments",
+                    "alignments with modifications",
                     "allele-specific contact matrix",
                     "allele-specific variants",
                     "archr project",
