@@ -1,6 +1,7 @@
 ## Changelog for annotation.json
 
 ### Minor changes since schema version 40
+* Added *element gene regulatory interactions* to enum for *annotation_type*.
 * Added *mRNA stabilities* to enum for *annotation_type*.
 * Added *single-nucleus RNA sequencing assay* to enum for *assay_term_name*.
 * Added *variant functional prediction* to enum for *annotation_type*.

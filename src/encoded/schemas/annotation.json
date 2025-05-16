@@ -118,6 +118,7 @@
                 "cell type annotation",
                 "curated SNVs",
                 "caQTLs",
+                "element gene regulatory interactions",
                 "element gene regulatory interaction predictions",
                 "eQTLs",
                 "exclusion list",
