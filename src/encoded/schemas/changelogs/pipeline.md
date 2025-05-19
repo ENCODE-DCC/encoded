@@ -1,6 +1,8 @@
 ## Changelog for pipeline.json
 
 ### Minor changes since schema version 14
+
+* Added *element gene regulatory interaction predictions* to *assay_term_names* enum.
 * Added *proliferation CRISPR screen*, *FACS CRISPR screen*, and *FlowFISH CRISPR screen* to *assay_term_names* enum
 * Added *seqFISH* to *assay_term_names* enum
 
