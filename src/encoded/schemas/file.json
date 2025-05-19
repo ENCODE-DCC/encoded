@@ -1166,7 +1166,6 @@
                         },
                         {
                             "required": [
-                              
                                 "platform",
                                 "run_type"
                             ],
@@ -1277,7 +1276,8 @@
                                             "subreads",
                                             "spike-ins",
                                             "diploid personal genome alignments",
-                                            "haplotype-specific alignments"
+                                            "haplotype-specific alignments",
+                                            "methylated reads"
                                         ]
                                     }
                                 }
@@ -1293,6 +1293,23 @@
                                 "output_type": {
                                     "enum": [
                                         "subreads"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "methylated reads"
                                     ]
                                 }
                             },
@@ -2125,6 +2142,7 @@
                     "enum": [
                         "3D structure",
                         "alignments",
+                        "alignments with modifications",
                         "allele-specific contact matrix",
                         "allele-specific variants",
                         "archr project",
@@ -2226,14 +2244,19 @@
                         "maternal haplotype mapping",
                         "maternal variant calls",
                         "merged transcription segment quantifications",
+                        "methylated reads",
                         "methylation state at CHG",
                         "methylation state at CHH",
                         "methylation state at CpG",
                         "microRNA quantifications",
                         "miRNA annotations",
                         "minus strand end position signal",
+                        "minus strand inosine methylation state",
+                        "minus strand m5C methylation state",
+                        "minus strand m6A methylation state",
                         "minus strand methylation state at CpG",
                         "minus strand normalized end position signal",
+                        "minus strand pseudouridine methylation state",
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
                         "mitochondrial exclusion list regions",
@@ -2278,8 +2301,12 @@
                         "phased mapping",
                         "phased variant calls",
                         "plus strand end position signal",
+                        "plus strand inosine methylation state",
+                        "plus strand m5C methylation state",
+                        "plus strand m6A methylation state",
                         "plus strand methylation state at CpG",
                         "plus strand normalized end position signal",
+                        "plus strand pseudouridine methylation state",
                         "plus strand signal of all reads",
                         "plus strand signal of unique reads",
                         "polyA sites",
@@ -2861,8 +2888,10 @@
         "R2C2 subreads": "raw data",
         "filtered reads": "raw data",
         "raw imaging signal": "raw data",
+        "methylated reads": "raw data",
 
         "alignments": "alignment",
+        "alignments with modifications": "alignment",
         "diploid personal genome alignments": "alignment",
         "haplotype-specific alignments": "alignment",
         "unfiltered alignments": "alignment",
@@ -3098,6 +3127,14 @@
         "topic gene weights": "annotation",
         "cell topic participation": "annotation",
         "variant functional prediction": "annotation",
+        "minus strand inosine methylation state": "annotation",
+        "plus strand inosine methylation state": "annotation",
+        "minus strand pseudouridine methylation state": "annotation",
+        "plus strand pseudouridine methylation state": "annotation",
+        "minus strand m5C methylation state": "annotation",
+        "plus strand m5C methylation state": "annotation",
+        "minus strand m6A methylation state": "annotation",
+        "plus strand m6A methylation state": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
