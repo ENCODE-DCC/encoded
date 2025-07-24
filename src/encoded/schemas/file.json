@@ -534,6 +534,23 @@
                                 "platform": {
                                     "linkTo": "Platform",
                                     "linkEnum": [
+                                        "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
                                         "25acccbd-cb36-463b-ac96-adbac11227e6"
                                     ]
                                 }
@@ -554,6 +571,7 @@
                                             "e2be5728-5744-4da4-8881-cb9526d0389e",
                                             "6c275b37-018d-4bf8-85f6-6e3b830524a9",
                                             "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                            "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a",
                                             "25acccbd-cb36-463b-ac96-adbac11227e6"
                                         ]
                                     }
@@ -2256,6 +2274,7 @@
                         "minus strand m5C methylation state",
                         "minus strand m6A methylation state",
                         "minus strand methylation state at CpG",
+                        "minus strand Nm methylation state",
                         "minus strand normalized end position signal",
                         "minus strand pseudouridine methylation state",
                         "minus strand signal of all reads",
@@ -2306,6 +2325,7 @@
                         "plus strand m5C methylation state",
                         "plus strand m6A methylation state",
                         "plus strand methylation state at CpG",
+                        "plus strand Nm methylation state",
                         "plus strand normalized end position signal",
                         "plus strand pseudouridine methylation state",
                         "plus strand signal of all reads",
@@ -3137,6 +3157,8 @@
         "plus strand m5C methylation state": "annotation",
         "minus strand m6A methylation state": "annotation",
         "plus strand m6A methylation state": "annotation",
+        "minus strand Nm methylation state": "annotation",
+        "plus strand Nm methylation state": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
