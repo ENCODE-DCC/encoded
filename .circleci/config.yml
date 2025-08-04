@@ -6,7 +6,7 @@ orbs:
 executors:
   encoded-executor:
     docker:
-      - image: circleci/buildpack-deps:focal
+      - image: cimg/base:stable-20.04
     working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
@@ -43,7 +43,7 @@ commands:
           command: |
             sudo wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/pg_gpg_key
             sudo apt-key add /etc/apt/pg_gpg_key
-            echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" | sudo tee -a /etc/apt/sources.list
+            echo "deb https://apt-archive.postgresql.org/pub/repos/apt/ focal-pgdg main" | sudo tee -a /etc/apt/sources.list
             sudo apt-get update && sudo apt-get install -y postgresql-11
 
             sudo apt-get install -y \
