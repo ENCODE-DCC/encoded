@@ -387,6 +387,7 @@ def test_experiment_default_analysis(
         'ce11',
         'ce10',
         'J02459.1',
+        'T2T-CHM13'
     ]
     genome_annotation_order = list(dummy_request.registry['types']['file'].schema['properties']['genome_annotation']['enum'])
     assert genome_annotation_order == [

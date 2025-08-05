@@ -274,7 +274,8 @@
                                     "c7564b38-ab4f-4c42-a401-3de48689a998",
                                     "e2be5728-5744-4da4-8881-cb9526d0389e",
                                     "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                    "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
                                 ]
                             }
                         }
@@ -486,7 +487,6 @@
                                         "e2be5728-5744-4da4-8881-cb9526d0389e"
                                     ]
                                 }
-
                             }
                         },
                         {
@@ -503,7 +503,6 @@
                                         "6c275b37-018d-4bf8-85f6-6e3b830524a9"
                                     ]
                                 }
-
                             }
                         },
                         {
@@ -520,7 +519,22 @@
                                         "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                     ]
                                 }
-
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
+                                    ]
+                                }
                             }
                         },
                         {
@@ -554,6 +568,7 @@
                                             "e2be5728-5744-4da4-8881-cb9526d0389e",
                                             "6c275b37-018d-4bf8-85f6-6e3b830524a9",
                                             "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                            "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a",
                                             "25acccbd-cb36-463b-ac96-adbac11227e6"
                                         ]
                                     }
@@ -583,7 +598,6 @@
                                         "c7564b38-ab4f-4c42-a401-3de48689a998"
                                     ]
                                 }
-
                             }
                         },
                         {
@@ -600,7 +614,6 @@
                                         "ced61406-dcc6-43c4-bddd-4c977cc676e8"
                                     ]
                                 }
-
                             }
                         },
                         {
@@ -617,7 +630,6 @@
                                         "e2be5728-5744-4da4-8881-cb9526d0389e"
                                     ]
                                 }
-
                             }
                         },
                         {
@@ -634,7 +646,6 @@
                                         "6c275b37-018d-4bf8-85f6-6e3b830524a9"
                                     ]
                                 }
-
                             }
                         },
                         {
@@ -651,7 +662,22 @@
                                         "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                     ]
                                 }
-
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
+                                    ]
+                                }
                             }
                         },
                         {
@@ -685,6 +711,7 @@
                                             "e2be5728-5744-4da4-8881-cb9526d0389e",
                                             "6c275b37-018d-4bf8-85f6-6e3b830524a9",
                                             "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                            "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a",
                                             "25acccbd-cb36-463b-ac96-adbac11227e6"
                                         ]
                                     }
@@ -756,7 +783,8 @@
                                 "6c275b37-018d-4bf8-85f6-6e3b830524a9",
                                 "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
                                 "6ce511d5-eeb3-41fc-bea7-8c38301e88c1",
-                                "7cc06b8c-5535-4a77-b719-4c23644e767d"
+                                "7cc06b8c-5535-4a77-b719-4c23644e767d",
+                                "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
                             ]
                         }
                     }
@@ -1035,7 +1063,8 @@
                                     "c7564b38-ab4f-4c42-a401-3de48689a998",
                                     "e2be5728-5744-4da4-8881-cb9526d0389e",
                                     "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                    "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
                                 ]
                             }
                         }
@@ -1072,6 +1101,7 @@
                                     "e2be5728-5744-4da4-8881-cb9526d0389e",
                                     "6c275b37-018d-4bf8-85f6-6e3b830524a9",
                                     "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                    "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a",
                                     "25acccbd-cb36-463b-ac96-adbac11227e6"
                                 ]
                             }
@@ -1116,7 +1146,8 @@
                                                 "c7564b38-ab4f-4c42-a401-3de48689a998",
                                                 "e2be5728-5744-4da4-8881-cb9526d0389e",
                                                 "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                                "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
                                             ]
                                         }
                                     }
@@ -1150,7 +1181,8 @@
                                                 "c7564b38-ab4f-4c42-a401-3de48689a998",
                                                 "e2be5728-5744-4da4-8881-cb9526d0389e",
                                                 "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                                "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                                "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
                                             ]
                                         }
                                     }
@@ -1173,7 +1205,6 @@
                                 "file_format": {
                                     "enum": [
                                         "fastq"
-                                        
                                     ]
                                 }
                             },
@@ -1188,7 +1219,8 @@
                                                     "c7564b38-ab4f-4c42-a401-3de48689a998",
                                                     "e2be5728-5744-4da4-8881-cb9526d0389e",
                                                     "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                                    "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
                                                 ]
                                             }
                                         }
@@ -1225,7 +1257,8 @@
                                                     "c7564b38-ab4f-4c42-a401-3de48689a998",
                                                     "e2be5728-5744-4da4-8881-cb9526d0389e",
                                                     "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810",
+                                                    "e6c5cf10-5a11-44bc-8cc7-26cf9f246a6a"
                                                 ]
                                             }
                                         }
@@ -1364,7 +1397,8 @@
                                             "dm3",
                                             "ce11",
                                             "ce10",
-                                            "J02459.1"
+                                            "J02459.1",
+                                            "T2T-CHM13"
                                         ]
                                     }
                                 }
@@ -2255,6 +2289,7 @@
                         "minus strand m5C methylation state",
                         "minus strand m6A methylation state",
                         "minus strand methylation state at CpG",
+                        "minus strand Nm methylation state",
                         "minus strand normalized end position signal",
                         "minus strand pseudouridine methylation state",
                         "minus strand signal of all reads",
@@ -2305,6 +2340,7 @@
                         "plus strand m5C methylation state",
                         "plus strand m6A methylation state",
                         "plus strand methylation state at CpG",
+                        "plus strand Nm methylation state",
                         "plus strand normalized end position signal",
                         "plus strand pseudouridine methylation state",
                         "plus strand signal of all reads",
@@ -2526,7 +2562,8 @@
                 "dm3",
                 "ce11",
                 "ce10",
-                "J02459.1"
+                "J02459.1",
+                "T2T-CHM13"
                 ]
         },
         "genome_annotation": {
@@ -3135,6 +3172,8 @@
         "plus strand m5C methylation state": "annotation",
         "minus strand m6A methylation state": "annotation",
         "plus strand m6A methylation state": "annotation",
+        "minus strand Nm methylation state": "annotation",
+        "plus strand Nm methylation state": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
