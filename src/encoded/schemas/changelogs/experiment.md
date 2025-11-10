@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 37
+
+* Updated *dbxrefs* regex to support ENA identifiers.
+
 ### Schema version 37
 
 * Upgraded *internal_tags* as follows:
