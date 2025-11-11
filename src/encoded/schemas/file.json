@@ -2633,7 +2633,7 @@
                 "title": "External identifier",
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(SRA:(SRR|SRX)\\d+)|(ENA:(ERR|ERX)\\d+)$"
+                "pattern": "^(SRA:(SRR|SRX)\\d+)$"
             }
         },
         "step_run": {
