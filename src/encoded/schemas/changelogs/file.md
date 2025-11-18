@@ -1,7 +1,7 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 31
-* Added *divergent peaks* to enum list for *output_type*.
+* Added *divergent peaks* and *scaled RNA stability* to enum list for *output_type*.
 * Added *minus strand Nm methylation state* and *plus strand Nm methylation state* to enum list for *output_type*.
 * Added *T2T-CHM13* enum to *assembly*.
 * Added *minus strand inosine methylation state*, *plus strand inosine methylation state*, *minus strand pseudouridine methylation state*, *plus strand pseudouridine methylation state*, *minus strand m5C methylation state*, *plus strand m5C methylation state*, *minus strand m6A methylation state*, *plus strand m6A methylation state*, *alignments with modifications*, and *methylated reads* to enum list for *output_type*.

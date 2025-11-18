@@ -2386,6 +2386,7 @@
                         "RNA-binding protein associated mRNAs",
                         "rRNA reference",
                         "safe-targeting gRNAs",
+                        "scaled RNA stability",
                         "selected regions for bias-corrected predicted signal profile",
                         "selected regions for count sequence contribution scores",
                         "selected regions for predicted bias profile",
@@ -3176,6 +3177,7 @@
         "plus strand m6A methylation state": "annotation",
         "minus strand Nm methylation state": "annotation",
         "plus strand Nm methylation state": "annotation",
+        "scaled RNA stability": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
