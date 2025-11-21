@@ -1059,7 +1059,7 @@ def _parse_args():
     )
     parser.add_argument(
         '--volume-size',
-        default=200,
+        default=500,
         type=check_volume_size,
         help="Size of disk. Allowed values 120, 200, and 500"
     )
