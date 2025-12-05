@@ -1070,7 +1070,8 @@
                             "mAID-mClover",
                             "mAID-mClover-NeoR",
                             "mAID-mClover-Hygro",
-                            "mEGFP"
+                            "mEGFP",
+                            "dTAG-FKBP12F36V"
                         ]
                     },
                     "location": {
