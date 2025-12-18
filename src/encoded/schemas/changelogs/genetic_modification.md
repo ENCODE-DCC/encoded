@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 12
 
+* Added *dTAG-FKBP12F36V* to the *introduced_tags* enum.
 * Updated *identifier* regular expression in the *reagents* property to include the following pattern: 'dharmacon:T-\\d{4}-\\d{2}', e.g. dharmacon:T-1000-20.
 
 ### Schema version 12
