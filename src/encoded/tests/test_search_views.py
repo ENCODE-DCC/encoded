@@ -1240,5 +1240,5 @@ def test_search_views_rna_get_disabled(index_workbook, testapp):
     r = testapp.get(
         '/rnaget-report/?type=RNAExpression'
     )
-    print(r)
-    assert False
+    assert r.status_code == 400
+    assert r.json['description'] == 'RNAget endpoint has been disabled due to lack of funds.'
