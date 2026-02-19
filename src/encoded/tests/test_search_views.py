@@ -1234,3 +1234,11 @@ def test_search_views_homepage_search_view(index_workbook, testapp):
     assert r.status_code == 200
     assert 'debug' not in r.json
     assert 'columns' not in r.json
+
+
+def test_search_views_rna_get_disabled(index_workbook, testapp):
+    r = testapp.get(
+        '/rnaget-report/?type=RNAExpression'
+    )
+    print(r)
+    assert False
