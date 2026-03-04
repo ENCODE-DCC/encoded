@@ -169,7 +169,9 @@ def get_report_search_generator(request):
     if is_cart_search(request):
         return cart_search_generator
     elif is_rna_expression_search(request):
-        return rna_expression_search_generator
+        raise HTTPBadRequest(
+            explanation='RNAget endpoint has been disabled due to lack of funds.'
+        )
     return search_generator
 
 

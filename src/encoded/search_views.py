@@ -68,6 +68,8 @@ from snosearch.responses import FieldedResponse
 
 from snovault.elasticsearch.searches.interfaces import SEARCH_CONFIG
 
+from pyramid.httpexceptions import HTTPBadRequest
+
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
@@ -1068,26 +1070,10 @@ def top_hits(context, request):
 
 
 @view_config(route_name='rnaget-report', request_method='GET', permission='search')
-@conditional_cache(
-    cache=get_redis_lru_cache(),
-    condition=should_cache_search_results,
-    key=partial(make_key_from_request, 'rnaget-report'),
-)
 def rnaget_report(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            RemoteResponseField(
-                how=remote_get,
-                where=RNAGET_REPORT_URL,
-                then=set_status_and_parse_json,
-            ),
-            NonSortableResponseField(),
-        ]
+    raise HTTPBadRequest(
+        explanation='RNAget endpoint has been disabled due to lack of funds.'
     )
-    return fr.render()
 
 
 @view_config(route_name='search-config-registry', request_method='GET', permission='config')
