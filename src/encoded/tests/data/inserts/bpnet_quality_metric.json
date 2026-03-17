@@ -12,6 +12,7 @@
         "count_pearson_peaks": 1024,
         "count_pearson_allregions": 2119,
         "profile_normjsd_peaks": 105,
+        "profile_jsd_peaks": 115,
         "auprc": 203,
         "auroc": 211
     }
