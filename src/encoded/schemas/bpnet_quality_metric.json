@@ -46,6 +46,11 @@
             "description": "Median over all test folds of the median min-max normalized Jensen Shannon distance between observed and predicted profiles across peak regions",
             "type": "number"
         },
+        "profile_jsd_peaks":{
+            "title": "Profile concordance (Jensen-Shannon distance) across peak regions in test set",
+            "description": "Median over all test folds of the median Jensen Shannon distance between observed and predicted profiles across peak regions",
+            "type": "number"
+        },
         "auprc":{
             "title": "Area under precision recall curve classifying peaks against background regions in test set",
             "description": "Median over all test folds of the Area under the precision recall curve (computed as average precision) for classifying peak regions against background regions",
