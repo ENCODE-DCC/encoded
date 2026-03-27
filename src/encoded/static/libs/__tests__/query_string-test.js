@@ -3,10 +3,10 @@ import QueryString from '../query_string';
 
 describe('QueryString Class', () => {
     it('Returns given query string unmodified', () => {
-        let query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type=ReferenceEpigenome&assay_title=Histone+ChIP-seq');
-        expect(query.format()).toEqual('type=Experiment&assay_term_id=OBI:0000716&type=ReferenceEpigenome&assay_title=Histone+ChIP-seq');
-        query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=ReferenceEpigenome&assay_title=Histone+ChIP-seq');
-        expect(query.format()).toEqual('type=Experiment&assay_term_id=OBI:0000716&type!=ReferenceEpigenome&assay_title=Histone+ChIP-seq');
+        let query = new QueryString('type=Experiment&type=ReferenceEpigenome&assay_term_id=OBI:0000716&assay_title=Histone+ChIP-seq');
+        expect(query.format()).toEqual('type=Experiment&type=ReferenceEpigenome&assay_term_id=OBI:0000716&assay_title=Histone+ChIP-seq');
+        query = new QueryString('type=Experiment&type!=ReferenceEpigenome&assay_term_id=OBI:0000716&assay_title=Histone+ChIP-seq');
+        expect(query.format()).toEqual('type=Experiment&type!=ReferenceEpigenome&assay_term_id=OBI:0000716&assay_title=Histone+ChIP-seq');
     });
 
     it('Finds all values matching a key', () => {
@@ -26,7 +26,7 @@ describe('QueryString Class', () => {
         query.addKeyValue('assay_term_id', 'OBI:0000716');
         expect(query.format()).toEqual('type=Experiment&assay_term_id=OBI:0000716');
         query.addKeyValue('type', 'Annotation', true);
-        expect(query.format()).toEqual('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
+        expect(query.format()).toEqual('type=Experiment&type!=Annotation&assay_term_id=OBI:0000716');
     });
 
     it('Deletes all keys of a value', () => {
@@ -36,7 +36,7 @@ describe('QueryString Class', () => {
 
         query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type=Annotation');
         query.deleteKeyValue('type', 'Experiment');
-        expect(query.format()).toEqual('assay_term_id=OBI:0000716&type=Annotation');
+        expect(query.format()).toEqual('type=Annotation&assay_term_id=OBI:0000716');
 
         query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
         query.deleteKeyValue('type');
@@ -50,7 +50,7 @@ describe('QueryString Class', () => {
     it('Replaces all keys with a new value', () => {
         let query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type=Annotation');
         query.replaceKeyValue('type', 'Biosample');
-        expect(query.format()).toEqual('assay_term_id=OBI:0000716&type=Biosample');
+        expect(query.format()).toEqual('type=Biosample&assay_term_id=OBI:0000716');
 
         query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type=Annotation');
         query.replaceKeyValue('assay_term_id', 'OBI:0001919');
@@ -58,19 +58,19 @@ describe('QueryString Class', () => {
 
         query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
         query.replaceKeyValue('type', 'Biosample');
-        expect(query.format()).toEqual('assay_term_id=OBI:0000716&type=Biosample');
+        expect(query.format()).toEqual('type=Biosample&assay_term_id=OBI:0000716');
 
         query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
         query.replaceKeyValue('type', 'Biosample', true);
-        expect(query.format()).toEqual('assay_term_id=OBI:0000716&type!=Biosample');
+        expect(query.format()).toEqual('type!=Biosample&assay_term_id=OBI:0000716');
     });
 
     it('Creates an independent clone', () => {
         const query = new QueryString('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
         const queryCopy = query.clone();
         queryCopy.addKeyValue('assay_title', 'Histone ChIP-seq', true);
-        expect(query.format()).toEqual('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation');
-        expect(queryCopy.format()).toEqual('type=Experiment&assay_term_id=OBI:0000716&type!=Annotation&assay_title!=Histone+ChIP-seq');
+        expect(query.format()).toEqual('type=Experiment&type!=Annotation&assay_term_id=OBI:0000716');
+        expect(queryCopy.format()).toEqual('type=Experiment&type!=Annotation&assay_term_id=OBI:0000716&assay_title!=Histone+ChIP-seq');
     });
 
     it('Counts the number of query keys', () => {
