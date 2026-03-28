@@ -122,7 +122,7 @@ def main():
     if args.method:
         run(testapp, args.inpath, args.attach, args.method, args.item_type, args.test_only)
     else:
-        loadxl.load_all(testapp, args.inpath, args.attach, args.test_only)
+        loadxl.load_all(testapp, args.inpath, args.attach, None, args.test_only)
 
 
 if __name__ == '__main__':
