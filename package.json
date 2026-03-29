@@ -35,7 +35,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.2.2",
-    "copy-webpack-plugin": "^6.3.2",
+    "copy-webpack-plugin": "^14.0.0",
     "core-js": "^3.8.1",
     "css-loader": "^3.2.0",
     "enzyme": "^3.10.0",
@@ -67,7 +67,7 @@
     "stylelint": "^13.9.0",
     "stylelint-config-standard": "^20.0.0",
     "url-loader": "^2.1.0",
-    "webpack": "^4.39.3"
+    "webpack": "^5.105.4"
   },
   "dependencies": {
     "auth0-lock": "^11.17.2",
@@ -104,7 +104,7 @@
     "scriptjs": "^2.5.7",
     "source-map-support": "^0.4.18",
     "subprocess-middleware": "^0.1.0",
-    "terser-webpack-plugin": "^2.1.2",
+    "terser-webpack-plugin": "^5.4.0",
     "underscore": "^1.8.3",
     "whatwg-fetch": "git+https://github.com/ENCODE-DCC/fetch.git"
   }
