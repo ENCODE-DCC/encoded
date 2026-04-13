@@ -57,7 +57,7 @@ EXTRAS_REQUIRE = {
         "pytest-mock==2.0.0",
         "splinter==0.17.0",
         "pytest-splinter==2.0.1",
-        "pytest==5.3.2",
+        "pytest==9.0.3",
         "responses==0.14.0",
     ],
 }
