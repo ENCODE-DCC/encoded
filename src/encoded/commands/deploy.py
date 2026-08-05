@@ -288,6 +288,8 @@ def _get_bdm(main_args):
             'Ebs': {
                 'VolumeSize': int(main_args.volume_size),
                 'VolumeType': 'gp3',
+                'Iops': int(main_args.disk_iops),
+                'Throughput': int(main_args.disk_throughput),
                 'DeleteOnTermination': True
             }
         },
@@ -1062,6 +1064,18 @@ def _parse_args():
         default=500,
         type=check_volume_size,
         help="Size of disk. Allowed values 120, 200, and 500"
+    )
+    parser.add_argument(
+        '--disk-iops',
+        default=3000,
+        type=int,
+        help="EBS gp3 provisioned IOPS (default 3000)"
+    )
+    parser.add_argument(
+        '--disk-throughput',
+        default=125,
+        type=int,
+        help="EBS gp3 provisioned throughput in MB/s (default 125)"
     )
     parser.add_argument(
         '--no-develop-snovault',
