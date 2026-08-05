@@ -41,4 +41,4 @@ if [ "$REMOTE_INDEXING" == 'false' ]; then
         a2ensite 222-indexer-vis.conf
     fi
 fi
-sudo systemctl reload apache2
+sudo systemctl restart apache2
