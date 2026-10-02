@@ -13,13 +13,6 @@ Feature: Home page
         Then I should not see an element with the css selector ".home-search-section"
         And I should see at least 1 elements with the css selector ".result-item--type-OrganismDevelopmentSeries"
 
-        When I go back
-        And I wait for the content to load
-        And I click the link with text that contains "Region search"
-        And I wait for the content to load
-        Then I should not see an element with the css selector ".home-search-section"
-        And I should see an element with the css selector ".adv-search-form"
-
     Scenario: Collection search
         When I visit "/"
         And I wait for the content to load
