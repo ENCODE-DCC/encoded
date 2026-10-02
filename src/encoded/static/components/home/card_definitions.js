@@ -291,17 +291,6 @@ export const CARDS_FOR_OTHER_DATA = {
             collections: [],
         },
         {
-            id: 'region-search',
-            title: 'Region search',
-            help: 'Genome browser view to explore user-defined regions of interest and how they overlap with DNA binding regions as identified in various assays across different tissues.',
-            icon: icons.regionSearch,
-            link: '/region-search/',
-            color: CARD_COLORS.others,
-            useSearchTerm: false,
-            displayCount: false,
-            collections: [],
-        },
-        {
             id: 'encyclopedia-browser',
             title: 'Encyclopedia browser',
             help: 'Genome browser page displaying tracks from the registry of candidate cis-Regulatory Elements (cCREs), which integrates all high-quality DNase-seq and H3K4me3, H3K27ac, and CTCF ChIP-seq data produced by the ENCODE and Roadmap Epigenomics Consortia.',
