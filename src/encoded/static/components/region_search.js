@@ -457,24 +457,7 @@ const RegionSearch = (props, context) => {
     const resultsList = (
         <Panel>
             <PanelBody>
-                <div className="search-results">
-                    <div className="search-results__facets">
-                        <FacetList
-                            context={props.context}
-                            facets={facets}
-                            filters={filters}
-                            onFilter={onFilter}
-                        />
-                    </div>
-
-                    <div className="search-results__result-list">
-                        <h4>Showing {results.length} of {total}</h4>
-                        <br />
-                        <ul className="nav result-table" id="result-table">
-                            {results.map((result) => Listing({ context: result, columns, key: result['@id'] }))}
-                        </ul>
-                    </div>
-                </div>
+                Disabled to to lack of funds
             </PanelBody>
         </Panel>
     );
@@ -534,20 +517,11 @@ const RegionSearch = (props, context) => {
                         </div>
                     </div>
 
-                    <SearchBox {...props.context} handleSearch={handleSearch} />
-
-                    { results.length > 0 ?
-                    <div className="outer-tab-container">
-                        <TabPanel
-                            tabs={visualizationTabs}
-                            selectedTab={selectedVisualization}
-                            handleTabClick={(tab) => handleVisualization(tab)}
-                            tabCss="tab-button"
-                            tabPanelCss="tab-container encyclopedia-tabs"
-                        >
-                            { selectedVisualization === 'Datasets' ? resultsList : genomeBrowserView }
-                        </TabPanel>
-                    </div> : null }
+                    <Panel>
+                        <PanelBody>
+                            Disabled to to lack of funds.
+                        </PanelBody>
+                    </Panel>
                 </div>
             </div>
         </div>
