@@ -1,5 +1,13 @@
 FROM node:12-bullseye-slim
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+# Bullseye's live security repository no longer serves its indexed packages.
+# Keep signed package verification and use the final LTS snapshot.
+RUN apt-get update && apt-get install -y --no-install-recommends -t bullseye ca-certificates \
+    && printf '%s\n' \
+        'deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/20260831T235959Z/ bullseye main' \
+        'deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/20260831T235959Z/ bullseye-updates main' \
+        'deb [check-valid-until=no] https://snapshot.debian.org/archive/debian-security/20260831T235959Z/ bullseye-security main' \
+        > /etc/apt/sources.list \
+    && apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
         build-essential \
         ca-certificates \
@@ -55,4 +63,6 @@ RUN python3 -m venv venv \
     && venv/bin/pip --disable-pip-version-check --no-cache-dir install -r requirements.txt
 COPY --chown=encoded package.json package-lock.json ./
 COPY --chown=encoded node_shims ./node_shims/
-RUN npm ci
+# Transitive VALIS dependencies use GitHub's retired git:// transport.
+RUN git config --global url."https://github.com/".insteadOf git://github.com/ \
+    && npm ci
