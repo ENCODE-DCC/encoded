@@ -67,7 +67,6 @@ const portal = {
                 { id: 'mouse-development-matrix', title: 'Mouse development matrix', url: '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries&replicates.library.biosample.organism.scientific_name=Mus+musculus', tag: 'collection' },
                 { id: 'degron', title: 'Protein knockdown (Degron)', url: '/degron-matrix/?type=Experiment&control_type!=*&status=released&internal_tags=Degron', tag: 'collection' },
                 { id: 'sep-mm-3' },
-                { id: 'region-search', title: 'Search by region', url: '/region-search/' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
                 { id: 'rna-get', title: 'RNA-Get (gene expression)', url: '/rnaget-report/?type=RNAExpression' },
             ],
