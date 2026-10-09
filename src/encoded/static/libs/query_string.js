@@ -210,13 +210,25 @@ class QueryString {
     /**
      * Get the query string corresponding to the query this object holds. If you have made no
      * modifications to the query this object holds, you get back the same query string that
-     * initialized this object.
+     * initialized this object. `type=` elements get sorted to the front to avoid requests getting
+     * blocked.
      *
      * @return {string} Equivalent query string.
      */
     format() {
-        return this._parsedQuery.map((queryElement) => {
-            const key = Object.keys(queryElement)[0];
+        // If any of the query strings has a key of `type` move all those to the front of the query
+        // string. The `reduce()` accumulator is a two-element array. The first element is an array
+        // of `type=` elements, and the second element is an array of all other query elements.
+        const [typeQueries, otherQueries] = this._parsedQuery.reduce(
+            ([types, others], queryElement) => 
+                queryElement.type ? [types.concat(queryElement), others] : [types, others.concat(queryElement)],
+            [[], []]
+        );
+        const sortedQueries = [...typeQueries, ...otherQueries];
+
+        // Convert sorted queries to the formatted query string.
+        return sortedQueries.map((queryElement) => {
+            const key = QueryString._getQueryElementKey(queryElement);
             return `${key}${queryElement.negative ? '!=' : '='}${queryEncoding.encodedURIComponent(queryElement[key])}`;
         }).join('&');
     }
