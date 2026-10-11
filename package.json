@@ -89,7 +89,7 @@
     "graphlib": "ENCODE-DCC/graphlib#v1.0.8",
     "immutable": "^3.7.5",
     "install": "^0.13.0",
-    "js-cookie": "^2.2.1",
+    "js-cookie": "^3.0.7",
     "jsonschema": "^1.1.0",
     "marked": "^0.7.0",
     "pluralize": "^8.0.0",
