@@ -49,7 +49,7 @@ pyramid-multiauth==0.9.0
 pyramid-retry==2.1.1
 pyramid-tm==2.4
 pyramid-translogger==0.1
-pytest==5.3.2
+pytest==9.0.3
 pytest-bdd==3.2.1
 pytest-cov==2.8.1
 pytest-exact-fixtures==0.3
