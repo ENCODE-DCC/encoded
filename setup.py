@@ -9,7 +9,7 @@ SNOVAULT_DEP = "git+https://github.com/ENCODE-DCC/snovault.git@configure-shards-
 
 INSTALL_REQUIRES = [
     "PasteDeploy==2.1.0",
-    "Pillow==7.0.0",
+    "Pillow==12.2.0",
     "SQLAlchemy==1.3.13",
     "WSGIProxy2==0.4.6",
     "WebOb==1.8.6",
