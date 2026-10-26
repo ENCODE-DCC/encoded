@@ -37,7 +37,7 @@ const _mapContextToDistribution = (context, measurementTechnique) => {
         contentUrl: `${baseUrl}${context['@id']}`,
         sameAs: `${baseUrl}${context['@id']}`,
         url: `${baseUrl}${context['@id']}`,
-        identifier: context.uuid,
+        identifier: context['@id'],
         encodingFormat: 'text',
     };
 
@@ -58,7 +58,7 @@ const _mapSourceToSourceOrganization = (source) => {
         sameAs: source.url,
         description: source.description,
         url: `${baseUrl}${source['@id']}`,
-        identifier: source.uuid,
+        identifier: source['@id'],
     };
 };
 
@@ -71,7 +71,7 @@ const _mapAwardToCreator = (award) => {
 
     return {
         '@type': 'Person',
-        identifier: award.uuid,
+        identifier: award['@id'],
         name: pi.title,
         worksFor: {
             '@type': 'EducationalOrganization',
@@ -103,7 +103,7 @@ const jsonldFormatter = (context, url) => {
         name: context.accession, // required by Google data set
         isAccessibleForFree: true,
         isFamilyFriendly: true,
-        identifier: context.uuid,
+        identifier: context['@id'],
         version: context.schema_version,
         publisher: _addPublisher(context),
         distribution: _mapContextToDistribution(context, measurementTechnique),
