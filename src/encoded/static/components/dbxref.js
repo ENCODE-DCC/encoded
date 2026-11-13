@@ -244,20 +244,7 @@ export const dbxrefPrefixMap = {
         pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
     },
     VISTA: {
-        pattern: 'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id={0}&organism_id=1',
-        preprocessor: (context, dbxref) => {
-            const value = dbxref.split(':');
-            // Check to see if the first two characters of the VISTA value is "hs"
-            if (value[1] && value[1].substr(0, 2) === 'hs') {
-                return { altValue: value[1].substr(2) };
-            }
-            // If the first two characters of the VISTA value is "mm" then we need to use a
-            // different URL pattern.
-            if (value[1] && value[1].substr(0, 2) === 'mm') {
-                return { altUrlPattern: 'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id={0}&organism_id=2', altValue: value[1].substr(2) };
-            }
-            return {};
-        },
+        pattern: 'https://enhancer.lbl.gov/vista/element?vistaId={0}&alleleId=0&backbone=sZH&stage=e11.5',
     },
     'SCREEN-GRCh38': {
         pattern: 'https://screen.encodeproject.org/search?q={0}&assembly=GRCh38',
